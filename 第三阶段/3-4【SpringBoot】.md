@@ -414,9 +414,9 @@ public class Springboot01QuickstartApplication {
   # 注意： 在:后，数据前一定要加空格。
   ```
 
-  可以使用快捷键来修改端口号，直接写port，然后idea会自动补全。
+ 可以使用快捷键来修改端口号，直接写port，然后idea会自动补全。
 
-  如果不显示，是因为IDEA没有识别这个文件为配置文件，所以我们需要手动识别一下。可以使用下面的方式来搞：
+如果不显示，是因为IDEA没有识别这个文件为配置文件，所以我们需要手动识别一下。可以使用下面的方式来搞：
 
   1. 点击 `File` 选中 `Project Structure`
   2. 点击facets-->Spring项目-->右边框的上方的Spring图标(Customize Spring Bot...)
@@ -424,7 +424,7 @@ public class Springboot01QuickstartApplication {
 
 3. `application.yaml`
 
-  在 `resources` 下创建名为 `application.yaml` 的配置文件，配置内容和后缀名为 `yml` 的配置文件中的内容相同，只是使用了不同的后缀名而已。同样的，也可以利用idea补全功能。
+在 `resources` 下创建名为 `application.yaml` 的配置文件，配置内容和后缀名为 `yml` 的配置文件中的内容相同，只是使用了不同的后缀名而已。同样的，也可以利用idea补全功能。
 
   ```yaml
   server:
@@ -1283,7 +1283,74 @@ class Springboot07TestApplicationTests {
 
    静态资源需要放在 `resources` 下的 `static` 下。
 
+# 第四章 Spring家族注解
 
+## 4.1 Spring MVC注解
 
+| 名称 | @Controller                   |
+| ---- | ----------------------------- |
+| 类型 | 类注解                        |
+| 位置 | SpringMVC控制器类定义上方     |
+| 作用 | 设定SpringMVC的核心控制器bean |
 
+| 名称     | @RequestMapping                 |
+| -------- | ------------------------------- |
+| 类型     | 类注解或方法注解                |
+| 位置     | SpringMVC控制器类或方法定义上方 |
+| 作用     | 设置当前控制器方法请求访问路径  |
+| 相关属性 | value(默认)，请求访问路径       |
 
+| 名称 | @ResponseBody                                                |
+| ---- | ------------------------------------------------------------ |
+| 类型 | 类注解或方法注解                                             |
+| 位置 | SpringMVC控制器类或方法定义上方                              |
+| 作用 | 设置当前控制器方法响应内容为当前返回值，无需解析。<br />简短的说就是指该类中所有的API接口返回的数据，甭管你对应的方法返回Map或是其他Object，<br />它会以Json字符串的形式返回给客户端 |
+
+| 名称     | @RequestParam                                          |
+| -------- | ------------------------------------------------------ |
+| 类型     | 形参注解                                               |
+| 位置     | SpringMVC控制器方法形参定义前面                        |
+| 作用     | 绑定请求参数与处理器方法形参间的关系                   |
+| 相关参数 | required：是否为必传参数 <br/>defaultValue：参数默认值 |
+
+| 名称 | @RequestBody                                                 |
+| ---- | ------------------------------------------------------------ |
+| 类型 | 形参注解                                                     |
+| 位置 | SpringMVC控制器方法形参定义前面                              |
+| 作用 | 将请求中请求体所包含的数据传递给请求参数，此注解一个处理器方法只能使用一次 |
+
+* `@RequestParam`用于接收url地址传参，表单传参【application/x-www-form-urlencoded】
+* `@RequestBody`用于接收json数据【application/json】
+
+* 后期开发中，发送`json`格式数据为主，`@RequestBody`应用较广
+* 如果发送非`json`格式数据，选用`@RequestParam`接收请求参数
+
+| 名称 | @PathVariable                                                |
+| ---- | ------------------------------------------------------------ |
+| 类型 | 形参注解                                                     |
+| 位置 | SpringMVC控制器方法形参定义前面                              |
+| 作用 | 绑定路径参数与处理器方法形参间的关系，要求路径参数名与形参名一一对应 |
+
+关于接收参数，我们学过三个注解`@RequestBody`、`@RequestParam`、`@PathVariable`，这三个注解之间的区别和应用分别是什么？
+
+* 区别
+  * `@RequestParam`用于接收url地址传参或表单传参
+  * `@RequestBody`用于接收json数据
+  * `@PathVariable`用于接收路径参数，使用{参数名称}描述路径参数
+* 应用
+  * 后期开发中，发送请求参数超过1个时，以json格式为主，`@RequestBody`应用较广
+  * 如果发送非json格式数据，选用`@RequestParam`接收请求参数
+  * 采用RESTful进行开发，当参数数量较少时，例如1个，可以采用`@PathVariable`接收请求路径变量，通常用于传递id值
+
+| 名称 | @RestController                                              |
+| ---- | ------------------------------------------------------------ |
+| 类型 | 类注解                                                       |
+| 位置 | 基于SpringMVC的RESTful开发控制器类定义上方                   |
+| 作用 | 设置当前控制器类为RESTful风格，<br/>等同于@Controller与@ResponseBody两个注解组合功能 |
+
+| 名称     | @GetMapping @PostMapping @PutMapping @DeleteMapping          |
+| -------- | ------------------------------------------------------------ |
+| 类型     | 方法注解                                                     |
+| 位置     | 基于SpringMVC的RESTful开发控制器方法定义上方                 |
+| 作用     | 设置当前控制器方法请求访问路径与请求动作，每种对应一个请求动作，<br/>例如@GetMapping对应GET请求 |
+| 相关属性 | value（默认）：请求访问路径                                  |

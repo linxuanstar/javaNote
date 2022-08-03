@@ -15,32 +15,32 @@ SpringBoot刚刚我们学习完成，它能快速构建Spring开发环境用以�
 2. 勾选配置使用的技术：MySQL以及MyBatis，能够实现自动添加起步依赖包
 
 3. 设置dataSource相关属性(JDBC参数)
-
-  ```yml
-  spring:
+   
+   ```yml
+   spring:
     datasource:
       driver-class-name: com.mysql.cj.jdbc.Driver
       url: jdbc:mysql://localhost:3306/ssm_db
       username: root
       password: root
       type: com.alibaba.druid.pool.DruidDataSource
-  ```
+   ```
 
 4. 定义数据层接口映射配置
-
-  ```java
-  @Mapper
-  public interface BookDao {
-  
+   
+   ```java
+   @Mapper
+   public interface BookDao {
+   
       @Select("select * from tbl_book where id = #{id}")
       public Book getById(Integer id);
-  }
-  ```
+   }
+   ```
 
 我们可以参考着上面的这个实现步骤把SpringBoot整合MyBatisPlus来快速实现下，具体的实现步骤为:
 
 1. 创建数据库及表
-
+   
    ```sql
    create database if not exists mybatisplus_db character set utf8;
    use mybatisplus_db;
@@ -62,7 +62,7 @@ SpringBoot刚刚我们学习完成，它能快速构建Spring开发环境用以�
 2. 创建SpringBoot工程，选择配置使用的技术：MySQL。<font color = "red">由于MP并未被收录到idea的系统内置配置，无法直接选择加入，需要手动在pom.xml中配置添加</font>
 
 3. pom.xml补全依赖
-
+   
    ```xml
    <dependency>
        <groupId>com.baomidou</groupId>
@@ -75,17 +75,17 @@ SpringBoot刚刚我们学习完成，它能快速构建Spring开发环境用以�
        <version>1.1.16</version>
    </dependency>
    ```
-
+   
    druid数据源可以加也可以不加，SpringBoot有内置的数据源，可以配置成使用Druid数据源
-
+   
    从MP的依赖关系可以看出，通过依赖传递已经将MyBatis与MyBatis整合Spring的jar包导入，我们不需要额外在添加MyBatis的相关jar包
-
+   
    ![1631206757758](D:\Java\笔记\图片\3-5【MyBatisPlus】/1-1.png)
 
 4. 添加MP的相关配置信息
-
+   
    resources默认生成的是properties文件，将其替换成yml文件，并在文件中配置数据库连接的信息：
-
+   
    ```yml
    spring:
      datasource:
@@ -97,7 +97,7 @@ SpringBoot刚刚我们学习完成，它能快速构建Spring开发环境用以�
    ```
 
 5. 根据数据库表创建实体类
-
+   
    ```java
    public class User {   
        private Long id;
@@ -110,7 +110,7 @@ SpringBoot刚刚我们学习完成，它能快速构建Spring开发环境用以�
    ```
 
 6. 创建Dao接口，继承一个BaseMapper即可
-
+   
    ```java
    @Mapper
    public interface UserDao extends BaseMapper<User>{
@@ -118,7 +118,7 @@ SpringBoot刚刚我们学习完成，它能快速构建Spring开发环境用以�
    ```
 
 7. 编写引导类
-
+   
    ```java
    @SpringBootApplication
    //@MapperScan("com.linxuan.dao")
@@ -129,26 +129,26 @@ SpringBoot刚刚我们学习完成，它能快速构建Spring开发环境用以�
    
    }
    ```
-
+   
    Dao接口要想被容器扫描到，有两种解决方案：
-
+   
    方案一：在Dao接口上添加`@Mapper`注解，并且确保Dao处在引导类所在包或其子包中。该方案的缺点是需要在每一Dao接口中添加注解
-
+   
    方案二：在引导类上添加`@MapperScan`注解，其属性为所要扫描的Dao所在包。该方案的好处是只需要写一次，则指定包下的所有Dao接口都能被扫描到，`@Mapper`就可以不写。
 
 8. 编写测试类
-
+   
    ```java
    @SpringBootTest
    class MpDemoApplicationTests {
    
-   	@Autowired
-   	private UserDao userDao;
-   	@Test
-   	public void testGetAll() {
-   		List<User> userList = userDao.selectList(null);
-   		System.out.println(userList);
-   	}
+       @Autowired
+       private UserDao userDao;
+       @Test
+       public void testGetAll() {
+           List<User> userList = userDao.selectList(null);
+           System.out.println(userList);
+       }
    }
    
    // 2022-06-02 21:24:40.148  INFO 9592 --- [           main] com.alibaba.druid.pool.DruidDataSource   : {dataSource-1} inited
@@ -156,7 +156,7 @@ SpringBoot刚刚我们学习完成，它能快速构建Spring开发环境用以�
    ```
 
 > userDao注入的时候下面有红线提示的原因是什么?
->
+> 
 > UserDao是一个接口，不能实例化对象。只有在服务器启动IOC容器初始化后，由框架创建DAO接口的代理对象来注入。现在服务器并未启动，所以代理对象也未创建，IDEA查找不到对应的对象注入，所以提示报红。一旦服务启动，就能注入其代理对象，所以该错误提示不影响正常运行。
 
 ## 1.2 MybatisPlus简介
@@ -193,9 +193,9 @@ MP的特性:
 对于这张图的方法，我们挨个来演示下:
 
 * 新增
-
+  
   在测试类中进行新增操作：
-
+  
   ```java
   @SpringBootTest
   class Mybatisplus01QuickstartApplicationTests {
@@ -214,19 +214,19 @@ MP的特性:
       }
   }
   ```
-
+  
   执行测试后，数据库表中就会添加一条数据。<font color = "red">我这里是5，老师的不是5。</font>但是数据中的主键ID不会是5，按道理来说之前有着4条数据，接下来id值应该是5了，但是这个id值并不是5，反而特别大。
-
+  
   那这个主键ID是如何来的？我们更想要的是主键自增，应该是5才对，这个是我们后面要学习的主键ID生成策略，这块的这个问题，我们暂时先放放。
 
 * 删除
-
+  
   在进行删除之前，我们可以分析下删除的方法：`int deleteById (Serializable id)`，我们看到了参数类型是一个序列化类。这是为什么呢？
-
+  
   这是因为String和Number是Serializable的子类，Number又是Float、Double、Integer等类的父类，能作为主键的数据类型都已经是Serializable的子类，MP使用Serializable作为参数类型，就好比我们可以用Object接收任何数据类型一样。
-
+  
   在测试类中进行新增操作：
-
+  
   ```java
    @SpringBootTest
   class Mybatisplus01QuickstartApplicationTests {
@@ -242,11 +242,11 @@ MP的特性:
   ```
 
 * 修改
-
+  
   在进行修改之前，我们可以分析下修改的方法：`int updateById(T t);`。T是泛型，需要修改的数据内容，注意因为是根据ID进行修改，所以传入的对象中需要有ID属性值。
-
+  
   在测试类中进行新增操作:
-
+  
   ```java
   @SpringBootTest
   class Mybatisplus01QuickstartApplicationTests {
@@ -264,22 +264,22 @@ MP的特性:
       }
   }
   ```
-
+  
   > 修改的时候，只修改实体对象中有值的字段。如果不传递值过去，那么就不会修改。
 
 * 根据ID查询
-
+  
   在进行根据ID查询之前，我们可以分析下根据ID查询的方法：`T selectById (Serializable id)`
-
+  
   在测试类中进行新增操作:
-
+  
   ```java
   @SpringBootTest
   class Mybatisplus01QuickstartApplicationTests {
   
       @Autowired
       private UserDao userDao;
-      
+  
       @Test
       void testGetById() {
           User user = userDao.selectById(2L);
@@ -289,18 +289,18 @@ MP的特性:
   ```
 
 * 查询所有
-
+  
   在进行查询所有之前，我们可以分析下查询所有的方法：`List<T> selectList(Wrapper<T> queryWrapper)`。Wrapper：用来构建条件查询的条件，目前我们没有可直接传为Null。
-
+  
   在测试类中进行新增操作:
-
+  
   ```java
   @SpringBootTest
   class Mybatisplus01QuickstartApplicationTests {
   
       @Autowired
       private UserDao userDao;
-      
+  
       @Test
       void testGetAll() {
           List<User> userList = userDao.selectList(null);
@@ -322,7 +322,7 @@ MP的特性:
 使用步骤如下：
 
 1. 添加lombok依赖
-
+   
    ```xml
    <dependency>
        <groupId>org.projectlombok</groupId>
@@ -333,25 +333,25 @@ MP的特性:
    ```
 
 2. 模型类上添加注解
-
+   
    Lombok常见的注解有:
-
+   
    * `@Setter`:为模型类的属性提供setter方法
-
+   
    * `@Getter`:为模型类的属性提供getter方法
-
+   
    * `@ToString`:为模型类的属性提供toString方法
-
+   
    * `@EqualsAndHashCode`:为模型类的属性提供equals和hashcode方法
-
+   
    * <font color = "red">`@Data`:是个组合注解，包含上面的注解的功能</font>
-
+   
    * <font color = "red">`@NoArgsConstructor`:提供一个无参构造函数</font>
-
+   
    * <font color = "red">`@AllArgsConstructor`:提供一个包含所有参数的构造函数</font>
-
+   
    Lombok的注解还有很多，上面标红的三个是比较常用的，其他的后期用到了，再去补充学习。
-
+   
    ```java
    @Data
    @AllArgsConstructor
@@ -396,20 +396,20 @@ public class User {
 - Wrapper：用来构建条件查询的条件，目前我们没有可直接传为Null
 
 - IPage：返回值，你会发现构建分页条件和方法的返回值都是IPage
-
+  
   IPage是一个接口，我们需要找到它的实现类来构建它，具体的实现类，可以进入到IPage类中按ctrl+h,会找到其有一个实现类为`Page`。
 
 接下来我们来操作一下：
 
 1. 调用方法传入参数获取返回值
-
+   
    ```java
    @SpringBootTest
    class Mybatisplus01QuickstartApplicationTests {
    
        @Autowired
        private UserDao userDao;
-       
+   
        //分页查询
        @Test
        void testSelectPage(){
@@ -428,13 +428,13 @@ public class User {
    ```
 
 2. 设置分页拦截器
-
+   
    这个拦截器MP已经为我们提供好了，我们只需要将其配置成Spring管理的bean对象即可。
-
+   
    ```java
    @Configuration
    public class MybatisPlusConfig {
-       
+   
        @Bean
        public MybatisPlusInterceptor mybatisPlusInterceptor(){
            //1 创建MybatisPlusInterceptor拦截器对象
@@ -445,13 +445,13 @@ public class User {
        }
    }
    ```
-
+   
    这些内容在MP的官方文档中有详细的说明，我们可以查看官方文档类配置
-
+   
    ![1631208030131](D:\Java\笔记\图片\3-5【MyBatisPlus】/1-3.png)
 
 3. 运行测试程序
-
+   
    ```html
    <!--
        当前页码值：1
@@ -461,15 +461,15 @@ public class User {
        数据：[User{id=1, name='Tom', password='tom', age=3, tel='18866668888'}, User{id=2, name='Jerry', password='jerry', age=4, tel='16688886666'}, User{id=3, name='Jock', password='123456', age=41, tel='18812345678'}]
    -->
    ```
-
+   
    如果想查看MP执行的SQL语句，我们可以修改application.yml配置文件。在application.yml添加如下信息：
-
+   
    ```yml
    mybatis-plus:
      configuration:
        log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #打印SQL日志到控制台
    ```
-
+   
    打开日志后，就可以在控制台打印出对应的SQL语句，开启日志功能性能就会受到影响，调试完后记得关闭。
 
 ## 2.4 取消打印日志
@@ -477,7 +477,7 @@ public class User {
 测试的时候，控制台打印的日志比较多，速度有点慢而且不利于查看运行结果，所以接下来我们把这个日志处理下:
 
 * 取消初始化spring日志打印，resources目录下添加`logback.xml`，**名称固定**，内容如下:
-
+  
   ```xml
   <?xml version="1.0" encoding="UTF-8"?>
   <configuration>
@@ -485,9 +485,9 @@ public class User {
   ```
 
 * 取消MybatisPlus启动banner图标，就是取消在控制台打印mybatisplus图标。
-
+  
   application.yml添加如下内容:
-
+  
   ```yml
   # mybatis-plus日志控制台输出
   mybatis-plus:
@@ -498,9 +498,9 @@ public class User {
   ```
 
 * 取消SpringBoot的log打印，取消在控制台打印SpringBoot图标。
-
+  
   application.yml添加如下内容:
-
+  
   ```yml
   spring:
     main:
@@ -531,14 +531,14 @@ MyBatisPlus将书写复杂的SQL查询条件进行了封装，使用编程的形
 Wrapper的实现类有多种：`QueryWrapper`、`LambdaQueryWrapper`。
 
 1. 先来看第一种：<font color = "red">使用QueryWrapper来构建条件查询</font>
-
+   
    ```java
    @SpringBootTest
    class Mybatisplus02DqlApplicationTests {
    
        @Autowired
        private UserDao userDao;
-       
+   
        @Test
        void testGetAll(){
            QueryWrapper qw = new QueryWrapper();
@@ -550,18 +550,18 @@ Wrapper的实现类有多种：`QueryWrapper`、`LambdaQueryWrapper`。
        }
    }
    ```
-
+   
    第一种方式介绍完后，有个小问题就是在写条件的时候，容易出错，比如age写错，就会导致查询不成功。
 
 2. 接着来看第二种：<font color = "red">QueryWrapper的基础上使用lambda</font>
-
+   
    ```java
    @SpringBootTest
    class Mybatisplus02DqlApplicationTests {
    
        @Autowired
        private UserDao userDao;
-       
+   
        @Test
        void testGetAll(){
            // 构建LambdaQueryWrapper的时候泛型不能省。
@@ -574,20 +574,20 @@ Wrapper的实现类有多种：`QueryWrapper`、`LambdaQueryWrapper`。
        }
    }
    ```
-
+   
    > 构建LambdaQueryWrapper的时候泛型不能省。
-
+   
    但是这种方式的话因为要一直重复写`.lambda()`，有点麻烦，所以想着把它去掉，那么可以使用第三种方式。
 
 3. 接着来看第三种：<font color = "red">LambdaQueryWrapper</font>
-
+   
    ```java
    @SpringBootTest
    class Mybatisplus02DqlApplicationTests {
    
        @Autowired
        private UserDao userDao;
-       
+   
        @Test
        void testGetAll(){
            LambdaQueryWrapper<User> lqw = new LambdaQueryWrapper<User>();
@@ -599,7 +599,7 @@ Wrapper的实现类有多种：`QueryWrapper`、`LambdaQueryWrapper`。
        }
    }
    ```
-
+   
    这种方式就解决了上一种方式所存在的问题。
 
 ### 多条件构建
@@ -607,14 +607,14 @@ Wrapper的实现类有多种：`QueryWrapper`、`LambdaQueryWrapper`。
 学完了三种构建查询对象的方式，每一种都有自己的特点，所以用哪一种都行，刚才都是一个条件，那如果有多个条件该如何构建呢?
 
 * 我们现在有一个需求：查询数据库表中，年龄在10岁到30岁之间的用户信息
-
+  
   ```java
   @SpringBootTest
   class Mybatisplus02DqlApplicationTests {
   
       @Autowired
       private UserDao userDao;
-      
+  
       @Test
       void testGetAll(){
           LambdaQueryWrapper<User> lqw = new LambdaQueryWrapper<User>();
@@ -622,10 +622,10 @@ Wrapper的实现类有多种：`QueryWrapper`、`LambdaQueryWrapper`。
           // gt：大于(>)
           // 最终的SQL语句 SELECT id,name,password,age,tel FROM user WHERE (age < ? AND age > ?)
           lqw.gt(User::getAge, 10);
-          
+  
           // 构建多条件的时候，可以支持链式编程
           // lqw.lt(User::getAge, 30).gt(User::getAge, 10);
-          
+  
           List<User> userList = userDao.selectList(lqw);
           System.out.println(userList);
       }
@@ -633,14 +633,14 @@ Wrapper的实现类有多种：`QueryWrapper`、`LambdaQueryWrapper`。
   ```
 
 * 我们现在有一个需求：查询数据库表中，年龄小于10或年龄大于30的数据
-
+  
   ```java
   @SpringBootTest
   class Mybatisplus02DqlApplicationTests {
   
       @Autowired
       private UserDao userDao;
-      
+  
       @Test
       void testGetAll(){
           LambdaQueryWrapper<User> lqw = new LambdaQueryWrapper<User>();
@@ -662,7 +662,7 @@ Wrapper的实现类有多种：`QueryWrapper`、`LambdaQueryWrapper`。
 我们借用一个需求来解决一下这种问题：
 
 * 需求：查询数据库表中，根据输入年龄范围来查询符合条件的记录。
-
+  
   用户在输入值的时候，如果只输入第一个框，说明要查询大于该年龄的用户；如果只输入第二个框，说明要查询小于该年龄的用户；如果两个框都输入了，说明要查询年龄在两个范围之间的用户。
 
 思考第一个问题：后台如果想接收前端的两个数据，该如何接收?
@@ -683,7 +683,7 @@ public class User {
 使用一个age属性，如何去接收页面上的两个值呢?这个时候我们有两个解决方案
 
 1. 方案一：添加属性age2,这种做法可以但是会影响到原模型类的属性内容
-
+   
    ```java
    @Data
    public class User {
@@ -697,7 +697,7 @@ public class User {
    ```
 
 2. 方案二：新建一个模型类,让其继承User类，并在其中添加age2属性，UserQuery在拥有User属性后同时添加了age2属性。
-
+   
    ```java
    @Data
    public class User {
@@ -722,7 +722,7 @@ class Mybatisplus02DqlApplicationTests {
 
     @Autowired
     private UserDao userDao;
-    
+
     @Test
     void testGetAll(){
         //模拟页面传递过来的查询数据
@@ -752,7 +752,7 @@ class Mybatisplus02DqlApplicationTests {
 
     @Autowired
     private UserDao userDao;
-    
+
     @Test
     void testGetAll(){
         //模拟页面传递过来的查询数据
@@ -782,17 +782,17 @@ class Mybatisplus02DqlApplicationTests {
 
     @Autowired
     private UserDao userDao;
-    
+
     @Test
     void testGetAll(){
         LambdaQueryWrapper<User> lqw = new LambdaQueryWrapper<User>();
         // 最终的sql语句为 SELECT id,name,age FROM user
         lqw.select(User::getId,User::getName,User::getAge);
-        
+
         // 如果使用的不是lambda，就需要手动指定字段
         // QueryWrapper<User> lqw = new QueryWrapper<User>();
         // lqw.select("id","name","age","tel");
-        
+
         List<User> userList = userDao.selectList(lqw);
         System.out.println(userList);
     }
@@ -809,12 +809,12 @@ class Mybatisplus02DqlApplicationTests {
 
     @Autowired
     private UserDao userDao;
-    
+
     @Test
     void testGetAll(){
         // 这里使用的是QueryWrapper类
         QueryWrapper<User> qw = new QueryWrapper<User>();
-        
+
         //qw.select("count(*) as count");
         //SELECT count(*) as count FROM user
         //qw.select("max(age) as maxAge");
@@ -823,7 +823,7 @@ class Mybatisplus02DqlApplicationTests {
         //SELECT min(age) as minAge FROM user
         //qw.select("sum(age) as sumAge");
         //SELECT sum(age) as sumAge FROM user
-        
+
         qw.select("avg(age) as avgAge");
         //SELECT avg(age) as avgAge FROM user
         List<Map<String, Object>> userList = userDao.selectMaps(qw);
@@ -846,11 +846,11 @@ class Mybatisplus02DqlApplicationTests {
 
     @Autowired
     private UserDao userDao;
-    
+
     @Test
     void testGetAll(){
         QueryWrapper<User> lqw = new QueryWrapper<User>();
-        
+
         // 最终的sql语句为 SELECT count(*) as count,tel FROM user GROUP BY tel
         lqw.select("count(*) as count, tel");
         lqw.groupBy("tel");
@@ -881,7 +881,7 @@ class Mybatisplus02DqlApplicationTests {
 
     @Autowired
     private UserDao userDao;
-    
+
     @Test
     // 根据用户名和密码查询用户信息
     void testGetAll(){
@@ -910,7 +910,7 @@ class Mybatisplus02DqlApplicationTests {
 
     @Autowired
     private UserDao userDao;
-    
+
     @Test
     // 对年龄进行范围查询
     void testGetAll(){
@@ -935,7 +935,7 @@ class Mybatisplus02DqlApplicationTests {
 
     @Autowired
     private UserDao userDao;
-    
+
     @Test
     // 查询表中name属性的值以J开头的用户信息,使用like进行模糊查询
     void testGetAll(){
@@ -965,7 +965,7 @@ class Mybatisplus02DqlApplicationTests {
 
     @Autowired
     private UserDao userDao;
-    
+
     @Test
     // 查询所有数据，然后按照id降序
     void testGetAll(){
@@ -1023,11 +1023,11 @@ void testFromCon() {
 那么问题就来了：
 
 * **表字段与编码属性设计不同步**
-
+  
   当表的列名和模型类的属性名发生不一致，就会导致数据封装不到模型对象，这个时候就需要其中一方做出修改，可是我们要求两方都不能够修改。MP给我们提供了一个注解`@TableField`，使用该注解可以实现模型类属性名和表的列名之间的映射关系。
-
+  
   这里我们来模拟一下：将字段password修改成pwd，直接查询会报错，原因是MP默认情况下会使用模型类的属性名当做表的列名使用。
-
+  
   ```sql
   CREATE TABLE user (
       id bigint(20) primary key auto_increment,
@@ -1038,16 +1038,16 @@ void testFromCon() {
       tel varchar(32) not null
   );
   
-  -- alter table 表名 change 列名 新列名 新数据类型;		-- 修改列名称 类型
+  -- alter table 表名 change 列名 新列名 新数据类型;        -- 修改列名称 类型
   -- ALTER TABLE USER CHANGE PASSWORD pwd VARCHAR(32);
   ```
-
+  
   ```java
   @Data
   public class User {
       private Long id;
       private String name;
-      
+  
       // 添加一个@TableField注解，让属性和字段产生关联
       @TableField(value = "pwd")
       private String password;
@@ -1057,13 +1057,13 @@ void testFromCon() {
   ```
 
 * **编码中添加了数据库中未定义的属性**
-
+  
   当模型类中多了一个数据库表不存在的字段，就会导致生成的sql语句中在select的时候查询了数据库不存在的字段，程序运行就会报错，错误信息为：<font color = "red">Unknown column '多出来的字段名称' in 'field list'</font>
-
+  
   具体的解决方案用到的还是`@TableField`注解，它有一个属性叫`exist`，设置该字段是否在数据库表中存在，如果设置为false则不存在，生成sql语句查询的时候，就不会再查询该字段了。
-
+  
   这里我们来模拟一下：添加一个数据库表不存在的字段，直接查询会报错，原因是MP默认情况下会查询模型类的所有属性对应的数据库表的列，而online不存在。
-
+  
   ```sql
   CREATE TABLE user (
       id bigint(20) primary key auto_increment,
@@ -1074,7 +1074,7 @@ void testFromCon() {
       tel varchar(32) not null
   );
   ```
-
+  
   ```java
   @Data
   public class User {
@@ -1092,11 +1092,11 @@ void testFromCon() {
   ```
 
 * **采用默认查询开放了更多的字段查看权限**
-
+  
   查询表中所有的列的数据，就可能把一些敏感数据查询到返回给前端，这个时候我们就需要限制哪些字段默认不要进行查询。
-
+  
   解决方案是`@TableField`注解的一个属性叫`select`，该属性设置默认是否需要查询该字段的值，true(默认值)表示默认查询该字段，false表示默认不查询该字段。
-
+  
   ```java
   @Data
   public class User {
@@ -1114,13 +1114,13 @@ void testFromCon() {
   ```
 
 * **表名与编码开发设计不同步**
-
+  
   问题主要是表的名称和模型类的名称不一致，导致查询失败，这个时候通常会报如下错误信息:<font color = "red">Table 'databaseName.tableNaem' doesn't exist</font>，翻译过来就是数据库中的表不存在。
-
+  
   解决方案是使用MP提供的另外一个注解`@TableName`来设置表与模型类之间的对应关系。
-
+  
   接下来我们来模拟一下：修改数据库表user为tbl_user。直接查询会报错，原因是MP默认情况下会使用模型类的类名首字母小写当表名使用。
-
+  
   ```sql
   CREATE TABLE tbl_user (
       id bigint(20) primary key auto_increment,
@@ -1130,11 +1130,11 @@ void testFromCon() {
       age int(3) not null ,
       tel varchar(32) not null
   );
-  	
-  -- alter table 表名 rename to 新的表名；		-- 修改表名
+  
+  -- alter table 表名 rename to 新的表名；        -- 修改表名
   -- ALTER TABLE USER RENAME TO tbl_user;
   ```
-
+  
   ```java
   @Data
   // 设置表与模型类之间的对应关系
@@ -1153,19 +1153,19 @@ void testFromCon() {
   }
   ```
 
-| 名称     | @TableField                                                  |
-| -------- | ------------------------------------------------------------ |
-| 类型     | <font color = "red">属性注解</font>                          |
-| 位置     | 模型类属性定义上方                                           |
-| 作用     | 设置当前属性对应的数据库表中的字段关系                       |
+| 名称   | @TableField                                                                                                       |
+| ---- | ----------------------------------------------------------------------------------------------------------------- |
+| 类型   | <font color = "red">属性注解</font>                                                                                   |
+| 位置   | 模型类属性定义上方                                                                                                         |
+| 作用   | 设置当前属性对应的数据库表中的字段关系                                                                                               |
 | 相关属性 | value(默认)：设置数据库表字段名称<br/>exist:设置属性在数据库表字段中是否存在，默认为true，此属性不能与value合并使用<br/>select:设置属性是否参与查询，此属性与select()映射配置不冲突 |
 
-| 名称     | @TableName                        |
-| -------- | --------------------------------- |
-| 类型     | <font color = "red">类注解</font> |
-| 位置     | 模型类定义上方                    |
-| 作用     | 设置当前类对应于数据库表关系      |
-| 相关属性 | value(默认)：设置数据库表名称     |
+| 名称   | @TableName                     |
+| ---- | ------------------------------ |
+| 类型   | <font color = "red">类注解</font> |
+| 位置   | 模型类定义上方                        |
+| 作用   | 设置当前类对应于数据库表关系                 |
+| 相关属性 | value(默认)：设置数据库表名称             |
 
 # 第四章 DML编程控制
 
@@ -1184,11 +1184,11 @@ void testFromCon() {
 
 在这里我们又需要用到MP的一个注解叫`@TableId`
 
-| 名称     | @TableId                                                     |
-| -------- | ------------------------------------------------------------ |
-| 类型     | <font color = "red">属性注解</font>                          |
-| 位置     | 模型类中用于表示主键的属性定义上方                           |
-| 作用     | 设置当前类中主键属性的生成策略                               |
+| 名称   | @TableId                                                |
+| ---- | ------------------------------------------------------- |
+| 类型   | <font color = "red">属性注解</font>                         |
+| 位置   | 模型类中用于表示主键的属性定义上方                                       |
+| 作用   | 设置当前类中主键属性的生成策略                                         |
 | 相关属性 | value(默认)：设置数据库表主键名称<br/>type:设置主键属性的生成策略，值查照IdType的枚举值 |
 
 ```java
@@ -1242,18 +1242,18 @@ void testFromCon() {
 INPUT：用户手工输入id
 
 1. 设置生成策略为INPUT `@TableId(type = IdType.INPUT)`
-
+   
    这种ID生成策略，需要将表的自增策略删除掉，我们将id的自增策略删除掉。右键USER表，然后选择改变表，里面取消自增即可。
 
 2. 添加数据手动设置ID
-
+   
    ```java
    @SpringBootTest
    class Mybatisplus03DqlApplicationTests {
    
        @Autowired
        private UserDao userDao;
-   	
+   
        @Test
        void testSave() {
            User user = new User(5, "林炫", "123", 20, "123");
@@ -1270,14 +1270,14 @@ ASSIGN_ID：雪花算法生成id(可兼容数值型与字符串型)
 1. 设置生成策略为ASSIGN_ID `@TableId(type = IdType.ASSIGN_ID)`
 
 2. 添加数据不设置ID
-
+   
    ```java
    @SpringBootTest
    class Mybatisplus03DqlApplicationTests {
    
        @Autowired
        private UserDao userDao;
-   	
+   
        @Test
        void testSave() {
            User user = new User();
@@ -1291,7 +1291,7 @@ ASSIGN_ID：雪花算法生成id(可兼容数值型与字符串型)
    // 1532998837084364801(Long) 生成的ID就是一个Long类型的数据。
    // 切记：User类中id属性的类型为Long包装类型。
    ```
-
+   
    这种生成策略，不需要手动设置ID，如果手动设置ID，则会使用自己设置的值。
 
 **ASSIGN_UUID策略**
@@ -1299,9 +1299,9 @@ ASSIGN_ID：雪花算法生成id(可兼容数值型与字符串型)
 ASSIGN_UUID：以UUID生成算法作为id生成策略
 
 1. 设置生成策略为ASSIGN_UUID
-
+   
    使用uuid需要注意的是，主键的类型不能是Long，而应该改成String类型
-
+   
    ```java
    @TableId(type = IdType.ASSIGN_UUID)
    private String id;
@@ -1310,14 +1310,14 @@ ASSIGN_UUID：以UUID生成算法作为id生成策略
 2. 修改表的主键类型，主键类型设置为varchar，长度要大于32，因为UUID生成的主键为32位，如果长度小的话就会导致插入失败。
 
 3. 添加数据不设置ID
-
+   
    ```java
    @SpringBootTest
    class Mybatisplus03DqlApplicationTests {
    
        @Autowired
        private UserDao userDao;
-   	
+   
        @Test
        void testSave(){
            User user = new User();
@@ -1379,7 +1379,7 @@ ASSIGN_UUID：以UUID生成算法作为id生成策略
 mybatis-plus:
   global-config:
     db-config:
-    	id-type: assign_id
+        id-type: assign_id
 ```
 
 配置完成后，每个模型类的主键ID策略都将成为assign_id。
@@ -1396,7 +1396,7 @@ MP会默认将模型类的类名名首字母小写作为表名使用，假如数
 mybatis-plus:
   global-config:
     db-config:
-    	table-prefix: tbl_
+        table-prefix: tbl_
 ```
 
 设置表的前缀内容，这样MP就会拿 `tbl_`加上模型类的首字母小写，就刚好组装成数据库的表名。
@@ -1420,7 +1420,7 @@ class Mybatisplus03DqlApplicationTests {
 
     @Autowired
     private UserDao userDao;
-	
+
     @Test
     void testDeleteAndSelect(){
         //删除指定多条数据
@@ -1429,7 +1429,7 @@ class Mybatisplus03DqlApplicationTests {
         list1.add(1402553134049501186L);
         list1.add(1402553619611430913L);
         userDao.deleteBatchIds(list1);
-        
+
         //查询指定多条数据
         List<Long> list2 = new ArrayList<>();
         list2.add(1L);
@@ -1468,15 +1468,15 @@ class Mybatisplus03DqlApplicationTests {
 接下来我们来看一下在MP中如何进行逻辑删除：
 
 1. 修改数据库表添加`deleted`列
-
+   
    字段名可以任意，内容也可以自定义，比如`0`代表正常，`1`代表删除，可以在添加列的同时设置其默认值为`0`正常。
 
 2. 实体类添加属性
-
+   
    添加与数据库表的列对应的一个属性名，名称可以任意，如果和数据表列名对不上，可以使用@TableField进行关系映射，如果一致，则会自动对应。
-
+   
    标识新增的字段为逻辑删除字段，使用`@TableLogic`
-
+   
    ```java
    @Data
    public class User {
@@ -1486,7 +1486,7 @@ class Mybatisplus03DqlApplicationTests {
        private Integer age;
        private String tel;
        private Integer online;
-       
+   
        @TableLogic(value="0",delval="1")
        //value为正常数据的值，delval为删除数据的值
        private Integer deleted;
@@ -1494,14 +1494,14 @@ class Mybatisplus03DqlApplicationTests {
    ```
 
 3. 运行删除方法
-
+   
    ```java
    @SpringBootTest
    class Mybatisplus03DqlApplicationTests {
    
        @Autowired
        private UserDao userDao;
-   	
+   
        @Test
        void testDelete(){
            // 实际执行的SQL语句 UPDATE user SET deleted=1 WHERE id=? AND deleted=0
@@ -1509,7 +1509,7 @@ class Mybatisplus03DqlApplicationTests {
        }
    }
    ```
-
+   
    从测试结果来看，逻辑删除最后走的是update操作，会将指定的字段修改成删除状态对应的值。
 
 我们来思考一下：逻辑删除，对查询有没有影响呢？
@@ -1520,7 +1520,7 @@ class Mybatisplus03DqlApplicationTests {
 
     @Autowired
     private UserDao userDao;
-	
+
     @Test
     // 执行查询操作
     void testFind(){
@@ -1537,7 +1537,7 @@ class Mybatisplus03DqlApplicationTests {
 * 如果我们想要将已经删除的数据显示出来，那么我们只能够自己写SQL语句来查询了，通过Dao层书写SQL语句，然后调用即可。
 
 * 如果每个表都要有逻辑删除，那么就需要在每个模型类的属性上添加`@TableLogic`注解，我们可以对此优化一下，在配置文件中添加全局配置，如下:
-
+  
   ```yml
   mybatis-plus:
     global-config:
@@ -1550,12 +1550,12 @@ class Mybatisplus03DqlApplicationTests {
         logic-delete-value: 1
   ```
 
-| 名称     | @TableLogic                               |
-| -------- | ----------------------------------------- |
-| 类型     | <font color = "red">属性注解</font>       |
-| 位置     | 模型类中用于表示删除字段的属性定义上方    |
-| 作用     | 标识该字段为进行逻辑删除的字段            |
-| 相关属性 | value：逻辑未删除值<br/>delval:逻辑删除值 |
+| 名称   | @TableLogic                     |
+| ---- | ------------------------------- |
+| 类型   | <font color = "red">属性注解</font> |
+| 位置   | 模型类中用于表示删除字段的属性定义上方             |
+| 作用   | 标识该字段为进行逻辑删除的字段                 |
+| 相关属性 | value：逻辑未删除值<br/>delval:逻辑删除值   |
 
 ## 4.6 乐观锁
 
@@ -1579,23 +1579,23 @@ class Mybatisplus03DqlApplicationTests {
 * 第二个线程执行更新时，set version = version + 1 where version = oldVersion
 
 * 假如这两个线程都来更新数据，第一个和第二个线程都可能先执行
-
+  
   假如第一个线程先执行更新，会把version改为2，第二个线程再更新的时候，set version = 2 where version = 1，此时数据库表的数据version已经为2，所以第二个线程会修改失败
-
+  
   假如第二个线程先执行更新，会把version改为2，第一个线程再更新的时候，set version = 2 where version = 1，此时数据库表的数据version已经为2，所以第一个线程会修改失败
-
+  
   不管谁先执行都会确保只能有一个线程更新数据，这就是MP提供的乐观锁的实现原理分析。
 
 分析完步骤后，具体的实现步骤如下：
 
 1. 数据库表添加列
-
+   
    列名可以任意，比如使用`version`，给列设置默认值为`1`。
 
 2. 在模型类中添加对应的属性
-
+   
    根据添加的字段列名，在模型类中添加对应的属性值。
-
+   
    ```java
    @Data
    //@TableName("tbl_user") 可以不写是因为配置了全局配置
@@ -1620,7 +1620,7 @@ class Mybatisplus03DqlApplicationTests {
    ```
 
 3. 添加乐观锁的拦截器
-
+   
    ```java
    @Configuration
    public class MpConfig {
@@ -1636,14 +1636,14 @@ class Mybatisplus03DqlApplicationTests {
    ```
 
 4. 执行更新操作
-
+   
    ```java
    @SpringBootTest
    class Mybatisplus03DqlApplicationTests {
    
        @Autowired
        private UserDao userDao;
-   	
+   
        @Test
        void testUpdate(){
           User user = new User();
@@ -1654,18 +1654,18 @@ class Mybatisplus03DqlApplicationTests {
        }
    }
    ```
-
+   
    我们会发现，这次修改并没有更新version字段，原因是没有携带version数据。`UPDATE user SET name=? WHERE id=? AND deleted=0`
-
+   
    添加version数据
-
+   
    ```java
    @SpringBootTest
    class Mybatisplus03DqlApplicationTests {
    
        @Autowired
        private UserDao userDao;
-   	
+   
        @Test
        void testUpdate(){
            User user = new User();
@@ -1680,18 +1680,18 @@ class Mybatisplus03DqlApplicationTests {
    // ==> Parameters: Jock777(String), 2(Integer), 3(Long), 1(Integer)
    // <==    Updates: 1
    ```
-
+   
    我们会发现，我们传递的是1，MP会将1进行加1，然后，更新回到数据库表中。可以看一下参数，第二个参数就是更新后的version版本，最后一个参数使我们传递的version版本。
-
+   
    所以要想实现乐观锁，首先第一步应该是拿到表中的version，然后拿version当条件在将version加1更新回到数据库表中，所以我们在查询的时候，需要对其进行查询
-
+   
    ```java
    @SpringBootTest
    class Mybatisplus03DqlApplicationTests {
    
        @Autowired
        private UserDao userDao;
-   	
+   
        @Test
        void testUpdate(){
            //1.先通过要修改的数据id将当前数据查询出来
@@ -1709,16 +1709,16 @@ class Mybatisplus03DqlApplicationTests {
    // <==        Row: 3, Jock777, 123456, 41, 18812345678, 0, 2
    // <==      Total: 1
    ```
-
+   
    大概分析完乐观锁的实现步骤以后，我们来模拟一种加锁的情况，看看能不能实现多个人修改同一个数据的时候，只能有一个人修改成功。
-
+   
    ```java
    @SpringBootTest
    class Mybatisplus03DqlApplicationTests {
    
        @Autowired
        private UserDao userDao;
-   	
+   
        @Test
        void testUpdate(){
           //1.先通过要修改的数据id将当前数据查询出来
@@ -1731,9 +1731,9 @@ class Mybatisplus03DqlApplicationTests {
        }
    }
    ```
-
+   
    运行程序，分析结果：
-
+   
    ![1631253302587](D:\Java\笔记\图片\3-5【MyBatisPlus】/1-9.png)
 
 官方文档：`https://mp.baomidou.com/guide/interceptor-optimistic-locker.html#optimisticlockerinnerinterceptor`
@@ -1773,7 +1773,7 @@ class Mybatisplus03DqlApplicationTests {
 1. 创建一个Maven项目
 
 2. 导入对应的jar包
-
+   
    ```xml
    <?xml version="1.0" encoding="UTF-8"?>
    <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -1790,7 +1790,7 @@ class Mybatisplus03DqlApplicationTests {
        <properties>
            <java.version>1.8</java.version>
        </properties>
-       
+   
        <!--mybatisplus_04_generator项目中对于MyBatis的环境是没有进行配置-->
        <dependencies>
            <!--spring webmvc-->
@@ -1862,7 +1862,7 @@ class Mybatisplus03DqlApplicationTests {
    ```
 
 3. 编写引导类
-
+   
    ```java
    @SpringBootApplication
    public class Mybatisplus04GeneratorApplication {
@@ -1875,7 +1875,7 @@ class Mybatisplus03DqlApplicationTests {
    ```
 
 4. 创建代码生成类
-
+   
    ```java
    public class CodeGenerator {
        public static void main(String[] args) {
@@ -1921,13 +1921,13 @@ class Mybatisplus03DqlApplicationTests {
        }
    }
    ```
-
+   
    对于代码生成器中的代码内容，我们可以直接从官方文档中获取代码进行修改:`https://mp.baomidou.com/guide/generator.html`
 
 5. 运行程序
-
+   
    运行成功后，会在当前项目中生成很多代码，代码包含`controller`,`service`，`mapper`和`entity`
-
+   
    ![1631255110375](D:\Java\笔记\图片\3-5【MyBatisPlus】/1-13.png)
 
 至此代码生成器就已经完成工作，我们能快速根据数据库表来创建对应的类，简化我们的代码开发。
@@ -1938,7 +1938,7 @@ class Mybatisplus03DqlApplicationTests {
 
 ```java
 public interface UserService{
-	
+
 }
 
 @Service
@@ -1951,15 +1951,15 @@ public class UserServiceImpl implements UserService{
 
 ```java
 public interface UserService{
-	public List<User> findAll();
+    public List<User> findAll();
 }
 
 @Service
 public class UserServiceImpl implements UserService{
     @Autowired
     private UserDao userDao;
-    
-	public List<User> findAll(){
+
+    public List<User> findAll(){
         return userDao.selectList(null);
     }
 }
@@ -1971,7 +1971,7 @@ MP看到上面的代码以后就说这些方法也是比较固定和通用的，
 
 ```java
 public interface UserService extends IService<User>{
-	
+
 }
 
 @Service

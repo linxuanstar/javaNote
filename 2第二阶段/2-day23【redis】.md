@@ -100,15 +100,15 @@ redis的应用场景如下：
 
 我们将redis放在了/usr/local/redis里面，在里面操作就可以了，版本是redis-3.0.4。
 
-如果想要打开redis首先要进入/usr/local/redis/redis-3.0.4/src，里面有着redis-server和redis-cli文件。我们要是想要运行的话和Windows一样，首先运行redis-server文件，命令为：./redis-server。然后就会发现redis-server启动了，当然当前页面也霸屏了，所以我们需要克隆一个页面再启动客户端：./redis-cli。这样再客户端就可以操作redis了。
+如果想要打开redis首先要进入/usr/local/redis/redis-3.0.4/src，里面有着redis-server和redis-cli文件。我们要是想要运行的话和Windows一样，首先运行redis-server文件，命令为：./redis-server。然后就会发现redis-server启动了，当然当前页面也霸屏了，所以需要克隆一个页面再启动客户端：./redis-cli。这样再客户端就可以操作redis了。
 
-我们之前启动redis有霸屏操作，我们可以修改一下：
+之前启动redis有霸屏操作，我们可以修改一下：
 
 1. 进入redis里面，找到redis.conf文件，使用vim进入该文件。`vim redis.conf`
 2. 这里面的内容非常的多，所以我们可以使用vim的搜索命令：`/dae`，然后光标就会定位到 `daemonize no`，我们将其修改为yes就可以了
 3. 打开redis-server，重新加载配置文件。进入/usr/local/redis/redis-3.0.4目录，键入如下命令：`src/redis-server ./redis.conf`。这时候启动就不会出现霸屏了，<font color = "red">但是如果我们不指定配置文件的话又会回到霸屏状态</font>。
 
-我们启动redis是没有密码的，这很不安全，所以可以设置一下：
+启动redis是没有密码的，这很不安全，所以可以设置一下：
 
 1. 进入redis里面，找到redis.conf文件，使用vim进入该文件。`vim redis.conf`
 
@@ -124,6 +124,17 @@ redis的应用场景如下：
 
 1. 如果从远程连接redis，就是从win10连接我们的Linux，我们可以使用如下方式：在redis安装位置按住shift键再右键，选择打开PowerShell窗口。 `.\redis-cli.exe -h 192.168.66.130 -p 6379`
 2. 命令行模式键入：`/bind`。将`# bind 127.0.0.1`注释起来，因为我们的就是注释的所以可以直接远程连接。
+
+配置环境变量：
+
+* `vim /etc/profile`，添加下面命令：
+
+  ```sh
+  export REDIS_HOME=/usr/local/redis/redis-3.0.4
+  export PATH=$PATH:$REDIS_HOME/src
+  ```
+
+* 使其立即生效：`source /etc/profile`。
 
 # 第二章 命令操作
 

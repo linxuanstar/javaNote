@@ -2,8 +2,6 @@
 
 # 第一章 SpringMVC介绍
 
- `== , :  itheima itcast ？` 
-
 ## 1.1 SpringMVC学习内容
 
 SpringMVC是隶属于Spring框架的一部分，主要是用来进行Web开发，是对Servlet进行了封装。
@@ -1772,8 +1770,8 @@ REST（`Representational State Transfer`），表现形式状态转换，它是�
   * `http://localhost/user/getById?id=1` 查询id为1的用户信息
   * `http://localhost/user/saveUser` 保存用户信息
 * REST风格描述形式
-  * `http：//localhost/user/1` 
-  * `http：//localhost/user`
+  * `http://localhost/user/1` 
+  * `http://localhost/user`
 
 **根据REST风格对资源进行访问称为RESTful**
 

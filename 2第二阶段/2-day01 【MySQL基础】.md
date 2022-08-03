@@ -1,10 +1,10 @@
-# 第一章 数据库基本概念
+# 第一章 数据库和MySQL
 
-<!--P477-->
+## 1.1 数据库介绍
 
-数据库英文单词：`DataBase`	简称：`DB`
+数据库：用于存储和管理数据的仓库。英文：`DataBase`简称：`DB`。
 
-数据库：用于存储和管理数据的仓库。
+数据库管理系统：操纵和管理数据库的大型软件。英文：`DataBase Management System` 简称：`DBMS`
 
 数据库特点
 
@@ -12,131 +12,71 @@
 2. 方便存储和管理数据
 3. 使用了统一的方式操作数据库 -- `SQL`
 
-<!--P478-->
-
-常见的数据库软件
+常见的关系型数据库软件：
 
 ![](D:\Java\笔记\图片\3-day01 【MySQL基础】\1.png)
 
-# 第二章 MySQL数据库软件
+## 1.2 MySQL数据库软件
 
-安装
+之前下载过一个5.5的版本，但是太老了，删掉了。现在又下载了一个8.0.26的版本。
 
-<!--P479-->
+### 1.2.1 服务启动
 
-卸载
+1. cmd命令窗口 --> 输入`services.msc` 打开服务的窗口
 
-<!--P480-->
+2. 使用管理员权限打开cmd
 
-1. 去MySQL的安装目录找到`my.ini`文件
+   `net start mysql`：启动mysql服务
 
-   ```sql
-   datadir="C:/ProgramData/MySQL/MySQL Server 5.5/Data/"
-   ```
+   `net stop mysql`：关闭mysql服务
 
-2. 卸载`MySQL`
+### 1.2.2 登录
 
-3. 删除`C:/ProgramData`目录下面的MySQL文件夹（隐藏文件夹）
+两种方式可以登录，自带的和Windows的命令窗口。
 
-<!--P481-->
+- 打开`MySQL 8.0 Command Line Client - Unicode`，输入密码就可以连接了。
+- `mysql [-h IP地址] [-P 端口] -u root -p`：连接MySQL。括号是可以加上也可以不加上。输入命令然后回车直接输入密码就可以连接上了。 
 
-**MySQL服务启动**
+### 1.2.3 卸载
 
-1. 手动启动
-2. cmd命令窗口 --> 输入`services.msc` 打开服务的窗口
-3. 使用管理员权限打开cmd
-   * `net start mysql`：启动mysql服务
-   * `net stop mysql`：关闭mysql服务
+1. win+R 打开运行，输入 services.msc 点击 "确定" 调出系统服务。停止MySQL服务。
+2. 打开控制面板 ---> 卸载程序 ---> 卸载MySQL相关所有组件。
+3. 删除MySQL安装目录，在C盘Program Files文件夹下面`C:\Program Files\MySQL`
+4. 删除`C:/ProgramData`目录下面的MySQL文件夹（隐藏文件夹）
 
-<!--P482-->
+如果已将MySQL卸载，但是通过任务管理器--->服务，查看到MySQL服务仍然残留在系统服务里。解决办法：以管理员方式运行cmd命令行，输入以下命令：`sc delete 服务名称（如MySQL80）`。这样可以实现删除服务。
 
-**MySQL登陆**
+# 第二章 SQL
 
-1. `mysql -uroot -p+密码`
-2. `mysql -h+ip -uroot -p+连接目标的密码`（这种可以远程登陆MySQL）
-3. `mysql --host = ip        --user = root         --password = 连接目标的密码`
-
-**MySQL退出**
-
-1. `exit`
-2. `quit`
-3. 直接叉掉窗口，但不建议
-
-**MySQL目录结构**
-
-<!--P483 1.20 之前有着P474和P475-->
-
-1. MySQL安装目录
-   * 配置文件 `my.ini`
-2. MySQL数据目录
-   * 数据库：文件夹
-   * 表：文件
-   * 数据：数据
-
-# 第三章 SQL
-
-<!--P484-->
-
-## 3.1 什么是SQL
-
-`Structured Query Language`：结构化查询语言。其实就是定义了操作所有**关系型数据库**的规则。
+SQL：操作关系型数据库的编程语言，定义了操作所有**关系型数据库**的规则。结构化查询语言。 英文：`Structured Query Language`
 
 每一种数据库操作的方式存在不一样的地方，称为"方言"。
 
-## 3.2 SQL通用语法
+## 2.1 SQL通用语法
 
-<!--P485-->
+1. SQL语句可以单行或者多行书写，以分号结尾。
 
-* SQL语句可以单行或者多行书写，以分号结尾。
+2. 可使用空格和缩进来增强语句的可读性。
 
-  ```sql
-  mysql> show databases
-      ->
-      ->
-      -> ;
-  ```
+3. MySQL数据库的SQL语句不区分大小写，关键字建议使用大写。
 
-* 可使用空格和缩进来增强语句的可读性。
+4. 注释：
 
-  ```sql
-  mysql> show      databases      ;
-  ```
+   单行注释：单行注释第一种：`-- 注释内容`**<font color = "red">（这种注释方式，两个横杠与注释内容之间务必要空格）</font>**
 
-* MySQL数据库的SQL语句不区分大小写，关键字建议使用大写。
+   单行注释第二种：`#注释内容`，（MySQL特有）。
 
-  ```sql
-  mysql> SHOW DATABASES;
-  ```
+   多行注释：`/* */`
+   
+5. 清屏：`system cls`。
 
-* 注释
-
-  * 单行注释第一种：`-- 注释内容`**<font color = "red">（这种注释方式，两个横杠与注释内容之间务必要空格）</font>**
-
-    ```sql
-    mysql> SHOW DATABASES; -- 查询所有的数据库名称
-    ```
-
-  * 单行注释第二种：`#注释内容`
-
-    ```sql
-    mysql> SHOW DATABASES; #查询所有的数据库名称
-    ```
-
-  * 多行注释：`/* */`
-
-    ```sql
-    mysql> SHOW DATABASES; /*查询所有的数据库名称*/
-    ```
-
-## 3.3 SQL分类
-
-<!--P486-->
+## 2.2 SQL分类
 
 SQL语言共分为四大类：数据查询语言DQL，数据操纵语言DML，数据定义语言DDL，数据控制语言DCL。 
 
 1. `DDL（Data Definition Language）`数据定义语言
 
-   用来定义数据库对象：数据库，表，列等。关键字：create，show，alter，drop等。
+   用来定义数据库对象：数据库，表，字段等。关键字：create，show，alter，drop等。
 
 2. `DML（Data Manipulation  Language）`数据操作语言
 
@@ -152,17 +92,13 @@ SQL语言共分为四大类：数据查询语言DQL，数据操纵语言DML，�
 
 ![](D:\Java\笔记\图片\3-day01 【MySQL基础】\3.png)
 
-## 3.4 DDL操作数据库、表
+## 2.3 DDL操作数据库和表
 
 `DDL（Data Definition Language）`数据定义语言
 
-用来定义数据库对象：数据库，表，列等。关键字：create，show，alter，drop等。
+用来定义数据库对象：数据库，表，字段等。关键字：create，show，alter，drop等。
 
-### 操作数据库
-
-<!--P487-->
-
-<!--P488-->
+### 2.3.1 操作数据库
 
 操作数据库即CRUD
 
@@ -181,7 +117,11 @@ SQL语言共分为四大类：数据查询语言DQL，数据操纵语言DML，�
    ```
 
    ```sql
-   create database if not exists db4 character set gbk;		-- 创建db4数据库，判断是否存在，并制定字符集为gbk 
+   create database if not exists db4 character set gbk;		-- 创建db4数据库，判断是否存在，并制定字符集为gbk    UTF8字符集长度为3字节，有些符号占4字节，所以推荐用utf8mb4字符集
+   ```
+
+   ```sql
+   CREATE DATABASE [ IF NOT EXISTS ] 数据库名 [ DEFAULT CHARSET 字符集] [COLLATE 排序规则 ];
    ```
 
 2. R（Retrieve）：查询
@@ -220,54 +160,18 @@ SQL语言共分为四大类：数据查询语言DQL，数据操纵语言DML，�
    use 数据库名称;		-- 进入该数据库，使用数据库
    ```
 
-### 操作表
-
-<!--P489-->
-
-<!--P490-->
-
-<!--P491-->
-
-<!--P492 1.21-->
+### 2.3.2 操作表
 
 1. C（create）：创建
 
    ```sql
-   creat table 表名(
-   	列名1 数据类型1，
-   	列名2 数据类型2，
+   CREATE TABLE 表名(
+   	字段1 字段1类型 [COMMENT 字段1注释],
+   	字段2 字段2类型 [COMMENT 字段2注释],
+   	字段3 字段3类型 [COMMENT 字段3注释],
    	...
-   	列名n 数据类型n  -- 这里不加逗号
-   );
-   ```
-
-   数据库类型：
-
-   * int：整数类型	age int
-
-   * double：小数类型
-
-   * date：日期，只包含年月日，yyy-MM-dd
-
-   * datetime：日期，包含年月日时分秒 yyyy-MM-dd HH:mm:ss
-
-   * timestamp：时间戳类型 包含年月日时分秒
-
-     如果不给这个字段赋值，或者赋值为null，那么默认使用当前的系统时间来自动赋值
-
-   * varchar：字符串    name varchar(20):姓名最大20个字符
-
-   创建表：
-
-   ```sql
-   create table student(
-   	id int,
-   	name varchar(32),
-   	age int,
-   	score double(4,1),
-   	birthday date,
-   	insert_time timestamp
-   );
+   	字段n 字段n类型 [COMMENT 字段n注释]    -- 最后一个字段后面没有逗号
+   )[ COMMENT 表注释 ];
    ```
 
    复制表：
@@ -275,7 +179,7 @@ SQL语言共分为四大类：数据查询语言DQL，数据操纵语言DML，�
    ```sql
    create table 表名 like 被复制的表名;
    ```
-
+   
 2. R（Retrieve）：查询
 
    ```sql
@@ -283,10 +187,10 @@ SQL语言共分为四大类：数据查询语言DQL，数据操纵语言DML，�
    ```
 
    ```sql
-   desc + 表名称;		--查询表结构
+   desc + 表名称;		-- 查询表结构，有什么字段
    ```
    ```sql
-   show create table 表名;		--查询某个表的字符集（查询某个表的创建语句）
+   show create table 表名;		-- 查询某个表的字符集（查询某个表的创建语句）
    ```
 
 3. U（Update）：修改
@@ -300,16 +204,16 @@ SQL语言共分为四大类：数据查询语言DQL，数据操纵语言DML，�
    ```
 
    ```sql
-   alter table 表名 add 列名 数据类型;		-- 添加一列
+   alter table 表名 add 字段名 数据类型  [COMMENT 注释] [约束];		-- 添加字段
    ```
 
    ```sql
-   alter table 表名 change 列名 新列名 新数据类型;		-- 修改列名称 类型
-   alter table 表名 modify 列名 新数据类型;		-- 修改列名称 类型
+   alter table 表名 change 字段名 新字段名 新数据类型;		-- 修改字段名称 类型
+   alter table 表名 modify 字段名 新数据类型;		-- 修改字段数据类型
    ```
 
    ```sql
-   alter table 表名 drop 需要删除的列名;		-- 删除列
+   alter table 表名 drop 需要删除的字段名;		-- 删除字段
    ```
 
 4. D（Delete）：删除
@@ -321,75 +225,103 @@ SQL语言共分为四大类：数据查询语言DQL，数据操纵语言DML，�
    ```sql
    drop table if exists 表名;		-- 判断是否存在此表，存在删除
    ```
+   
+   ```sql
+   TRUNCATE TABLE 表名;				-- 删除当前表，并创建一个新表 字段相同
+   ```
 
+## 2.4 MySQL数据类型
 
-## 3.5 SQLyog图形化界面
+数值类型：
 
-<!--P493-->
+* `TINYINT`：相当于Java中的`byte`类型，大小为1个字节。有符号(SIGNED)范围是(-128，127)，无符号(UNSIGNED)范围是(0，255)。
+* `SMALLINT`：相当于Java中的`short`类型，大小为2个字节。
+* `MEDIUMINT`：大小为3个字节。
+* `INT或INTEGER`：相当于Java中的`int`类型，大小为4个字节。有符号(SIGNED)范围是(-2147483648，2147483647)，无符号(UNSIGNED)范围是(0，4294967295)。
+* `BIGINT`：相当于Java中的`Long`类型，大小为8个字节。有符号(SIGNED)范围是(-2^63，2^63-1)，无符号(UNSIGNED)范围是(0，2^64-1)。
+* `FLOAT`：相当于Java中的`float`类型，大小为4个字节。
+* `DOUBLE`：相当于Java中的`double`类型，大小为8个字节。
+* `DECIMAL`：依赖于M(精度)和D(标度)的值
 
-## 3.6 DML增删改表中数据 
+字符串类型：
 
-<!--P494-->
+| 类型       | 大小                  | 描述                         |
+| ---------- | --------------------- | ---------------------------- |
+| CHAR       | 0-255 bytes           | 定长字符串                   |
+| VARCHAR    | 0-65535 bytes         | 变长字符串                   |
+| TINYBLOB   | 0-255 bytes           | 不超过255个字符的二进制数据  |
+| TINYTEXT   | 0-255 bytes           | 短文本字符串                 |
+| BLOB       | 0-65 535 bytes        | 二进制形式的长文本数据       |
+| TEXT       | 0-65 535 bytes        | 长文本数据                   |
+| MEDIUMBLOB | 0-16 777 215 bytes    | 二进制形式的中等长度文本数据 |
+| MEDIUMTEXT | 0-16 777 215 bytes    | 中等长度文本数据             |
+| LONGBLOB   | 0-4 294 967 295 bytes | 二进制形式的极大文本数据     |
+| LONGTEXT   | 0-4 294 967 295 bytes | 极大文本数据                 |
 
-### 添加数据
+日期时间类型：
+
+| 类型      | 大小 | 范围                                       | 格式                | 描述                     |
+| --------- | ---- | ------------------------------------------ | ------------------- | ------------------------ |
+| DATE      | 3    | 1000-01-01 至  9999-12-31                  | YYYY-MM-DD          | 日期值                   |
+| TIME      | 3    | -838:59:59 至  838:59:59                   | HH:MM:SS            | 时间值或持续时间         |
+| YEAR      | 1    | 1901 至 2155                               | YYYY                | 年份值                   |
+| DATETIME  | 8    | 1000-01-01 00:00:00 至 9999-12-31 23:59:59 | YYYY-MM-DD HH:MM:SS | 混合日期和时间值         |
+| TIMESTAMP | 4    | 1970-01-01 00:00:01 至 2038-01-19 03:14:07 | YYYY-MM-DD HH:MM:SS | 混合日期和时间值，时间戳 |
+
+## 2.5 DML增删改表中数据 
+
+`DML（Data Manipulation  Language）`数据操作语言
+
+用来对数据库总表的数据进行增删改。关键字：insert，delete，update等。
+
+**添加数据**
 
 ```sql
-insert into 表名 (列名1，列名2，...列名n) values (值1，值2，...值n);
-```
+insert into 表名 (字段名1，字段名2，...字段名n) values (值1，值2，...值n);
 
-注意
-
-1. 列名和值需要一一对应。
-
-2. 如果表名后面不定义列名，那么默认给所有的列添加值。如果缺少值，与列名不对应，那么会报错
-
-3. 除了数字类型，其他类型需要使用引号（**单引号和双引号都可以**）引起来。
-
-```sql
 INSERT INTO stu (id, NAME) VALUES (1, "林炫");
-INSERT INTO stu VALUES (1, "张三", 21, 10, "2001-11-11", NULL);		-- 不定义列名，直接全部赋值
+INSERT INTO stu VALUES (1, "张三", 21, 10, "2001-11-11", NULL);		-- 不定义字段名，直接全部赋值
 ```
-
-### 删除数据
-
-<!--P495-->
 
 ```sql
-delete from 表名 [where条件];
--- DELETE FROM stu WHERE id = 1;
+-- 批量添加数据
+INSERT INTO 表名 (字段名1，字段名2，...字段名n) VALUES (值1，值2，...值n)，(值1，值2，...值n),...;
+INSERT INTO dept (id, name) VALUES (1, '研发部'), (2, '市场部'),(3, '财务部'), (4, '销售部');
 ```
 
-注意：
+需要注意如下事项：
 
-1. 如果不加上条件，则会删除表中所有的记录。
+1. 字段名和值需要一一对应。
 
-2. 如果要删除所有的记录，有下面两种方法
+2. 如果表名后面不定义字段名，那么默认给所有的列添加值。如果缺少值，与字段名不对应，那么会报错
 
-   ```sql
-   delete from 表名;		-- 不推荐使用，效率低下，表里面有多少行就会执行多少
-   ```
+3. 除了数字类型，其他类型需要使用引号（单引号和双引号都可以）引起来。
 
-   ```sql
-   truncate table 表名;		-- 推荐使用，效率更高，先删除表，然后再创建一个一样名称的空表。
-   ```
 
-### 修改数据
 
-<!--P496-->
+**删除数据**
 
 ```sql
-update 表名 set 列名 = 值1， 列名 = 值2， ...[where 条件];
+delete from 表名 [where条件];		-- 删除数据，如果不加上条件，会删除所有数据
+delete from 表名;					 -- 不推荐使用，效率低下，表里面有多少行就会执行多少
+truncate table 表名;		          -- 推荐使用，效率更高，先删除表，然后再创建一个一样名称的空表。
 ```
 
-注意：
 
-* 如果不加上任何条件，那么会将表中所有的记录全部修改。
 
-## 3.7 DQL查询表中记录
+**修改数据**
 
-<!--P502 视频集数反了-->
+```sql
+update 表名 set 字段名 = 值1， 字段名 = 值2， ...[where 条件];
+```
 
-### 语法
+注意：如果不加上任何条件，那么会将表中所有的记录全部修改。
+
+## 2.6 DQL查询表中记录
+
+`DQL（Data Query Language）`数据查询语言
+
+用来查询数据库中表的记录（数据）。关键字：select，where等。
 
 ```sql
 select
@@ -408,161 +340,68 @@ limit
 	分页限定;
 ```
 
-### 基础查询
-
-**字段就是列**
+### 2.6.1 基础查询
 
 * 多个字段的查询
 
   ```sql
   select 字段名1，字段名2,...from 表名; 
+  select * form 表名; 		-- 如果查询所有的字段，那么可以使用*来代替字段列表。
   ```
 
-  如果查询所有的字段，那么可以使用*来代替字段列表。
-
-  ```sql
-  select * form 表名;
-  ```
+  
 
 * 去除重复的值
 
   ```sql
-  select distinct 字段名 from 表名;		-- distinct
+  select distinct 字段名 from 表名;     -- 如果需要去除两列字段的重复值，需要两列字段值重复，才会去除。
   ```
 
-  如果需要去除两列字段的重复值，需要两列字段值重复，才会去除。
+  
 
 * 计算列
 
-  可以使用四则运算来计算一些列的值。+ - * /
+  可以使用四则运算来计算一些列的值。`+ - * /`
 
   ```sql
-  select 字段名，字段名，四则运算字段名（字段名1 + 字段名2） from 表名;
+  select 字段名, 字段名, 四则运算字段名（字段名1 + 字段名2） from 表名;
   ```
+
+  
 
 * 起别名
 
   ```sql
-  select 字段名 as 新的名称，...from 表名;		-- as
+  select 字段名 as 新的名称，...from 表名;		-- as关键字可以省略，用空格来代替
   ```
 
-  as关键字可以省略，用空格来代替
 
-### 条件查询
+### 2.6.2 条件查询
 
-<!--P503 1.22 视频集数反了-->
+语法如下：`SELECT 字段列表 FROM 表名 WHERE 条件列表`。`where`字句后面跟条件列表。
 
-`where`字句后面跟条件语句
+条件如下：
 
-运算符：
+| 比较运算符          | 功能                                           |
+| ------------------- | ---------------------------------------------- |
+| >                   | 大于                                           |
+| >=                  | 大于等于                                       |
+| <                   | 小于                                           |
+| <=                  | 小于等于                                       |
+| =                   | 等于                                           |
+| <> 或 !=            | 不等于                                         |
+| BETWEEN ... AND ... | 在某个范围内（含最小、最大值）                 |
+| IN(...)             | 在in之后的列表中的值，多选一                   |
+| LIKE 占位符         | 模糊匹配（`_`匹配单个字符，`%`匹配任意个字符） |
+| IS NULL             | 是NULL                                         |
 
-* `> 、<、<=、>=、=、<>。`
+| 逻辑运算符 | 功能                         |
+| ---------- | ---------------------------- |
+| AND 或 &&  | 并且（多个条件同时成立）     |
+| OR 或 \|\| | 或者（多个条件任意一个成立） |
+| NOT 或 !   | 非，不是                     |
 
-  ```sql
-  select * from 表名 where 列名 运算符 条件;
-  select * from person where age > 20;		-- 挑选person表里面age列大于20的人
-  ```
-
-  注意：
-
-  ​	运算符里面没有`==`，只有`=`，所以判断的时候用`=`就好了。
-
-  ​	运算符`<>` 等价于 `!=` 。
-
-* `between...and`
-
-  ```sql
-  select * from 表名 where 列名 between...and...;
-  select * from person where age between 20 and 30;		-- 挑选person表里面age列大于等于20并且小于等于30
-  select * from person where age >= 20 and <= 30;			-- 两者等价 
-  ```
-
-* `in(集合)`
-
-  ```sql
-  select * from 表名 where 列名 in(集合);
-  select * from person where age in(22, 18, 55);		-- 挑选person表里面age列的22，18,55行。
-  select * from person where age 22 or 18 or 55;		-- 等价于这一行
-  ```
-
-* `is null`
-
-  ```sql
-  select * from 表名 where 列名 is null;
-  select * from person where english is null;			-- 查询英语成绩为null
-  select * from person where english is not null;		-- 查询英语成绩不为null
-  ```
-
-* `and`或者`&&`    `or`或者`||`    `not`或者`！`
-
-  ```sql
-  select * from 表名 where 列名 and或者&& 条件;
-  select * from person where age > 20 && age < 50;		-- 挑选person表里面age列大于20,并且小于50的人。 										注意：不建议这样使用，可以使用and关键字
-  select * from person where age > 20 and age < 50;		-- 建议使用
-  ```
-
-  ```sql
-  select * from 表名 where 列名 or或者|| 条件;
-  ```
-
-  ```
-  select * from 表名 where 列名 not或者！ 条件;
-  ```
-
-* `like`：模糊查询
-
-  <!--P504-->
-
-  占位符：
-
-  ​	`"_"`：单个任意字符
-
-  ​	`"%"`多个任意字符
-
-  在SQL里面单双引号都可以
-
-  ```sql
-  select * from 表名 where 列名 like 条件;
-  ```
-
-  ```sql
-  select * from person where name like "马%";			-- 查询姓马的人
-  select * from person where name like "_化%";			-- 查询第二个字是化的人
-  select * from person where name like "___";			-- 查询姓名是三个字的人
-  select * from person where name like "%德%";			-- 查询姓名中包括德的人
-  ```
-
-<!--P497-->
-
-### 排序查询
-
-<!--P498-->
-
-* 语法
-
-  ```sql
-  select * from 表名 order by 字句；
-  select * from 表名 order by 排序字段1 排序方式1，排序字段2 排序方式2...;
-  ```
-
-* 排序方式
-
-  ```sql
-  ASC：升序，默认的。
-  DESC：降序。
-  ```
-
-* 注意：
-
-  如果有多个排序条件，则当前面的条件值一样的时候，就会排序第二条件。
-
-```sql
-SELECT * FROM person ORDER BY math;		-- 默认对math列进行升序排序
-SELECT * FROM person ORDER BY math DESC;	-- 对math列进行降序排序
-SELECT * FROM person ORDER BY math ASC, english DESC;	-- 对math列进行升序排序，math列有重复值的时候判断English列，按照english列进行降序排序
-```
-
-### 聚合函数
+### 2.6.3 聚合函数
 
 <!--P499-->
 
@@ -571,7 +410,7 @@ SELECT * FROM person ORDER BY math ASC, english DESC;	-- 对math列进行升序�
 聚合函数的计算是排除NULL值的，就是遇到有NULL值会忽略。
 
 ```sql
-select 函数名称(列名称) from 表名称;
+select 函数名称(字段名称) from 表名称;
 ```
 
 * `count`：计算个数
@@ -587,25 +426,25 @@ select 函数名称(列名称) from 表名称;
 * `max`：计算最大值
 
   ```sql
-  select max(列名称) from 表名称;		-- 计算该表该列最大值
+  select max(字段名称) from 表名称;		-- 计算该表该列最大值
   ```
 
 * `min`：计算最小值
 
   ```sql
-  select min(列名称) from 表名称;		-- 计算该表该列最大值
+  select min(字段名称) from 表名称;		-- 计算该表该列最大值
   ```
 
 * `sum`：计算和
 
   ```sql
-  select sum(列名称) from 表名称;		-- 计算该表该列数值的和
+  select sum(字段名称) from 表名称;		-- 计算该表该列数值的和
   ```
 
 * `avg`：计算平均值
 
   ```sql
-  select avg(列名称) from 表名称;		-- 计算该表该列平均值
+  select avg(字段名称) from 表名称;		-- 计算该表该列平均值
   ```
 
 由于聚合函数的计算是排除`NULL`的值的，所以对此我们有两种解决方案：
@@ -615,18 +454,19 @@ select 函数名称(列名称) from 表名称;
 2. `IFNULL函数`
 
    ```sql
-   select 函数(IFNULL(列名称， 值)) from 表名称;		-- IFNULL函数会判断NULL，如果是NULL那么会将NULL变为值
+   select 函数(IFNULL(字段名称， 值)) from 表名称;  -- IFNULL函数会判断NULL，如果是NULL那么会将NULL变为值
    select count(IFNULL(math, 0)) from student;		-- count函数计算math列个数，IFNULL函数对math列进行判断，如果有着NULL，那么将NULL变为0，其他的不改变
    ```
 
-### 分组查询
+### 2.6.4 分组查询
 
 <!--P500-->
 
 分组查询就是将以行为单位，来进行查询。
 
 ```sql
-select 分组查询字段 from 表名称 group by 列名;	-- 分组查询字段：分组字段、聚合函数
+-- 分组查询语法
+select 分组查询字段列表 from 表名称 [where 条件] group by 分组字段名 [having 分组后过滤条件];	
 ```
 
 ```sql
@@ -650,92 +490,97 @@ select sex, avg(math), count(id) from 表名称 where math > 70 group by sex hav
 1. `where`在分组之前进行限定，如果不满足条件，那么不参与分组。`having`在分组之后进行限定，如果不满足结果，则不会被查询出来。
 2. `where`后面不可以跟聚合函数，`having`后面可以进行聚合函数的判断。
 
-### 分页查询
+注意：
 
-<!--P501-->
+* 执行顺序：where > 聚合函数 > having。
+* 分组之后，查询的字段一般为聚合函数和分组字段，查询其他字段没有任何意义。
 
-分页查询，类似于百度搜索出来后有很多词条，词条按页码来出现。
+### 2.6.5 排序查询
 
 ```sql
-select * from 表名 limit 开始的索引，每页查询的条数;
+-- 排序查询语法  ASC：升序，默认的。 DESC：降序。
+select 字段列表 from 表名 order by 排序字段1 排序方式1，排序字段2 排序方式2...;
+```
+
+```sql
+SELECT * FROM person ORDER BY math;		-- 默认对math列进行升序排序
+SELECT * FROM person ORDER BY math DESC;	-- 对math列进行降序排序
+SELECT * FROM person ORDER BY math ASC, english DESC;	-- 对math列进行升序排序，math列有重复值的时候判断English列，按照english列进行降序排序
+```
+
+注意：如果有多个排序条件，则当前面的条件值一样的时候，就会排序第二条件。
+
+### 2.6.6 分页查询
+
+分页查询，类似于百度搜索出来后有很多词条，词条按页码来出现。关键字是`limit`。
+
+```sql
+select 字段列表 from 表名 limit 开始的索引，每页查询的条数;
 select * from person limit 0, 3;		-- 第1页
 select * from person limit 3, 3;		-- 第2页
 select * from person limit 6, 3;		-- 第3页
 ```
 
 * 公式：开始的索引 = （当前的页码 - 1） * 每页显示的条数。
-* 开始的索引是从0开始的
-* 分页操作是一个“方言”， 其他的数据库都有各自的“方言”
+* 开始的索引是从0开始的。如果查询的是第一页数据，那么起始索引可以省略，直接简写为`limit 查询条数`。
+* 分页操作是一个“方言”， 其他的数据库都有各自的“方言”。MySQL中是Limit，其他数据库是其他的关键子。
 
-## 3.8 DCL
-
-1. DDL（Data Definition Language）数据定义语言
-
-   用来定义数据库对象：数据库，表，列等。关键字：create，drop，alter等。
-
-2. DML（Data Manipulation  Language）数据库操作语言
-
-   用来对数据库总表的数据进行增删改。关键字：insert，delete，update等。
-
-3. DQL（Data Query Language）数据查询语言
-
-   用来查询数据库中表的记录（数据）。关键字：select，where等。
-
-4. DCL（Data Control Language）数据控制语言
-
-   用来定义数据库的访问权限和安全级别，及创建用户。关键字：GRANT, REVOKE等
-
-<!--P536-->
-
-DBA：数据库管理员
-
-### 管理用户
-
-**查询用户**
-
-1. 切换到mysql数据库
-
-   ```sql
-   USE mysql;
-   ```
-
-2. 查询user表
-
-   ```sql
-   SELECT * FROM USER;
-   ```
-
-查询出来的用户有两个，一个的地址是localhost，另一个是%，%的意思是通配符，就是哪里都可以。
-
-**添加用户**
+### 2.6.7 执行顺序
 
 ```sql
-CREATE USER "用户名"@"主机名" IDENTIFIED BY "密码";
-CREATE USER "zhangsan"@"localhost" IDENTIFIED BY "123";	-- 主机名就是主机地址
+from
+	表名列表
+where
+	条件列表
+group by
+	分组字段列表
+having
+	分组后条件列表
+select
+	字段列表
+order by
+	排序字段列表
+limit
+	分页参数
 ```
 
-**删除用户**
+## 2.7 DCL
 
-```sql
-DROP USER "用户名"@"主机名";
-DROP USER "zhangsan"@"localhost";
-```
+`DCL（Data Control Language）`数据控制语言
 
-**修改用户密码**
+用来定义数据库的访问权限和安全级别，及创建用户。关键字：GRANT, REVOKE等
 
-<!--P537-->
+### 2.7.1 管理用户
 
-有两种方式：
+* 查询用户
 
-```sql
-UPDATE USER SET PASSWORD = PASSWORD("新密码") WHERE USER = "用户名";	-- 放在password里面会自动加密
-UPDATE USER SET PASSWORD = PASSWORD("abc") WHERE USER = "zhangsan";
-```
+  ```sql
+  USE mysql;						-- 切换到mysql数据库
+  SELECT * FROM USER;				 -- 查询user表
+  ```
 
-```sql
-SET PASSWORD FOR "用户名"@"主机名" = PASSWORD("新密码");
-SET PASSWORD FOR "zhangsan"@"localhost" = PASSWORD("123");
-```
+
+* 添加用户
+
+  ```sql
+  CREATE USER "用户名"@"主机名" IDENTIFIED BY "密码";
+  CREATE USER "zhangsan"@"localhost" IDENTIFIED BY "123";			-- 主机名就是主机地址
+  CREATE USER "zhangsan"@"%" IDENTIFIED BY "123";			-- 添加用户zhangsan，任意地方都可以访问
+  ```
+
+* 删除用户
+
+  ```sql
+  DROP USER "用户名"@"主机名";
+  DROP USER "zhangsan"@"localhost";
+  ```
+
+* 修改用户密码
+
+  ```sql
+  ALTER USER '用户名'@'主机名' IDENTIFIED WITH mysql_native_password BY '新密码';
+  ALTER USER 'zhangsan'@'localhost' IDENTIFIED WITH mysql_native_password BY '123';  -- 使用MySQL本地密码处理方式来修改密码
+  ```
 
 假如我们修改root密码，之后忘记了那么也可以重新登陆MySQL。
 
@@ -747,37 +592,332 @@ SET PASSWORD FOR "zhangsan"@"localhost" = PASSWORD("123");
 6. 使用管理员权限打开cmd命令行，输入：`net start mysql`。
 7. 这时候就可以使用新的密码来登陆了。
 
-### 权限管理
+### 2.7.2 权限管理
 
-<!--P538-->
+| 权限                | 说明               |
+| ------------------- | ------------------ |
+| ALL, ALL PRIVILEGES | 所有权限           |
+| SELECT              | 查询数据           |
+| INSERT              | 插入数据           |
+| UPDATE              | 修改数据           |
+| DELETE              | 删除数据           |
+| ALTER               | 修改表             |
+| DROP                | 删除数据库/表/视图 |
+| CREATE              | 创建数据库/表      |
 
-**查询权限**
+* 查询权限
 
-```sql
-SHOW GRANTS FOR "用户名"@"主机名称";
-SHOW GRANTS FOR "zhangsan"@"localhost";
+  ```sql
+  SHOW GRANTS FOR "用户名"@"主机名称";
+  SHOW GRANTS FOR "zhangsan"@"localhost";
+  ```
+
+* 授予权限
+
+  ```sql
+  GRANT 权限列表 ON 数据库名称.表名 TO "用户名"@"主机名称";
+  GRANT SELECT, DELETE, UPDATE ON day3.account TO "zhangsan"@"localhost";
+  GRANT ALL ON *.* TO "zhangsan"@"localhost";	              -- 授予全部权限
+  ```
+
+* 撤销权限
+
+  ```sql
+  REVOKE 权限列表 ON 数据库名称.表名 FROM "用户名"@"主机名称";
+  REVOKE UPDATE ON day3.account FROM "zhangsan"@"localhost";
+  ```
+
+# 第三章 函数和约束
+
+函数 是指一段可以直接被另一段程序调用的程序或代码。 也就意味着，这一段程序或代码在MySQL中 已经给我们提供了，我们要做的就是在合适的业务场景调用对应的函数完成对应的业务需求即可。 
+
+## 3.1 字符串函数
+
+常用函数：
+
+| 函数                       | 功能                                                       |
+| -------------------------- | ---------------------------------------------------------- |
+| CONCAT(s1, s2, ..., sn)    | 字符串拼接，将s1, s2, ..., sn拼接成一个字符串              |
+| LOWER(str)                 | 将字符串全部转为小写                                       |
+| UPPER(str)                 | 将字符串全部转为大写                                       |
+| LPAD(str, n, pad)          | 左填充，用字符串pad对str的左边进行填充，达到n个字符串长度  |
+| RPAD(str, n, pad)          | 右填充，用字符串pad对str的右边进行填充，达到n个字符串长度  |
+| TRIM(str)                  | 去掉字符串头部和尾部的空格                                 |
+| SUBSTRING(str, start, len) | 返回从字符串str从start位置起的len个长度的字符串，**没有0** |
+
+使用示例：
+
+```mysql
+SELECT CONCAT('Hello', 'World');			-- 拼接 打印：Helloworld
+SELECT LPAD('01', 5, '-');					-- 左填充 打印：---01
+SELECT TRIM(' Hello World ');				-- 去除空格 打印：Hello World
+SELECT SUBSTRING('Hello World', 1, 5);	-- 剪切（起始索引为1） 打印：Hello
 ```
 
-**授予权限**
-
 ```sql
-GRANT 权限列表 ON 数据库名称.表名 TO "用户名"@"主机名称";
-GRANT SELECT, DELETE, UPDATE ON day3.account TO "zhangsan"@"localhost";
-GRANT ALL ON *.* TO "zhangsan"@"localhost";	-- 授予全部权限
+update emp set workno = lpad(workno, 5, '0');		-- 修改workno字段，前面增加0，直到位数为5
 ```
 
-**撤销权限**
+## 3.2 数值函数
+
+常见函数：
+
+| 函数        | 功能                             |
+| ----------- | -------------------------------- |
+| CEIL(x)     | 向上取整                         |
+| FLOOR(x)    | 向下取整                         |
+| MOD(x, y)   | 返回x/y的模                      |
+| RAND()      | 返回0~1内的随机数，后面又小数    |
+| ROUND(x, y) | 求参数x的四舍五入值，保留y位小数 |
 
 ```sql
-REVOKE 权限列表 ON 数据库名称.表名 FROM "用户名"@"主机名称";
-REVOKE UPDATE ON day3.account FROM "zhangsan"@"localhost";
+select lpad(round(rand()*1000000 , 0), 6, '0');    -- 通过数据库的函数，生成一个六位数的随机验证码。    获取随机数可以通过rand()函数，但是获取出来的随机数是在0-1之间的，所以可以在其基础上乘以1000000，然后舍弃小数部分，如果长度不足6位，补0
 ```
 
-<!--P520-->
+## 3.3 日期函数
+
+常用函数：
+
+| 函数                               | 功能                                              |
+| ---------------------------------- | ------------------------------------------------- |
+| CURDATE()                          | 返回当前日期                                      |
+| CURTIME()                          | 返回当前时间                                      |
+| NOW()                              | 返回当前日期和时间                                |
+| YEAR(date)                         | 获取指定date的年份                                |
+| MONTH(date)                        | 获取指定date的月份                                |
+| DAY(date)                          | 获取指定date的日期                                |
+| DATE_ADD(date, INTERVAL expr type) | 返回一个日期/时间值加上一个时间间隔expr后的时间值 |
+| DATEDIFF(date1, date2)             | 返回起始时间date1和结束时间date2之间的天数        |
+
+例子：
+
+```mysql
+SELECT DATE_ADD(NOW(), INTERVAL 70 YEAR);				-- DATE_ADD
+```
+
+## 3.4 流程函数
+
+常用函数：
+
+| 函数                                                         | 功能                                                      |
+| ------------------------------------------------------------ | --------------------------------------------------------- |
+| IF(value, t, f)                                              | 如果value为true，则返回t，否则返回f                       |
+| IFNULL(value1, value2)                                       | 如果value1不为空，返回value1，否则返回value2              |
+| CASE WHEN [ val1 ] THEN [ res1 ] ... ELSE [ default ] END    | 如果val1为true，返回res1，... 否则返回default默认值       |
+| CASE [ expr ] WHEN [ val1 ] THEN [ res1 ] ... ELSE [ default ] END | 如果expr的值等于val1，返回res1，... 否则返回default默认值 |
+
+例子：
+
+```sql
+-- 查询emp表的name和workaddress，如果workaddress在北京或者上海显示一线城市，否则显示二线城市
+select
+	name,
+	(case workaddress when '北京市' then '一线城市' when '上海市' then '一线城市' else '二线城市' end) as '工作地址'
+from employee;
+```
+
+## 3.5 约束
+
+约束：对表中的数据进行限定，保证数据的正确性、有效性和完整性。
+
+常见约束类型如下：
+
+| 约束                    | 描述                                                     | 关键字      |
+| ----------------------- | -------------------------------------------------------- | ----------- |
+| 非空约束                | 限制该字段的数据不能为null                               | NOT NULL    |
+| 唯一约束                | 保证该字段的所有数据都是唯一、不重复的                   | UNIQUE      |
+| 主键约束                | 主键是一行数据的唯一标识，要求非空且唯一                 | PRIMARY KEY |
+| 默认约束                | 保存数据时，如果未指定该字段的值，则采用默认值           | DEFAULT     |
+| 检查约束（8.0.1版本后） | 保证字段值满足某一个条件                                 | CHECK       |
+| 外键约束                | 用来让两张图的数据之间建立连接，保证数据的一致性和完整性 | FOREIGN KEY |
+
+## 3.6 基础约束
+
+* **非空约束**
+
+  非空约束关键字是`NOT NULL`
+
+  ```sql
+  CREATE TABLE stu(
+  	id INT,
+  	NAME VARCHAR(20) not null		-- 创建表的时候指定该字段非空约束，name为非空
+  );
+  ```
+
+  ```sql
+  ALTER TABLE stu MODIFY NAME VARCHAR(20) NOT NULL;	-- 更改表，添加非空约束，也可以去除非空约束
+  ```
+
+  
+
+* **唯一约束**
+
+  唯一约束关键字是`UNIQUE`，又叫做唯一索引。注意在MySQL中，唯一约束限定的列的值可以有多个NULL
+
+  ```sql
+  CREATE TABLE stu(
+  	id INT,
+  	NAME VARCHAR(20) UNIQUE					-- 创建表的时候指定该字段唯一
+  );
+  ```
+
+  ```sql
+  ALTER TABLE stu MODIFY phone_number VARCHAR(20) UNIQUE;	-- 创建表完成之后可以添加唯一约束
+  ```
+
+  ```sql
+  ALTER TABLE stu DROP INDEX phone_number;	-- 删除唯一约束
+  ```
+
+  
+
+* **主键约束**
+
+  主键约束关键字`PRIMARY KEY`是非空且唯一，也就是上面两个的综合。一张表只能有一个字段为主键，通常主键都是id字段
+
+  ```sql
+  CREATE TABLE stu(
+  	id INT PRIMARY KEY,					-- 创建表的时候，来添加主键约束
+  	NAME VARCHAR(20) UNIQUE			
+  );
+  ```
+
+  ```sql
+  ALTER TABLE stu MODIFY id INT PRIMARY KEY;		-- 创建表完成之后，添加主键约束
+  ```
+
+  ```sql
+  ALTER TABLE stu DROP PRIMARY KEY;				-- 删除主键约束
+  ```
+
+  
+
+* **自动增长**
+
+  如果某一列是数值类型的，那么可以使用`auto_increment`来完成值的自动增长
+
+  ```sql
+  CREATE TABLE stu(
+  	id INT PRIMARY KEY auto_increment,	-- 创建表的时候，添加主键约束，并且完成主键自动增长
+  	NAME VARCHAR(20) UNIQUE
+  );
+  ```
+
+  ```sql
+  ALTER TABLE stu MODIFY id INT auto_increment;  	-- 创建表完成之后，添加自动增长
+  ```
+
+  ```sql
+  ALTER TABLE stu MODIFY id INT;		-- 删除自动增长
+  ```
+
+  
+
+* **检查约束和默认约束**
+
+  ```sql
+  CREATE TABLE tb_user (
+      id     INT AUTO_INCREMENT PRIMARY KEY COMMENT 'ID唯一标识',
+      name   VARCHAR(10) NOT NULL UNIQUE COMMENT '姓名',
+      age    INT CHECK (age > 0 && age <= 120) COMMENT '年龄',  	-- 检查约束
+      status CHAR(1) DEFAULT '1' COMMENT '状态',				   -- 默认约束
+      gender CHAR(1) COMMENT '性别'
+  );
+  ```
+
+## 5.4 外键约束
+
+外键约束：`FOREIGN KEY`, 就是让表与表之间产生关系，更改表的时候如果有错误会警告，从而保证数据的正确性。
+
+有两种方式来添加外键
+
+1. 创建表的时候，添加外键
+
+   ```sql
+   create table 表名(
+   	...，
+   	外键列，
+   	constraint 外键名称 foreign key (外键字段名称) references 主表名称(主表字段名称)
+   );
+   ```
+
+   ```sql
+   -- 创建部门表 （id, dep_name, dep_location）
+   -- 一方，主表
+   create table department(
+   	id int primary key auto_increment,
+   	dep_name varchar(20),
+   	dep_location varchar(20)
+   );
+   ```
+
+   ```sql
+   -- 创建员工表（id, name, age, dep_id）
+   -- 多方，从表
+   create table employee(
+   	id int primary key auto_increment,
+   	name varchar(20),
+   	age int,
+   	dep_id int,		-- 外键对应主表的主键 外键字段名称
+   	constraint emp_dept_fk foreign key (dep_id) references department(id)
+   );
+   ```
+
+   ```sql
+   -- 添加部门
+   INSERT INTO department (id, dep_name, dep_location) VALUES (1, "研发部", "广州");
+   INSERT INTO department (id, dep_name, dep_location) VALUES (2, "销售部", "深圳");
+   -- 添加员工,dep_id代表员工所在的部门
+   INSERT INTO employee (id, NAME, age, dep_id) VALUES (1, "张三", 20, 1);
+   INSERT INTO employee (id, NAME, age, dep_id) VALUES (2, "李四", 21, 1);
+   INSERT INTO employee (id, NAME, age, dep_id) VALUES (3, "王五", 20, 1);
+   INSERT INTO employee (id, NAME, age, dep_id) VALUES (4, "老王", 20, 2);
+   INSERT INTO employee (id, NAME, age, dep_id) VALUES (5, "大王", 22, 2);
+   INSERT INTO employee (id, NAME, age, dep_id) VALUES (6, "小王", 18, 2);
+   ```
+
+   ![](D:\Java\笔记\图片\3-day02【MySQL约束】\1.png)
+
+2. 创建表之后，添加外键
+
+   ```sql
+   alter table employee add constraint emp_dept_fk foreign key (dep_id) references department(id);
+   -- add后面与创建表的时候的语句一样
+   ```
+
+3. 删除外键
+
+   ```sql
+   alter table 表名 drop foreign key 外键名称;
+   ```
+
+**级联操作**
+
+<!--P511 1.23-->
+
+由于添加外键之后，多表之间是产生了联系了的，因此操作的时候，是操作不了的，但是我们想要操作的话，可以添加级联操作
+
+级联操作共有两种：
+
+1. 级联更新：`ON UPDATE CASCADE`
+
+2. 级联删除：`ON DELETE CASCADE`
+
+   级联删除，只是在删除表的时候，与之关联的都会删除，并不是删除级联操作。正因为此，级联删除不建议使用。
+
+   级联更新可以同时使用，也可以分开使用。
+
+```sql
+ALTER TAABLE 表名 ADD CONSTRAINT 外键名称 FOREIGN KEY （外键字段名称） REFERENCES 主表名称 （主表字段名称） ON UPDATE CASCADE ON DELETE CASCADE;
+```
+
+```sql
+alter table employee add constraint emp_dept_fk foreign key (dep_id) references department(id) ON UPDATE CASCADE ON DELETE CASCADE;
+```
+
+
 
 # 第四章 多表查询
-
-<!--P521-->
 
 ## 4.1 多表查询语法
 
@@ -1169,222 +1309,6 @@ ON
 	t1.mgr = t2.id;
 ```
 
-# 第五章 约束
-
-<!--P505 集数反了-->
-
-约束：对表中的数据进行限定，保证数据的正确性、有效性和完整性。
-
-约束共分为：主键约束、非空约束、唯一约束和外键约束。
-
-## 5.1 非空约束
-
-<!--P506-->
-
-非空约束：not null 值不能为空，NULL
-
-共有两种方式来添加非空约束
-
-1. 创建表的时候添加非空约束
-
-   ```sql
-   CREATE TABLE stu(
-   	id INT,
-   	NAME VARCHAR(20) not null		-- name为非空
-   );
-   ```
-
-2. 创建表完成之后可以添加非空约束
-
-   ```sql
-   ALTER TABLE stu MODIFY NAME VARCHAR(20) NOT NULL;	-- 更改表，添加非空约束
-   ```
-
-   **同理，此方法也可以去除非空约束。**
-
-## 5.2 唯一约束
-
-<!--P507-->
-
-唯一约束：unique 又叫做唯一索引index 就是值不能够重复
-
-有两种方法来添加唯一约束
-
-1. 创建表的时候，来添加唯一约束
-
-   ```sql
-   CREATE TABLE stu(
-   	id INT,
-   	NAME VARCHAR(20) UNIQUE
-   );
-   ```
-
-   注意在MySQL中，唯一约束限定的列的值可以有多个NULL
-
-2. 创建表完成之后可以添加唯一约束
-
-   ```sql
-   ALTER TABLE stu MODIFY phone_number VARCHAR(20) UNIQUE;	-- 更改表，添加唯一约束
-   ```
-
-* 删除唯一约束的话，与以往不同
-
-  ```sql
-  ALTER TABLE stu DROP INDEX phone_number;	-- 删除唯一约束
-  ```
-
-## 5.3 主键约束
-
-<!--P508-->
-
-主键约束：非空且唯一，也就是上面两个的综合
-
-一张表只能有一个字段为主键，通常主键都是id字段
-
-主键就是表中记录的唯一标识
-
-同样，有两种方法添加主键约束
-
-1. 创建表的时候，来添加主键约束
-
-   ```sql
-   CREATE TABLE stu(
-   	id INT PRIMARY KEY,
-   	NAME VARCHAR(20) UNIQUE
-   );
-   ```
-
-2. 创建表完成之后，添加主键约束
-
-   ```sql
-   ALTER TABLE stu MODIFY id INT PRIMARY KEY;
-   ```
-
-* 由于唯一约束不同，所以删除主键约束，也不同
-
-  ```sql
-  ALTER TABLE stu DROP PRIMARY KEY;
-  ```
-
-* 自动增长
-
-  <!--P509-->
-
-  概念：如果某一列是数值类型的，那么可以使用auto_increment来完成值的自动增长
-
-  1. 创建表的时候，添加主键约束，并且完成主键自动增长
-
-     ```sql
-     CREATE TABLE stu(
-     	id INT PRIMARY KEY auto_increment,
-     	NAME VARCHAR(20) UNIQUE
-     );
-     ```
-
-  2. 创建表完成之后，添加自动增长
-
-     ```sql
-     ALTER TABLE stu MODIFY id INT auto_increment;
-     ```
-
-  * 删除自动增长
-
-    ```sql
-    ALTER TABLE stu MODIFY id INT;
-    ```
-
-## 5.4 外键约束
-
-<!--P510-->
-
-外键约束：`foreign key`, 就是让表与表之间产生关系，更改表的时候如果有错误会警告，从而保证数据的正确性。
-
-有两种方式来添加外键
-
-1. 创建表的时候，添加外键
-
-   ```sql
-   create table 表名(
-   	...，
-   	外键列，
-   	constraint 外键名称 foreign key (外键列名称) references 主表名称(主表列名称)
-   );
-   ```
-
-   ```sql
-   -- 创建部门表 （id, dep_name, dep_location）
-   -- 一方，主表
-   create table department(
-   	id int primary key auto_increment,
-   	dep_name varchar(20),
-   	dep_location varchar(20)
-   );
-   ```
-
-   ```sql
-   -- 创建员工表（id, name, age, dep_id）
-   -- 多方，从表
-   create table employee(
-   	id int primary key auto_increment,
-   	name varchar(20),
-   	age int,
-   	dep_id int,		-- 外键对应主表的主键 外键列名称
-   	constraint emp_dept_fk foreign key (dep_id) references department(id)
-   );
-   ```
-
-   ```sql
-   -- 添加部门
-   INSERT INTO department (id, dep_name, dep_location) VALUES (1, "研发部", "广州");
-   INSERT INTO department (id, dep_name, dep_location) VALUES (2, "销售部", "深圳");
-   -- 添加员工,dep_id代表员工所在的部门
-   INSERT INTO employee (id, NAME, age, dep_id) VALUES (1, "张三", 20, 1);
-   INSERT INTO employee (id, NAME, age, dep_id) VALUES (2, "李四", 21, 1);
-   INSERT INTO employee (id, NAME, age, dep_id) VALUES (3, "王五", 20, 1);
-   INSERT INTO employee (id, NAME, age, dep_id) VALUES (4, "老王", 20, 2);
-   INSERT INTO employee (id, NAME, age, dep_id) VALUES (5, "大王", 22, 2);
-   INSERT INTO employee (id, NAME, age, dep_id) VALUES (6, "小王", 18, 2);
-   ```
-
-   ![](D:\Java\笔记\图片\3-day02【MySQL约束】\1.png)
-
-2. 创建表之后，添加外键
-
-   ```sql
-   alter table employee add constraint emp_dept_fk foreign key (dep_id) references department(id);
-   -- add后面与创建表的时候的语句一样
-   ```
-
-3. 删除外键
-
-   ```sql
-   alter table 表名 drop foreign key 外键名称;
-   ```
-
-**级联操作**
-
-<!--P511 1.23-->
-
-由于添加外键之后，多表之间是产生了联系了的，因此操作的时候，是操作不了的，但是我们想要操作的话，可以添加级联操作
-
-级联操作共有两种：
-
-1. 级联更新：`ON UPDATE CASCADE`
-
-2. 级联删除：`ON DELETE CASCADE`
-
-   级联删除，只是在删除表的时候，与之关联的都会删除，并不是删除级联操作。正因为此，级联删除不建议使用。
-
-   级联更新可以同时使用，也可以分开使用。
-
-```sql
-ALTER TAABLE 表名 ADD CONSTRAINT 外键名称 FOREIGN KEY （外键字段名称） REFERENCES 主表名称 （主表列名称） ON UPDATE CASCADE ON DELETE CASCADE;
-```
-
-```sql
-alter table employee add constraint emp_dept_fk foreign key (dep_id) references department(id) ON UPDATE CASCADE ON DELETE CASCADE;
-```
-
 # 第六章 数据库的设计
 
 ## 6.1 多表之间的关系
@@ -1468,7 +1392,7 @@ CREATE TABLE tab_route(
 	FOREIGN KEY (cid) REFERENCES tab_category (cid)		-- 创建外键，省略写法
 );
 -- 太麻烦了，就不添加数据了
--- constraint 外键名称 foreign key (外键列名称) references 主表名称(主表列名称)
+-- constraint 外键名称 foreign key (外键字段名称) references 主表名称(主表字段名称)
 ```
 
 ```sql
@@ -1669,12 +1593,12 @@ MySQL数据库中事务是默认自动提交的
 
 <!--P532-->
 
-1. **原子性**：是不可分割的最小操作单位，要么同时成功，要么同时失败。
-2. **持久性**：当事务提交或者回滚之后，数据库会持久化的保存数据。
-3. **隔离性**：多个事务之间，相互独立。
-4. **一致性**：事务操作前后，数据总量不变。
+`ACID`
 
-<font color = "red">**原子，持久，隔离，一致。**</font>
+* A原子性(atomicity)：事务中的所有操作，要么全部成功，要么全部失败。或称不可分割性。
+* C一致性(consistency)：要保证数据库内部完整性约束、声明性约束。
+* I隔离性(isolation)：对同一资源操作的事务不能够同时发生。又称独立性。
+* D持久性(durability)：对数据库做出的一切修改将永久保存，不管是否出现故障。
 
 ## 1.3 事务的隔离级别
 
@@ -1834,7 +1758,7 @@ set global transaction isolation level 级别字符串;
 
    但是在应用程序中，我们的代码可能会把18700提交给用户了，如果你一定要避免这情况小概率状况的发生，那么就要采取下面要介绍的事务隔离级别“串行化”
 
-   ```ABAP
+   ```sql
    mysql> select sum(balance) from account;
    +--------------+
    | sum(balance) |
@@ -1861,7 +1785,7 @@ set global transaction isolation level 级别字符串;
 
 1. 打开一个客户端A，并设置当前事务模式为serializable，查询表account的初始值：
 
-   ```ABAP
+   ```sql
    mysql> set session transaction isolation level serializable;
    Query OK, 0 rows affected (0.00 sec)
    
@@ -1882,7 +1806,7 @@ set global transaction isolation level 级别字符串;
 
 2. 打开一个客户端B，并设置当前事务模式为serializable，插入一条记录报错，表被锁了插入失败，mysql中事务隔离级别为serializable时会锁表，因此不会出现幻读的情况，这种隔离级别并发性极低，往往一个事务霸占了一张表，其他成千上万个事务只有干瞪眼，得等他用完提交才可以使用，开发中很少会用到。
 
-   ```ABAP
+   ```sql
    mysql> set session transaction isolation level serializable;
    Query OK, 0 rows affected (0.00 sec)
    
@@ -1893,20 +1817,5 @@ set global transaction isolation level 级别字符串;
    ERROR 1205 (HY000): Lock wait timeout exceeded; try restarting transaction
    ```
 
-# 第六章 数据库的备份和还原
 
-<!--P519-->
-
-## 6.1 备份
-
-命令行备份数据库：`mysqldump -u用户名 -p密码 数据库名称 > 保存的路径`。
-
-## 6.2 还原
-
-命令行还原数据库
-
-1. 登陆数据库：`mysql -u用户名  -p密码`。
-2. 创建数据库：`create database 数据库名称`。
-3. 使用数据库：`use 数据库名称`。
-4. 执行sql语句：`source 文件路径`。
 
