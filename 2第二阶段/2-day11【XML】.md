@@ -58,7 +58,7 @@ XML与HTML的区别
 
 <!--P663-->
 
-### 文档声明
+**文档声明**
 
 格式如下：
 
@@ -72,7 +72,7 @@ XML与HTML的区别
 * encoding：编码方式。告知解析引擎当前文档使用的字符集，默认值为ISO-8859-1
 * standalone：是否独立    yes：不依赖其他文件     no：依赖其他文件
 
-### 指令
+**指令**
 
 结合CSS指令：
 
@@ -80,7 +80,7 @@ XML与HTML的区别
 <?xml-stylesheet type = "text/css" href = "a.css"?>
 ```
 
-### 标签
+**标签**
 
 标签是自定义的，规则如下：
 
@@ -89,11 +89,11 @@ XML与HTML的区别
 * 名称不能以字母XML开始
 * 名称不能包含空格
 
-### 属性
+**属性**
 
 id值唯一
 
-### 文本
+**文本**
 
 CDATA区：在该区域中的数据会被原样展示
 
@@ -135,7 +135,7 @@ CDATA区：在该区域中的数据会被原样展示
 <!ATTLIST student number ID #REQUIRED>	<!--声明student标签有属性，属性名字为number，属性类型为ID，ID表示唯一，也就是该属性唯一-->
 ```
 
-### 导入DTD
+**导入DTD**
 
 得到了DTD约束文档，那么我们就需要按照约束文档来定义XML配置文件，而第一步我们首先需要将DTD约束文档给导入到XML文档中，这样XML配置文件才知道有什么样的规则。
 
@@ -507,7 +507,7 @@ Document和Element的父类。
 
 一共有两种：selector选择器、XPath。
 
-### selector
+**selector**
 
 <!--P673-->
 
@@ -528,7 +528,7 @@ public class Demo02Jsoup {
 
 文档路径：`file:///E:/Jsoup/jsoup/jsoup-1.11.2-javadoc/overview-summary.html`，在`org.jsoup.nodes`包下面的`Element`类下面。找到`select`方法，点击`select`跳转到详情页面。点击查看更多`Selector`，就可以看到了。
 
-### XPath
+**XPath**
 
 <!--P674-->
 
