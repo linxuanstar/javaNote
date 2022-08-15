@@ -141,7 +141,7 @@
 
 3. 运行程序。程序会报错，错误如下
 
-   ![1629889170229](D:\Java\笔记\图片\3-1【Spring】\2-1.png)
+   ![1629889170229](..\图片\3-2【Spring】\2-1.png)
 
    报的错为`ClassNotFoundException`，翻译出来是`类没有发现的异常`，具体的类为`com.mysql.jdbc.Driver`。错误的原因是缺少mysql的驱动包。分析出错误的原因，具体的解决方案就比较简单，只需要在pom.xml把驱动包引入即可。
 
@@ -426,11 +426,11 @@ BookDao bookDao = ctx.getBean(BookDao.class);
 
 在IDEA中双击`shift`，输入`BeanFactory`
 
-![1629985148294](D:\Java\笔记\图片\3-1【Spring】\2-2.png)
+![1629985148294](..\图片\3-2【Spring】\2-2.png)
 
 点击进入`BeanFactory`类，`ctrl+h`，就能查看到如下结构的层次关系
 
-![1629984980781](D:\Java\笔记\图片\3-1【Spring】\2-3.png)
+![1629984980781](..\图片\3-2【Spring】\2-3.png)
 
 从图中可以看出，容器类也是从无到有根据需要一层层叠加上来的，重点理解下这种设计思想。
 
@@ -591,7 +591,7 @@ Spring的IOC/DI对应的配置开发前面已经讲解完成，但是使用起�
 
    XML与注解配置的对应关系：
 
-![1629990315619](D:\Java\笔记\图片\3-1【Spring】\2-4.png)
+![1629990315619](..\图片\3-2【Spring】\2-4.png)
 
 3. 配置Spring的注解包扫描。为了让Spring框架能够扫描到写在类上的注解，需要在配置文件上进行包扫描
 
@@ -935,7 +935,7 @@ public class App {
 | 作用 | 设置该方法为销毁方法 |
 | 属性 | 无                   |
 
-![1630033039358](D:\Java\笔记\图片\3-1【Spring】\2-5.png)
+![1630033039358](..\图片\3-2【Spring】\2-5.png)
 
 ## 1.8 注解开发依赖注入
 
@@ -1579,7 +1579,7 @@ public class JdbcConfig {
 
 前面我们已经完成了XML配置和注解的开发实现，至于两者之间的差异，咱们放在一块去对比回顾下：
 
-![1630134786448](D:\Java\笔记\图片\3-1【Spring】\2-6.png)
+![1630134786448](..\图片\3-2【Spring】\2-6.png)
 
 # 第三章 Spring整合
 
@@ -1813,7 +1813,7 @@ Mybatis的基础环境我们已经准备好了，接下来就得分析下在上�
 
 * 整合Mybatis，就是将Mybatis用到的内容交给Spring管理，分析下配置文件
 
-  ![1630137388717](D:\Java\笔记\图片\3-1【Spring】\2-7.png)
+  ![1630137388717](..\图片\3-2【Spring】\2-7.png)
 
   **说明：**
 
@@ -1927,14 +1927,14 @@ Mybatis的基础环境我们已经准备好了，接下来就得分析下在上�
 
 * 使用SqlSessionFactoryBean封装SqlSessionFactory需要的环境信息
 
-  ![1630138835057](D:\Java\笔记\图片\3-1【Spring】\2-8.png)
+  ![1630138835057](..\图片\3-2【Spring】\2-8.png)
 
   * SqlSessionFactoryBean是前面我们讲解FactoryBean的一个子类，在该类中将SqlSessionFactory的创建进行了封装，简化对象的创建，我们只需要将其需要的内容设置即可。
   * 方法中有一个参数为dataSource，当前Spring容器中已经创建了Druid数据源，类型刚好是DataSource类型，此时在初始化SqlSessionFactoryBean这个对象的时候，发现需要使用DataSource对象，而容器中刚好有这么一个对象，就自动加载了DruidDataSource对象。
 
 * 使用MapperScannerConfigurer加载Dao接口，创建代理对象保存到IOC容器中
 
-  ![1630138916939](D:\Java\笔记\图片\3-1【Spring】\2-9.png)
+  ![1630138916939](..\图片\3-2【Spring】\2-9.png)
 
   * 这个MapperScannerConfigurer对象也是MyBatis提供的专用于整合的jar包中的类，用来处理原始配置文件中的mappers相关配置，加载数据层的Mapper接口类
   * MapperScannerConfigurer有一个核心属性basePackage，就是用来设置所扫描的包路径

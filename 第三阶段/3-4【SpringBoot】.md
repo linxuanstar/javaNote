@@ -109,7 +109,7 @@
 
    经过以上步骤后就创建了如下结构的模块，它会帮我们自动生成一个 `Application` 类，而该类一会再启动服务器时会用到。
 
-   <img src="D:\Java\笔记\图片\3-4【SpringBoot】/1-1.png" alt="image-20210911160541833" style="zoom:80%;" />
+   <img src="..\图片\3-4【SpringBoot】/1-1.png" alt="image-20210911160541833" style="zoom:80%;" />
 
    需要注意如下内容：
 
@@ -141,7 +141,7 @@
 
    运行 `SpringBoot` 工程不需要使用本地的 `Tomcat` 和 插件，只运行项目 `com.linxuan` 包下的 `Application` 类，我们就可以在控制台看出Tomcat服务器运行了。
    
-   <img src="D:\Java\笔记\图片\3-4【SpringBoot】/1-2.png" alt="image-20210911172200292" style="zoom:60%;" />
+   <img src="..\图片\3-4【SpringBoot】/1-2.png" alt="image-20210911172200292" style="zoom:60%;" />
 
 4. 进行测试
 
@@ -213,7 +213,7 @@ public class Application {
 
 做完 `SpringBoot` 的入门案例后，接下来对比一下 `Spring` 程序和 `SpringBoot` 程序。如下图
 
-<img src="D:\Java\笔记\图片\3-4【SpringBoot】/1-3.png" alt="image-20210911172200292" style="zoom:60%;" />
+<img src="..\图片\3-4【SpringBoot】/1-3.png" alt="image-20210911172200292" style="zoom:60%;" />
 
 <font color = "red">注意：基于Idea的 `Spring Initializr` 快速构建 `SpringBoot` 工程时需要联网。</font>
 
@@ -283,7 +283,7 @@ public class Application {
 
 我们使用 `Spring Initializr`  方式创建的 `Maven` 工程的的 `pom.xml` 配置文件中自动生成了很多包含 `starter` 的依赖，如下图
 
-<img src="D:\Java\笔记\图片\3-4【SpringBoot】/1-4.png" alt="image-20210918220338109" style="zoom:70%;" />
+<img src="..\图片\3-4【SpringBoot】/1-4.png" alt="image-20210918220338109" style="zoom:70%;" />
 
 这些依赖就是<font color = "red">启动依赖</font>，接下来我们探究一下他是如何实现的。
 
@@ -291,21 +291,21 @@ public class Application {
 
 从上面的文件中可以看到指定了一个父工程，我们进入到父工程，发现父工程中又指定了一个父工程，如下图所示
 
-<img src="D:\Java\笔记\图片\3-4【SpringBoot】/1-5.png" alt="image-20210918220855024" style="zoom:80%;" />
+<img src="..\图片\3-4【SpringBoot】/1-5.png" alt="image-20210918220855024" style="zoom:80%;" />
 
 再进入到该父工程中，在该工程中我们可以看到配置内容结构如下图所示
 
-<img src="D:\Java\笔记\图片\3-4【SpringBoot】/1-6.png" alt="image-20210918221042947" style="zoom:80%;" />
+<img src="..\图片\3-4【SpringBoot】/1-6.png" alt="image-20210918221042947" style="zoom:80%;" />
 
 上图中的 `properties` 标签中定义了各个技术软件依赖的版本，避免了我们在使用不同软件技术时考虑版本的兼容问题。在 `properties` 中我们找 `servlet`  和 `mysql` 的版本如下图
 
-<img src="D:\Java\笔记\图片\3-4【SpringBoot】/1-7.png" alt="image-20210918221511249" style="zoom:80%;" />
+<img src="..\图片\3-4【SpringBoot】/1-7.png" alt="image-20210918221511249" style="zoom:80%;" />
 
 `dependencyManagement` 标签是进行依赖版本锁定，但是并没有导入对应的依赖；如果我们工程需要那个依赖只需要引入依赖的 `groupid` 和 `artifactId` 不需要定义 `version`。
 
 而 `build` 标签中也对插件的版本进行了锁定，如下图
 
-<img src="D:\Java\笔记\图片\3-4【SpringBoot】/1-8.png" alt="image-20210918221942453" style="zoom:80%;" />
+<img src="..\图片\3-4【SpringBoot】/1-8.png" alt="image-20210918221942453" style="zoom:80%;" />
 
 看完了父工程中 `pom.xml` 的配置后不难理解我们工程的的依赖为什么都没有配置 `version`。
 
@@ -313,11 +313,11 @@ public class Application {
 
 在我们创建的工程中的 `pom.xml` 中配置了如下依赖
 
-<img src="D:\Java\笔记\图片\3-4【SpringBoot】/1-9.png" alt="image-20210918222321402" style="zoom:80%;" />
+<img src="..\图片\3-4【SpringBoot】/1-9.png" alt="image-20210918222321402" style="zoom:80%;" />
 
 进入到该依赖，查看 `pom.xml` 的依赖会发现它引入了如下的依赖
 
-<img src="D:\Java\笔记\图片\3-4【SpringBoot】/1-10.png" alt="image-20210918222607469" style="zoom:80%;" />
+<img src="..\图片\3-4【SpringBoot】/1-10.png" alt="image-20210918222607469" style="zoom:80%;" />
 
 里面的引入了 `spring-web` 和 `spring-webmvc` 的依赖，这就是为什么我们的工程中没有依赖这两个包还能正常使用 `springMVC` 中的注解的原因。
 
@@ -369,7 +369,7 @@ public class Springboot01QuickstartApplication {
 
 现在我们运行引导类可以吗？运行一下试试，打印的日志信息如下
 
-![image-20210918232512707](D:\Java\笔记\图片\3-4【SpringBoot】/1-11.png)
+![image-20210918232512707](..\图片\3-4【SpringBoot】/1-11.png)
 
 程序直接停止了，为什么呢？那是因为排除了 `tomcat` 服务器，程序中就没有服务器了。所以此时不光要排除 `tomcat` 服务器，还要引入 `jetty` 服务器。在 `pom.xml` 中因为 `jetty` 的起步依赖
 
@@ -382,7 +382,7 @@ public class Springboot01QuickstartApplication {
 
 接下来再次运行引导类，在日志信息中就可以看到使用的是 `jetty` 服务器
 
-![image-20210918232904623](D:\Java\笔记\图片\3-4【SpringBoot】/1-12.png)
+![image-20210918232904623](..\图片\3-4【SpringBoot】/1-12.png)
 
 # 第二章 配置文件
 
@@ -638,7 +638,7 @@ public class BookController {
 
 使用第三种方式，在实体类上有如下警告提示
 
-<img src="D:\Java\笔记\图片\3-4【SpringBoot】/1-13.png" alt="image-20210917180919390" style="zoom:70%;" />
+<img src="..\图片\3-4【SpringBoot】/1-13.png" alt="image-20210917180919390" style="zoom:70%;" />
 
 这个警告提示解决是在 `pom.xml` 中添加如下依赖即可
 
@@ -654,7 +654,7 @@ public class BookController {
 
 以后在工作中，对于开发环境、测试环境、生产环境的配置肯定都不相同，比如我们开发阶段会在自己的电脑上安装 `mysql` ，连接自己电脑上的 `mysql` 即可，但是项目开发完毕后要上线就需要该配置，将环境的配置改为线上环境的。
 
-<img src="D:\Java\笔记\图片\3-4【SpringBoot】/1-14.png" alt="image-20210917185253557" style="zoom:60%;" />
+<img src="..\图片\3-4【SpringBoot】/1-14.png" alt="image-20210917185253557" style="zoom:60%;" />
 
 来回的修改配置会很麻烦，而 `SpringBoot` 给开发者提供了多环境的快捷配置，需要切换环境时只需要改一个配置即可。不同类型的配置文件多环境开发的配置都不相同，接下来对不同类型的配置文件进行说明
 
@@ -787,7 +787,7 @@ java –jar springboot.jar –-server.port=88 –-spring.profiles.active=test
 
 进入上面网站后会看到如下页面
 
-![image-20210917193910191](D:\Java\笔记\图片\3-4【SpringBoot】/1-15.png)
+![image-20210917193910191](..\图片\3-4【SpringBoot】/1-15.png)
 
 如果使用了多种方式配合同一个配置项，优先级高的生效。
 
@@ -882,7 +882,7 @@ server:
 
 ## 2.6 配置文件分类
 
-<img src="D:\Java\笔记\图片\3-4【SpringBoot】/1-16.png" alt="image-20210917194941597" style="zoom:70%;" />
+<img src="..\图片\3-4【SpringBoot】/1-16.png" alt="image-20210917194941597" style="zoom:70%;" />
 
 有这样的场景，我们开发完毕后需要测试人员进行测试，由于测试环境和开发环境的很多配置都不相同，所以测试人员在运行我们的工程时需要临时修改很多配置，如下
 
@@ -1145,7 +1145,7 @@ class Springboot07TestApplicationTests {
 
    运行测试方法，我们会看到如下错误信息
 
-   <img src="D:\Java\笔记\图片\3-4【SpringBoot】/1-17.png" alt="image-20210917221427930" style="zoom:70%;" />
+   <img src="..\图片\3-4【SpringBoot】/1-17.png" alt="image-20210917221427930" style="zoom:70%;" />
 
    错误信息显示在 `Spring` 容器中没有 `BookDao` 类型的 `bean`。为什么会出现这种情况呢？
 
@@ -1226,7 +1226,7 @@ class Springboot07TestApplicationTests {
 
    将 `springmvc_11_page` 工程中的 `java` 代码及测试代码连同包拷贝到 `springboot_09_ssm` 工程，按照下图进行拷贝
 
-   <img src="D:\Java\笔记\图片\3-4【SpringBoot】/1-18.png" alt="image-20210917225715519" style="zoom:70%;" />
+   <img src="..\图片\3-4【SpringBoot】/1-18.png" alt="image-20210917225715519" style="zoom:70%;" />
 
    需要修改的内容如下：
 

@@ -18,7 +18,7 @@ CacheManager是Spring提供的各种缓存技术抽象接口。
 
 ## 1.2 Spring Cache常用注解
 
-![](D:\Java\笔记\图片\3-6【SpringCache】\1-2.png)
+![](..\图片\3-6【SpringCache】\1-2.png)
 
 在spring boot项目中，使用缓存技术只需在项目中导入相关缓存技术的依赖包，并在启动类上使用@EnableCaching开启缓存支持即可。
 
@@ -241,7 +241,7 @@ CacheManager是Spring提供的各种缓存技术抽象接口。
 
 运行该项目，打开PostMan使用Post方式传输，参数弄成Body下面的form-data，数据为name和age。传送两次数据，我们可以在cacheManager看到：
 
-![](D:\Java\笔记\图片\3-6【SpringCache】\屏幕截图 2022-07-11 164839.png)
+![](..\图片\3-6【SpringCache】\屏幕截图 2022-07-11 164839.png)
 
 这些都是缓存的数据，userCache的缓存的名称是一大类，缓存的键是id，值是user对象。缓存到了ConcurrentHashMap对象里面，这个Map是基于内存的，如果我们的项目关闭，那么缓存的数据也就没有了。
 

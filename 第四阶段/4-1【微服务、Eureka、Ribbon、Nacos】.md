@@ -31,7 +31,7 @@
 - 面向服务：服务提供统一标准的接口，与语言和技术无关
 - 隔离性强：服务调用做好隔离、容错、降级，避免出现级联问题
 
-![image-20210713203753373](D:\Java\笔记\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713203753373.png)
+![image-20210713203753373](..\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713203753373.png)
 
 微服务的上述特性其实是在给分布式架构制定一个标准，进一步降低服务之间的耦合度，提供服务的独立性和灵活性。做到高内聚，低耦合。
 
@@ -49,11 +49,11 @@ SpringCloud集成了各种微服务功能组件，并基于SpringBoot实现了�
 
 其中常见的组件包括：
 
-![image-20210713204155887](D:\Java\笔记\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713204155887.png)
+![image-20210713204155887](..\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713204155887.png)
 
 另外，SpringCloud底层是依赖于SpringBoot的，并且有版本的兼容关系，如下：
 
-![image-20210713205003790](D:\Java\笔记\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713205003790.png)
+![image-20210713205003790](..\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713205003790.png)
 
 我们课堂学习的版本是 Hoxton.SR10，因此对应的SpringBoot版本是2.3.x版本。
 
@@ -83,7 +83,7 @@ SpringCloud是微服务架构的一站式解决方案，集成了各种优秀微
 - 微服务数据独立，不要访问其它微服务的数据库
 - 微服务可以将自己的业务暴露为接口，供其它微服务调用
 
-![image-20210713210800950](D:\Java\笔记\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713210800950.png)
+![image-20210713210800950](..\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713210800950.png)
 
 ## 2.2 服务拆分示例
 
@@ -149,7 +149,7 @@ public class UserController {
 
 我们的需求就是修改order-service中的根据id查询订单业务，要求在查询订单的同时，根据订单中包含的userId查询出用户信息，一起返回。
 
-![image-20210713213312278](D:\Java\笔记\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713213312278.png)
+![image-20210713213312278](..\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713213312278.png)
 
 因此，我们需要在order-service中 向user-service发起一个http的请求，调用`http://localhost:8081/user/{userId}`这个接口。
 
@@ -219,7 +219,7 @@ public class UserController {
 
 - **服务消费者**：一次业务中，调用其它微服务的服务。（调用其它微服务提供的接口）
 
-![image-20210713214404481](D:\Java\笔记\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713214404481.png)
+![image-20210713214404481](..\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713214404481.png)
 
 但是，服务提供者与服务消费者的角色并不是绝对的，而是相对于业务而言。
 
@@ -233,7 +233,7 @@ public class UserController {
 
 假如我们的服务提供者user-service部署了多个实例，如图：
 
-![image-20210713214925388](D:\Java\笔记\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713214925388.png)
+![image-20210713214925388](..\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713214925388.png)
 
 我们来思考几个问题：
 
@@ -245,7 +245,7 @@ public class UserController {
 
 这些问题都需要利用SpringCloud中的注册中心来解决，其中最广为人知的注册中心就是Eureka，其结构如下：
 
-![image-20210713220104956](D:\Java\笔记\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713220104956.png)
+![image-20210713220104956](..\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713220104956.png)
 
 我们可以利用Eureka来回答之前的各个问题：
 
@@ -277,7 +277,7 @@ public class UserController {
 
 因此，接下来我们动手实践的步骤包括：
 
-![image-20210713220509769](D:\Java\笔记\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713220509769.png)
+![image-20210713220509769](..\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713220509769.png)
 
 ## 3.2 搭建eureka-server
 
@@ -336,7 +336,7 @@ public class UserController {
    
    启动微服务，然后在浏览器访问：http://127.0.0.1:10086。看到下面结果就是成功了，我这里不会注册自己的。上面yml文件设置了：
    
-   ![image-20210713222157190](D:\Java\笔记\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713222157190.png)
+   ![image-20210713222157190](..\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713222157190.png)
 
 ## 3.3 服务注册
 
@@ -373,25 +373,25 @@ public class UserController {
    
    首先，复制原来的user-service启动配置：
    
-   ![image-20210713222656562](D:\Java\笔记\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713222656562.png)
+   ![image-20210713222656562](..\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713222656562.png)
    
    然后，在弹出的窗口中，填写信息：-Dserver.port=8082
    
-   ![image-20210713222757702](D:\Java\笔记\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713222757702.png)
+   ![image-20210713222757702](..\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713222757702.png)
    
    现在，SpringBoot窗口会出现两个user-service启动配置：
    
-   <img title="" src="D:\Java\笔记\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713222841951.png" alt="image-20210713222841951" width="448" data-align="center">
+   <img title="" src="..\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713222841951.png" alt="image-20210713222841951" width="448" data-align="center">
    
    不过，第一个是8081端口，第二个是8082端口。
    
    启动两个user-service实例：
    
-   <img src="D:\Java\笔记\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713223041491.png" title="" alt="image-20210713223041491" data-align="center">
+   <img src="..\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713223041491.png" title="" alt="image-20210713223041491" data-align="center">
    
    查看eureka-server管理页面：
    
-   ![image-20210713223150650](D:\Java\笔记\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713223150650.png)
+   ![image-20210713223150650](..\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713223150650.png)
 
 ## 3.4 服务发现
 
@@ -545,7 +545,7 @@ spring会自动帮助我们从eureka-server端，根据userservice这个服务�
 
 SpringCloud底层其实是利用了一个名为Ribbon的组件，来实现负载均衡功能的。
 
-![image-20210713224517686](D:\Java\笔记\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713224517686.png)
+![image-20210713224517686](..\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713224517686.png)
 
 那么我们发出的请求明明是http://userservice/user/1，怎么变成了http://localhost:8081的呢？
 
@@ -559,7 +559,7 @@ SpringCloud底层其实是利用了一个名为Ribbon的组件，来实现负载
 
 1. LoadBalancerIntercepor
    
-   <img src="D:\Java\笔记\图片\4-1【微服务、Eureka、Ribbon、Nacos】/1525620483637.png" title="" alt="" width="1023">
+   <img src="..\图片\4-1【微服务、Eureka、Ribbon、Nacos】/1525620483637.png" title="" alt="" width="1023">
    
    可以看到这里的intercept方法，拦截了用户的HttpRequest请求，然后做了几件事：
    
@@ -575,7 +575,7 @@ SpringCloud底层其实是利用了一个名为Ribbon的组件，来实现负载
    
    继续跟入execute方法：
    
-   <img title="" src="D:\Java\笔记\图片\4-1【微服务、Eureka、Ribbon、Nacos】/1525620787090.png" alt="" width="1059">
+   <img title="" src="..\图片\4-1【微服务、Eureka、Ribbon、Nacos】/1525620787090.png" alt="" width="1059">
    
    代码是这样的：
    
@@ -585,7 +585,7 @@ SpringCloud底层其实是利用了一个名为Ribbon的组件，来实现负载
    
    放行后，再次访问并跟踪，发现获取的是8081：
    
-   <img src="D:\Java\笔记\图片\4-1【微服务、Eureka、Ribbon、Nacos】/1525620835911.png" title="" alt="" width="1037">
+   <img src="..\图片\4-1【微服务、Eureka、Ribbon、Nacos】/1525620835911.png" title="" alt="" width="1037">
    
    果然实现了负载均衡。
 
@@ -593,23 +593,23 @@ SpringCloud底层其实是利用了一个名为Ribbon的组件，来实现负载
    
    在刚才的代码中，可以看到获取服务使通过一个`getServer`方法来做负载均衡:
    
-   <img src="D:\Java\笔记\图片\4-1【微服务、Eureka、Ribbon、Nacos】/1525620835911.png" title="" alt="" width="1010">
+   <img src="..\图片\4-1【微服务、Eureka、Ribbon、Nacos】/1525620835911.png" title="" alt="" width="1010">
    
    我们继续跟入：
    
-   <img src="D:\Java\笔记\图片\4-1【微服务、Eureka、Ribbon、Nacos】/1544361421671.png" title="" alt="" width="1119">
+   <img src="..\图片\4-1【微服务、Eureka、Ribbon、Nacos】/1544361421671.png" title="" alt="" width="1119">
    
    继续跟踪源码chooseServer方法，发现这么一段代码：
    
-   <img src="D:\Java\笔记\图片\4-1【微服务、Eureka、Ribbon、Nacos】/1525622652849.png" title="" alt="" width="1073">
+   <img src="..\图片\4-1【微服务、Eureka、Ribbon、Nacos】/1525622652849.png" title="" alt="" width="1073">
    
    我们看看这个rule是谁：
    
-   <img src="D:\Java\笔记\图片\4-1【微服务、Eureka、Ribbon、Nacos】/1525622699666.png" title="" alt="" width="1071">
+   <img src="..\图片\4-1【微服务、Eureka、Ribbon、Nacos】/1525622699666.png" title="" alt="" width="1071">
    
    这里的rule默认值是一个`RoundRobinRule`，看类的介绍：
    
-   <img src="D:\Java\笔记\图片\4-1【微服务、Eureka、Ribbon、Nacos】/1525622754316.png" title="" alt="" width="1153">
+   <img src="..\图片\4-1【微服务、Eureka、Ribbon、Nacos】/1525622754316.png" title="" alt="" width="1153">
    
    这不就是轮询的意思嘛。
    
@@ -619,7 +619,7 @@ SpringCloud底层其实是利用了一个名为Ribbon的组件，来实现负载
 
 `SpringCloudRibbon`的底层采用了一个拦截器，拦截了`RestTemplate`发出的请求，对地址做了修改。用一幅图来总结一下：
 
-![image-20210713224724673](D:\Java\笔记\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713224724673.png)
+![image-20210713224724673](..\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713224724673.png)
 
 基本流程如下：
 
@@ -636,7 +636,7 @@ SpringCloud底层其实是利用了一个名为Ribbon的组件，来实现负载
 
 负载均衡的规则都定义在IRule接口中，而IRule有很多不同的实现类：
 
-![image-20210713225653000](D:\Java\笔记\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713225653000.png)
+![image-20210713225653000](..\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713225653000.png)
 
 不同规则的含义如下：
 
@@ -752,7 +752,7 @@ Nacos是SpringCloudAlibaba的组件，而SpringCloudAlibaba也遵循SpringCloud�
 
    重启微服务后，登录nacos管理页面，可以看到微服务信息：
 
-   ![image-20210713231439607](D:\Java\笔记\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713231439607.png)
+   ![image-20210713231439607](..\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713231439607.png)
 
 ## 5.3 服务分级存储模型
 
@@ -772,11 +772,11 @@ Nacos就将同一机房内的实例 划分为一个**集群**。
 
 也就是说，user-service是服务，一个服务可以包含多个集群，如杭州、上海，每个集群下可以有多个实例，形成分级模型，如图：
 
-![image-20210713232522531](D:\Java\笔记\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713232522531.png)
+![image-20210713232522531](..\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713232522531.png)
 
 微服务互相访问时，应该尽可能访问同集群实例，因为本地访问速度更快。当本集群内不可用时，才访问其它集群。例如：
 
-![image-20210713232658928](D:\Java\笔记\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713232658928.png)
+![image-20210713232658928](..\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713232658928.png)
 
 杭州机房内的order-service应该优先访问同机房的user-service。
 
@@ -795,7 +795,7 @@ spring:
 
 重启两个user-service实例后，我们可以在nacos控制台看到下面结果：
 
-![image-20210713232916215](D:\Java\笔记\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713232916215.png)
+![image-20210713232916215](..\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713232916215.png)
 
 我们再次复制一个user-service启动配置，添加属性：
 
@@ -806,11 +806,11 @@ spring:
 
 配置如图所示：
 
-![image-20210713233528982](D:\Java\笔记\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713233528982.png)
+![image-20210713233528982](..\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713233528982.png)
 
 启动UserApplication3后再次查看nacos控制台：
 
-![image-20210713233727923](D:\Java\笔记\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713233727923.png)
+![image-20210713233727923](..\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713233727923.png)
 
 ### 同集群优先的负载均衡
 
@@ -852,11 +852,11 @@ spring:
 
 在nacos控制台，找到user-service的实例列表，点击编辑，即可修改权重：
 
-![image-20210713235133225](D:\Java\笔记\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713235133225.png)
+![image-20210713235133225](..\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713235133225.png)
 
 在弹出的编辑窗口，修改权重：
 
-![image-20210713235235219](D:\Java\笔记\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713235235219.png)
+![image-20210713235235219](..\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210713235235219.png)
 
 > **注意**：如果权重修改为0，则该实例永远不会被访问。
 
@@ -868,25 +868,25 @@ Nacos提供了namespace来实现环境隔离功能。
 - namespace下可以有group、service等
 - 不同namespace之间相互隔离，例如不同namespace的服务互相不可见
 
-![image-20210714000101516](D:\Java\笔记\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210714000101516.png)
+![image-20210714000101516](..\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210714000101516.png)
 
 ### 创建namespace
 
 默认情况下，所有service、data、group都在同一个namespace，名为public：
 
-![image-20210714000414781](D:\Java\笔记\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210714000414781.png)
+![image-20210714000414781](..\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210714000414781.png)
 
 我们可以点击页面新增按钮，添加一个namespace：
 
-![image-20210714000440143](D:\Java\笔记\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210714000440143.png)
+![image-20210714000440143](..\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210714000440143.png)
 
 然后，填写表单：
 
-![image-20210714000505928](D:\Java\笔记\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210714000505928.png)
+![image-20210714000505928](..\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210714000505928.png)
 
 就能在页面看到一个新的namespace：
 
-![image-20210714000522913](D:\Java\笔记\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210714000522913.png)
+![image-20210714000522913](..\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210714000522913.png)
 
 ### 给微服务配置namespace
 
@@ -906,13 +906,13 @@ spring:
 
 重启order-service后，访问控制台，可以看到下面的结果：
 
-![image-20210714000830703](D:\Java\笔记\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210714000830703.png)
+![image-20210714000830703](..\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210714000830703.png)
 
-![image-20210714000837140](D:\Java\笔记\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210714000837140.png)
+![image-20210714000837140](..\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210714000837140.png)
 
 此时访问order-service，因为namespace不同，会导致找不到userservice，控制台会报错：
 
-![image-20210714000941256](D:\Java\笔记\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210714000941256.png)
+![image-20210714000941256](..\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210714000941256.png)
 
 ## 5.6 Nacos与Eureka的区别
 
@@ -934,7 +934,7 @@ spring:
 
 Nacos和Eureka整体结构类似，服务注册、服务拉取、心跳等待，但是也存在一些差异：
 
-![image-20210714001728017](D:\Java\笔记\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210714001728017.png)
+![image-20210714001728017](..\图片\4-1【微服务、Eureka、Ribbon、Nacos】/image-20210714001728017.png)
 
 Nacos与eureka的共同点：
 

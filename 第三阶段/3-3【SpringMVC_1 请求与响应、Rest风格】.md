@@ -1,4 +1,4 @@
-![](D:\Java\笔记\图片\3-2【MyBatis】\0-1.png)
+![](..\图片\3-2【Spring】\0-1.png)
 
 # 第一章 SpringMVC介绍
 
@@ -33,7 +33,7 @@ SpringMVC是隶属于Spring框架的一部分，主要是用来进行Web开发�
 
 学习SpringMVC我们先来回顾下现在web程序是如何做的，咱们现在web程序大都基于三层架构来实现。
 
-![](D:\Java\笔记\图片\3-3【SpringMVC】\1-1.png)
+![](..\图片\3-3【SpringMVC】\1-1.png)
 
 * 浏览器发送一个请求给后端服务器，后端服务器现在是使用Servlet来接收请求和数据
 
@@ -53,7 +53,7 @@ SpringMVC是隶属于Spring框架的一部分，主要是用来进行Web开发�
 
 随着互联网的发展，上面的模式因为是同步调用，性能慢慢的跟不是需求，所以异步调用慢慢的走到了前台，是现在比较流行的一种处理方式。
 
-![1630427769938](D:\Java\笔记\图片\3-3【SpringMVC】\1-2.png)
+![1630427769938](..\图片\3-3【SpringMVC】\1-2.png)
 
 * 因为是异步调用，所以后端不需要返回view视图，将其去除
 * 前端如果通过异步调用的方式进行交互，后台就需要将返回的数据转换成json格式进行返回
@@ -215,7 +215,7 @@ public class ServletContainersInitConfig extends AbstractDispatcherServletInitia
 
 步骤9：浏览器访问。浏览器输入`http://localhost/save`进行访问，会报如下错误：
 
-![1630430401561](D:\Java\笔记\图片\3-3【SpringMVC】\1-3.png)
+![1630430401561](..\图片\3-3【SpringMVC】\1-3.png)
 
 页面报错的原因是后台没有指定返回的页面，目前只需要关注控制台看`user save ...`有没有被执行即可。
 
@@ -296,7 +296,7 @@ public class UserController {
 
 为了更好的使用SpringMVC，我们将SpringMVC的使用过程总共分两个阶段来分析，分别是`启动服务器初始化过程`和`单次请求过程`
 
-![1630432494752](D:\Java\笔记\图片\3-3【SpringMVC】\1-4.png)
+![1630432494752](..\图片\3-3【SpringMVC】\1-4.png)
 
 **启动服务器初始化过程**
 
@@ -718,15 +718,15 @@ public class ServletContainersInitConfig extends AbstractAnnotationConfigDispatc
 
 创建WorkSpace工作空间
 
-![](D:\Java\笔记\图片\3-3【SpringMVC】\1-5.png)
+![](..\图片\3-3【SpringMVC】\1-5.png)
 
 发送请求
 
-![1630464489898](D:\Java\笔记\图片\3-3【SpringMVC】\1-6.png)
+![1630464489898](..\图片\3-3【SpringMVC】\1-6.png)
 
 保存当前请求
 
-![1630464783034](D:\Java\笔记\图片\3-3【SpringMVC】\1-7.png)
+![1630464783034](..\图片\3-3【SpringMVC】\1-7.png)
 
 > 扩展：对于PostMan如何觉得字小不好看，可以使用`ctrl+=`调大，`ctrl+-`调小。
 

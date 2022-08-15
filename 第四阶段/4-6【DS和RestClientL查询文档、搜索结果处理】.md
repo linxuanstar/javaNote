@@ -443,15 +443,15 @@ GET /hotel/_search
 
 在elasticsearch中，早期使用的打分算法是TF-IDF算法，公式如下：
 
-![image-20210721190152134](D:\Java\笔记\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210721190152134.png)
+![image-20210721190152134](..\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210721190152134.png)
 
 在后来的5.1版本升级中，elasticsearch将算法改进为BM25算法，公式如下：
 
-![image-20210721190416214](D:\Java\笔记\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210721190416214.png)
+![image-20210721190416214](..\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210721190416214.png)
 
 TF-IDF算法有一各缺陷，就是词条频率越高，文档得分也会越高，单个词条对文档影响较大。而BM25则会让单个词条的算分有一个上限，曲线更加平滑：
 
-![image-20210721190907320](D:\Java\笔记\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210721190907320.png)
+![image-20210721190907320](..\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210721190907320.png)
 
 ### 1.5.2 算分函数查询
 
@@ -1352,7 +1352,7 @@ void testPageAndSort() throws IOException {
 
 高亮请求的构建API如下：
 
-![image-20210721221744883](D:\Java\笔记\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210721221744883.png)
+![image-20210721221744883](..\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210721221744883.png)
 
 上述代码省略了查询条件部分，但是大家不要忘了：高亮查询必须使用全文检索查询，并且要有搜索关键字，将来才可以对关键字高亮。
 
@@ -1384,7 +1384,7 @@ void testHighlight() throws IOException {
 
 因此解析高亮的代码需要额外处理：
 
-![image-20210721222057212](D:\Java\笔记\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210721222057212.png)
+![image-20210721222057212](..\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210721222057212.png)
 
 代码解读：
 
@@ -1449,7 +1449,7 @@ private void handleResponse(SearchResponse response) {
 
 启动我们提供的hotel-demo项目，其默认端口是8089，访问http://localhost:8090，就能看到项目页面了：
 
-![image-20210721223159598](D:\Java\笔记\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210721223159598.png)
+![image-20210721223159598](..\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210721223159598.png)
 
 
 
@@ -1463,15 +1463,15 @@ private void handleResponse(SearchResponse response) {
 
 在项目的首页，有一个大大的搜索框，还有分页按钮：
 
-![image-20210721223859419](D:\Java\笔记\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210721223859419.png)
+![image-20210721223859419](..\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210721223859419.png)
 
 点击搜索按钮，可以看到浏览器控制台发出了请求：
 
-![image-20210721224033789](D:\Java\笔记\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210721224033789.png)
+![image-20210721224033789](..\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210721224033789.png)
 
 请求参数如下：
 
-![image-20210721224112708](D:\Java\笔记\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210721224112708.png)
+![image-20210721224112708](..\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210721224112708.png)
 
 
 
@@ -1696,11 +1696,11 @@ private PageResult handleResponse(SearchResponse response) {
 
 在页面搜索框下面，会有一些过滤项：
 
-![image-20210722091940726](D:\Java\笔记\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210722091940726.png)
+![image-20210722091940726](..\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210722091940726.png)
 
 传递的参数如图：
 
-![image-20210722092051994](D:\Java\笔记\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210722092051994.png) 
+![image-20210722092051994](..\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210722092051994.png) 
 
 包含的过滤条件有：
 
@@ -1758,7 +1758,7 @@ public class RequestParams {
 
 因为条件构建的逻辑比较复杂，这里先封装为一个函数：
 
-![image-20210722092935453](D:\Java\笔记\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210722092935453.png)
+![image-20210722092935453](..\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210722092935453.png)
 
 
 
@@ -1812,11 +1812,11 @@ private void buildBasicQuery(RequestParams params, SearchRequest request) {
 
 在酒店列表页的右侧，有一个小地图，点击地图的定位按钮，地图会找到你所在的位置：
 
-![image-20210722093414542](D:\Java\笔记\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210722093414542.png) 
+![image-20210722093414542](..\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210722093414542.png) 
 
 并且，在前端会发起查询请求，将你的坐标发送到服务端：
 
-![image-20210722093642382](D:\Java\笔记\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210722093642382.png) 
+![image-20210722093642382](..\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210722093642382.png) 
 
 
 
@@ -1887,7 +1887,7 @@ GET /indexName/_search
 
 对应的java代码示例：
 
-![image-20210722095227059](D:\Java\笔记\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210722095227059.png)
+![image-20210722095227059](..\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210722095227059.png)
 
 
 
@@ -1897,7 +1897,7 @@ GET /indexName/_search
 
 在`cn.itcast.hotel.service.impl`的`HotelService`的`search`方法中，添加一个排序功能：
 
-![image-20210722095902314](D:\Java\笔记\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210722095902314.png)
+![image-20210722095902314](..\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210722095902314.png)
 
 
 
@@ -1944,7 +1944,7 @@ public PageResult search(RequestParams params) {
 
 重启服务后，测试我的酒店功能：
 
-![image-20210722100040674](D:\Java\笔记\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210722100040674.png)
+![image-20210722100040674](..\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210722100040674.png)
 
 
 
@@ -1954,7 +1954,7 @@ public PageResult search(RequestParams params) {
 
 排序完成后，页面还要获取我附近每个酒店的具体**距离**值，这个值在响应结果中是独立的：
 
-![image-20210722095648542](D:\Java\笔记\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210722095648542.png)
+![image-20210722095648542](..\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210722095648542.png)
 
 因此，我们在结果解析阶段，除了解析source部分以外，还要得到sort部分，也就是排序的距离，然后放到响应结果中。
 
@@ -2012,13 +2012,13 @@ public class HotelDoc {
 
 2）修改HotelService中的handleResponse方法
 
-![image-20210722100613966](D:\Java\笔记\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210722100613966.png)
+![image-20210722100613966](..\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210722100613966.png)
 
 
 
 重启后测试，发现页面能成功显示距离了：
 
-![image-20210722100838604](D:\Java\笔记\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210722100838604.png)
+![image-20210722100838604](..\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210722100838604.png)
 
 
 
@@ -2032,7 +2032,7 @@ public class HotelDoc {
 
 要让指定酒店在搜索结果中排名置顶，效果如图：
 
-![image-20210722100947292](D:\Java\笔记\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210722100947292.png)
+![image-20210722100947292](..\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210722100947292.png)
 
 页面会给指定的酒店添加**广告**标记。
 
@@ -2079,7 +2079,7 @@ public class HotelDoc {
 
 给`cn.itcast.hotel.pojo`包下的HotelDoc类添加isAD字段：
 
-![image-20210722101908062](D:\Java\笔记\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210722101908062.png)
+![image-20210722101908062](..\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210722101908062.png)
 
 
 
@@ -2124,13 +2124,13 @@ POST /hotel/_update/2056105938
 
 function_score查询结构如下：
 
-![image-20210721191544750](D:\Java\笔记\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210721191544750.png)
+![image-20210721191544750](..\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210721191544750.png)
 
 
 
 对应的JavaAPI如下：
 
-![image-20210722102850818](D:\Java\笔记\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210722102850818.png)
+![image-20210722102850818](..\图片\4-6【DS和RestClientL查询文档、搜索结果处理】/image-20210722102850818.png)
 
 
 

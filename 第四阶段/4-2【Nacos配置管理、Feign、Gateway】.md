@@ -48,7 +48,7 @@ Nacos一方面可以将配置集中管理，另一方可以在配置变更时，
 4. 创建Spring容器。
 5. 加载Bean。
 
-![img](D:\Java\笔记\图片\4-2【Nacos配置管理、Feign、Gateway】/L0iFYNF.png)
+![img](..\图片\4-2【Nacos配置管理、Feign、Gateway】/L0iFYNF.png)
 
 接下来我们来实际操作一下，从Nacos中拉取配置，上面我们已经在Nacos中配置时间的打印格式了：
 
@@ -113,7 +113,7 @@ Nacos一方面可以将配置集中管理，另一方可以在配置变更时，
 
    在页面访问，可以看到效果：
 
-   ![image-20210714170449612](D:\Java\笔记\图片\4-2【Nacos配置管理、Feign、Gateway】/image-20210714170449612.png)
+   ![image-20210714170449612](..\图片\4-2【Nacos配置管理、Feign、Gateway】/image-20210714170449612.png)
 
 这样是在Nacos中配置了管理了，但是如果我们在Nacos中修改配置后必须等我们重启之后才能够生效，不会立即生效的。这样根本无法实现配置的热更新。
 
@@ -239,7 +239,7 @@ Nacos一方面可以将配置集中管理，另一方可以在配置变更时，
 
    当nacos、服务本地同时出现相同属性时，优先级有高低之分：
 
-![image-20210714174623557](D:\Java\笔记\图片\4-2【Nacos配置管理、Feign、Gateway】/image-20210714174623557.png)
+![image-20210714174623557](..\图片\4-2【Nacos配置管理、Feign、Gateway】/image-20210714174623557.png)
 
 ## 1.4 搭建Nacos集群
 
@@ -247,13 +247,13 @@ Nacos生产环境下一定要部署为集群状态。
 
 官方给出的Nacos集群图：
 
-![image-20210409210621117](D:\Java\笔记\图片\4-2【Nacos配置管理、Feign、Gateway】\image-20210409210621117.png)
+![image-20210409210621117](..\图片\4-2【Nacos配置管理、Feign、Gateway】\image-20210409210621117.png)
 
 其中包含3个nacos节点，然后一个负载均衡器代理3个Nacos。这里负载均衡器可以使用nginx。
 
 我们计划的集群结构：
 
-![image-20210409211355037](D:\Bprogram\java\黑马程序员\第四阶段\第一篇\day02-SpringCloud02\资料\D:\Java\笔记\图片\4-2【Nacos配置管理、Feign、Gateway】\image-20210409211355037.png)
+![image-20210409211355037](D:\Bprogram\java\黑马程序员\第四阶段\第一篇\day02-SpringCloud02\资料\..\图片\4-2【Nacos配置管理、Feign、Gateway】\image-20210409211355037.png)
 
 搭建集群的基本步骤：
 
@@ -867,7 +867,7 @@ UserController，在user-service中：
 
 2. Feign客户端和Controller都集成改接口
 
-   ![image-20210714190640857](D:\Java\笔记\图片\4-2【Nacos配置管理、Feign、Gateway】/image-20210714190640857.png)
+   ![image-20210714190640857](..\图片\4-2【Nacos配置管理、Feign、Gateway】/image-20210714190640857.png)
 
 优点：简单；实现了代码共享
 
@@ -879,7 +879,7 @@ UserController，在user-service中：
 
 例如，将UserClient、User、Feign的默认配置都抽取到一个feign-api包中，所有微服务引用该依赖包，即可直接使用。
 
-![image-20210714214041796](D:\Java\笔记\图片\4-2【Nacos配置管理、Feign、Gateway】/image-20210714214041796.png)
+![image-20210714214041796](..\图片\4-2【Nacos配置管理、Feign、Gateway】/image-20210714214041796.png)
 
 ### 基于抽取的最佳实践
 
@@ -916,7 +916,7 @@ UserController，在user-service中：
 
    重启后，发现服务报错了：
 
-   ![image-20210714205623048](D:\Java\笔记\图片\4-2【Nacos配置管理、Feign、Gateway】/image-20210714205623048.png)
+   ![image-20210714205623048](..\图片\4-2【Nacos配置管理、Feign、Gateway】/image-20210714205623048.png)
 
    这是因为UserClient现在在cn.itcast.feign.clients包下，而order-service的`@EnableFeignClients`注解是在cn.itcast.order包下，不在同一个包，无法扫描到UserClient。
 
@@ -953,7 +953,7 @@ Gateway网关是我们服务的守门神，所有微服务的统一入口。
 
 架构图如下：
 
-![image-20210714210131152](D:\Java\笔记\图片\4-2【Nacos配置管理、Feign、Gateway】/image-20210714210131152.png)
+![image-20210714210131152](..\图片\4-2【Nacos配置管理、Feign、Gateway】/image-20210714210131152.png)
 
 在SpringCloud中网关的实现包括两种：gateway和zuul。
 
@@ -1037,7 +1037,7 @@ Zuul是基于Servlet的实现，属于阻塞式编程。而SpringCloudGateway则
 
    整个访问的流程如下：
 
-   ![image-20210714211742956](D:\Java\笔记\图片\4-2【Nacos配置管理、Feign、Gateway】/image-20210714211742956.png)
+   ![image-20210714211742956](..\图片\4-2【Nacos配置管理、Feign、Gateway】/image-20210714211742956.png)
 
 网关搭建步骤：
 
@@ -1087,7 +1087,7 @@ Path=/user/**的含义：路径是以/user开头的就认为是符合的。
 
 GatewayFilter是网关中提供的一种过滤器，可以对进入网关的请求和微服务返回的响应做处理：
 
-![image-20210714212312871](D:\Java\笔记\图片\4-2【Nacos配置管理、Feign、Gateway】/image-20210714212312871.png)
+![image-20210714212312871](..\图片\4-2【Nacos配置管理、Feign、Gateway】/image-20210714212312871.png)
 
 ### 路由过滤器的种类
 
@@ -1244,7 +1244,7 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
 
 请求路由后，会将当前路由过滤器和DefaultFilter、GlobalFilter，合并到一个过滤器链（集合）中，排序后依次执行每个过滤器：
 
-![image-20210714214228409](D:\Java\笔记\图片\4-2【Nacos配置管理、Feign、Gateway】/image-20210714214228409.png)
+![image-20210714214228409](..\图片\4-2【Nacos配置管理、Feign、Gateway】/image-20210714214228409.png)
 
 排序的规则是什么呢？
 
@@ -1277,13 +1277,13 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
 
 找到课前资料的页面文件：
 
-![image-20210714215713563](D:\Java\笔记\图片\4-2【Nacos配置管理、Feign、Gateway】/image-20210714215713563.png)
+![image-20210714215713563](..\图片\4-2【Nacos配置管理、Feign、Gateway】/image-20210714215713563.png)
 
 放入tomcat或者nginx这样的web服务器中，启动并访问。
 
 可以在浏览器控制台看到下面的错误：
 
-![image-20210714215832675](D:\Java\笔记\图片\4-2【Nacos配置管理、Feign、Gateway】/image-20210714215832675.png)
+![image-20210714215832675](..\图片\4-2【Nacos配置管理、Feign、Gateway】/image-20210714215832675.png)
 
 从localhost:8090访问localhost:10010，端口不同，显然是跨域的请求。
 

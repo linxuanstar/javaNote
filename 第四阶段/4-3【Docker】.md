@@ -13,7 +13,7 @@
 
 - 开发、测试、生产环境有差异
 
-<img src="D:\Java\笔记\图片\4-3【Docker】/image-20210731141907366.png" alt="image-20210731141907366" style="zoom:25%;" />
+<img src="..\图片\4-3【Docker】/image-20210731141907366.png" alt="image-20210731141907366" style="zoom:25%;" />
 
 例如一个项目中，部署时需要依赖于node.js、Redis、RabbitMQ、MySQL等，这些服务部署时所需要的函数库、依赖项各不相同，甚至会有冲突。给部署带来了极大的困难。
 
@@ -27,7 +27,7 @@ Docker为了解决依赖的兼容问题的，采用了两个手段：
 
 - 将每个应用放到一个隔离**容器**去运行，避免互相干扰
 
-<img src="D:\Java\笔记\图片\4-3【Docker】/image-20210731142219735.png" alt="image-20210731142219735" style="zoom:25%;" />
+<img src="..\图片\4-3【Docker】/image-20210731142219735.png" alt="image-20210731142219735" style="zoom:25%;" />
 
 这样打包好的应用包中，既包含应用本身，也保护应用所需要的Libs、Deps，无需再操作系统上安装这些，自然就不存在不同应用之间的兼容问题了。
 
@@ -37,7 +37,7 @@ Docker为了解决依赖的兼容问题的，采用了两个手段：
 
 要解决不同操作系统环境差异问题，必须先了解操作系统结构。以一个Ubuntu操作系统为例，结构如下：
 
-<img src="D:\Java\笔记\图片\4-3【Docker】/image-20210731143401460.png" alt="image-20210731143401460" style="zoom:25%;" />
+<img src="..\图片\4-3【Docker】/image-20210731143401460.png" alt="image-20210731143401460" style="zoom:25%;" />
 
 结构包括：
 
@@ -53,18 +53,18 @@ Docker为了解决依赖的兼容问题的，采用了两个手段：
 
 Ubuntu和CentOSpringBoot都是基于Linux内核，无非是系统应用不同，提供的函数库有差异：
 
-<img src="D:\Java\笔记\图片\4-3【Docker】/image-20210731144304990.png" alt="image-20210731144304990" style="zoom:25%;" />
+<img src="..\图片\4-3【Docker】/image-20210731144304990.png" alt="image-20210731144304990" style="zoom:25%;" />
 
 此时，如果将一个Ubuntu版本的MySQL应用安装到CentOS系统，MySQL在调用Ubuntu函数库时，会发现找不到或者不匹配，就会报错了：
 
-<img src="D:\Java\笔记\图片\4-3【Docker】/image-20210731144458680.png" alt="image-20210731144458680" style="zoom:25%;" />
+<img src="..\图片\4-3【Docker】/image-20210731144458680.png" alt="image-20210731144458680" style="zoom:25%;" />
 
 Docker如何解决不同系统环境的问题？
 
 - Docker将用户程序与所需要调用的系统(比如Ubuntu)函数库一起打包
 - Docker运行到不同操作系统时，直接基于打包的函数库，借助于操作系统的Linux内核来运行
 
-<img src="D:\Java\笔记\图片\4-3【Docker】/image-20210731144820638.png" alt="image-20210731144820638" style="zoom:25%;" />
+<img src="..\图片\4-3【Docker】/image-20210731144820638.png" alt="image-20210731144820638" style="zoom:25%;" />
 
 
 
@@ -93,7 +93,7 @@ Docker可以让一个应用在任何操作系统中非常方便的运行。而�
 
 **Docker**仅仅是封装函数库，并没有模拟完整的操作系统，如图：
 
-<img src="D:\Java\笔记\图片\4-3【Docker】/image-20210731145914960.png" alt="image-20210731145914960" style="zoom:25%;" />
+<img src="..\图片\4-3【Docker】/image-20210731145914960.png" alt="image-20210731145914960" style="zoom:25%;" />
 
 对比来看：
 
@@ -136,7 +136,7 @@ Docker中有几个重要的概念：
 
 **容器**呢，就是将这些文件中编写的程序、函数加载到内存中允许，形成进程，只不过要隔离起来。因此一个镜像可以启动多次，形成多个容器进程。
 
-<img src="D:\Java\笔记\图片\4-3【Docker】/image-20210731153059464.png" alt="image-20210731153059464" style="zoom:25%;" />
+<img src="..\图片\4-3【Docker】/image-20210731153059464.png" alt="image-20210731153059464" style="zoom:25%;" />
 
 例如你下载了一个QQ，如果我们将QQ在磁盘上的运行**文件**及其运行的操作系统依赖打包，形成QQ镜像。然后你可以启动多次，双开、甚至三开QQ，跟多个妹子聊天。
 
@@ -150,7 +150,7 @@ Docker中有几个重要的概念：
 
 我们一方面可以将自己的镜像共享到DockerHub，另一方面也可以从DockerHub拉取镜像：
 
-<img src="D:\Java\笔记\图片\4-3【Docker】/image-20210731153743354.png" alt="image-20210731153743354" style="zoom:25%;" />
+<img src="..\图片\4-3【Docker】/image-20210731153743354.png" alt="image-20210731153743354" style="zoom:25%;" />
 
 ### Docker架构
 
@@ -164,7 +164,7 @@ Docker是一个CS架构的程序，由两部分组成：
 
 如图：
 
-<img src="D:\Java\笔记\图片\4-3【Docker】/image-20210731154257653.png" alt="image-20210731154257653" style="zoom:25%;" />
+<img src="..\图片\4-3【Docker】/image-20210731154257653.png" alt="image-20210731154257653" style="zoom:25%;" />
 
 ## 1.4.安装Docker
 
@@ -256,7 +256,7 @@ sudo systemctl restart docker
 
 例如：mysql:5.7。这里的mysql就是repository，5.7就是tag，合一起就是镜像名称，代表5.7版本的MySQL镜像。
 
-![image-20210731155649535](D:\Java\笔记\图片\4-3【Docker】/image-20210731155649535.png)
+![image-20210731155649535](..\图片\4-3【Docker】/image-20210731155649535.png)
 
 常见的镜像操作命令：
 
@@ -289,7 +289,7 @@ sudo systemctl restart docker
 
 容器操作的命令如图：
 
-<img src="D:\Java\笔记\图片\4-3【Docker】/image-20210731161950495.png" alt="image-20210731161950495" style="zoom: 33%;" />
+<img src="..\图片\4-3【Docker】/image-20210731161950495.png" alt="image-20210731161950495" style="zoom: 33%;" />
 
 容器保护三个状态：
 
@@ -332,7 +332,7 @@ docker run --name containerName -p 80:80 -d nginx
 
 默认情况下，容器是隔离环境，我们直接访问宿主机的80端口，肯定访问不到容器中的nginx。现在，将容器的80与宿主机的80关联起来，当我们访问宿主机的80端口时，就会被映射到容器的80，这样就能访问到nginx了：
 
-<img src="D:\Java\笔记\图片\4-3【Docker】/image-20210731163255863.png" alt="image-20210731163255863" style="zoom: 33%;" />
+<img src="..\图片\4-3【Docker】/image-20210731163255863.png" alt="image-20210731163255863" style="zoom: 33%;" />
 
 ### 进入容器，修改文件
 
@@ -408,13 +408,13 @@ sed -i -e 's#Welcome to nginx#林炫你好#g' -e 's#<head>#<head><meta charset="
 
 这就是因为容器与数据（容器内文件）耦合带来的后果。
 
-![image-20210731172440275](D:\Java\笔记\图片\4-3【Docker】/image-20210731172440275.png)
+![image-20210731172440275](..\图片\4-3【Docker】/image-20210731172440275.png)
 
 要解决这个问题，必须将数据与容器解耦，这就要用到数据卷了。
 
 **数据卷（volume）**是一个虚拟目录，指向宿主机文件系统中的某个目录。
 
-![image-20210731173541846](D:\Java\笔记\图片\4-3【Docker】/image-20210731173541846.png)
+![image-20210731173541846](..\图片\4-3【Docker】/image-20210731173541846.png)
 
 一旦完成数据卷挂载，对容器的一切操作都会作用在数据卷对应的宿主机目录了。
 
@@ -527,7 +527,7 @@ docker run \
 
 如图：
 
-![image-20210731175155453](D:\Java\笔记\图片\4-3【Docker】/image-20210731175155453.png)
+![image-20210731175155453](..\图片\4-3【Docker】/image-20210731175155453.png)
 
 **语法**：
 
@@ -559,7 +559,7 @@ docker run的命令中通过 -v 参数挂载文件或目录到容器中：
 
 我们以MySQL为例，来看看镜像的组成结构：
 
-<img src="D:\Java\笔记\图片\4-3【Docker】/image-20210731175806273.png" alt="image-20210731175806273" style="zoom: 25%;" />
+<img src="..\图片\4-3【Docker】/image-20210731175806273.png" alt="image-20210731175806273" style="zoom: 25%;" />
 
 简单来说，镜像就是在系统函数库、运行环境基础上，添加应用程序文件、配置文件、依赖文件等组合，然后编写好启动脚本打包在一起形成的文件。
 
@@ -575,7 +575,7 @@ docker run的命令中通过 -v 参数挂载文件或目录到容器中：
 
 **Dockerfile**就是一个文本文件，其中包含一个个的**指令(Instruction)**，用指令来说明要执行什么操作来构建镜像。每一个指令都会形成一层Layer。
 
-![image-20210731180321133](D:\Java\笔记\图片\4-3【Docker】/image-20210731180321133.png)
+![image-20210731180321133](..\图片\4-3【Docker】/image-20210731180321133.png)
 
 更新详细语法说明，请参考官网文档： https://docs.docker.com/engine/reference/builder
 
@@ -675,7 +675,7 @@ docker run的命令中通过 -v 参数挂载文件或目录到容器中：
 
 Docker Compose可以基于Compose文件帮我们快速的部署分布式应用，而无需手动一个个创建和运行容器！
 
-<img src="D:\Java\笔记\图片\4-3【Docker】/image-20210731180921742.png" alt="image-20210731180921742" style="zoom: 33%;" />
+<img src="..\图片\4-3【Docker】/image-20210731180921742.png" alt="image-20210731180921742" style="zoom: 33%;" />
 
 Compose文件是一个文本文件，通过指令定义集群中的每个容器如何运行。格式如下：
 
