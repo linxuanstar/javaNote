@@ -1767,6 +1767,3 @@ private static int inflationThreshold = 15;Copy
 
 [![img](https://nyimapicture.oss-cn-beijing.aliyuncs.com/img/20200614135011.png)](https://nyimapicture.oss-cn-beijing.aliyuncs.com/img/20200614135011.png)
 
-## 五、内存模型
-
-内存模型内容详见 [JAVA并发 第四章](https://nyimac.gitee.io/2020/06/08/并发编程/#四、共享模型之内存)
