@@ -728,17 +728,23 @@ for (int j = 0; j < 10000; j ++) {
 
 ### 6.2.5 StringTable调优
 
-- 因为StringTable是由HashTable实现的，所以可以**适当增加HashTable桶的个数**，来减少字符串放入串池所需要的时间
+桶，可以理解为哈希表中的key，每一个key对应一个桶，桶中放着链表。哈希是空间换时间的。
 
-  ```
-  -XX:StringTableSize=xxxxCopy
-  ```
+![](D:\Java\笔记\图片\5-1【jvm】\7-1.png)
 
+StringTable优化：
+
+- 因为StringTable是由HashTable实现的，所以可以**适当增加HashTable桶的个数**，来减少字符串放入串池所需要的时间。
+
+  桶越多就能够拥有更好的哈希分布，减少哈希冲突，可以让串池的效率得到明显的性能提升。
   
+  ```
+-XX:StringTableSize=xxxxCopy
+  ```
 
-- 考虑是否需要将字符串对象入池
+- 考虑是否需要将字符串对象入池，可以通过**intern方法减少重复入池**。
 
-  可以通过**intern方法减少重复入池**
+  如果应用里有大量的字符串，而且这些字符串可能会存在重复的问题，那么可以让字符串入池来减少字符串对象个数，节约堆内存的使用。
 
 # 第七章 直接内存
 
@@ -746,40 +752,58 @@ for (int j = 0; j < 10000; j ++) {
 - 分配回收成本较高，但读写性能高
 - 不受JVM内存回收管理
 
-#### 文件读写流程
+## 7.1 文件读写流程
 
-[![img](https://nyimapicture.oss-cn-beijing.aliyuncs.com/img/20200608150715.png)](https://nyimapicture.oss-cn-beijing.aliyuncs.com/img/20200608150715.png)
+**传统方式**
 
-**使用了DirectBuffer**
+Java本身不具备磁盘的读写能力，要想实现磁盘读写就必须调用操作系统提供的函数。在这里CPU的状态将从用户态切换到内核态。
 
-[![img](https://nyimapicture.oss-cn-beijing.aliyuncs.com/img/20200608150736.png)](https://nyimapicture.oss-cn-beijing.aliyuncs.com/img/20200608150736.png)
+在内核状态时，读取内容后，会在操作系统内存中划出一块儿缓冲区，称之为系统缓冲区，磁盘的内容先读到系统缓冲区中。由于Java代码是不能够操作系统缓冲区的，所以Java会在堆内存中分配一块儿Java的缓冲区。
 
-直接内存是操作系统和Java代码**都可以访问的一块区域**，无需将代码从系统内存复制到Java堆内存，从而提高了效率
+Java的代码要想访问到数据，必须将系统缓冲区的数据间接读到Java缓冲区，然后把CPU的状态切换到用户态，再调用Java的输出流的写入操作，就这样反复进行读写读写，把整个文件复制到目标位置。
 
-#### 释放原理
+由于有两块儿内存，两块儿缓冲区，读取的时候会将数据存两份，这样就造成了一种不必要的数据的复制，效率因而不是很高。
+
+![](D:\Java\笔记\图片\5-1【jvm】\8-1.png)
+
+**用directBuffer时的过程**
+
+直接内存是操作系统和Java代码都可以访问的一块区域，无需将代码从系统内存复制到Java堆内存，从而提高了效率。
+
+```apl
+ByteBuffer byteBuffer = ByteBuffer.allocateDirect(_100Mb);
+```
+
+当ByteBuffer把allocateDirect这个方法调用以后会在操作系统这边划出一块缓冲区，即direct memory，这段区域与之前不一样的地方在于这个操作系统划出来的内存Java代码可以直接访问。系统可以访问，Java代码也可以访问，这段缓冲区就是直接内存。
+
+磁盘文件读到直接内存后，Java代码直接访问直接内存，比刚才的传统代码少了一次缓冲区里的复制操作，所以速度得到了成倍的提高。这也是直接内存带来的好处，他适合做文件的这种io操作。
+
+![](D:\Java\笔记\图片\5-1【jvm】\8-2.png)
+
+## 7.2 释放原理
 
 直接内存的回收不是通过JVM的垃圾回收来释放的，而是通过**unsafe.freeMemory**来手动释放
 
 通过
 
-```
+```java
 //通过ByteBuffer申请1M的直接内存
-ByteBuffer byteBuffer = ByteBuffer.allocateDirect(_1M);Copy
+ByteBuffer byteBuffer = ByteBuffer.allocateDirect(_1M);
 ```
 
 申请直接内存，但JVM并不能回收直接内存中的内容，它是如何实现回收的呢？
 
 **allocateDirect的实现**
 
-```
+```java
 public static ByteBuffer allocateDirect(int capacity) {
     return new DirectByteBuffer(capacity);
-}Copy
+}
 ```
 
 DirectByteBuffer类
 
-```
+```java
 DirectByteBuffer(int cap) {   // package-private
    
     super(-1, 0, cap, cap);
@@ -802,35 +826,36 @@ DirectByteBuffer(int cap) {   // package-private
     } else {
         address = base;
     }
-    cleaner = Cleaner.create(this, new Deallocator(base, size, cap)); //通过虚引用，来实现直接内存的释放，this为虚引用的实际对象
+    // 通过虚引用，来实现直接内存的释放，this为虚引用的实际对象
+    cleaner = Cleaner.create(this, new Deallocator(base, size, cap)); 
     att = null;
-}Copy
+}
 ```
 
 这里调用了一个Cleaner的create方法，且后台线程还会对虚引用的对象监测，如果虚引用的实际对象（这里是DirectByteBuffer）被回收以后，就会调用Cleaner的clean方法，来清除直接内存中占用的内存
 
-```
+```java
 public void clean() {
-       if (remove(this)) {
-           try {
-               this.thunk.run(); //调用run方法
-           } catch (final Throwable var2) {
-               AccessController.doPrivileged(new PrivilegedAction<Void>() {
-                   public Void run() {
-                       if (System.err != null) {
-                           (new Error("Cleaner terminated abnormally", var2)).printStackTrace();
-                       }
+    if (remove(this)) {
+        try {
+            this.thunk.run(); //调用run方法
+        } catch (final Throwable var2) {
+            AccessController.doPrivileged(new PrivilegedAction<Void>() {
+                public Void run() {
+                    if (System.err != null) {
+                        (new Error("Cleaner terminated abnormally", var2)).printStackTrace();
+                    }
 
-                       System.exit(1);
-                       return null;
-                   }
-               });
-           }Copy
+                    System.exit(1);
+                    return null;
+                }
+            });
+        }
 ```
 
 对应对象的run方法
 
-```
+```java
 public void run() {
     if (address == 0) {
         // Paranoia
@@ -839,10 +864,10 @@ public void run() {
     unsafe.freeMemory(address); //释放直接内存中占用的内存
     address = 0;
     Bits.unreserveMemory(size, capacity);
-}Copy
+}
 ```
 
-##### 直接内存的回收机制总结
+回收机制总结：
 
 - 使用了Unsafe类来完成直接内存的分配回收，回收需要主动调用freeMemory方法
 - ByteBuffer的实现内部使用了Cleaner（虚引用）来检测ByteBuffer。一旦ByteBuffer被垃圾回收，那么会由ReferenceHandler来调用Cleaner的clean方法调用freeMemory来释放内存
