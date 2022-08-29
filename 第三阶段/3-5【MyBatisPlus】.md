@@ -344,11 +344,11 @@ MP的特性:
    
    * `@EqualsAndHashCode`:为模型类的属性提供equals和hashcode方法
    
-   * <font color = "red">`@Data`:是个组合注解，包含上面的注解的功能</font>
+   * `@Data`:**是个组合注解，包含上面的注解的功能**
    
-   * <font color = "red">`@NoArgsConstructor`:提供一个无参构造函数</font>
+   * `@NoArgsConstructor`:提供一个无参构造函数
    
-   * <font color = "red">`@AllArgsConstructor`:提供一个包含所有参数的构造函数</font>
+   * `@AllArgsConstructor`:提供一个包含所有参数的构造函数
    
    Lombok的注解还有很多，上面标红的三个是比较常用的，其他的后期用到了，再去补充学习。
    

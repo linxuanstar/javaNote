@@ -1,18 +1,12 @@
-# 第一章 JDBC基本概念
-
-<!--P540 1.26-->
+# 第一章 JDBC快速入门
 
 概念：`java database connectivity` java数据库连接，java语言操作数据库。
 
-<font color = "red">JDBC本质：其实就是官方（sun公司）定义的一套操作所有关系型数据库的规则，即接口。</font>各个数据库厂商去实现这套接口，提供数据库驱动jar包。我们可以使用这套接口（JDBC）编程，真正执行的代码是驱动jar包中的实现类。
+JDBC本质：其实就是官方（sun公司）定义的一套操作所有关系型数据库的规则，即接口。各个数据库厂商去实现这套接口，提供数据库驱动jar包。我们可以使用这套接口（JDBC）编程，真正执行的代码是驱动jar包中的实现类。
 
-# 第二章 JDBC快速入门
+## 1.1 连接数据库步骤
 
-## 2.1 连接数据库步骤
-
-<!--P541-->
-
-### 步骤
+步骤如下：
 
 1. 导入驱动jar包，`mysql-connector-java-5.1.37-bin.jar`。
 
@@ -32,13 +26,7 @@
 
 8. 释放资源
 
-### 源代码
-
 ```java
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.Statement;
-
 public class Demo01Jdbc {
 
     public static void main(String[] args) throws Exception {
@@ -63,21 +51,15 @@ public class Demo01Jdbc {
 }
 ```
 
-### 各个对象
+- `DriverManage`：驱动管理对象
+- `Connection`：数据库连接对象
+- `Statement`：执行sql的对象
+- `ResultSet`：结果集对象
+- `PreparedStatement`：执行sql的对象
 
-<!--P542-->
+## 1.2 DriverManage
 
-1. `DriverManage`：驱动管理对象
-2. `Connection`：数据库连接对象
-3. `Statement`：执行sql的对象
-4. `ResultSet`：结果集对象
-5. `PreparedStatement`：执行sql的对象
-
-## 2.2 DriverManage功能
-
-`DriverManage`：驱动管理对象
-
-**注册驱动：告诉程序该使用哪一个数据库驱动jar包**
+`DriverManage`：驱动管理对象。注册驱动，告诉程序该使用哪一个数据库驱动jar包
 
 * `static void registerDriver(Driver driver)`：注册与给定的驱动程序`DriverManager`。
 
@@ -101,27 +83,17 @@ public class Demo01Jdbc {
 
 **获取数据库连接**
 
-<!--P543-->
+`static Connection getConnection(String url, String user, String password)`：获取数据库连接。
 
-* `static Connection getConnection(String url, String user, String password)`
+参数如下：
 
-* 参数
+- `url`：指定连接的路径。`jdbc:mysql://IP地址(域名):端口号/数据库名称`，例如`jdbc:mysql://localhost:3306/day3`
+- `user`：用户名
+- `password`：密码
 
-  `url`：指定连接的路径
+> 如果连接的是本机mysql服务器，并且mysql服务默认端口是3306，那么URL可以简写成为：`jdbc:mysql:///数据库名称`   **三个杠**
 
-  * 语法：`jdbc:mysql://IP地址(域名):端口号/数据库名称`
-
-  * 例子：`jdbc:mysql://localhost:3306/day3`
-
-    > 备注：如果连接的是本机mysql服务器，并且mysql服务默认端口是3306，那么URL可以简写成为：`jdbc:mysql:///数据库名称`   三个杠
-
-  `user`：用户名
-
-  `password`：密码
-
-## 2.3 Connection功能
-
-<!--P544-->
+## 1.3 Connection
 
 `Connection`：数据库连接对象
 
@@ -161,11 +133,9 @@ public class Demo01Jdbc {
 }
 ```
 
-## 2.4 Statement功能
+## 1.4 Statement
 
 `Statement`：执行sql的对象
-
-<!--P545-->
 
 **执行sql**
 
@@ -179,11 +149,9 @@ public class Demo01Jdbc {
 
   返回值：结果集。
 
-## 2.5 JDBC练习
+## 1.5 JDBC练习
 
 **insert语句**
-
-<!--P546-->
 
 ```java
 public class Demo02JDBC {
@@ -237,17 +205,9 @@ public class Demo02JDBC {
 }
 ```
 
-**DDL创建表语句**
-
-```sql
-String sql = "create table person(id int, name varchar(20))";
-```
-
-## 2.6 ResultSet功能
+## 1.6 ResultSet功能
 
 `ResultSet`：结果集对象，封装查询结果
-
-<!--P549-->
 
 `next()`：游标向下移动一行。
 
@@ -259,8 +219,6 @@ String sql = "create table person(id int, name varchar(20))";
   2. `String`：代表列的名称。               如：`getDouble("balance")`
 
 ```java
-import java.sql.*;
-
 public class Demo06JDBC {
     public static void main(String[] args) {
 
@@ -280,13 +238,14 @@ public class Demo06JDBC {
             rs = statement.executeQuery(sql);
             // 6.处理结果
             // 让游标向下移动一行
-            rs.next();
-            // 获取数据
-            int id = rs.getInt(1);
-            String name = rs.getString("name");
-            double balance = rs.getDouble(3);
+            while(rs.next()) {
+                // 获取数据
+                int id = rs.getInt(1);
+                String name = rs.getString("name");
+                double balance = rs.getDouble(3);
 
-            System.out.println(id + "---" + name + "---" + balance);
+                System.out.println(id + "---" + name + "---" + balance);
+            };
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException throwables) {
@@ -321,23 +280,6 @@ public class Demo06JDBC {
 }
 ```
 
-<!--P550-->
-
-由于我们是要查看account表的全部内容的，可是上面的代码我们执行后只查看了一行，所以我们可以使用while循环
-
-```java
-// 6.处理结果
-// 让游标向下移动一行
-while(rs.next()) {
-    // 获取数据
-    int id = rs.getInt(1);
-    String name = rs.getString("name");
-    double balance = rs.getDouble(3);
-
-    System.out.println(id + "---" + name + "---" + balance);
-};
-```
-
 **练习**
 
 <!--P551-->
@@ -347,6 +289,8 @@ while(rs.next()) {
 ```java
 import java.util.Date;
 
+// 导入一个Lambok的注解 后面MybatisPlus会讲到 等于导入了Get Set方法，toString、equals和hashcode方法
+@Data
 public class Emp {
     private int id;
     private String ename;
@@ -356,107 +300,10 @@ public class Emp {
     private double salary;
     private double bonus;
     private int dept_id;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getEname() {
-        return ename;
-    }
-
-    public void setEname(String ename) {
-        this.ename = ename;
-    }
-
-    public int getJob_id() {
-        return job_id;
-    }
-
-    public void setJob_id(int job_id) {
-        this.job_id = job_id;
-    }
-
-    public int getMgr() {
-        return mgr;
-    }
-
-    public void setMgr(int mgr) {
-        this.mgr = mgr;
-    }
-
-    public Date getJoindate() {
-        return joindate;
-    }
-
-    public void setJoindate(Date joindate) {
-        this.joindate = joindate;
-    }
-
-    public double getSalary() {
-        return salary;
-    }
-
-    public void setSalary(double salary) {
-        this.salary = salary;
-    }
-
-    public double getBonus() {
-        return bonus;
-    }
-
-    public void setBonus(double bonus) {
-        this.bonus = bonus;
-    }
-
-    public int getDept_id() {
-        return dept_id;
-    }
-
-    public void setDept_id(int dept_id) {
-        this.dept_id = dept_id;
-    }
-
-    @Override
-    public String toString() {
-        return "emp{" +
-                "id=" + id +
-                ", ename='" + ename + '\'' +
-                ", job_id=" + job_id +
-                ", mgr=" + mgr +
-                ", joindate=" + joindate +
-                ", salary=" + salary +
-                ", bonus=" + bonus +
-                ", dept_id=" + dept_id +
-                '}';
-    }
-
-    public Emp(int id, String ename, int job_id, int mgr, Date joindate, double salary, double bonus, int dept_id) {
-        this.id = id;
-        this.ename = ename;
-        this.job_id = job_id;
-        this.mgr = mgr;
-        this.joindate = joindate;
-        this.salary = salary;
-        this.bonus = bonus;
-        this.dept_id = dept_id;
-    }
-
-    public Emp() {
-    }
-  
 }
 ```
 
 ```java
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-
 public class Demo01TestJDBC {
 
     public static void main(String[] args) {
@@ -545,13 +392,13 @@ public class Demo01TestJDBC {
 }
 ```
 
-## 2.7 PreparedStatement功能
+## 1.7 PreparedStatement功能
 
 `PreparedStatement`：执行sql的对象
 
 <!--P554-->
 
-### SQL注入问题
+### 1.7.1 SQL注入问题
 
 在拼接SQL的时候，有一些SQL的特殊关键字参与字符串的拼接。会造成安全性问题
 
@@ -569,7 +416,7 @@ public class Demo01TestJDBC {
 > 1. 可以防止SQL注入
 > 2. 效率更高
 
-### 解决SQL注入
+### 1.7.2 解决SQL注入
 
 1. 导入驱动jar包
 
@@ -650,9 +497,9 @@ public class Demo02JDBC {
 }
 ```
 
-# 第三章 JDBC接口和类
+# 第二章 JDBC接口和类
 
-## 3.1 抽取JDBC工具类 JDBCUtils
+## 2.1 抽取JDBC工具类 JDBCUtils
 
 <!--P552-->
 
@@ -664,7 +511,7 @@ public class Demo02JDBC {
 
 * 解决：创建一个配置文件 `jdbc.properties`
 
-  ```ABAP
+  ```properties
   url = jdbc:mysql:///day3
   user = root
   password = root
@@ -835,11 +682,7 @@ public class Demo02JDBC {
   }
   ```
 
-## 3.2 练习
-
-<!--P553-->
-
-### JDBC实现登陆案例
+## 2.2 JDBC实现登陆案例
 
 通过键盘录入用户名称和密码，然后判断用户是否登陆成功。
 
@@ -913,7 +756,7 @@ public class Demo02JDBC {
    ```
 
 
-## 3.3 JDBC控制事务
+## 2.3 JDBC控制事务
 
 <!--P555-->
 
@@ -998,24 +841,18 @@ public class Demo03JDBC {
 
 <!--P557-->
 
-# 第四章 数据库连接池
-
-<!--P558 1.28-->
-
-## 4.1 概念
+# 第三章 数据库连接池
 
 数据库连接池：其实就是一个容器(集合)，存放数据库连接的容器。
 
-> 当系统初始化好后，容器被创建，容器中会申请一些连接对象，当用户来访问数据库的时候，从容器中，获取连接对象，用户访问完之后，会将连接对象归还给容器。
+当系统初始化好后，容器被创建，容器中会申请一些连接对象，当用户来访问数据库的时候，从容器中，获取连接对象，用户访问完之后，会将连接对象归还给容器。
 
-## 4.2 好处
+好处如下：
 
 1. 节约资源
 2. 用户访问高效
 
-## 4.3 实现
-
-<!--P559-->
+## 3.1 实现
 
 1. 标准接口：`DataSource`    `java.sql`包下面的
 
@@ -1029,11 +866,7 @@ public class Demo03JDBC {
    1. `C3P0`：数据库连接池技术
    2. `Druid`：数据库连接池实现技术，由阿里巴巴提供
 
-## 4.4 C3P0 数据库连接池技术
-
-<!--P560-->
-
-<!--P561-->
+## 3.2 C3P0 数据库连接池技术
 
 步骤
 
@@ -1069,9 +902,7 @@ public class Demo01C3p0 {
 }
 ```
 
-## 4.5 Druid连接池
-
-<!--P562-->
+## 3.3 Druid连接池
 
 步骤：
 
@@ -1109,7 +940,7 @@ public class Demo01Druid {
 }
 ```
 
-## 4.6 Druid 工具类
+## 3.4  Druid 工具类
 
 <!--P563-->
 
@@ -1217,7 +1048,7 @@ public class Demo02Druid {
 }
 ```
 
-# 第五章 Spring JDBC
+# 第四章 Spring JDBC
 
 <!--P565-->
 
