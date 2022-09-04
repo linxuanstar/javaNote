@@ -2,7 +2,7 @@
 
 ## 1.1 概述
 
-<font color = "red">`AJAX` (Asynchronous JavaScript And XML)：异步的 JavaScript 和 XML。</font>
+`AJAX` (Asynchronous JavaScript And XML)：异步的 JavaScript 和 XML。
 
 我们先来说概念中的 `JavaScript` 和 `XML`，`JavaScript` 表明该技术和前端相关；`XML` 是指以此进行数据交换。而这两个我们之前都学习过。
 
@@ -16,21 +16,21 @@ AJAX 作用有以下两方面：
 
    如上图，`Servlet` 调用完业务逻辑层后将数据存储到域对象中，然后跳转到指定的 `jsp` 页面，在页面上使用 `EL表达式` 和 `JSTL` 标签库进行数据的展示。
 
-   而我们学习了AJAX 后，就可以<font color = "red">使用AJAX和服务器进行通信，以达到使用 HTML+AJAX来替换JSP页面</font>了。
+   而我们学习了AJAX 后，就可以使用AJAX和服务器进行通信，以达到使用 HTML+AJAX来替换JSP页面了。
 
    如下图，浏览器发送请求servlet，servlet 调用完业务逻辑层后将数据直接响应回给浏览器页面，页面使用 HTML 来进行数据展示。
 
    <img src="..\图片\2-22【AJAX、Json】\image-20210823235006847.png" />
 
-2. **异步交互**：可以在<font color = "red">不重新加载整个页面</font>的情况下，与服务器交换数据并<font color = "red">更新部分网页</font>的技术，如：搜索联想、用户名是否可用校验，等等…
+2. **异步交互**：可以在不重新加载整个页面的情况下，与服务器交换数据并更新部分网页的技术，如：搜索联想、用户名是否可用校验，等等…
 
    <img src="..\图片\2-22【AJAX、Json】\image-20210824000706401.png" style="zoom:80%;" />
 
-   上图所示的效果我们经常见到，在我们输入一些关键字（例如 `奥运`）后就会在下面联想出相关的内容，而联想出来的这部分数据肯定是存储在百度的服务器上，而我们并没有看出页面重新刷新，这就是 <font color = "red">更新局部页面</font> 的效果。再如下图：
+   上图所示的效果我们经常见到，在我们输入一些关键字（例如 `奥运`）后就会在下面联想出相关的内容，而联想出来的这部分数据肯定是存储在百度的服务器上，而我们并没有看出页面重新刷新，这就是 更新局部页面 的效果。再如下图：
 
    <img src="..\图片\2-22【AJAX、Json】\image-20210824001015706.png" style="zoom:80%;" />
 
-   我们在用户名的输入框输入用户名，当输入框一失去焦点，如果用户名已经被占用就会在下方展示提示的信息；在这整个过程中也没有页面的刷新，只是在局部展示出了提示信息，这就是 <font color = "red">更新局部页面</font> 的效果。
+   我们在用户名的输入框输入用户名，当输入框一失去焦点，如果用户名已经被占用就会在下方展示提示的信息；在这整个过程中也没有页面的刷新，只是在局部展示出了提示信息，这就是 更新局部页面 的效果。
 
 知道了局部刷新后，接下来我们再聊聊同步和异步:
 
@@ -350,7 +350,7 @@ axios 使用是比较简单的，分为以下两步：
 * `url` 属性：用来书写请求的资源路径。如果是 `get` 请求，需要将请求参数拼接到路径的后面，格式为： `url?参数名=参数值&参数名2=参数值2`。
 * `data` 属性：作为请求体被发送的数据。也就是说如果是 `post` 请求的话，数据需要作为 `data` 属性的值。
 
-`then()` 需要传递一个匿名函数。我们将 `then()` 中传递的匿名函数称为 <font color = "red">回调函数</font>，意思是该匿名函数在发送请求时不会被调用，而是在成功响应后调用的函数。而该回调函数中的 `resp` 参数是对响应的数据进行封装的对象，通过 `resp.data` 可以获取到响应的数据。
+`then()` 需要传递一个匿名函数。我们将 `then()` 中传递的匿名函数称为 回调函数，意思是该匿名函数在发送请求时不会被调用，而是在成功响应后调用的函数。而该回调函数中的 `resp` 参数是对响应的数据进行封装的对象，通过 `resp.data` 可以获取到响应的数据。
 
 ## 2.2  快速入门
 
@@ -486,7 +486,7 @@ axios.post("http://localhost:8080/ajax-demo/axiosServlet","username=zhangsan").t
 
 ## 3.1  概述
 
-<font color = "red">概念：`JavaScript Object Notation`。JavaScript 对象表示法。</font>
+概念：`JavaScript Object Notation`。JavaScript 对象表示法。
 
 如下是 `JavaScript` 对象的定义格式：
 
@@ -510,11 +510,11 @@ axios.post("http://localhost:8080/ajax-demo/axiosServlet","username=zhangsan").t
 
 通过上面 js 对象格式和 json 格式进行对比，发现两个格式特别像。只不过 js 对象中的属性名可以使用引号（可以是单引号，也可以是双引号）；而 `json` 格式中的键要求必须使用双引号括起来，这是 `json` 格式的规定。`json` 格式的数据有什么作用呢？
 
-作用：由于其语法格式简单，层次结构鲜明，现多用于作为<font color = "red">数据载体</font>，在网络中进行数据传输。如下图所示就是服务端给浏览器响应的数据，这个数据比较简单，如果现需要将 JAVA 对象中封装的数据响应回给浏览器的话，应该以何种数据传输呢？
+作用：由于其语法格式简单，层次结构鲜明，现多用于作为数据载体，在网络中进行数据传输。如下图所示就是服务端给浏览器响应的数据，这个数据比较简单，如果现需要将 JAVA 对象中封装的数据响应回给浏览器的话，应该以何种数据传输呢？
 
 <img src="..\图片\2-22【AJAX、Json】\image-20210830232718632.png" style="zoom:80%;" />
 
-大家还记得 `ajax` 的概念吗？ 是 <font color = "red">异步的 JavaScript 和 xml</font>。这里的 xml就是以前进行数据传递的方式，如下：
+大家还记得 `ajax` 的概念吗？ 是 异步的 JavaScript 和 xml。这里的 xml就是以前进行数据传递的方式，如下：
 
 ```xml
 <student>
@@ -787,7 +787,7 @@ SELECT * FROM tb_brand;
 在 `com.linxuan.web` 包下创建名为 `SelectAllServlet` 的 `servlet`，具体的逻辑如下：
 
 * 调用 service 的 `selectAll()` 方法进行查询所有的逻辑处理
-* 将查询到的集合数据转换为 json 数据。我们将此过程称为 <font color = "red">序列化</font>；如果是将 json 数据转换为 Java 对象，我们称之为 <font color = "red">反序列化</font>
+* 将查询到的集合数据转换为 json 数据。我们将此过程称为 序列化；如果是将 json 数据转换为 Java 对象，我们称之为 反序列化
 * 将 json 数据响应回给浏览器。这里一定要设置响应数据的类型及字符集 `response.setContentType("text/json;charset=utf-8");`
 
 `SelectAllServlet` 代码如下：

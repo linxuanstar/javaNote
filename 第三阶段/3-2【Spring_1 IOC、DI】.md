@@ -14,20 +14,20 @@ AOP(Aspect Oriented Programming：面向切面编程)为内核。
 
 **Spring的优势**
 
-1. <font color = "red">方便解耦，简化开发</font>
+1. 方便解耦，简化开发
    通过 Spring 提供的 IoC容器，可以将对象间的依赖关系交由 Spring 进行控制，避免硬编码所造成的过度耦合。
    用户也不必再为单例模式类、属性文件解析等这些很底层的需求编写代码，可以更专注于上层的应用。
-2. <font color = "red">AOP 编程的支持</font>
+2. AOP 编程的支持
    通过 Spring的 AOP 功能，方便进行面向切面编程，许多不容易用传统 OOP 实现的功能可以通过 AOP 轻松实现。
-3. <font color = "red">声明式事务的支持</font>
+3. 声明式事务的支持
    可以将我们从单调烦闷的事务管理代码中解脱出来，通过声明式方式灵活的进行事务管理，提高开发效率和质量。
-4. <font color = "red">方便程序的测试</font>
+4. 方便程序的测试
    可以用非容器依赖的编程方式进行几乎所有的测试工作，测试不再是昂贵的操作，而是随手可做的事情。
-5. <font color = "red">方便集成各种优秀框架</font>
+5. 方便集成各种优秀框架
    Spring对各种优秀框架(Struts、Hibernate、Hessian、Quartz等)的支持。
-6. <font color = "red">降低 JavaEE API 的使用难度</font>
+6. 降低 JavaEE API 的使用难度
    Spring对 JavaEE API(如 JDBC、JavaMail、远程调用等)进行了薄薄的封装层，使这些 API 的使用难度大为降低。
-7. <font color = "red">Java 源码是经典学习范例</font>
+7. Java 源码是经典学习范例
    Spring的源代码设计精妙、结构清晰、匠心独用，处处体现着大师对Java 设计模式灵活运用以及对 Java技术的高深
    造诣。它的源代码无意是 Java 技术的最佳实践的范例。
 
@@ -35,7 +35,7 @@ AOP(Aspect Oriented Programming：面向切面编程)为内核。
 
 我们可以看到Spring框架主要的优势是在`简化开发`和`框架整合`上，至于如何实现就是咱们要学习Spring框架的主要内容：
 
-* 简化开发： Spring框架中提供了两个大的核心技术，分别是：<font color = "red">IOC和AOP，AOP又包括事务处理</font>
+* 简化开发： Spring框架中提供了两个大的核心技术，分别是：IOC和AOP，AOP又包括事务处理
 
   1. Spring的简化操作都是基于这两块内容，所以这也是Spring学习中最为重要的两个知识点。
 
@@ -46,7 +46,7 @@ AOP(Aspect Oriented Programming：面向切面编程)为内核。
 
 综上所述，对于Spring的学习，主要学习四块内容：
 
-* <font color = "red">IOC、整合Mybatis(IOC的具体应用)、AOP、声明式事务(AOP的具体应用)</font>
+* IOC、整合Mybatis(IOC的具体应用)、AOP、声明式事务(AOP的具体应用)
 
 ## 1.2 Spring相关概念
 
@@ -104,7 +104,7 @@ AOP(Aspect Oriented Programming：面向切面编程)为内核。
 
   2. AOP层
 
-     * <font color = "red">AOP：面向切面编程，它依赖核心层容器，目的是在不改变原有代码的前提下对其进行功能增强</font>
+     * AOP：面向切面编程，它依赖核心层容器，目的是在不改变原有代码的前提下对其进行功能增强
   
      * `Aspects`：AOP是思想，Aspects是对AOP思想的具体实现
   
@@ -145,14 +145,14 @@ AOP(Aspect Oriented Programming：面向切面编程)为内核。
 
 ![1629723232339](..\图片\3-2【Spring】\1-5.png)
 
-业务层需要调用数据层的方法，就需要在业务层new数据层的对象。如果数据层的实现类发生变化，那么业务层的代码也需要跟着改变，发生变更后，都需要进行编译打包和重部署。所以，现在代码在编写的过程中存在的问题是：<font color = "red">耦合度偏高</font>
+业务层需要调用数据层的方法，就需要在业务层new数据层的对象。如果数据层的实现类发生变化，那么业务层的代码也需要跟着改变，发生变更后，都需要进行编译打包和重部署。所以，现在代码在编写的过程中存在的问题是：耦合度偏高
 
 
 针对这个问题，该如何解决呢？
 
 ![1629724206002](..\图片\3-2【Spring】\1-6.png)
 
-我们就想，如果能把框中的内容给去掉，不就可以降低依赖了么，但是又会引入新的问题，去掉以后程序能运行么？<font color = "red">答案肯定是不行，因为bookDao没有赋值为Null，强行运行就会出空指针异常。</font>
+我们就想，如果能把框中的内容给去掉，不就可以降低依赖了么，但是又会引入新的问题，去掉以后程序能运行么？答案肯定是不行，因为bookDao没有赋值为Null，强行运行就会出空指针异常。
 
 所以现在的问题就是，业务层不想new对象，运行的时候又需要这个对象，该咋办呢？针对这个问题，Spring就提出了一个解决方案：
 
@@ -164,7 +164,7 @@ AOP(Aspect Oriented Programming：面向切面编程)为内核。
 
 * 什么是控制反转呢？
 
-  <font color = "red">使用对象时，由主动new产生对象转换为由外部提供对象，此过程中对象创建控制权由程序转移到外部，此思想称为控制反转。</font>
+  使用对象时，由主动new产生对象转换为由外部提供对象，此过程中对象创建控制权由程序转移到外部，此思想称为控制反转。
 
   业务层要用数据层的类对象，以前是自己`new`的，现在自己不new了，交给`别人[外部]`来创建对象。`别人[外部]`就反转控制了数据层对象的创建权。这种思想就是控制反转。
 
@@ -176,7 +176,7 @@ AOP(Aspect Oriented Programming：面向切面编程)为内核。
 
 * 什么是IOC容器？
 
-  <font color = "red">Spring技术对IOC思想进行了实现，Spring提供了一个容器，称为IOC容器，用来充当IOC思想中的"外部"。IOC思想中的`别人[外部]`指的就是Spring的IOC容器。</font>
+  Spring技术对IOC思想进行了实现，Spring提供了一个容器，称为IOC容器，用来充当IOC思想中的"外部"。IOC思想中的`别人[外部]`指的就是Spring的IOC容器。
 
 * IOC容器的作用以及内部存放的是什么？
 
@@ -186,7 +186,7 @@ AOP(Aspect Oriented Programming：面向切面编程)为内核。
 
 * 什么是Bean？
 
-  <font color = "red">IOC容器负责对象的创建、初始化等一系列工作，其中包含了数据层和业务层的类对象，被创建或被管理的对象在IOC容器中统称为Bean。IOC容器中放的就是一个个的Bean对象。</font>
+  IOC容器负责对象的创建、初始化等一系列工作，其中包含了数据层和业务层的类对象，被创建或被管理的对象在IOC容器中统称为Bean。IOC容器中放的就是一个个的Bean对象。
 
 * 当IOC容器中创建好service和dao对象后，程序能正确执行么？
 
@@ -200,7 +200,7 @@ AOP(Aspect Oriented Programming：面向切面编程)为内核。
 
 * 什么是依赖注入呢？
 
-  <font color = "red">在容器中建立bean与bean之间的依赖关系的整个过程，称为依赖注入。</font>
+  在容器中建立bean与bean之间的依赖关系的整个过程，称为依赖注入。
 
   业务层要用数据层的类对象，以前是自己`new`的，现在自己不new了，靠`别人[外部其实指的就是IOC容器]`来给注入进来。这种思想就是依赖注入
 
@@ -220,16 +220,16 @@ AOP(Aspect Oriented Programming：面向切面编程)为内核。
 
 什么是IOC/DI思想？
 
-* <font color = "red">IOC：控制反转，控制反转的是对象的创建权</font>
-* <font color = "red">DI：依赖注入，绑定对象与对象之间的依赖关系</font>
+* IOC：控制反转，控制反转的是对象的创建权
+* DI：依赖注入，绑定对象与对象之间的依赖关系
 
 什么是IOC容器？
 
-* <font color = "red">Spring创建了一个容器用来存放所创建的对象，这个容器就叫IOC容器</font>
+* Spring创建了一个容器用来存放所创建的对象，这个容器就叫IOC容器
 
 什么是Bean？
 
-* <font color = "red">容器中所存放的一个个对象就叫Bean或Bean对象</font>
+* 容器中所存放的一个个对象就叫Bean或Bean对象
 
 ## 1.3 快速入门案例
 
@@ -276,7 +276,7 @@ IOC容器得到后，如何从容器中获取bean？
 
 1. 创建Maven项目。我们创建了一个Maven项目`ssm_spring01`，然后在该项目下面创建了一个模块`spring01`。
 
-   <font color = "red">注意：创建的时候需要联网</font>
+   注意：创建的时候需要联网
 
 2. 添加Spring的依赖jar包。在`pom.xml`添加一些标签，导入坐标：
 
@@ -644,7 +644,7 @@ bean在容器中是单例的，会不会产生线程安全问题？
 * bean是如何创建的
 * 实例化bean的三种方式，`构造方法`，`静态工厂`和`实例工厂`
 
-在讲解这三种创建方式之前，我们需要先确认一件事：<font color = "red">bean本质上就是对象，对象在new的时候会使用构造方法完成，那创建bean也是使用构造方法完成的。</font>
+在讲解这三种创建方式之前，我们需要先确认一件事：bean本质上就是对象，对象在new的时候会使用构造方法完成，那创建bean也是使用构造方法完成的。
 
 ### 构造方法实例化
 
@@ -721,7 +721,7 @@ bean在容器中是单例的，会不会产生线程安全问题？
    }
    ```
 
-   运行程序，能执行成功，说明内部走的依然是构造函数，能访问到类中的私有构造方法，<font color = "red">显而易见Spring底层用的是反射</font>
+   运行程序，能执行成功，说明内部走的依然是构造函数，能访问到类中的私有构造方法，显而易见Spring底层用的是反射
 
    ```java
    // book dao constructor is running ....
@@ -780,7 +780,7 @@ Caused by: org.springframework.beans.BeanInstantiationException: Failed to insta
 
 至此，关于Spring的构造方法实例化就已经学习完了，因为每一个类默认都会提供一个无参构造函数，所以其实真正在使用这种方式的时候，我们什么也不需要做。这也是我们以后比较常用的一种方式。
 
-<font color = "red">所以以后我们再对它的构造方法重写的时候，我们需要将空参的构造方法也重写一下</font>
+所以以后我们再对它的构造方法重写的时候，我们需要将空参的构造方法也重写一下
 
 ### 静态工厂实例化
 
@@ -788,7 +788,7 @@ Caused by: org.springframework.beans.BeanInstantiationException: Failed to insta
 
 **工厂方式创建对象**
 
-在讲这种方式之前，我们需要先回顾一个知识点是<font color = "red">使用工厂来创建对象的方式</font>：
+在讲这种方式之前，我们需要先回顾一个知识点是使用工厂来创建对象的方式：
 
 1. 准备一个`OrderDao`和`OrderDaoImpl`类
 
@@ -902,7 +902,7 @@ public class OrderDaoFactory {
    }
    ```
 
-2. 创建一个工厂类`OrderDaoFactory`并提供一个普通方法，<font color = "red">注意此处和静态工厂的工厂类不一样的地方是方法不是静态方法</font>
+2. 创建一个工厂类`OrderDaoFactory`并提供一个普通方法，注意此处和静态工厂的工厂类不一样的地方是方法不是静态方法
 
    ```java
    public class UserDaoFactory {
@@ -1108,7 +1108,7 @@ bean生命周期控制是什么？
 
 从结果中可以看出，init方法执行了，但是destroy方法却未执行，这是为什么呢？原因如下：
 
-<font color = "red">Spring的IOC容器是运行在JVM中。运行main方法后，JVM启动，Spring加载配置文件生成IOC容器，从容器获取bean对象，然后调方法执行。main方法执行完后，JVM退出，这个时候IOC容器中的bean还没有来得及销毁就已经结束了。所以没有调用对应的destroy方法。</font>
+Spring的IOC容器是运行在JVM中。运行main方法后，JVM启动，Spring加载配置文件生成IOC容器，从容器获取bean对象，然后调方法执行。main方法执行完后，JVM退出，这个时候IOC容器中的bean还没有来得及销毁就已经结束了。所以没有调用对应的destroy方法。
 
 知道了出现问题的原因，具体该如何解决呢？
 
@@ -1237,7 +1237,7 @@ public void setBookDao(BookDao bookDao) {
 // destroy...
 ```
 
-验证的结果和我们猜想的结果是一致的，<font color = "red">所以初始化方法会在类中属性设置之后执行</font>。
+验证的结果和我们猜想的结果是一致的，所以初始化方法会在类中属性设置之后执行。
 
 # 第三章 DI依赖注入
 
@@ -1604,7 +1604,7 @@ public class AppForDIConstructor {
 
 什么是依赖自动装配？
 
-* <font color = "red">IoC容器根据bean所依赖的资源在容器中自动查找并注入到bean中的过程称为自动装配</font>
+* IoC容器根据bean所依赖的资源在容器中自动查找并注入到bean中的过程称为自动装配
 
 自动装配方式有哪些？
 

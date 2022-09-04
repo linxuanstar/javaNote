@@ -1,8 +1,4 @@
-day08 【JavaScript】
-
 # 第一章 JavaScript
-
-<!--P604-->
 
 ## 1.1 基本
 
@@ -16,8 +12,6 @@ day08 【JavaScript】
 * 可以增强用户和HTML也免得交互过程，可以控制HTML元素，让页面有一些动态效果，增强用户体验。
 
 ## 1.2 JavaScript发展史
-
-<!--P605-->
 
 1. 1992年，Nobase公司，开发出第一门客户端脚本语言，专门用于表单的校验。命名为：C--。后来更名为ScriptEase。
 2. 1995年，NetScape(网景)公司，开发了一门客户端脚本语言：LiveScript。后来，请来了SUN公司专家修改该语言，并更名为JavaScript。
