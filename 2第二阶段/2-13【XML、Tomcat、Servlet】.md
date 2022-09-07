@@ -895,11 +895,7 @@ public class Demo03Servlet extends HttpServlet {
   3. `/xxx/*`：第二个路径可以随便写。这种方式等级比较低，因为是通配符。
   4. `*.do`：可以任意定义后缀名称，可以不是do，可以为a，b。这种方式等级比较低，因为是通配符。另外前面也不要加上`/`。
 
-
-
 # 第四章 ServletContext对象
-
-<!--P729 3.12-->
 
 `Servlet`对象：代表了整个Web应用，可以和程序的容器(服务器)来通信。
 
@@ -910,8 +906,6 @@ public class Demo03Servlet extends HttpServlet {
 3. 获取文件的真实(服务器)路径。
 
 ## 4.1 获取ServletContext对象
-
-<!--P730-->
 
 一共有两种方法来获取`ServletContext`对象：
 

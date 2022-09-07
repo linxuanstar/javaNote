@@ -769,41 +769,10 @@ public class Demo01Request extends HttpServlet {
        private String username;
        private String password;
    
-       public int getId() {
-           return id;
-       }
-   
-       public void setId(int id) {
-           this.id = id;
-       }
-   
-       public String getUsername() {
-           return username;
-       }
-   
-       public void setUsername(String username) {
-           this.username = username;
-       }
-   
-       public String getPassword() {
-           return password;
-       }
-   
-       public void setPassword(String password) {
-           this.password = password;
-       }
-   
-       @Override
-       public String toString() {
-           return "User{" +
-                   "id=" + id +
-                   ", username='" + username + '\'' +
-                   ", password='" + password + '\'' +
-                   '}';
-       }
+   	// 省略get和set方法 toString方法
    }
    ```
-
+   
 5. 创建操作数据库中User表的类
 
    ```java
@@ -830,8 +799,9 @@ public class Demo01Request extends HttpServlet {
                // 调用query方法
                User user = template.queryForObject(sql,
                        new BeanPropertyRowMapper<User>(User.class),
-                       loginUser.getUsername(), loginUser.getPassword());
-   
+                       loginUser.getUsername(), 
+                       loginUser.getPassword());
+               
                return user;
            } catch (DataAccessException e) {
                // 通常会把异常弄到日志里面，但是我们并没有学习日志，就这样抛出就可以了
@@ -909,10 +879,9 @@ public class Demo01Request extends HttpServlet {
    
            System.out.println(user);
        }
-   
    }
    ```
-
+   
 8. `Servlet`类
 
    ```java
@@ -1048,7 +1017,6 @@ public class LoginServlet extends HttpServlet {
         this.doGet(req, resp);
     }
 }
-
 ```
 
 获取请求参数，封装对象，如果有很多的话，会很麻烦。
@@ -1082,13 +1050,9 @@ try {
 
 # 第三章 Response对象
 
-<!--P719-->
-
-<!--P720 3.08-->
-
 `Response`对象功能：设置响应消息。
 
-## 3.1 方法
+常用方法如下：
 
 * `setStatus(int sc)` ：设置状态码
 * `setHeader(String name, String value)`：设置响应头
@@ -1096,7 +1060,17 @@ try {
 * `PrintWriter getWriter()`：获取字符输出流
 * `ServletOutputStream getOutputStream()`：获取字节输出流。
 
-## 3.2 重定向实现
+相应重定向：
+
+| 状态码 | 类别                             | 原因                       |
+| ------ | -------------------------------- | -------------------------- |
+| 1xx    | Informational(信息性状态码)      | 接收的请求正在处理         |
+| 2xx    | Success（成功状态码）            | 请求正常处理完毕           |
+| 3xx    | Redirection（重定向状态码）      | 需要进行附加操作以完成请求 |
+| 4xx    | Client Error（客户端错误状态码） | 服务器无法处理请求         |
+| 5xx    | Server Error（服务器错误状态码） | 服务器处理请求错误         |
+
+## 3.1 重定向实现
 
 重定向：资源跳转的方式
 
@@ -1148,8 +1122,6 @@ public class Demo02Request extends HttpServlet {
 
 ## 3.3 重定向特点
 
-<!--P721 3.09--> 
-
 我们首先来看一下转发的特点：`forward`
 
 - 地址栏路径不变
@@ -1162,13 +1134,9 @@ public class Demo02Request extends HttpServlet {
 - 重定向可以访问其他站点(服务器)的资源
 - 重定向是**两次**请求
 
-## 3.4 路径写法
+## 3.4 相对路径和绝对路径
 
-<!--P722-->
-
-<!--P723-->
-
-### 相对路径
+**相对路径**
 
 相对路径：通过相对路径不可以确定唯一资源
 
@@ -1177,7 +1145,7 @@ public class Demo02Request extends HttpServlet {
 - `./` ：当前目录
 - `../`：后退一级目录
 
-### 绝对路径
+**绝对路径**
 
 绝对路径：通过绝对路径可以确定唯一资源。以`/`开头的路径
 
@@ -1194,8 +1162,6 @@ public class Demo02Request extends HttpServlet {
   转发路径。
 
 ## 3.5 服务器输出字符数据到浏览器
-
-<!--P724-->
 
 输出字符数据到浏览器的步骤：首先需要获取字符输出流。然后再输出数据就可以了。
 
@@ -1219,9 +1185,8 @@ public class Demo03Response extends HttpServlet {
 
 但是要注意，由于服务器和浏览器的编码格式不同，所以会导致乱码问题，对此我们的解决方法如下：
 
-* 告诉浏览器，服务器发送的消息体数据的编码，建议浏览器使用该编码解码。
+* 告诉浏览器，服务器发送的消息体数据的编码，建议浏览器使用该编码解码。但是，必须记住，**应该在获取字符输出流之前就要设置编码**。
 
-  但是，必须记住，**应该在获取字符输出流之前就要设置编码**。
 
 ```java
 // 告诉浏览器，服务器发送的消息体数据的编码。建议浏览器使用该编码解码。
@@ -1233,8 +1198,6 @@ resp.setContentType("text/html; charset = utf-8");
 > 切记，UTF-8中间不能有空格
 
 ## 3.6 服务器输出字节数据到浏览器
-
-<!--P725 3.10-->
 
 ```java
 @WebServlet("/demo04Response")
@@ -1260,10 +1223,6 @@ public class Demo04Response extends HttpServlet {
 ```
 
 ## 3.7 验证码案例
-
-<!--P726-->
-
-<!--P727 3.11-->
 
 ```java
 @WebServlet("/demo05Response")
@@ -1316,8 +1275,6 @@ public class Demo05Response extends HttpServlet {
     }
 }
 ```
-
-<!--P728-->
 
 ```html
 <!DOCTYPE html>
