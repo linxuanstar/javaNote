@@ -1,3 +1,5 @@
+![](D:\Java\笔记\图片\5-5【设计模式】\设计模式重点.png)
+
 # 第一章 设计模式概述
 
 ## 1.1 设计模式概念
@@ -618,13 +620,7 @@ public class Agent {
 
 ![](D:\Java\笔记\图片\5-5【设计模式】\17合成复用原则1.png)
 
-
-
-
-
 # 第四章 自定义Spring框架
-
-## 7.1 spring使用回顾
 
 自定义spring框架前，先回顾一下spring框架的使用，从而分析spring的核心，并对核心功能进行模拟。
 
@@ -713,9 +709,7 @@ public class Agent {
 
 上面三点体现了Spring框架的IOC（Inversion of Control）和DI（Dependency Injection, DI）
 
-
-
-## 7.2 spring核心功能结构
+## 4.1 spring核心功能结构
 
 Spring大约有20个模块，由1300多个不同的文件构成。这些模块可以分为:
 

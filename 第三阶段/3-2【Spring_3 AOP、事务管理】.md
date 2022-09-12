@@ -1725,7 +1725,7 @@ public class BookDaoImpl implements BookDao {
 
 注意：`throwing = "t"` == `Throwable t`名称必须一致。
 
-## 2.8 案例：百度网盘密码数据兼容
+## 2.8 百度网盘密码数据兼容
 
 需求： 对百度网盘分享链接输入密码时尾部多输入的空格做兼容处理。
 
