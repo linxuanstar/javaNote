@@ -1,8 +1,4 @@
-<!--P458-->
-
 # 第一章 Junit单元测试
-
-<!--P459-->
 
 测试分类：
 
@@ -11,30 +7,22 @@
 
 ![](..\图片\1-14【Junit单元测试、反射、注解】\1.png)
 
-## 1.1 Junit使用
-
-<!--P460-->
-
-<!--subtract 减-->
-
-### 步骤
+使用方法如下：
 
 1. 定义一个测试类（测试用例）
-   * 建议：
-     * 测试类名命名规则：被测试的类名 + Test		例如：CalculatorTest
-     * 包名命名规则：XXX.XXX.XXX.test                       例如：cn.com.test
+   * 测试类名命名规则：被测试的类名 + Test `CalculatorTest`
+   * 包名命名规则：XXX.XXX.XXX.test  `com.linxuan.test`
 2. 在测试类里面定义测试方法（测试方法可以独立运行，点击旁边的绿色小三角即可）
-   * 建议：
-     * 方法名命名规则：test + 测试的方法名			例如：testAdd()
-     * 返回值：void
-     * 参数列表：空参
-   * 注意：
-     * 测试方法要使用public修饰
-3. 给测试方法加上注解@Test
+   * 方法名命名规则：test + 测试的方法名 `testAdd()`
+   * 返回值：void
+   * 参数列表：空参
+   
+   * 测试方法要使用public修饰
+3. 给测试方法加上注解`@Test`
 4. 导入Junit依赖环境
 5. 运行测试方法，检查判定结果（测试方法可以独立运行，点击旁边的绿色小三角即可）
 
-### 判定结果
+## 1.1 判定结果
 
 * 红色：失败
 
@@ -94,20 +82,18 @@ public class CalculatorTest {
 }
 ```
 
-### 补充注解
-
-<!--P461-->
+## 1.2 补充注解
 
 当我们在测试的时候会有很多重复的操作，例如IO流中的获取资源和释放资源。每当测试一个方法就需要重复操作。有注解可以帮助我们。
 
-* @Before：
+* `@Before`：
   * 修饰的成员方法会在测试之前被自动执行
   * 初始化方法：用于资源申请，所有测试方法在执行之前都会先执行该方法
 * @After：
   * 修饰的成员方法会在测试方法执行之后自动被执行
   * 释放资源方法：在所有测试方法执行完成之后，都会自动执行该方法
 
-**@After注解的方法没有必要放在最后，两者放在前面就可以了，最后会自动执行这个注解的方法的。**
+@After注解的方法没有必要放在最后，两者放在前面就可以了，最后会自动执行这个注解的方法的。
 
 ```java
 @Before
@@ -122,8 +108,6 @@ public void close() {
 ```
 
 # 第二章 反射
-
-<!--P462-->
 
 反射：框架设计的灵魂
 
@@ -141,8 +125,6 @@ public void close() {
 
 1. 可以再程序运行过程中，操作这些对象
 2. 可以解耦，降低耦合性，提高程序的可扩展性能
-
-<!--P467 顺序有错误，467， 468， 463-->
 
 ## 2.3 获取Class对象的方式
 
@@ -227,11 +209,7 @@ public class Demo01Reflect {
 
 ## 2.4 获取Class对象的功能
 
-<!--P468-->
-
 ### 获取成员变量们
-
-<!--P463-->
 
 * `Field[] getFields()`：获取所有public修饰符修饰的成员变量。
 * `Field getField(String name)`：获取指定名称的public修饰的成员变量。
@@ -292,8 +270,6 @@ public class Demo02Reflect {
 ```
 ### 获取构造方法们
 
-<!--P464-->
-
 * `Constructor<?>[] getConstructors()`：获取所有public修饰的构造方法
 * `Constructor<T> getConstructor(Class<?>... parameterTypes)`：通过参数获取指定构造方法
 
@@ -337,8 +313,6 @@ public class Demo03Reflect {
 ```
 
 ### 获取成员方法们
-
-<!--P465 1.19-->
 
 * `Method[] getMethods()`：获取所有的public修饰符修饰的方法
 
@@ -430,8 +404,6 @@ public class Demo05Reflect {
 
 ## 2.5 “框架”案例
 
-<!--P466-->
-
 ### 需求
 
 写一个“框架”， 在不改变该类的任何代码的前提下，改动配置文件，帮助我们创建任意类的对象，并且执行其中任意的方法
@@ -486,8 +458,6 @@ public class Demo06ReflectTest {
 
 # 第三章 注解
 
-<!--P469-->
-
 注解概念：说明程序。给计算机看。
 
 ## 3.1 注解
@@ -509,8 +479,6 @@ public class Demo06ReflectTest {
 3. 编译检查：通过代码里面标识的注解让编译器能够实现基本的编译检查【`@Override`】
 
 ## 3.2 JDK中预定义的一些注解
-
-<!--P470-->
 
 * `@Override`：检查被该注解标注的方法是否是继承自父类/接口的
 
@@ -550,8 +518,6 @@ public class Demo01Annotation {
 
 ## 3.3 自定义注解
 
-<!--P471-->
-
 ### 格式
 
 ```java
@@ -561,15 +527,13 @@ public @interface 注解名称{}
 
 ### 本质
 
-<font color = "red">**注解本质上就是一个接口，该接口默认继承Annotation接口**</font>
+**注解本质上就是一个接口，该接口默认继承Annotation接口**
 
 ```java
 publi interface 接口名称 extends java.lang.annotation.Annotation{}
 ```
 
 ### 属性
-
-<!--P472-->
 
 属性：接口中定义的成员方法
 
@@ -692,8 +656,6 @@ public @interface MyAnnotation {
 
 ## 3.4 元注解
 
-<!--P473-->
-
 元注解：用于描述注解的注解
 
 * `@Target`：描述注解能够作用的位置
@@ -734,8 +696,6 @@ public @interface MyAnnotation {
 * `@Inherited`：描述注解是否被子类继承
 
 ## 3.5 在程序中使用（解析）注解
-
-<!--P474 1.20 P474-P475 P483-未知-->
 
 注解可以用来替换配置文件
 
