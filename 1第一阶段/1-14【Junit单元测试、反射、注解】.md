@@ -34,9 +34,8 @@
 
   如果结果与我们期望的结果不同，会抛出异常，变成红色。
 
-**被测试类**
-
 ```java
+// 被测试类
 public class Calculator {
     public int add(int a, int b) {
         return a + b;
@@ -48,13 +47,7 @@ public class Calculator {
 }
 ```
 
-**测试类**
-
 ```java
-import cn.com.junit.Calculator;
-import org.junit.Assert;
-import org.junit.Test;
-
 // 定义测试类
 public class CalculatorTest {
 
@@ -89,11 +82,11 @@ public class CalculatorTest {
 * `@Before`：
   * 修饰的成员方法会在测试之前被自动执行
   * 初始化方法：用于资源申请，所有测试方法在执行之前都会先执行该方法
-* @After：
+* `@After`：
   * 修饰的成员方法会在测试方法执行之后自动被执行
   * 释放资源方法：在所有测试方法执行完成之后，都会自动执行该方法
 
-@After注解的方法没有必要放在最后，两者放在前面就可以了，最后会自动执行这个注解的方法的。
+`@After`注解的方法没有必要放在最后，两者放在前面就可以了，最后会自动执行这个注解的方法的。
 
 ```java
 @Before
@@ -110,6 +103,90 @@ public void close() {
 # 第二章 反射
 
 反射：框架设计的灵魂
+
+框架我们都了解，需要各种各样的配置，我们在配置文件里面编写各种各样的全类名，配置信息等等。然后框架获取这些配置信息来创建对象来使用。这其中就应用到了反射。
+
+下面来模拟一下没有反射的情况。创建一个学生类，然后根据配置文件来new一个该类的对象并调用方法：
+
+* 创建一个Student类：
+
+  ```java
+  @Data
+  @NoArgsConstructor
+  @AllArgsConstructor
+  public class Student{
+      String name;
+      int age;
+  
+      public void out() {
+          System.out.println("这是一个学生类的方法out");
+      }
+  
+      public void print() {
+          System.out.println("这是一个学生类的方法print");
+      }
+  }
+  ```
+
+* 创建配置文件
+
+  ```properties
+  package=com.linxuan.demo01.Student
+  method=out
+  ```
+
+* 创建主方法所在类
+
+  ```java
+  public class Demo01 {
+      public static void main(String[] args) throws Exception {
+          Properties properties = new Properties();
+          properties.load(new FileInputStream("src\\main\\resources\\linxuan.properties"));
+          String proPackage = properties.getProperty("package");
+          String proMethod = properties.getProperty("method");
+          System.out.println(proPackage);  // com.linxuan.demo01.Student
+          System.out.println(proMethod);   // out
+          
+          // 完全行不通，new对象我们要传递的是全类名，而这里的是一个String字符串。只是他们表现形式相等而已
+          // new proPackage();
+      }
+  }
+  ```
+
+如果没有反射我们根本不能够根据配置信息来new对象和调用方法。
+
+接下来来看一下反射的做法：
+
+```java
+public class Demo01 {
+    public static void main(String[] args) throws Exception {
+        Properties properties = new Properties();
+        properties.load(new FileInputStream("src\\main\\resources\\linxuan.properties"));
+        String proPackage = properties.getProperty("package");
+        String proMethod = properties.getProperty("method");
+        System.out.println(proPackage);
+        System.out.println(proMethod);
+        
+        // 使用反射来解决问题
+        // 加载类，返回Class类型的对象clazz
+        Class<?> clazz = Class.forName(proPackage);
+        // 通过clazz得到加载的类 com.linxuan.demo01.Student 的对象实例
+        Object instanObject = clazz.newInstance();
+        System.out.println(instanObject.getClass());
+        // 通过clazz得到加载的类 com.linxuan.demo01.Student 的 proMethod out方法对象
+        // 在反射中 可以把方法视为对象 万物皆对象
+        Method methodObj = clazz.getMethod(proMethod);
+        // 通过methodObj调用方法 即通过方法对象来调用方法
+        methodObj.invoke(instanObject); // 这是一个学生类的方法out
+    }
+}
+```
+
+而如果想要创建其他的对象或者使用该对象的其他方法，只需要修改配置文件即可。源代码我们不用进行更改。
+
+
+
+
 
 ![](..\图片\1-14【Junit单元测试、反射、注解】\2.png)
 

@@ -875,8 +875,6 @@ public class Demo04 {
 
 注意，如果调用的是`foo()`，即未传递参数时，等价代码为`foo(new String[]{})`，创建了一个空数组，而不是直接传递的null。
 
-
-
 ## 3.5 foreach循环
 
 仍是 `JDK 5` 开始引入的语法糖，数组的循环：
@@ -939,8 +937,6 @@ public class Demo05 {
 ```
 
 > foreach 循环写法，能够配合数组，以及所有实现了 Iterable 接口的集合类一起使用，其中 Iterable 用来获取集合的迭代器（ Iterator ）
-
-
 
 ## 3.6 switch字符串
 
