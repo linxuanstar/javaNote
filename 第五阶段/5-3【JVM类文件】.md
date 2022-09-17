@@ -844,7 +844,7 @@ SourceFile: "Demo01.java"
 
   
 
-* `ldc #3`：读取运行时常量池中#3，即32768(超过short最大值范围的数会被放到运行时常量池中)，将其加载到操作数栈中
+* `ldc #16`：读取运行时常量池中#16，即32768(超过short最大值范围的数会被放到运行时常量池中)，将其加载到操作数栈中
 
   Short.MAX_VALUE 是 32767，所以 32768 = Short.MAX_VALUE + 1 实际是在编译期间计算好的
 
@@ -1540,8 +1540,6 @@ public class Demo01 {
            26       4     1     e   Ljava/lang/ReflectiveOperationException;
 ```
 
-
-
 ### 2.10.4 finally
 
 ```java
@@ -1581,7 +1579,7 @@ public class Demo01 {
         21: istore_1
         22: aload_3
         23: athrow
-        24: bipush        30
+        24: bipush        30			// 执行finally代码块
         26: istore_1
         27: return
       Exception table:
@@ -1681,7 +1679,7 @@ public class Demo3 {
 public class Demo4 {
 	public static void main(String[] args) {
 		int i = Demo4.test();
-		System.out.println(i);
+		System.out.println(i);	// i = 10
 	}
 
 	public static int test() {
@@ -1765,5 +1763,4 @@ public class Demo01 {
 ```
 
 > 方法级别的 synchronized 不会在字节码指令中有所体现
-
 

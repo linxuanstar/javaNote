@@ -1114,8 +1114,6 @@ public final class Sex extends Enum<Sex> {
 }
 ```
 
-
-
 ## 3.9 try-with-resources
 
 `JDK 7` 开始新增了对需要关闭的资源处理的特殊语法 `try-with-resources`：
