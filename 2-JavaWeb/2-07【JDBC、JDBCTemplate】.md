@@ -28,7 +28,6 @@ JDBC本质：其实就是官方（sun公司）定义的一套操作所有关系�
 
 ```java
 public class Demo01Jdbc {
-
     public static void main(String[] args) throws Exception {
 
         // 1. 导入驱动jar包，mysql-connector-java-5.1.37-bin.jar。
@@ -77,7 +76,7 @@ public class Demo01Jdbc {
   }
   ```
 
-* 所以我们依然使用的是`DriverManage`驱动管理对象。
+* 所以我们依然使用的是`DriverManager`驱动管理对象。
 
 * 注意：mysql5之后的驱动jar包是可以省略注册驱动的步骤的，但是最好还是加上去。
 
