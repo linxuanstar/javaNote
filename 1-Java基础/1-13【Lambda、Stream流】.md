@@ -50,8 +50,8 @@ public class Demo01Runnable {
 
 * `Thread`类需要`Runnable`接口作为参数，其中的抽象run方法是用来指定线程任务内容的核心；
 * 为了指定`run`的方法体，不得不需要`Runnable`接口的实现类；
-* 为了省去定义一个`RunnableImpl`实现类的麻烦，**不得不**使用匿名内部类；
-* 必须覆盖重写抽象`run`方法，所以方法名称、方法参数、方法返回值**不得不**再写一遍，且不能写错；
+* 为了省去定义一个`RunnableImpl`实现类的麻烦，不得不使用匿名内部类；
+* 必须覆盖重写抽象`run`方法，所以方法名称、方法参数、方法返回值不得不再写一遍，且不能写错；
 * 而实际上，似乎只有方法体才是关键所在。
 
 ## 1.2 匿名内部类
@@ -177,17 +177,15 @@ public class Demo01 {
 }
 ```
 
-
-
 ### 1.4.2 有参有返回1
 
 使用数组存储多个Person对象，对数组中的Person对象使用Arrays中的sort方法进行升序排序
 
 ```java
+@Data
 public class Person {
     private String name;
     private int age;
-	// 省略get set toString和构造方法
 }
 ```
 
@@ -288,7 +286,25 @@ Lambda的语法非常简洁，完全没有面向对象复杂的束缚。但是�
 
 **引用变量**
 
-* Lambda表达式要求引用外部的变量必须是final的。
+* Lambda表达式要求引用外部的变量必须是final的。lambda 表达式的局部变量可以不用声明为 final，但是必须不可被后面的代码修改。即隐性的具有 final 的语义。看下面的代码：
+
+  ```java
+  public class Demo02 {
+      public static void main(String[] args) {
+          int x = 10;
+  
+          BiFunction<Integer, Integer, Integer> function = (x1, x2) -> {
+              return x1 + x2 + x;
+          };
+  
+          System.out.println(function.apply(3, 4));
+      }
+  }
+  ```
+
+  上面的代码没有任何问题，但是只需要修改一下x的值，那么就有问题了：`x`报错了。
+
+  ![](D:\Java\笔记\图片\1-13【Lambda、Stream流】\7-1Lambda特性.png)
 
 # 第二章 函数式接口
 
@@ -440,7 +456,7 @@ public class Demo01Logger {
 
 性能浪费的话，那么使用Lambda表达式作为参数传递，仅仅是把参数传递到showLog方法中。
 
-只有满足条件，日志的等级是1级，才会调用MessageBuilder接口中的方法builderMessage，才会进行字符串的拼接。如果条件不满足，日志等级不是1级，那么不会调用，也不会执行。
+只有满足条件，日志的等级是1级，才会调用`MessageBuilder`接口中的方法`builderMessage`，才会进行字符串的拼接。如果条件不满足，日志等级不是1级，那么不会调用，也不会执行。
 
 ```java
 @FunctionalInterface
@@ -448,7 +464,9 @@ public interface MessageBuilder {
     // 定义一个拼接消息的抽象方法，返回被拼接的消息
     public abstract String builderMessage();
 }
+```
 
+```java
 public class Demo02Lambda {
     // 定义一个显示日志信息的方法，方法的参数传递日志等级和MessageBuilder接口
     public static void showLog(int level, MessageBuilder mb) {
@@ -552,7 +570,7 @@ JDK提供了大量的常用的函数式接口以丰富Lambda的典型使用场�
 
 `java.util.function.Supplier<T>`接口仅包含一个无参的方法：`T get()`。用来获取一个泛型参数指定类型的对象数据。由于这是一个函数式接口，这就意味着对应的Lambda表达式需要“对外提供”一个符合泛型类型的对象数据。
 
-`Supplier<T>`接口被称为生产性接口，指定接口的泛型是什么类型，那么接口中的`get`方法就会生产什么类型的数据。
+`Supplier<T>`接口被称为生产型接口，指定接口的泛型是什么类型，那么接口中的`get`方法就会生产什么类型的数据。
 
 ```java
 public class Demo01Supplier {
