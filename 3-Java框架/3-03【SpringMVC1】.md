@@ -1,24 +1,16 @@
 ![](..\图片\3-02【Spring】\0-1.png)
 
-# 第一章 SpringMVC介绍
-
-## 1.1 SpringMVC学习内容
+# 第一章 SpringMVC基础
 
 SpringMVC是隶属于Spring框架的一部分，主要是用来进行Web开发，是对Servlet进行了封装。
 
 对于SpringMVC我们主要学习如下内容：
 
-* **请求与响应**
+* 请求与响应：SpringMVC是处于Web层的框架，所以其主要的作用就是用来接收前端发过来的请求和数据然后经过处理并将处理的结果响应给前端，所以如何处理请求和响应是SpringMVC中非常重要的一块内容。
 
-  SpringMVC是处于Web层的框架，所以其主要的作用就是用来接收前端发过来的请求和数据然后经过处理并将处理的结果响应给前端，所以如何处理请求和响应是SpringMVC中非常重要的一块内容。
+* REST风格：REST是一种软件架构风格，可以降低开发的复杂性，提高系统的可伸缩性，后期的应用也是非常广泛。
 
-* **REST风格**
-
-  REST是一种软件架构风格，可以降低开发的复杂性，提高系统的可伸缩性，后期的应用也是非常广泛。
-
-* **SSM整合(注解版)**
-
-  SSM整合是把咱们所学习的SpringMVC+Spring+Mybatis整合在一起来完成业务开发，是对我们所学习这三个框架的一个综合应用。
+* SSM整合(注解版)：SSM整合是把咱们所学习的SpringMVC+Spring+Mybatis整合在一起来完成业务开发，是对我们所学习这三个框架的一个综合应用。
 
 * 拦截器
 
@@ -29,7 +21,7 @@ SpringMVC是隶属于Spring框架的一部分，主要是用来进行Web开发�
 3. 能够根据实际业务建立前后端开发通信协议并进行实现
 4. 基于SSM整合技术开发任意业务模块功能
 
-## 1.2 SpringMVC概述
+## 1.1 SpringMVC概述
 
 学习SpringMVC我们先来回顾下现在web程序是如何做的，咱们现在web程序大都基于三层架构来实现。
 
@@ -67,8 +59,7 @@ SpringMVC是隶属于Spring框架的一部分，主要是用来进行Web开发�
 * SpringMVC是一种基于Java实现MVC模型的轻量级Web框架
 * 优点：使用简单、开发便捷(相比于Servlet)，灵活性强
 
-
-# 第二章 入门案例及PostMan工具
+## 1.2 Servlet开发
 
 因为SpringMVC是一个Web框架，将来是要替换Servlet，所以先来回顾下以前Servlet是如何进行开发的？
 
@@ -96,7 +87,7 @@ SpringMVC的制作过程和上述流程几乎是一致的，具体的实现流�
 
 6. 将SpringMVC设定加载到Tomcat容器中
 
-## 2.1 入门案例制作
+## 1.3 入门案例制作
 
 步骤1：创建Maven项目。打开IDEA，创建一个新的web项目
 
@@ -150,11 +141,11 @@ SpringMVC的制作过程和上述流程几乎是一致的，具体的实现流�
 </project>
 ```
 
-**说明：**servlet的坐标为什么需要添加`<scope>provided</scope>`？
+servlet的坐标为什么需要添加`<scope>provided</scope>`？
 
 * scope是maven中jar包依赖作用范围的描述，如果不设置默认是`compile`在在编译、运行、测试时均有效。
 * 如果运行有效的话就会和tomcat中的servlet-api包发生冲突，导致启动报错。
-* provided代表的是该包只在编译和测试的时候用，运行的时候无效直接使用tomcat中的，就避免冲突
+* provided代表的是该包只在编译和测试的时候用，运行的时候无效直接使用tomcat中的，就避免冲突。
 
 步骤4：创建配置类
 
@@ -188,21 +179,21 @@ public class UserController {
 package com.linxuan.config;
 
 public class ServletContainersInitConfig extends AbstractDispatcherServletInitializer {
-    //加载springmvc配置类
+    // 加载springmvc配置类
     protected WebApplicationContext createServletApplicationContext() {
-        //初始化WebApplicationContext对象
+        // 初始化WebApplicationContext对象
         AnnotationConfigWebApplicationContext ctx = new AnnotationConfigWebApplicationContext();
-        //加载指定配置类
+        // 加载指定配置类
         ctx.register(SpringMvcConfig.class);
         return ctx;
     }
 
-    //设置由springmvc控制器处理的请求映射路径
+    // 设置由springmvc控制器处理的请求映射路径
     protected String[] getServletMappings() {
         return new String[]{"/"};
     }
 
-    //加载spring配置类
+    // 加载spring配置类
     protected WebApplicationContext createRootApplicationContext() {
         return null;
     }
@@ -231,7 +222,6 @@ public class UserController {
         return "{'info'：'springmvc'}";
     }
 }
-
 ```
 
 再次重启tomcat服务器，然后重新通过浏览器测试访问，会发现还是会报错，这次的错是404
@@ -253,13 +243,14 @@ public class UserController {
         return "{'info'：'springmvc'}";
     }
 }
-
 ```
 
 再次重启tomcat服务器，然后重新通过浏览器测试访问，就能看到返回的结果数据
 
-```asciiarmor
-{'info':'springmvc'}
+```json
+{
+    'info':'springmvc'
+}
 ```
 
 至此SpringMVC的入门案例就已经完成。
@@ -267,11 +258,10 @@ public class UserController {
 **注意事项**
 
 * SpringMVC是基于Spring的，在pom.xml只导入了`spring-webmvc`jar包的原因是它会自动依赖spring相关坐标
-* `AbstractDispatcherServletInitializer`类是SpringMVC提供的快速初始化Web3.0容器的抽象类
-* `AbstractDispatcherServletInitializer`提供了三个接口方法供用户实现
-  * `createServletApplicationContext`方法，创建Servlet容器时，加载SpringMVC对应的bean并放入`WebApplicationContext`对象范围中，而`WebApplicationContext`的作用范围为`ServletContext`范围，即整个web容器范围。`createServletApplicationContext`用来加载SpringMVC环境。
-  * `getServletMappings`方法，设定SpringMVC对应的请求映射路径，即SpringMVC拦截哪些请求。
-  * `createRootApplicationContext`方法，如果创建Servlet容器时需要加载非SpringMVC对应的bean，使用当前方法进行，使用方式和`createServletApplicationContext`相同。`createRootApplicationContext`用来加载Spring环境。
+* `AbstractDispatcherServletInitializer`类是SpringMVC提供的快速初始化Web3.0容器的抽象类，它提供了三个接口方法供用户实现：
+  1. `createServletApplicationContext`方法，创建Servlet容器时，加载SpringMVC对应的bean并放入`WebApplicationContext`对象范围中，而`WebApplicationContext`的作用范围为`ServletContext`范围，即整个web容器范围。`createServletApplicationContext`用来加载SpringMVC环境。
+  2. `getServletMappings`方法，设定SpringMVC对应的请求映射路径，即SpringMVC拦截哪些请求。
+  3. `createRootApplicationContext`方法，如果创建Servlet容器时需要加载非SpringMVC对应的bean，使用当前方法进行，使用方式和`createServletApplicationContext`相同。`createRootApplicationContext`用来加载Spring环境。
 
 | 名称 | @Controller                   |
 | ---- | ----------------------------- |
@@ -292,7 +282,7 @@ public class UserController {
 | 位置 | SpringMVC控制器类或方法定义上方                  |
 | 作用 | 设置当前控制器方法响应内容为当前返回值，无需解析 |
 
-## 2.2 工作流程解析
+## 1.4 工作流程解析
 
 为了更好的使用SpringMVC，我们将SpringMVC的使用过程总共分两个阶段来分析，分别是`启动服务器初始化过程`和`单次请求过程`
 
@@ -352,7 +342,7 @@ public class UserController {
 5. 执行`save()`
 6. 检测到有`@ResponseBody`直接将`save()`方法的返回值作为响应体返回给请求方
 
-## 2.3 bean加载控制
+## 1.5 bean加载控制
 
 入门案例的内容已经做完了，在入门案例中我们创建过一个`SpringMvcConfig`的配置类，再回想前面咱们学习Spring的时候也创建过一个配置类`SpringConfig`。这两个配置类都需要加载资源，那么它们分别都需要加载哪些内容？
 
@@ -407,7 +397,7 @@ public class SpringConfig {
 * 方式二：Spring加载的bean设定扫描范围为`com.linxuan`，排除掉controller包中的bean
 * 方式三：不区分Spring与SpringMVC的环境，加载到同一个环境中[了解即可]
 
-### 环境准备
+### 1.5.1 环境准备
 
 * 创建`tbl_user`表
 
@@ -592,7 +582,7 @@ public class SpringConfig {
   }
   ```
 
-### 设置bean加载控制
+### 1.5.2 设置bean加载控制
 
 **方式一：修改Spring配置类，设定扫描范围为精准范围。**
 
@@ -703,34 +693,7 @@ public class ServletContainersInitConfig extends AbstractAnnotationConfigDispatc
 | 作用     | 设置spring配置类扫描路径，用于加载使用注解格式定义的bean     |
 | 相关属性 | excludeFilters：排除扫描路径中加载的bean，需要指定类别(type)和具体项(classes)<br/>includeFilters：加载指定的bean，需要指定类别(type)和具体项(classes) |
 
-## 2.4 PostMan工具
-
-代码编写完后，我们要想测试，只需要打开浏览器直接输入地址发送请求即可。发送的是`GET`请求可以直接使用浏览器，但是如果要发送的是`POST`请求呢？
-
-如果要求发送的是post请求，我们就得准备页面在页面上准备form表单，测试起来比较麻烦。所以我们就需要借助一些第三方工具，如PostMan.
-
-* PostMan是一款功能强大的网页调试与发送网页HTTP请求的Chrome插件。
-* 作用：常用于进行接口测试
-
-* 特征：简单、实用、美观、大方。
-
-直接双击安装包运行，然后注册...
-
-创建WorkSpace工作空间
-
-![](..\图片\3-03【SpringMVC】\1-5.png)
-
-发送请求
-
-![1630464489898](..\图片\3-03【SpringMVC】\1-6.png)
-
-保存当前请求
-
-![1630464783034](..\图片\3-03【SpringMVC】\1-7.png)
-
-> 扩展：对于PostMan如何觉得字小不好看，可以使用`ctrl+=`调大，`ctrl+-`调小。
-
-# 第三章 请求与响应
+# 第二章 请求与响应
 
 前面我们已经完成了入门案例相关的知识学习，接来了我们就需要针对SpringMVC相关的知识点进行系统的学习，之前我们提到过，SpringMVC是web层的框架，主要的作用是接收请求、接收数据、响应结果，所以这一章节是学习SpringMVC的重点内容，我们主要会讲解四部分内容：
 
@@ -739,9 +702,9 @@ public class ServletContainersInitConfig extends AbstractAnnotationConfigDispatc
 * 日期类型参数传递
 * 响应json数据
 
-## 4.1 设置请求映射路径
+## 2.1 设置请求映射路径
 
-### 冲突问题
+### 2.1.1 冲突问题
 
 首先创建一个环境，多余步骤省略...
 
@@ -800,7 +763,7 @@ to { /save}: There is already 'bookController' bean method
 
 所以出现了问题，当访问路径的时候，相撞了，浏览器不知道访问哪一个了。
 
-### 解决方案
+### 2.1.2 解决方案
 
 解决思路：为不同模块设置模块名作为请求路径前置
 
@@ -885,7 +848,7 @@ public class BookController {
 
 > `@RequestMapping`注解value属性前面加不加`/`都可以
 
-## 4.2 请求参数
+## 2.2 请求参数
 
 请求路径设置好后，只要确保页面发送请求地址和后台`Controller`类中配置的路径一致，就可以接收到前端的请求，接收到请求后，如何接收页面传递的参数？
 
@@ -1050,7 +1013,7 @@ public class ServletContainersInitConfig extends AbstractAnnotationConfigDispatc
 
 `CharacterEncodingFilter`是在spring-web包中，所以用之前需要导入对应的jar包。
 
-## 4.3 五种类型参数传递
+## 2.3 五种类型参数传递
 
 前面我们已经能够使用GET或POST来发送请求和数据，所携带的数据都是比较简单的数据，接下来在这个基础上，我们来研究一些比较复杂的参数传递。
 
@@ -1257,7 +1220,7 @@ public class User {
 | 作用     | 绑定请求参数与处理器方法形参间的关系                   |
 | 相关参数 | required：是否为必传参数 <br/>defaultValue：参数默认值 |
 
-## 4.4 JSON数据传输参数
+## 2.4 JSON数据传输参数
 
 前面我们说过，现在比较流行的开发方式为异步调用。前后台以异步方式进行交换，传输的数据使用的是JSON，所以前端如果发送的是JSON数据，后端该如何接收？
 
@@ -1418,7 +1381,7 @@ public class User {
 * 后期开发中，发送`json`格式数据为主，`@RequestBody`应用较广
 * 如果发送非`json`格式数据，选用`@RequestParam`接收请求参数
 
-## 4.5 日期类型参数传递
+## 2.5 日期类型参数传递
 
 前面我们处理过简单数据类型、POJO数据类型、数组和集合数据类型以及JSON数据类型，接下来我们还得处理一种开发中比较常见的一种数据类型，`日期类型`
 
@@ -1546,7 +1509,7 @@ public class User {
 | 作用     | 设定日期时间型数据格式          |
 | 相关属性 | pattern：指定日期时间格式字符串 |
 
-## 4.6 日期转换内部实现
+## 2.6 日期转换内部实现
 
 讲解内部原理之前，我们需要先思考几个问题：①前端传递字符串，后端使用日期Date接收；②前端传递JSON数据，后端使用对象接收；③前端传递字符串，后端使用Integer接收。后台需要的数据类型有很多种类，在数据的传递过程中存在很多类型的转换，那么谁来做这个类型转换呢？
 
@@ -1574,7 +1537,7 @@ Converter接口的实现类很多很多，框架中有提供很多对应Converte
 
 > **注意：SpringMVC的配置类把@EnableWebMvc当做标配配置上去，不要省略**
 
-## 4.7 响应
+## 2.7 响应
 
 SpringMVC接收到请求和数据后，进行一些处理，当然这个处理可以是转发给Service，Service层再调用Dao层完成的，不管怎样，处理完以后，都需要将结果告知给用户。比如：根据用户ID查询用户信息、查询用户列表、新增用户等。
 
@@ -1623,7 +1586,7 @@ SpringMVC接收到请求和数据后，进行一些处理，当然这个处理�
   }
   ```
 
-### 响应页面
+### 2.7.1 响应页面
 
 * 设置返回页面
 
@@ -1645,7 +1608,7 @@ SpringMVC接收到请求和数据后，进行一些处理，当然这个处理�
 
   此处涉及到页面跳转，所以不适合采用PostMan进行测试，直接打开浏览器，输入`http://localhost/toJumpPage`，最后会跳转页面。
 
-### 响应文本数据
+### 2.7.2 响应文本数据
 
 * 设置返回文本内容
 
@@ -1668,7 +1631,7 @@ SpringMVC接收到请求和数据后，进行一些处理，当然这个处理�
 
   此处不涉及到页面跳转，因为我们现在发送的是GET请求，可以使用浏览器也可以使用PostMan进行测试，输入地址`http://localhost/toText`访问
 
-### 响应JSON数据
+### 2.7.3 响应JSON数据
 
 * **响应POJO对象**
 
@@ -1760,7 +1723,7 @@ SpringMVC接收到请求和数据后，进行一些处理，当然这个处理�
 * 对象转Json数据(POJO -> json)
 * 集合转Json数据(Collection -> json)
 
-# 第四章 Rest风格
+# 第三章 Rest风格
 
 REST（`Representational State Transfer`），表现形式状态转换，它是一种软件架构风格
 
@@ -1775,7 +1738,7 @@ REST（`Representational State Transfer`），表现形式状态转换，它是�
 
 **根据REST风格对资源进行访问称为RESTful**
 
-## 5.1 REST简介
+## 3.1 REST简介
 
 传统方式一般是一个请求url对应一种操作，这样做不仅麻烦，也不安全，因为会程序的人读取了你的请求url地址，就大概知道该url实现的是一个什么样的操作。查看REST风格的描述，你会发现请求地址变的简单了，并且光看请求URL并不是很能猜出来该URL的具体功能。
 
@@ -1810,7 +1773,7 @@ REST（`Representational State Transfer`），表现形式状态转换，它是�
 >
 > 描述模块的名称通常使用复数，也就是加s的格式描述，表示此类资源，而非单个资源，例如：users、books、accounts......
 
-## 5.2 RESTful入门案例
+## 3.2 RESTful入门案例
 
 首先来创建环境：
 
@@ -1876,7 +1839,7 @@ REST（`Representational State Transfer`），表现形式状态转换，它是�
 
 3. 发送请求的过程中如何设置请求参数？
 
-### 新增
+### 3.2.1 新增
 
 * 将请求路径更改为`/users`
 
@@ -1899,7 +1862,7 @@ public class UserController {
 }
 ```
 
-### 删除
+### 3.2.2 删除
 
 - 将请求路径更改为`/users`
   
@@ -1963,7 +1926,7 @@ public class UserController {
    }
    ```
 
-### 修改
+### 3.2.3 修改
 
 - 将请求路径更改为`/users`
 
@@ -1991,7 +1954,7 @@ public class UserController {
 }
 ```
 
-### 根据ID查询
+### 3.2.4 根据ID查询
 
 将请求路径更改为`/users`
 
@@ -2010,7 +1973,7 @@ public class UserController {
 }
 ```
 
-### 查询所有
+### 3.2.5 查询所有
 
 将请求路径更改为`/users`
 
@@ -2046,7 +2009,7 @@ public class UserController {
   * 如果发送非json格式数据，选用`@RequestParam`接收请求参数
   * 采用RESTful进行开发，当参数数量较少时，例如1个，可以采用`@PathVariable`接收请求路径变量，通常用于传递id值
 
-## 5.3 RESTful快速开发
+## 3.3 RESTful快速开发
 
 ```java
 public class BookController {
@@ -2161,7 +2124,7 @@ public class BookController {
 | 作用     | 设置当前控制器方法请求访问路径与请求动作，每种对应一个请求动作，<br/>例如@GetMapping对应GET请求 |
 | 相关属性 | value（默认）：请求访问路径                                  |
 
-## 5.4 RESTful案例
+## 3.4 RESTful案例
 
 **需求分析**
 

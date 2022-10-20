@@ -620,7 +620,7 @@
 
 * 新增
 
-  <font color = "red">**增加POST**</font>
+  **新增POST**
 
   打开服务器，选择POST方式发送，URL输入`http://localhost/books`，JSON数据如下：
 
@@ -636,7 +636,7 @@
 
 * 修改
 
-  <font color = "red">**修改PUT**</font>
+  **修改PUT**
 
   打开服务器，选择PUT方式发送，URL输入`http://localhost/books`，JSON数据如下：
 
@@ -724,9 +724,9 @@ SSM整合以及功能模块开发完成后，接下来，我们在上述案例�
 
 所以我们就想能不能将返回结果的数据进行统一，具体如何来做，大体的思路为:
 
-* 为了封装返回的结果数据：<font color = "red">创建结果模型类，封装数据到data属性中</font>
-* 为了封装返回的数据是何种操作及是否操作成功：<font color = "red">封装操作结果到code属性中</font>
-* 操作失败后为了封装返回的错误信息：<font color = "red">封装特殊消息到message(msg)属性中</font>
+* 为了封装返回的结果数据：创建结果模型类，封装数据到data属性中
+* 为了封装返回的数据是何种操作及是否操作成功：封装操作结果到code属性中
+* 操作失败后为了封装返回的错误信息：封装特殊消息到message(msg)属性中
 
 ![1630654293972](../图片/3-03【SpringMVC】/2-2.png)
 
@@ -844,7 +844,7 @@ public class Result{
 
 4. 启动服务测试
 
-   这里试一下增加，<font color = "red">**增加POST**</font>
+   这里试一下增加，**增加POST**
 
    打开服务器，选择POST方式发送，URL输入`http://localhost/books`，JSON数据如下：
 
@@ -904,15 +904,15 @@ public Result getById(@PathVariable Integer id) {
 
 1. 各个层级均出现异常，异常处理代码书写在哪一层?
 
-   <font color = "red">所有的异常均抛出到表现层进行处理</font>
+   所有的异常均抛出到表现层进行处理
 
 2. 异常的种类很多，表现层如何将所有的异常都处理到呢?
 
-   <font color = "red">异常分类</font>
+   异常分类
 
 3. 表现层处理异常，每个方法中单独书写，代码书写量巨大且意义不强，如何解决?
 
-   <font color = "red">AOP</font>
+   AOP
 
 对于上面这些问题及解决方案，SpringMVC已经为我们提供了一套解决方案：那就是异常处理器。
 
@@ -986,7 +986,7 @@ public Result getById(@PathVariable Integer id) {
 
 | 名称 | @RestControllerAdvice              |
 | ---- | ---------------------------------- |
-| 类型 | <font color = "red">类注解</font>  |
+| 类型 | 类注解                             |
 | 位置 | Rest风格开发的控制器增强类定义上方 |
 | 作用 | 为Rest风格开发的控制器类做增强     |
 
@@ -996,7 +996,7 @@ public Result getById(@PathVariable Integer id) {
 
 | 名称 | @ExceptionHandler                                            |
 | ---- | ------------------------------------------------------------ |
-| 类型 | <font color = "red">方法注解</font>                          |
+| 类型 | 方法注解                                                     |
 | 位置 | 专用于异常处理的控制器方法上方                               |
 | 作用 | 设置指定异常的处理方案，功能等同于控制器方法，<br/>出现异常后终止原始控制器执行，并转入当前方法执行 |
 
@@ -1004,7 +1004,7 @@ public Result getById(@PathVariable Integer id) {
 
 ## 3.3 项目异常处理方案
 
-### 异常分类
+### 3.3.1 异常分类
 
 异常处理器我们已经能够使用了，那么在咱们的项目中该如何来处理异常呢?
 
@@ -1026,7 +1026,7 @@ public Result getById(@PathVariable Integer id) {
 
 将异常分类以后，针对不同类型的异常，要提供具体的解决方案：
 
-### 异常解决方案
+### 3.3.2 异常解决方案
 
 - 业务异常（BusinessException）
   - 发送对应消息传递给用户，提醒规范操作
@@ -1059,7 +1059,7 @@ public Result getById(@PathVariable Integer id) {
     
   - 记录日志
 
-### 异常解决方案的具体实现
+### 3.3.3 异常解决方案实现
 
 思路:
 
@@ -1608,7 +1608,7 @@ handleDelete(row) {
 
 ## 5.2 拦截器入门案例
 
-### 环境准备
+### 5.2.1 环境准备
 
 - 创建一个Web的Maven项目
 
@@ -1776,7 +1776,7 @@ handleDelete(row) {
   }
   ```
 
-### 拦截器开发
+### 5.2.2 拦截器开发
 
 1. 创建拦截器类
 
@@ -1919,7 +1919,7 @@ handleDelete(row) {
 
 ## 5.3 拦截器参数
 
-### 前置处理方法
+### 5.3.1 前置处理方法
 
 原始方法之前运行preHandle
 
@@ -1975,7 +1975,7 @@ public boolean preHandle(HttpServletRequest request,
 */
 ```
 
-### 后置处理方法
+### 5.3.2 后置处理方法
 
 原始方法运行后运行，如果原始方法被拦截，则不执行  
 
@@ -1994,7 +1994,7 @@ public void postHandle(HttpServletRequest request，
 
 因为咱们现在都是返回json数据，所以该参数的使用率不高。
 
-### 完成处理方法
+### 5.3.3 完成处理方法
 
 拦截器最后执行的方法，无论原始方法是否执行
 
@@ -2098,4 +2098,4 @@ ex:如果处理器执行过程中出现异常对象，可以针对异常情况�
 
    afterCompletion:与配置顺序相反，可能不运行。
 
-   这个顺序不太好记，最终只需要把握住一个原则即可：<font color = "red">以最终的运行结果为准</font>
+   这个顺序不太好记，最终只需要把握住一个原则即可：以最终的运行结果为准

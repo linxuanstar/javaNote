@@ -1,8 +1,8 @@
-# 第二章 服务拆分和远程调用
+# 第一章 服务拆分和远程调用
 
 任何分布式架构都离不开服务的拆分，微服务也是一样。
 
-## 2.1 服务拆分原则
+## 1.1 服务拆分原则
 
 这里总结了微服务拆分时的几个原则：
 
@@ -10,9 +10,9 @@
 - 微服务数据独立，不要访问其它微服务的数据库
 - 微服务可以将自己的业务暴露为接口，供其它微服务调用
 
-![image-20210713210800950](..\图片\4-01【微服务、Eureka、Ribbon、Nacos】/image-20210713210800950.png)
+![](..\图片\4-01【微服务、Eureka、Ribbon、Nacos】/image-20210713210800950.png)
 
-## 2.2 服务拆分示例
+## 1.2 服务拆分示例
 
 接下来我们来做一个服务拆分的例子：以课前资料中的微服务cloud-demo为例，，其结构如下：
 
@@ -138,7 +138,7 @@ public class UserController {
    }
    ```
 
-## 2.3 提供者与消费者
+## 1.3 提供者与消费者
 
 在服务调用关系中，会有两个不同的角色：
 
@@ -156,7 +156,7 @@ public class UserController {
 - 对于B调用C的业务而言：B是服务消费者，C是服务提供者
 - 因此，服务B既可以是服务提供者，也可以是服务消费者。
 
-# 第三章 Eureka注册中心
+# 第二章 Eureka注册中心
 
 假如我们的服务提供者user-service部署了多个实例，如图：
 
@@ -168,7 +168,7 @@ public class UserController {
 - 有多个user-service实例地址，order-service调用时该如何选择？
 - order-service如何得知某个user-service实例是否依然健康，是不是已经宕机？
 
-## 3.1 Eureka的结构和作用
+## 2.1 Eureka的结构和作用
 
 这些问题都需要利用SpringCloud中的注册中心来解决，其中最广为人知的注册中心就是Eureka，其结构如下：
 
@@ -206,7 +206,7 @@ public class UserController {
 
 ![image-20210713220509769](..\图片\4-01【微服务、Eureka、Ribbon、Nacos】/image-20210713220509769.png)
 
-## 3.2 搭建eureka-server
+## 2.2 搭建eureka-server
 
 首先注册中心服务端：eureka-server，这必须是一个独立的微服务
 
@@ -265,7 +265,7 @@ public class UserController {
    
    ![image-20210713222157190](..\图片\4-01【微服务、Eureka、Ribbon、Nacos】/image-20210713222157190.png)
 
-## 3.3 服务注册
+## 2.3 服务注册
 
 下面，我们将user-service注册到eureka-server中去。
 
@@ -320,7 +320,7 @@ public class UserController {
    
    ![image-20210713223150650](..\图片\4-01【微服务、Eureka、Ribbon、Nacos】/image-20210713223150650.png)
 
-## 3.4 服务发现
+## 2.4 服务发现
 
 下面，我们将order-service的逻辑修改：向eureka-server拉取user-service的信息，实现服务发现。
 
@@ -404,7 +404,7 @@ public class UserController {
 
 spring会自动帮助我们从eureka-server端，根据userservice这个服务名称，获取实例列表，而后完成负载均衡。
 
-## 3.5 Nginx负载均衡
+## 2.5 Nginx负载均衡
 
 **什么是负载均衡**
 
@@ -464,11 +464,11 @@ spring会自动帮助我们从eureka-server端，根据userservice这个服务�
 
 经过测试，每刷新四次，有两次是8081
 
-# 第四章 Ribbon负载均衡
+# 第三章 Ribbon负载均衡
 
 上一节中，我们添加了`@LoadBalanced`注解，即可实现负载均衡功能，这是什么原理呢？
 
-## 4.1 负载均衡原理
+## 3.1 负载均衡原理
 
 SpringCloud底层其实是利用了一个名为Ribbon的组件，来实现负载均衡功能的。
 
@@ -476,7 +476,7 @@ SpringCloud底层其实是利用了一个名为Ribbon的组件，来实现负载
 
 那么我们发出的请求明明是http://userservice/user/1，怎么变成了http://localhost:8081的呢？
 
-## 4.2 源码跟踪
+## 3.2 源码跟踪
 
 为什么我们只输入了service名称就可以访问了呢？之前还要获取ip和端口。
 
@@ -557,9 +557,9 @@ SpringCloud底层其实是利用了一个名为Ribbon的组件，来实现负载
 - IRule利用内置负载均衡规则，从列表中选择一个，例如localhost:8081
 - RibbonLoadBalancerClient修改请求地址，用localhost:8081替代userservice，得到http://localhost:8081/user/1，发起真实请求
 
-## 4.3.负载均衡策略
+## 3.3 负载均衡策略
 
-### 负载均衡策略
+### 3.3.1 负载均衡策略
 
 负载均衡的规则都定义在IRule接口中，而IRule有很多不同的实现类：
 
@@ -579,7 +579,7 @@ SpringCloud底层其实是利用了一个名为Ribbon的组件，来实现负载
 
 默认的实现就是ZoneAvoidanceRule，是一种轮询方案
 
-### 自定义负载均衡策略
+### 3.3.2 自定义负载均衡策略
 
 通过定义IRule实现可以修改负载均衡规则，有两种方式：
 
@@ -603,7 +603,7 @@ SpringCloud底层其实是利用了一个名为Ribbon的组件，来实现负载
 
 > **注意**，一般用默认的负载均衡规则，不做修改。
 
-## 4.4.饥饿加载
+## 3.4 饥饿加载
 
 我们重启服务器，然后访问http://localhost:8080/order/103，如果是第一次访问的话会消耗很长的时间。这是由于Ribbon的原因，Ribbon默认是采用懒加载，即第一次访问时才会去创建LoadBalanceClient，请求时间会很长。
 
@@ -616,11 +616,9 @@ ribbon:
     clients: userservice # 指定饥饿加载的服务名称
 ```
 
-# 第五章 Nacos注册中心
+# 第四章 Nacos注册中心
 
 国内公司一般都推崇阿里巴巴的技术，比如注册中心，SpringCloudAlibaba也推出了一个名为Nacos的注册中心。
-
-## 5.1 认识和安装Nacos
 
 [Nacos](https://nacos.io/)是阿里巴巴的产品，现在是[SpringCloud](https://spring.io/projects/spring-cloud)中的一个组件。相比[Eureka](https://github.com/Netflix/eureka)功能更加丰富，在国内受欢迎程度较高。
 
@@ -628,7 +626,7 @@ ribbon:
 
 > 经测试，如果双击打开运行文件，没有用。
 
-## 5.2 服务注册到nacos
+## 4.1 服务注册到nacos
 
 Nacos是SpringCloudAlibaba的组件，而SpringCloudAlibaba也遵循SpringCloud中定义的服务注册、服务发现规范。因此使用Nacos和使用Eureka对于微服务来说，并没有太大区别。
 
@@ -681,7 +679,7 @@ Nacos是SpringCloudAlibaba的组件，而SpringCloudAlibaba也遵循SpringCloud�
 
    ![image-20210713231439607](..\图片\4-01【微服务、Eureka、Ribbon、Nacos】/image-20210713231439607.png)
 
-## 5.3 服务分级存储模型
+## 4.2 服务分级存储模型
 
 一个**服务**可以有多个**实例**，例如我们的user-service，可以有:
 
@@ -707,7 +705,7 @@ Nacos就将同一机房内的实例 划分为一个**集群**。
 
 杭州机房内的order-service应该优先访问同机房的user-service。
 
-### 给user-service配置集群
+### 4.2.1 给user-service配置集群
 
 修改user-service的application.yml文件，添加集群配置：
 
@@ -739,7 +737,7 @@ spring:
 
 ![image-20210713233727923](..\图片\4-01【微服务、Eureka、Ribbon、Nacos】/image-20210713233727923.png)
 
-### 同集群优先的负载均衡
+### 4.2.2 同集群优先的负载均衡
 
 默认的`ZoneAvoidanceRule`并不能实现根据同集群优先来实现负载均衡。
 
@@ -768,7 +766,7 @@ spring:
        NFLoadBalancerRuleClassName: com.alibaba.cloud.nacos.ribbon.NacosRule # 负载均衡规则 
    ```
 
-## 5.4 权重配置
+## 4.3 权重配置
 
 实际部署中会出现这样的场景：
 
@@ -787,7 +785,7 @@ spring:
 
 > **注意**：如果权重修改为0，则该实例永远不会被访问。
 
-## 5.5 环境隔离
+## 4.4 环境隔离
 
 Nacos提供了namespace来实现环境隔离功能。
 
@@ -797,7 +795,7 @@ Nacos提供了namespace来实现环境隔离功能。
 
 ![image-20210714000101516](..\图片\4-01【微服务、Eureka、Ribbon、Nacos】/image-20210714000101516.png)
 
-### 创建namespace
+### 4.4.1 创建namespace
 
 默认情况下，所有service、data、group都在同一个namespace，名为public：
 
@@ -815,7 +813,7 @@ Nacos提供了namespace来实现环境隔离功能。
 
 ![image-20210714000522913](..\图片\4-01【微服务、Eureka、Ribbon、Nacos】/image-20210714000522913.png)
 
-### 给微服务配置namespace
+### 4.4.2 配置namespace
 
 给微服务配置namespace只能通过修改配置来实现。
 
@@ -841,7 +839,7 @@ spring:
 
 ![image-20210714000941256](..\图片\4-01【微服务、Eureka、Ribbon、Nacos】/image-20210714000941256.png)
 
-## 5.6 Nacos与Eureka的区别
+## 4.5 Nacos与Eureka的区别
 
 Nacos的服务实例分为两种l类型：
 
@@ -877,20 +875,20 @@ Nacos与Eureka的区别：
 
 
 
-# 第一章 Nacos配置管理
+# 第五章 Nacos配置管理
 
 Nacos除了可以做注册中心，同样可以做配置管理来使用。
 
 * Nacos启动：`startup.cmd -m standalone`
 * Nacos关闭：直接双击`shutdown.cmd`
 
-## 1.1 统一配置管理
+## 5.1 统一配置管理
 
 当微服务部署的实例越来越多，达到数十、数百时，逐个修改微服务配置就会让人抓狂，而且很容易出错。我们需要一种统一配置管理方案，可以集中管理所有实例的配置。
 
 Nacos一方面可以将配置集中管理，另一方可以在配置变更时，及时通知微服务，实现配置的热更新。所以我们首先需要在Nacos中完成配置的管理，然后再从Nacos中拉取过来配置到本地。
 
-### nacos中管理配置
+### 5.1.1 nacos中管理配置
 
 在nacos中管理配置方法如下：
 
@@ -915,7 +913,7 @@ Nacos一方面可以将配置集中管理，另一方可以在配置变更时，
 
 > 注意：项目的核心配置，需要热更新的配置才有放到nacos管理的必要。基本不会变更的一些配置还是保存在微服务本地比较好。
 
-### 从微服务拉取配置
+### 5.1.2 从微服务拉取配置
 
 微服务要拉取nacos中管理的配置，并且与本地的application.yml配置合并，才能完成项目启动。但如果尚未读取application.yml，又如何得知nacos地址呢？
 
@@ -996,7 +994,7 @@ Nacos一方面可以将配置集中管理，另一方可以在配置变更时，
 
 这样是在Nacos中配置了管理了，但是如果我们在Nacos中修改配置后必须等我们重启之后才能够生效，不会立即生效的。这样根本无法实现配置的热更新。
 
-## 1.2 配置热更新
+## 5.2 配置热更新
 
 我们最终的目的，是修改nacos中的配置后，微服务中无需重启即可让配置生效，也就是**配置热更新**。
 
@@ -1044,7 +1042,7 @@ Nacos一方面可以将配置集中管理，另一方可以在配置变更时，
    }
    ```
 
-## 1.3 配置共享
+## 5.3 配置共享
 
 其实微服务启动时，会去nacos读取多个配置文件，例如：
 
@@ -1120,7 +1118,7 @@ Nacos一方面可以将配置集中管理，另一方可以在配置变更时，
 
 ![image-20210714174623557](D:\Java\笔记\图片\4-02【Nacos配置管理、Feign、Gateway】\image-20210714174623557.png)
 
-## 1.4 搭建Nacos集群
+## 5.4 搭建Nacos集群
 
 Nacos生产环境下一定要部署为集群状态。
 

@@ -1,8 +1,6 @@
-![](D:\Java\笔记\图片\3-2【Spring】\0-1.png)
+![](D:\Java\笔记\图片\3-01【MyBatis】\0-1.png)
 
 # 第一章 Mybatis基础
-
-## 1.1 MyBatis简介
 
 MyBatis最初是Apache的一个开源项目iBatis, 2010年6月这个项目由Apache Software Foundation迁移到了Google Code。随着开发团队转投Google Code旗下，`iBatis3.x`正式更名为MyBatis。代码于2013年11月迁移到Github
 
@@ -33,7 +31,7 @@ MyBatis和其它持久化层技术对比：
 	- 轻量级，性能出色  
 	- SQL 和 Java 编码分开，功能边界清晰。Java代码专注业务、SQL语句专注数据  
 	- 开发效率稍逊于HIbernate，但是完全能够接受
-## 1.2 搭建MyBatis
+## 1.1 搭建MyBatis
 1. 创建maven工程。
 
    修改打包方式：jar。打开`pom.xml`，添加代码：
@@ -301,7 +299,7 @@ MyBatis和其它持久化层技术对比：
    >
    > FATAL(致命)>ERROR(错误)>WARN(警告)>INFO(信息)>DEBUG(调试) 从左到右打印的内容越来越详细
 
-## 1.3 SQL基本语法
+## 1.2 SQL基本语法
 
 ```sql
 insert into 表名(列名1，列名2，...列名n) values(值1，值2，...值n);
@@ -554,7 +552,7 @@ select * from person limit 6, 3;		-- 第3页
 * 开始的索引是从0开始的
 * 分页操作是一个“方言”， 其他的数据库都有各自的“方言”
 
-## 1.4 MyBatis基础查询
+## 1.3 MyBatis基础查询
 
 > * 查询的标签select必须设置属性resultType或resultMap，用于设置实体类和数据库表的映射关系  
 >
@@ -582,7 +580,7 @@ select * from person limit 6, 3;		-- 第3页
 </select>
 ```
 
-## 1.5 核心配置文件详解
+## 1.4 核心配置文件详解
 
 核心配置文件中的标签必须按照固定的顺序(有的标签可以不写，但顺序一定不能乱)：
 `properties、settings、typeAliases、typeHandlers、objectFactory、objectWrapperFactory、reflectorFactory、plugins、environments、databaseIdProvider、mappers`
@@ -716,7 +714,7 @@ jdbc.password=root
 </mappers>
 ```
 
-## 1.6 抽取工具类
+## 1.5 抽取工具类
 
 对于下面代码很多，重复度很高。那么我们又不想要一直重复写，我们可以抽取出来。
 
@@ -1370,8 +1368,6 @@ public class demo01 {
 
 ## 4.3 SQL多表查询
 
-<!--P521-->
-
 多表查询语法：
 
 ```sql
@@ -1416,9 +1412,7 @@ select * from dept, emp;
 
 多表查询分类。一共有三种：内连接查询，外连接查询，子查询
 
-### 内连接查询
-
-<!--P522-->
+### 4.3.1 内连接查询
 
 隐式内连接
 
@@ -1467,8 +1461,6 @@ WHERE
 
 ### 外连接查询
 
-<!--P523-->
-
 1. 左外连接：查询的是左表所有的数据以及其交集部分。
 
    ```sql
@@ -1482,8 +1474,6 @@ WHERE
 2. 右外连接：查询的是右表所有的数据以及其交集部分。
 
 ### 子查询
-
-<!--P524-->
 
 子查询：查询中嵌套查询，称嵌套查询为子查询。
 
@@ -1501,8 +1491,6 @@ select * from emp where emp.'salary' = 9000;
 -- 以上操作可以合为一项
 select * from emp where emp.'salary' = (select max(salary) from emp);
 ```
-
-<!--P525 1.24-->
 
 子查询的不同情况：
 
@@ -1537,8 +1525,6 @@ select * from emp where emp.'salary' = (select max(salary) from emp);
 
 3. 子查询的结果是多行多列的
 
-   <!--P526-->
-
    子查询可以作为一张虚拟表，参与查询
 
    ```sql
@@ -1550,8 +1536,6 @@ select * from emp where emp.'salary' = (select max(salary) from emp);
    ```
 
 ### 多表查询练习
-
-<!--P527-->
 
 创建表并添加信息：
 
@@ -1671,8 +1655,6 @@ WHERE
 	emp.job_id = job.id AND emp.dept_id = dept.id;
 ```
 
-<!--P528-->
-
 ```sql
 -- 3. 查询员工姓名，工资，工资等级
 SELECT
@@ -1706,8 +1688,6 @@ WHERE
 	emp.dept_id = dept.id AND
 	emp.salary BETWEEN salarygrade.losalary AND salarygrade.hisalary;
 ```
-
-<!--P529 1.25-->
 
 ```sql
 -- 5. 查询部门编号，部门名称，部门位置，部门人数

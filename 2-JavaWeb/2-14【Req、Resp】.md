@@ -1,6 +1,4 @@
-
-
-# 第二章 Request对象
+# 第一章 Request对象
 
 ![](..\图片\2-14【HTTP、Req、Resp】\1.png)
 
@@ -17,11 +15,11 @@ HttpServletRequest	-- 接口
 org.apache.catalina.connector.RequestFacade 类(Tomcat编写)
 ```
 
-## 2.1 获取请求消息
+## 1.1 获取请求消息
 
 根据之前所学我们可以知道请求消息数据格式一共有四种：**请求行、请求头、请求空行、请求体**。而如果我们需要获取的话，我们不需要获取请求空行。只需要获取请求行、请求头和请求体就可以了。
 
-### 2.1.1 获取请求行数据
+### 1.1.1 获取请求行数据
 
 请求行数据格式如下：
 
@@ -74,7 +72,7 @@ HTTP/1.1						# 获取到的协议及版本
 0:0:0:0:0:0:0:1					 # 获取IP地址 IPv6
 ```
 
-### 2.1.2 获取请求头数据
+### 1.1.2 获取请求头数据
 
 - `String getHeader(String name)`：通过请求头的名称获取请求头的值。
 - `Enumeration<String> getHeaderNames()`：获取所有的请求头名称。
@@ -175,7 +173,7 @@ public class Demo02Request extends HttpServlet {
 ```
 
 
-### 2.1.3 获取请求体数据
+### 1.1.3 获取请求体数据
 
 创建一个HTML表单，让用户输入数据，提交到`Demo05Request`类里面
 
@@ -219,11 +217,11 @@ public class Demo05Request extends HttpServlet {
 }
 ```
 
-## 2.2 request功能
+## 1.2 request功能
 
 接下来看一下Request的其他功能
 
-### 2.2.1 获取请求参数
+### 1.2.1 获取请求参数
 
 不论是get还是post请求方式都可以使用下列方法。
 
@@ -308,7 +306,7 @@ public class Demo06Request extends HttpServlet {
 }
 ```
 
-### 2.2.2 解决乱码问题
+### 1.2.2 解决乱码问题
 
 在`Tomcat8`中，如果使用的是`get`方式请求服务器，那么`Tomcat`就会自动将乱码问题解决。但是如果使用的是`post`请求方式来请求服务器，那么乱码问题依旧存在。
 
@@ -317,7 +315,7 @@ public class Demo06Request extends HttpServlet {
 * 在获取参数前，设置`request`的编码与前端页面的编码一致即可。
 * 这是因为他们都是使用的是流对象，所以需要设置流对象的编码。`req.setCharacterEncoding("utf-8");`
 
-### 2.2.3 请求转发
+### 1.2.3 请求转发
 
 req请求转发、resp响应重定向
 
@@ -376,7 +374,7 @@ public class Demo02Request extends HttpServlet {
 }
 ```
 
-### 2.2.4 共享数据域对象
+### 1.2.4 共享数据域对象
 
 域对象：一个有着作用范围的对象，可以在范围内共享数据。
 
@@ -432,7 +430,7 @@ public class Demo02Request extends HttpServlet {
 */
 ```
 
-### 2.2.5 获取ServletContext
+### 1.2.5 获取ServletContext
 
 `ServletContext getServletContext()`：获取`ServletContext`对象。
 
@@ -455,7 +453,7 @@ public class Demo01Request extends HttpServlet {
 }
 ```
 
-## 2.5 用户登陆案例
+## 1.5 用户登陆案例
 
 案例：用户登陆。需求如下：
 
@@ -735,7 +733,7 @@ public class Demo01Request extends HttpServlet {
    ```
 
 
-## 2.6 Beanutils
+## 1.6 Beanutils
 
 ```java
 package cn.com.demo03.servlet;
@@ -807,7 +805,7 @@ try {
 }
 ```
 
-# 第三章 Response对象
+# 第二章 Response对象
 
 `Response`对象功能：设置响应消息。
 
@@ -829,7 +827,7 @@ try {
 | 4xx    | Client Error（客户端错误状态码） | 服务器无法处理请求         |
 | 5xx    | Server Error（服务器错误状态码） | 服务器处理请求错误         |
 
-## 3.1 重定向实现
+## 2.1 重定向实现
 
 重定向：资源跳转的方式
 
@@ -879,7 +877,7 @@ public class Demo02Request extends HttpServlet {
 */
 ```
 
-## 3.3 重定向特点
+## 2.2 重定向特点
 
 我们首先来看一下转发的特点：`forward`
 
@@ -893,7 +891,7 @@ public class Demo02Request extends HttpServlet {
 - 重定向可以访问其他站点(服务器)的资源
 - 重定向是**两次**请求
 
-## 3.4 相对路径和绝对路径
+## 2.3 相对路径和绝对路径
 
 **相对路径**
 
@@ -920,7 +918,7 @@ public class Demo02Request extends HttpServlet {
 
   转发路径。
 
-## 3.5 服务器输出字符数据到浏览器
+## 2.4 服务器输出字符数据到浏览器
 
 输出字符数据到浏览器的步骤：首先需要获取字符输出流。然后再输出数据就可以了。
 
@@ -956,7 +954,7 @@ resp.setContentType("text/html; charset = utf-8");
 
 > 切记，UTF-8中间不能有空格
 
-## 3.6 服务器输出字节数据到浏览器
+## 2.5 服务器输出字节数据到浏览器
 
 ```java
 @WebServlet("/demo04Response")
@@ -981,7 +979,7 @@ public class Demo04Response extends HttpServlet {
 }
 ```
 
-## 3.7 验证码案例
+## 2.6 验证码案例
 
 ```java
 @WebServlet("/demo05Response")

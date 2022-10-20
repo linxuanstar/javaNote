@@ -4,7 +4,7 @@
 
 `Maven` 的正确发音是`[ˈmevən]`，而不是“马瘟”以及其他什么瘟。`Maven` 在美国是一个口语化的词语，代表专家、内行的意思。 
 
-一个对 `Maven` 比较正式的定义是这么说的：`Maven` 是一个项目管理工具，它包含了一个**项目对象模型 `(POM：Project Object Model)`**，一组标准集合，一个项目生命周期`(Project Lifecycle)`，一个依赖管理系统`(Dependency Management System)`，和用来运行定义在生命周期阶段`(phase)`中插件`(plugin)`目标 `(goal)`的逻辑。
+一个对 `Maven` 比较正式的定义是这么说的：`Maven` 是一个项目管理工具，它包含了一个项目对象模型 `(POM：Project Object Model)`，一组标准集合，一个项目生命周期`(Project Lifecycle)`，一个依赖管理系统`(Dependency Management System)`，和用来运行定义在生命周期阶段`(phase)`中插件`(plugin)`目标 `(goal)`的逻辑。
 
 Maven能够解决的问题：构建工程，管理 jar 包，编译代码，还能帮我们自动运行单元测试，打包，生成报表，甚至能帮我们部署项目，生成 Web 站点。
 

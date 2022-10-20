@@ -13,8 +13,6 @@
 
 ## 2.1 概述
 
-<!--P739 3.13-->
-
 ```java
 @WebServlet("/demo01Cookie")
 public class Demo01Cookie extends HttpServlet {
@@ -61,19 +59,11 @@ public class Demo02Cookie extends HttpServlet {
 
 ## 2.2 Cookie原理
 
-<!--P740-->
-
 实现原理：基于响应头`set-Cookie`和请求头`Cookie`实现的。
 
 ![](..\图片\2-17【Cokkie、Session】\1Cookie会话技术.png)
 
 ## 2.3 Cookie细节
-
-<!--P741-->
-
-<!--P742-->
-
-<!--P743-->
 
 ### 一次可以发送多个Cookie吗
 
@@ -96,9 +86,6 @@ public class Demo02Cookie extends HttpServlet {
 
 - 在`Tomcat8`之后，支持中文数据。
 
-
-<!--P744 3.14-->
-
 ### Cookie共享范围多大？
 
 假如在同一个`Tomcat`服务器中部署了多个Web项目，那么这些Web项目中的Cookie是不能共享的。有这么一个方法`setPath(String path):`设置Cookie的获取返回。在默认情况下，参数会设置为当前的虚拟目录。所以Cookie信息无法共享。但是我们可以修改参数，将path修改为`“/”`，这样不同的Web项目就可以访问了。
@@ -106,8 +93,6 @@ public class Demo02Cookie extends HttpServlet {
 不同的Tomcat服务器之间如何共享Cookie呢？Cookie里面有这么一个方法：`setDomain(String path)`：如果设置的一级域名相同，那么多个服务器之间的Cookie也可以共享。例如我们将path修改为“.baidu.com”，那么tieba.baidu.com和newx.baidu.com中的Cookie是可以共享的。
 
 ## 2.4 Cookie特点和作用
-
-<!--P745-->
 
 特点：
 
@@ -120,8 +105,6 @@ public class Demo02Cookie extends HttpServlet {
 * 在不登录的情况下面，完成服务器对客户端的身份识别。
 
 ## 2.5 Cookie案例
-
-<!--P746-->
 
 案例：记住上一次访问时间
 
@@ -147,8 +130,6 @@ public class Demo02Cookie extends HttpServlet {
    2. 写回`Cookie`：`lastTime = 时间`
 
 ### 代码
-
-<!--P747-->
 
 ```java
 @WebServlet("/demo01CookieTest")
@@ -230,8 +211,6 @@ public class Demo01CookieTest extends HttpServlet {
 
 ## 4.1 基本概述
 
-<!--P753-->
-
 `Session`：服务器端会话技术，在一次会话的多次请求间共享数据，将数据保存在服务器端的对象中。
 
 使用`Session`：
@@ -294,13 +273,9 @@ public class Demo02Session extends HttpServlet {
 
 `Session`的原理是基于`Cookie`的。
 
-<!--P754 3.16-->
-
 ![](..\图片\2-17【Cokkie、Session】\3Session.png)
 
 ## 4.3 细节分析
-
-<!--P755-->
 
 **当客户端关闭之后，服务器不关闭，两次获取的Session是否是同一个呢？**
 

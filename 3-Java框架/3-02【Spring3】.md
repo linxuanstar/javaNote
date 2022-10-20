@@ -1,17 +1,15 @@
-# 第一章 AOP简介
+# 第一章 AOP基础
 
-对于AOP，我们前面提过一句话是：<font color = "red">AOP是在不改原有代码的前提下对其进行增强</font>。
-
-## 1.1 什么是AOP
+对于AOP，我们前面提过一句话是：AOP是在不改原有代码的前提下对其进行增强。
 
 我们都知道OOP是一种编程思想，那么AOP也是一种编程思想，编程思想主要的内容就是指导程序员该如何编写程序，所以它们两个是不同的`编程范式`。
 
 * `AOP(Aspect Oriented Programming)`：面向切面编程，一种编程范式，指导开发者如何组织程序结构。
 * `OOP(Object Oriented Programming)`：面向对象编程
 
-AOP的作用：**在不惊动原始设计的基础上为其进行功能增强**。前面咱们有技术就可以实现这样的功能即代理模式。
+AOP的作用：在不惊动原始设计的基础上为其进行功能增强。前面咱们有技术就可以实现这样的功能即代理模式。
 
-## 1.2 AOP核心概念
+## 1.1 AOP核心概念
 
 为了能更好的理解AOP的相关概念，我们准备了一个环境，整个环境的内容我们暂时可以不用关注，最主要的类为：`BookDaoImpl`
 
@@ -44,11 +42,10 @@ public class BookDaoImpl implements BookDao {
 }
 ```
 
-正常来说，在主方法中从容器中获取bookDao对象后，执行save方法会打印信息并打印时间差，而update、delete和select方法并不会。
+正常来说，在主方法中从容器中获取bookDao对象后，执行save方法会打印信息并打印时间差，而update、delete和select方法并不会。如果有AOP参与的情况下，那么执行`save`、`update`和`delete`方法会打印信息并打印时间差，而`select`方法并不会打印时间差（我们对其进行设置了）。
 
-但是，这是在没有AOP参与之下，而我们上述构建的环境有AOP参与，虽然并没有显示。那么执行`save`、`update`和`delete`方法会打印信息并打印时间差，而`select`方法并不会。
-
-这个案例中其实就使用了Spring的AOP，**在不惊动(改动)原有设计(代码)的前提下，想给谁添加功能就给谁添加**。这个也就是Spring的理念：**无入侵式/无侵入式**。
+- Spring的AOP：在不惊动(改动)原有设计(代码)的前提下，想给谁添加功能就给谁添加。
+- Spring的理念：无入侵式/无侵入式。
 
 Spring到底是如何实现如下：
 
@@ -56,7 +53,7 @@ Spring到底是如何实现如下：
 
 1. 前面一直在强调，Spring的AOP是对一个类的方法在不进行任何修改的前提下实现增强。对于上面的案例中`BookServiceImpl`中有`save`，`update`，`delete`和`select`方法，这些方法我们给起了一个名字叫连接点。
 
-2. 在`BookServiceImpl`的四个方法中，`update`和`delete`只有打印没有计算万次执行消耗时间，但是在运行的时候已经有该功能，那也就是说`update`和`delete`方法都已经被增强，所以对于需要增强的方法我们给起了一个名字叫切入点。
+2. 在`BookServiceImpl`的四个方法中，`update`和`delete`只有打印功能并没有去计算万次执行消耗时间，但是在运行的时候已经有该功能，那也就是说`update`和`delete`方法都已经被增强，所以对于需要增强的方法我们给起了一个名字叫切入点。
 
 3. 执行`BookServiceImpl`的`update`和`delete`方法的时候都被添加了一个计算万次执行消耗时间的功能，将这个功能抽取到一个方法中，换句话说就是存放共性功能的方法，我们给起了个名字叫通知。
 
@@ -66,17 +63,17 @@ Spring到底是如何实现如下：
 
 至此AOP中的核心概念就已经介绍完了，总结下：
 
-* 连接点(JoinPoint)：程序执行过程中的任意位置，粒度为执行方法、抛出异常、设置变量等。**在SpringAOP中，理解为方法的执行**。
-* 切入点(Pointcut)：匹配连接点的式子。**在SpringAOP中，一个切入点可以描述一个具体方法，也可也匹配多个方法。**
-  * 一个具体的方法：如com.linxuan.dao包下的BookDao接口中的无形参无返回值的save方法。
+* 连接点(JoinPoint)：程序执行过程中的任意位置，粒度为执行方法、抛出异常、设置变量等。在SpringAOP中，理解为方法的执行。
+* 切入点(Pointcut)：匹配连接点的式子。在SpringAOP中，一个切入点可以描述一个具体方法，也可也匹配多个方法。
+  * 一个具体的方法：如`com.linxuan.dao`包下的BookDao接口中的无形参无返回值的save方法。
   * 匹配多个方法：所有的save方法，所有的get开头的方法，所有以Dao结尾的接口中的任意方法，所有带有一个参数的方法。
-* 通知(Advice)：在切入点处执行的操作，也就是共性功能。**在SpringAOP中，功能最终以方法的形式呈现**。
+* 通知(Advice)：在切入点处执行的操作，也就是共性功能。在SpringAOP中，功能最终以方法的形式呈现。
 * 通知类：定义通知的类。
 * 切面(Aspect)：描述通知与切入点的对应关系。
 
 > 连接点范围要比切入点范围大，是切入点的方法也一定是连接点，但是是连接点的方法就不一定要被增强，所以可能不是切入点。
 
-## 1.3 AOP入门案例
+## 1.2 AOP入门案例
 
 需求为：使用SpringAOP的注解方式完成在方法执行的前打印出当前系统时间。
 
@@ -200,7 +197,7 @@ Spring到底是如何实现如下：
 
    注解里面写一个参数`execution`(执行)，后面会自动补全一个括号，括号里面我们写上方法的返回值、方法的全类名。
 
-   `@Pointcut("execution(void com.linxuan.dao.BookDao.update())")`：当执行到`void com.linxuan.dao.BookDao.update()`这个方法的时候...。告知我们这是一个切入点。
+   `@Pointcut("execution(void com.linxuan.dao.BookDao.update())")`：当执行到`void com.linxuan.dao.BookDao.update()`这个方法的时候，告知我们这是一个切入点。
 
    ```java
    package com.linxuan.aop;
@@ -316,7 +313,7 @@ Spring到底是如何实现如下：
 
    容器启动就需要去加载bean，一共有两种类需要被加载。第一种是需要被增强的类，例如`BookDaoImpl`类；第二种是通知类，例如`MyAdvice`类。
 
-   注意此时bean对象还没有创建成功
+   注意此时bean对象还没有创建成功。
 
 2. 读取所有切面配置中的切入点。
 
@@ -326,11 +323,6 @@ Spring到底是如何实现如下：
 
    ```java
    package com.linxuan.aop;
-   
-   import org.aspectj.lang.annotation.Aspect;
-   import org.aspectj.lang.annotation.Before;
-   import org.aspectj.lang.annotation.Pointcut;
-   import org.springframework.stereotype.Component;
    
    // 让Spring管理
    @Component
@@ -349,9 +341,8 @@ Spring到底是如何实现如下：
            System.out.println(System.currentTimeMillis());
        }
    }
-   
    ```
-
+   
 3. 初始化bean。判定bean对应的类中的方法是否匹配到任意切入点。要被实例化bean对象的类中的方法和切入点进行匹配。
 
    ![1630152538083](..\图片\3-02【Spring】\3-2.png)
@@ -478,7 +469,7 @@ public class BookDaoImpl implements BookDao {
 }
 ```
 
-我们将上述代码中的update()方法变成一个切入点，为此我们一共有两种描述方式：
+我们将上述代码中的`update()`方法变成一个切入点，为此我们一共有两种描述方式：
 
 1. 执行`com.linxuan.dao`包下的`BookDao`接口中的无参数`update`方法
 
@@ -530,7 +521,7 @@ execution(public User com.linxuan.service.UserService.findById(int))
 * `UserService`：类/接口名称
 * `findById`：方法名
 * `int`：参数，直接写参数的类型，多个类型用逗号隔开
-* 异常名：方法定义中抛出指定异常，可以省略
+* `异常名`：方法定义中抛出指定异常，可以省略
 
 切入点表达式就是要找到需要增强的方法，所以它就是对一个具体方法的描述，但是方法的定义会有很多，所以如果每一个方法对应一个切入点表达式，那么会很麻烦。所以接下来了解一下通配符
 
@@ -540,99 +531,93 @@ execution(public User com.linxuan.service.UserService.findById(int))
 
 * `*`：单个独立的任意符号，可以独立出现，也可以作为前缀或者后缀的匹配符出现
 
-  ```
-  execution（public * com.linxuan.*.UserService.find*(*))
+  ```java
+  execution(public * com.linxuan.*.UserService.find*(*))
   ```
 
-  匹配com.linxuan包下的任意包中的UserService类或接口中所有find开头的带有一个参数的方法
+  匹配`com.linxuan`包下的任意包中的`UserService`类或接口中所有`find`开头的带有一个参数的方法。
 
 * `..`：多个连续的任意符号，可以独立出现，常用于简化包名与参数的书写
 
-  ```
-  execution（public User com..UserService.findById(..))
+  ```java
+  execution(public User com..UserService.findById(..))
   ```
 
-  匹配com包下的任意包中的UserService类或接口中所有名称为findById的方法
+  匹配`com`包下的任意包中的`UserService`类或接口中所有名称为`findById`的方法
 
 * `+`：专用于匹配子类类型
 
-  ```
+  ```java
   execution(* *..*Service+.*(..))
   ```
 
-  这个使用率较低，描述子类的，咱们做JavaEE开发，继承机会就一次，使用都很慎重，所以很少用它。*Service+，表示所有以Service结尾的接口的子类。
+  这个使用率较低，描述子类的，咱们做JavaEE开发，继承机会就一次，使用都很慎重，所以很少用它。`*Service+`，表示所有以Service结尾的接口的子类。
 
 接下来，我们把案例中使用到的切入点表达式来分析下：
 
 ```java
-execution(void com.linxuan.dao.BookDao.update())
 // 匹配接口，能匹配到
-    
-execution(void com.linxuan.dao.impl.BookDaoImpl.update())
+execution(void com.linxuan.dao.BookDao.update())
+
 // 匹配实现类，能匹配到
+execution(void com.linxuan.dao.impl.BookDaoImpl.update())
     
-execution(* com.linxuan.dao.impl.BookDaoImpl.update())
 // 返回值任意，能匹配到
+execution(* com.linxuan.dao.impl.BookDaoImpl.update())
     
-execution(* com.linxuan.dao.impl.BookDaoImpl.update(*))
 // 返回值任意，但是update方法必须要有一个参数，无法匹配，要想匹配需要在update接口和实现类添加参数
+execution(* com.linxuan.dao.impl.BookDaoImpl.update(*))
     
-execution(void com.*.*.*.*.update())
 // 返回值为void，com包下的任意包三层包下的任意类的update方法，匹配到的是实现类，能匹配
-    
-execution(void com.*.*.*.update())
+execution(void com.*.*.*.*.update())
+
 // 返回值为void，com包下的任意两层包下的任意类的update方法，匹配到的是接口，能匹配
-    
-execution(void *..update())
+execution(void com.*.*.*.update())
+
 // 返回值为void，方法名是update的任意包下的任意类，能匹配
-    
-execution(* *..*(..))
+execution(void *..update())
+
 // 匹配项目中任意类的任意方法，能匹配，但是不建议使用这种方式，影响范围广
+execution(* *..*(..))
     
-execution(* *..u*(..))
 // 匹配项目中任意包任意类下只要以u开头的方法，update方法能满足，能匹配
+execution(* *..u*(..))
     
-execution(* *..*e(..))
 // 匹配项目中任意包任意类下只要以e结尾的方法，update和save方法能满足，能匹配
+execution(* *..*e(..))
     
-execution(void com..*())
 // 返回值为void，com包下的任意包任意类任意方法，能匹配，*代表的是方法
+execution(void com..*())
 
     
 // 接下来两种更符合我们平常切入点表达式的编写规则
-execution(* com.linxuan.*.*Service.find*(..))
 // 将项目中所有业务层方法的以find开头的方法匹配
+execution(* com.linxuan.*.*Service.find*(..))
     
-execution(* com.linxuan.*.*Service.save*(..))
 // 将项目中所有业务层方法的以save开头的方法匹配
+execution(* com.linxuan.*.*Service.save*(..))
 ```
 
 **书写技巧**
 
 所有代码按照标准规范开发，否则以下技巧全部失效
 
-1. 描述切入点通**常描述接口**，而不描述实现类，如果描述到实现类，就出现紧耦合了
-2. 访问控制修饰符针对接口开发均采用public描述（**可省略访问控制修饰符描述**）
+1. 描述切入点通常描述接口，而不描述实现类，如果描述到实现类，就出现紧耦合了
+2. 访问控制修饰符针对接口开发均采用public描述（可省略访问控制修饰符描述）
 3. 返回值类型对于增删改类使用精准类型加速匹配，对于查询类使用\*通配快速描述
-4. **包名**书写**尽量不使用..匹配**，效率过低，常用\*做单个包描述匹配，或精准匹配
-5. **接口名/类名**书写名称与模块相关的**采用\*匹配**，例如UserService书写成\*Service，绑定业务层接口名
-6. **方法名**书写以**动词**进行**精准匹配**，名词采用*匹配，例如getById书写成getBy*，selectAll书写成selectAll
+4. 包名书写尽量不使用`..`匹配，效率过低，常用\`*`做单个包描述匹配，或精准匹配
+5. 接口名/类名书写名称与模块相关的采用`*`匹配，例如UserService书写成`*`Service，绑定业务层接口名
+6. 方法名书写以动词进行精准匹配，名词采用`*`匹配，例如getById书写成getBy`*`，selectAll书写成selectAll
 7. 参数规则较为复杂，根据业务方法灵活调整
-8. 通常**不使用异常**作为**匹配**规则
+8. 通常不使用异常作为匹配规则
 
 ## 2.5 AOP通知类型
 
 前面的案例中，有涉及到如下内容：`@Before("pt()")`。它所代表的含义是将`通知`添加到`切入点`方法执行的前面。接下来我们来介绍一下其他的注解。
 
-我们先来回顾下AOP通知：**AOP通知描述了抽取的共性功能，根据共性功能抽取的位置不同，最终运行代码时要将其加入到合理的位置**。
+我们先来回顾下AOP通知：AOP通知描述了抽取的共性功能，根据共性功能抽取的位置不同，最终运行代码时要将其加入到合理的位置。
 
-AOP一共提供了5种通知类型：
-
-1. 前置通知
-2. 后置通知
-3. **环绕通知(重点)**
-4. 返回后通知(了解)
-5. 抛出异常后通知(了解)
+AOP一共提供了5种通知类型：前置通知、后置通知、环绕通知(重点)、返回后通知(了解)、抛出异常后通知(了解)。
 
 为了更好的理解这几种通知类型，我们来看一张图
 
@@ -657,8 +642,9 @@ public interface BookDao {
     public int select();
     public void update();
 }
+```
 
-
+```java
 package com.linxuan.dao.impl;
 
 @Repository
@@ -724,7 +710,7 @@ public class App {
 }
 ```
 
-### 前置通知
+### 2.5.1 前置通知
 
 修改MyAdvice，在before方法上添加`@Before注解`
 
@@ -746,7 +732,7 @@ public class MyAdvice {
 // book dao update ...
 ```
 
-### 后置通知
+### 2.5.2 后置通知
 
 ```java
 @Component
@@ -770,7 +756,7 @@ public class MyAdvice {
 // after advice ...
 ```
 
-### 环绕通知
+### 2.5.3 环绕通知
 
 我们来看下面代码
 
@@ -804,7 +790,7 @@ public class MyAdvice {
     @Around("pt()")
     public void around(ProceedingJoinPoint pjp) throws Throwable{
         System.out.println("around before advice ...");
-        //表示对原始操作的调用
+        // 表示对原始操作的调用
         // proceed()要抛出异常
         pjp.proceed();
         System.out.println("around after advice ...");
@@ -884,7 +870,7 @@ public class MyAdvice {
       }
   ```
 
-  所以pjp.proceed()是有返回值的，它的返回值就是100。
+  所以`pjp.proceed()`是有返回值的，它的返回值就是100。
 
   因为我们的AOP就是对原始方法进行增强的，所以这时候我们可以看成原始方法里面的代码块等同于上述代码，正因为如此，出问题了。返回值不同，上述代码返回值是空的，而原始方法返回值是int。
 
@@ -931,7 +917,7 @@ public class MyAdvice {
 
 ![1630170090945](..\图片\3-02【Spring】\3-4.png)
 
-### 返回后通知
+### 2.5.4 返回后通知
 
 - 返回后通知是需要在原始方法`select`正常执行后才会被执行，如果`select()`方法执行的过程中出现了异常，那么返回后通知是不会被执行。
 - 后置通知是不管原始方法有没有抛出异常都会被执行。
@@ -957,7 +943,7 @@ public class MyAdvice {
 // 100
 ```
 
-### 异常后通知
+### 2.5.5 异常后通知
 
 ```java
 @Component
@@ -969,7 +955,7 @@ public class MyAdvice {
     @Pointcut("execution(int com.itheima.dao.BookDao.select())")
     private void pt2(){}
     
-    @AfterReturning("pt2()")
+    @AfterThrowing("pt2()")
     public void afterThrowing() {
         System.out.println("afterThrowing advice ...");
     }
@@ -1018,7 +1004,7 @@ public class MyAdvice {
 
 接下来我们通过一些案例加深下对通知类型的学习。
 
-## 2.6 案例：业务层接口执行效率
+## 2.6 案例-测试执行效率
 
 需求：任意业务层接口执行均可显示其执行效率，也就是执行时间。这个案例的目的是查看每个业务层执行的时间，这样就可以监控出哪个业务比较耗时，将其查找出来方便优化。
 
@@ -1044,58 +1030,59 @@ public class MyAdvice {
   ```xml
   <dependencies>
       <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-context</artifactId>
-        <version>5.2.10.RELEASE</version>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-context</artifactId>
+          <version>5.2.10.RELEASE</version>
       </dependency>
       <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-jdbc</artifactId>
-        <version>5.2.10.RELEASE</version>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-jdbc</artifactId>
+          <version>5.2.10.RELEASE</version>
       </dependency>
       <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-test</artifactId>
-        <version>5.2.10.RELEASE</version>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-test</artifactId>
+          <version>5.2.10.RELEASE</version>
       </dependency>
       <dependency>
-        <groupId>org.aspectj</groupId>
-        <artifactId>aspectjweaver</artifactId>
-        <version>1.9.4</version>
+          <groupId>org.aspectj</groupId>
+          <artifactId>aspectjweaver</artifactId>
+          <version>1.9.4</version>
       </dependency>
       <dependency>
-        <groupId>mysql</groupId>
-        <artifactId>mysql-connector-java</artifactId>
-        <version>5.1.47</version>
+          <groupId>mysql</groupId>
+          <artifactId>mysql-connector-java</artifactId>
+          <version>5.1.47</version>
       </dependency>
       <dependency>
-        <groupId>com.alibaba</groupId>
-        <artifactId>druid</artifactId>
-        <version>1.1.16</version>
+          <groupId>com.alibaba</groupId>
+          <artifactId>druid</artifactId>
+          <version>1.1.16</version>
       </dependency>
       <dependency>
-        <groupId>org.mybatis</groupId>
-        <artifactId>mybatis</artifactId>
-        <version>3.5.6</version>
+          <groupId>org.mybatis</groupId>
+          <artifactId>mybatis</artifactId>
+          <version>3.5.6</version>
       </dependency>
       <dependency>
-        <groupId>org.mybatis</groupId>
-        <artifactId>mybatis-spring</artifactId>
-        <version>1.3.0</version>
+          <groupId>org.mybatis</groupId>
+          <artifactId>mybatis-spring</artifactId>
+          <version>1.3.0</version>
       </dependency>
       <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>4.12</version>
-        <scope>test</scope>
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
+          <version>4.12</version>
+          <scope>test</scope>
       </dependency>
-    </dependencies>
+  </dependencies>
   ```
 
 - 添加`AccountService`、`AccountServiceImpl`、`AccountDao`与`Account`类
 
   ```java
   package com.linxuan.service;
+  
   public interface AccountService {
       void save(Account account);
       void delete(Integer id);
@@ -1103,9 +1090,11 @@ public class MyAdvice {
       List<Account> findAll();
       Account findById(Integer id);
   }
-  
-  
+  ```
+
+  ```java
   package com.linxuan.service.impl;
+  
   @Service
   public class AccountServiceImpl implements AccountService {
   
@@ -1132,17 +1121,19 @@ public class MyAdvice {
           return accountDao.findAll();
       }
   }
-  
-  
+  ```
+
+  ```java
   package com.linxuan.dao;
+  
   public interface AccountDao {
-      @Insert("insert into tbl_account(name，money)values(#{name}，#{money})")
+      @Insert("insert into tbl_account(name，money)values(#{name}, #{money})")
       void save(Account account);
   
       @Delete("delete from tbl_account where id = #{id} ")
       void delete(Integer id);
   
-      @Update("update tbl_account set name = #{name} ， money = #{money} where id = #{id} ")
+      @Update("update tbl_account set name = #{name}, money = #{money} where id = #{id} ")
       void update(Account account);
   
       @Select("select * from tbl_account")
@@ -1151,14 +1142,16 @@ public class MyAdvice {
       @Select("select * from tbl_account where id = #{id} ")
       Account findById(Integer id);
   }
-  
-  
+  ```
+
+  ```java
   package com.linxuan.domain;
+  
+  @Data
   public class Account {
       private Integer id;
       private String name;
       private Double money;
-      //setter..getter..toString方法省略
   }
   ```
 
@@ -1176,15 +1169,19 @@ public class MyAdvice {
   ```java
   //Spring配置类：SpringConfig
   package com.linxuan.config;
+  
   @Component
   @ComponentScan("com.linxuan")
   @PropertySource("classpath:jdbc.properties")
   @Import({JdbcConfig.class, MybatisConfig.class})
   public class SpringConfig {
   }
-  
+  ```
+
+  ```java
   //JdbcConfig配置类
   package com.linxuan.config;
+  
   public class JdbcConfig {
       @Value("${jdbc.driver}")
       private String driver;
@@ -1205,9 +1202,12 @@ public class MyAdvice {
           return ds;
       }
   }
-  
+  ```
+
+  ```java
   //MybatisConfig配置类
   package com.linxuan.config;
+  
   public class MybatisConfig {
       @Bean
       public SqlSessionFactoryBean sqlSessionFactory(DataSource dataSource){
@@ -1278,7 +1278,7 @@ public class MyAdvice {
    }
    ```
 
-3. 添加环绕通知。在`runSpeed()`方法上添加`@Around`。**注意：**目前并没有做任何增强
+3. 添加环绕通知。在`runSpeed()`方法上添加`@Around`。目前并没有做任何增强。
 
    ```java
    package com.linxuan.aop;
@@ -1345,9 +1345,11 @@ public class MyAdvice {
    @Component
    @Aspect
    public class ProjectAdvice {
+       
        //配置业务层的所有方法
        @Pointcut("execution(* com.linxuan.service.*Service.*(..))")
        private void servicePt(){}
+       
        //@Around("ProjectAdvice.servicePt()") 可以简写为下面的方式
        @Around("servicePt()")
        public void runSpeed(ProceedingJoinPoint pjp){
@@ -1388,8 +1390,9 @@ public class MyAdvice {
   public interface BookDao {
       public String findName(int id);
   }
-  
-  
+  ```
+
+  ```java
   package com.linxuan.dao.impl;
   
   @Repository
@@ -1472,7 +1475,7 @@ public class MyAdvice {
   // linxuan
   ```
 
-### 获取参数
+### 2.7.1 获取参数
 
 获取切入点方法的参数，所有的通知类型都可以获取参数
 
@@ -1538,7 +1541,7 @@ public class MyAdvice {
 // linxuan
 ```
 
-`pjp.proceed()`方法是有两个构造方法，分别是：
+`pjp.proceed()`方法是有两个重载方法，分别是：
 
 * `Object proceed() throws Throwable;`
 
@@ -1571,14 +1574,12 @@ public class MyAdvice {
 
 有了这个特性后，我们就可以在环绕通知中对原始方法的参数进行拦截过滤，避免由于参数的问题导致程序无法正确运行，保证代码的健壮性。
 
-### 获取返回值
+### 2.7.2 获取返回值
 
-获取切入点方法返回值，前置和抛出异常后通知是没有返回值，后置通知可有可无，所以不做研究
+获取切入点方法返回值，前置和抛出异常后通知是没有返回值，后置通知可有可无，所以不做研究。对于返回值，只有返回后`AfterReturing`和环绕`Around`这两个通知类型可以获取。
 
-* 返回后通知
-* 环绕通知
-
-对于返回值，只有返回后`AfterReturing`和环绕`Around`这两个通知类型可以获取。
+* 返回后通知`AfterReturing`
+* 环绕通知`Around`
 
 **环绕通知获取返回值**
 
@@ -1612,9 +1613,9 @@ public class MyAdvice {
     @Pointcut("execution(* com.linxuan.dao.BookDao.findName(..))")
     private void pt(){}
 
-    @AfterReturning(value = "pt()"，returning = "ret")
+    @AfterReturning(value = "pt()", returning = "ret")
     public void afterReturning(Object ret) {
-        System.out.println("afterReturning advice ..."+ret);
+        System.out.println("afterReturning advice ..." + ret);
     }
 	//其他的略
 }
@@ -1645,14 +1646,12 @@ public class MyAdvice {
 
    如果参数存在JoinPoint，那么该参数必须放在第一位，否则会出现报错。
 
-### 获取异常
+### 2.7.3 获取异常
 
-获取切入点方法运行异常信息，前置和返回后通知是不会有，后置通知可有可无，所以不做研究
+获取切入点方法运行异常信息，前置和返回后通知是不会有，后置通知可有可无，所以不做研究。对于获取抛出的异常，只有抛出异常后`AfterThrowing`和环绕`Around`这两个通知类型可以获取。
 
-* 抛出异常后通知
-* 环绕通知
-
-对于获取抛出的异常，只有抛出异常后`AfterThrowing`和环绕`Around`这两个通知类型可以获取。
+* 抛出异常后通知`AfterThrowing`
+* 环绕通知`Around`
 
 **环绕通知获取异常**
 
@@ -1697,13 +1696,13 @@ public class MyAdvice {
 
     @AfterThrowing(value = "pt()"，throwing = "t")
     public void afterThrowing(Throwable t) {
-        System.out.println("afterThrowing advice ..."+t);
+        System.out.println("afterThrowing advice ..." + t);
     }
 	//其他的略
 }
 ```
 
-运行上述代码，发现没什么变化。当然，有变化实在发生异常之后，所以我们需要手动让原始方法抛出异常。如何让原始方法抛出异常，方式有很多：
+运行上述代码，发现没什么变化。当然，有变化是在发生异常之后，所以我们需要手动让原始方法抛出异常。如何让原始方法抛出异常，方式有很多：
 
 ```java
 @Repository
@@ -1725,30 +1724,15 @@ public class BookDaoImpl implements BookDao {
 
 注意：`throwing = "t"` == `Throwable t`名称必须一致。
 
-## 2.8 百度网盘密码数据兼容
+## 2.8 案例-百度网盘密码兼容
 
 需求： 对百度网盘分享链接输入密码时尾部多输入的空格做兼容处理。
 
-问题描述：
+当我们从别人发给我们的内容中复制提取码的时候，有时候会多复制到一些空格，直接粘贴到百度的提取码输入框。但是百度那边记录的提取码是没有空格的。这个时候如果不做处理，直接对比的话，就会引发提取码不一致，导致无法访问百度盘上的内容。所以多输入一个空格可能会导致项目的功能无法正常使用。
 
-* 当我们从别人发给我们的内容中复制提取码的时候，有时候会多复制到一些空格，直接粘贴到百度的提取码输入框。但是百度那边记录的提取码是没有空格的。这个时候如果不做处理，直接对比的话，就会引发提取码不一致，导致无法访问百度盘上的内容。所以多输入一个空格可能会导致项目的功能无法正常使用。
+我们就可以将输入的参数先帮用户去掉空格再操作，我们只需要在业务方法执行之前对所有的输入参数进行格式处理——`trim()`。`public String trim()`：返回字符串的副本，忽略前导空白和尾部空白。
 
-此时我们就想能不能将输入的参数先帮用户去掉空格再操作呢？
-
-* 答案是可以的，我们只需要在业务方法执行之前对所有的输入参数进行格式处理——trim()
-* `public String trim()`：返回字符串的副本，忽略前导空白和尾部空白。
-
-是对所有的参数都需要去除空格么？
-
-* 也没有必要，一般只需要针对字符串处理即可。
-
-以后涉及到需要去除前后空格的业务可能会有很多，这个去空格的代码是每个业务都写么？
-
-* 可以考虑使用AOP来统一处理。
-
-AOP有五种通知类型，该使用哪种呢？
-
-* 我们的需求是将原始方法的参数处理后在参与原始方法的调用，能做这件事的就只有环绕通知。
+一般只需要针对字符串处理即可。以后涉及到需要去除前后空格的业务可能会有很多，可以考虑使用AOP来统一处理。我们的需求是将原始方法的参数处理后在参与原始方法的调用，能做这件事的就只有环绕通知。
 
 综上所述，我们需要考虑两件事：
 
@@ -1762,16 +1746,16 @@ AOP有五种通知类型，该使用哪种呢？
   ```xml
   <dependencies>
       <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-context</artifactId>
-        <version>5.2.10.RELEASE</version>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-context</artifactId>
+          <version>5.2.10.RELEASE</version>
       </dependency>
       <dependency>
-        <groupId>org.aspectj</groupId>
-        <artifactId>aspectjweaver</artifactId>
-        <version>1.9.4</version>
+          <groupId>org.aspectj</groupId>
+          <artifactId>aspectjweaver</artifactId>
+          <version>1.9.4</version>
       </dependency>
-    </dependencies>
+  </dependencies>
   ```
 
 - 添加`ResourcesService`，`ResourcesServiceImpl`，`ResourcesDao`和`ResourcesDaoImpl`类
@@ -1843,7 +1827,7 @@ AOP有五种通知类型，该使用哪种呢？
           ApplicationContext ctx = new AnnotationConfigApplicationContext(SpringConfig.class);
           ResourcesService resourcesService = ctx.getBean(ResourcesService.class);
   
-          boolean flag = resourcesService.openURL("http：//pan.baidu.com/haha", "root");
+          boolean flag = resourcesService.openURL("http://pan.baidu.com/haha", "root");
           System.out.println(flag);
       }
   }
@@ -1897,10 +1881,9 @@ AOP有五种通知类型，该使用哪种呢？
            Object ret = pjp.proceed();
            return ret;
        }
-       
    }
    ```
-
+   
 4. 完成核心业务，处理参数中的空格
 
    ```java
@@ -1913,22 +1896,21 @@ AOP有五种通知类型，该使用哪种呢？
        @Around("DataAdvice.servicePt()")
        // @Around("servicePt()")这两种写法都对
        public Object trimStr(ProceedingJoinPoint pjp) throws Throwable {
-           //获取原始方法的参数
+           // 获取原始方法的参数
            Object[] args = pjp.getArgs();
            for (int i = 0; i < args.length; i++) {
-               //判断参数是不是字符串
+               // 判断参数是不是字符串
                if(args[i].getClass().equals(String.class)){
                    args[i] = args[i].toString().trim();
                }
            }
-           //将修改后的参数传入到原始方法的执行中
+           // 将修改后的参数传入到原始方法的执行中
            Object ret = pjp.proceed(args);
            return ret;
        }
-       
    }
    ```
-
+   
 5. 运行程序。不管密码`root`前后是否加空格，最终控制台打印的都是true
 
 6. 优化测试。为了能更好的看出AOP已经生效，我们可以修改`ResourcesImpl`类，在方法中将密码的长度进行打印
@@ -1948,16 +1930,14 @@ AOP有五种通知类型，该使用哪种呢？
 
 # 第三章 Spring事务管理
 
-## 3.1 Spring事务简介
+首先来看一下事务：
 
 - 事务作用：在数据层保障一系列的数据库操作同成功同失败
 - Spring事务作用：在数据层或**业务层**保障一系列的数据库操作同成功同失败
 
 数据层有事务我们可以理解，为什么业务层也需要处理事务呢？
 
-举个简单的例子，
-
-* 转账业务会有两次数据层的调用，一次是加钱一次是减钱。把事务放在数据层，加钱和减钱就有两个事务。没办法保证加钱和减钱同时成功或者同时失败，这个时候就需要将事务放在业务层进行处理。
+举个简单的例子：转账业务会有两次数据层的调用，一次是加钱一次是减钱。把事务放在数据层，加钱和减钱就有两个事务。没办法保证加钱和减钱同时成功或者同时失败，这个时候就需要将事务放在业务层进行处理。
 
 Spring为了管理事务，提供了一个平台事务管理器`PlatformTransactionManager`
 
@@ -1981,11 +1961,11 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 }
 ```
 
-从名称上可以看出，我们只需要给它一个DataSource对象，它就可以帮你去在业务层管理事务。其内部采用的是JDBC的事务。所以说如果你持久层采用的是JDBC相关的技术，就可以采用这个事务管理器来管理你的事务。而Mybatis内部采用的就是JDBC的事务，所以后期我们Spring整合Mybatis就采用的这个`DataSourceTransactionManager`事务管理器。
+从名称上可以看出，我们只需要给它一个DataSource对象，它就可以帮你去在业务层管理事务。其内部采用的是JDBC的事务。所以说如果你持久层采用的是JDBC相关的技术，就可以采用这个事务管理器来管理你的事务。Mybatis内部采用的正是JDBC的事务，所以之后Spring整合Mybatis就采用这个`DataSourceTransactionManager`事务管理器。
 
 接下来通过一个案例来学习下Spring是如何来管理事务的。
 
-## 3.2 转账案例
+## 3.1 转账案例
 
 先来分析下需求：
 
@@ -2004,18 +1984,20 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 4. 基于Spring整合MyBatis环境搭建上述操作
 
 
-### 环境搭建
+### 3.1.1 环境搭建
 
 步骤1：准备数据库表。之前我们在整合Mybatis的时候已经创建了这个表，可以直接使用
 
 ```sql
 create database spring_db character set utf8;
 use spring_db;
+
 create table tbl_account(
     id int primary key auto_increment，
     name varchar(35)，
     money double
 );
+
 INSERT INTO tbl_account VALUES(1, 'Tom', 1000);
 INSERT INTO tbl_account VALUES(2, 'Jerry', 1000);
 ```
@@ -2025,54 +2007,53 @@ INSERT INTO tbl_account VALUES(2, 'Jerry', 1000);
 ```xml
 <dependencies>
     <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context</artifactId>
-      <version>5.2.10.RELEASE</version>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId>
+        <version>5.2.10.RELEASE</version>
     </dependency>
     <dependency>
-      <groupId>com.alibaba</groupId>
-      <artifactId>druid</artifactId>
-      <version>1.1.16</version>
+        <groupId>com.alibaba</groupId>
+        <artifactId>druid</artifactId>
+        <version>1.1.16</version>
     </dependency>
 
     <dependency>
-      <groupId>org.mybatis</groupId>
-      <artifactId>mybatis</artifactId>
-      <version>3.5.6</version>
+        <groupId>org.mybatis</groupId>
+        <artifactId>mybatis</artifactId>
+        <version>3.5.6</version>
     </dependency>
 
     <dependency>
-      <groupId>mysql</groupId>
-      <artifactId>mysql-connector-java</artifactId>
-      <version>5.1.47</version>
+        <groupId>mysql</groupId>
+        <artifactId>mysql-connector-java</artifactId>
+        <version>5.1.47</version>
     </dependency>
 
     <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-jdbc</artifactId>
-      <version>5.2.10.RELEASE</version>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-jdbc</artifactId>
+        <version>5.2.10.RELEASE</version>
     </dependency>
 
     <dependency>
-      <groupId>org.mybatis</groupId>
-      <artifactId>mybatis-spring</artifactId>
-      <version>1.3.0</version>
+        <groupId>org.mybatis</groupId>
+        <artifactId>mybatis-spring</artifactId>
+        <version>1.3.0</version>
     </dependency>
 
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.12</version>
-      <scope>test</scope>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.12</version>
+        <scope>test</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-test</artifactId>
-      <version>5.2.10.RELEASE</version>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-test</artifactId>
+        <version>5.2.10.RELEASE</version>
     </dependency>
-
-  </dependencies>
+</dependencies>
 ```
 
 步骤3：根据表创建模型类
@@ -2227,7 +2208,7 @@ public class AccountServiceTest {
 }
 ```
 
-### 事务管理
+### 3.1.2 事务管理
 
 上述环境，运行单元测试类，会执行转账操作，`Tom`的账户会减少100，`Jerry`的账户会加100。
 
@@ -2249,9 +2230,7 @@ public class AccountServiceImpl implements AccountService {
 }
 ```
 
-这个时候就模拟了转账过程中出现异常的情况，正确的操作应该是转账出问题了，`Tom`应该还是900，`Jerry`应该还是1100，但是真正运行后会发现，并没有像我们想象的那样，`Tom`账户为800而`Jerry`还是1100，100块钱凭空消息了。
-
-不管哪种情况，都是不允许出现的，对刚才的结果我们做一个分析：
+这个时候就模拟了转账过程中出现异常的情况，运行之后`Tom`账户为800而`Jerry`还是1100，100块钱凭空消失了。不管哪种情况，都是不允许出现的，对刚才的结果我们做一个分析：
 
 - 程序正常执行时，账户金额A减B加，没有问题
 
@@ -2273,9 +2252,11 @@ public interface AccountService {
      * @param money 金额
      */
     //配置当前接口方法具有事务
-    public void transfer(String out，String in ，Double money) ;
+    public void transfer(String out, String in,Double money) ;
 }
+```
 
+```java
 @Service
 public class AccountServiceImpl implements AccountService {
 
@@ -2335,7 +2316,7 @@ public class JdbcConfig {
 }
 ```
 
-**注意：**事务管理器要根据使用技术进行选择，Mybatis框架使用的是JDBC事务，可以直接使用`DataSourceTransactionManager`
+事务管理器根据使用技术来选择，Mybatis框架使用的是JDBC事务，可以直接使用`DataSourceTransactionManager`
 
 步骤3：开启事务注解。在SpringConfig的配置类中开启
 
@@ -2364,7 +2345,7 @@ public class SpringConfig {
 | 位置 | 业务层接口上方  业务层实现类上方  业务方法上方               |
 | 作用 | 为当前业务层方法添加事务（如果设置在类或接口上方则类或接口中所有方法均添加事务） |
 
-## 3.3 Spring事务角色
+## 3.2 Spring事务角色
 
 这节中我们重点要理解两个概念，分别是`事务管理员`和`事务协调员`。
 
@@ -2389,8 +2370,6 @@ public class AccountServiceImpl implements AccountService {
 ```
 
 ```java
-package com.linxuan.service.impl;
-
 @Service
 public class AccountServiceImpl implements AccountService {
 
@@ -2398,8 +2377,10 @@ public class AccountServiceImpl implements AccountService {
     private AccountDao accountDao;
 
     @Override
+    @Transactional
     public void transfer(String out, String in, Double money) {
         accountDao.outMoney(out, money);
+        int i = 1 / 0;
         accountDao.inMoney(in, money);
     }
 }
@@ -2411,9 +2392,7 @@ public class AccountServiceImpl implements AccountService {
 
    * `AccountDao`的`inMoney`因为是修改操作，会开启一个事务T2
 
-   * `AccountService`的`transfer`没有事务，
-     * 运行过程中如果没有抛出异常，则T1和T2都正常提交，数据正确
-     * 如果在两个方法中间抛出异常，T1因为执行成功提交事务，T2因为抛异常不会被执行，就会导致数据出现错误
+   * `AccountService`的`transfer`没有事务，运行过程中如果没有抛出异常，则T1和T2都正常提交，数据正确。如果在两个方法中间抛出异常，T1因为执行成功提交事务，T2因为抛异常不会被执行，就会导致数据出现错误
 
 
 2. 开启Spring的事务管理后
@@ -2434,9 +2413,9 @@ public class AccountServiceImpl implements AccountService {
 
 > 注意：目前的事务管理是基于`DataSourceTransactionManager`和`SqlSessionFactoryBean`使用的是同一个数据源。
 
-## 3.4 Spring事务属性
+## 3.3 Spring事务属性
 
-### 事务配置
+### 3.3.1 事务配置
 
 ![1630250069844](..\图片\3-02【Spring】\3-5.png)
 
@@ -2480,7 +2459,7 @@ public class AccountServiceImpl implements AccountService {
 	@Transactional
     public void transfer(String out, String in, Double money) throws IOException{
         accountDao.outMoney(out，money);
-        //int i = 1/0; //这个异常事务会回滚
+        // int i = 1/0; //这个异常事务会回滚
         if(true){
             throw new IOException(); //这个异常事务就不会回滚
         }
@@ -2490,7 +2469,7 @@ public class AccountServiceImpl implements AccountService {
 }
 ```
 
-出现这个问题的原因是，Spring的事务只会对`Error异常`和`RuntimeException异常`及其子类进行事务回滚，其他的异常类型是不会回滚的，对应`IOException`不符合上述条件所以不回滚。此时就可以使用`rollbackFo`r属性来设置出现`IOException`异常回滚。
+出现这个问题的原因是，Spring的事务只会对`Error异常`和`RuntimeException异常`及其子类进行事务回滚，其他的异常类型是不会回滚的，对应`IOException`不符合上述条件所以不回滚。此时就可以使用`rollbackFor`属性来设置出现`IOException`异常回滚。
 
 `@Transactional(rollbackFor = {IOException.class})`即可，这样就会回滚。
 
@@ -2516,7 +2495,7 @@ public class AccountServiceImpl implements AccountService {
 介绍完上述属性后，还有最后一个事务的传播行为，为了讲解该属性的设置，我们需要完成下面的案例。
 
 
-### 案例：转账业务追加日志
+### 3.3.2 案例-转账追加日志
 
 在前面的转案例的基础上添加新的需求，完成转账后记录日志。
 
@@ -2534,7 +2513,7 @@ public class AccountServiceImpl implements AccountService {
 
 **环境准备**
 
-该环境是基于转账环境来完成的，所以环境的准备可以参考`3.2的环境搭建步骤`，在其基础上，我们继续往下写
+该环境是基于转账环境来完成的，所以环境的准备可以参考`3.1的环境搭建步骤`，在其基础上，我们继续往下写
 
 步骤1：创建日志表
 
@@ -2550,7 +2529,7 @@ CREATE TABLE tbl_log(
 
 ```java
 public interface LogDao {
-    @Insert("insert into tbl_log (info，createDate) values(#{info}，now())")
+    @Insert("insert into tbl_log (info，createDate) values(#{info}, now())")
     void log(String info);
 }
 ```
@@ -2563,8 +2542,9 @@ package com.linxuan.service;
 public interface LogService {
     void log(String out, String in, Double money);
 }
+```
 
-
+```java
 package com.linxuan.service.impl;
 
 @Service
@@ -2572,11 +2552,11 @@ public class LogServiceImpl implements LogService {
 
     @Autowired
     private LogDao logDao;
-    
+
     @Override
     @Transactional
     public void log(String out, String in, Double money) {
-        logDao.log("转账操作由"+out+"到"+in+"，金额："+money);
+        logDao.log("转账操作由" + out + "到" + in + "，金额：" + money);
     }
 }
 ```
@@ -2593,11 +2573,12 @@ public interface AccountService {
      * @param in 转入方
      * @param money 金额
      */
-    //配置当前接口方法具有事务
+    // 配置当前接口方法具有事务
     public void transfer(String out, String in, Double money);
 }
+```
 
-
+```java
 package com.linxuan.service.impl;
 
 @Service
@@ -2623,50 +2604,55 @@ public class AccountServiceImpl implements AccountService {
 
 步骤5：运行程序
 
-* 当程序正常运行，tbl_account表中转账成功，tbl_log表中日志记录成功
+* 当程序正常运行，`tbl_account`表中转账成功，`tbl_log`表中日志记录成功
 
-* 当转账业务之间出现异常(int i =1/0)，转账失败，tbl_account成功回滚，但是tbl_log表未添加数据。这个结果和我们想要的不一样，什么原因？该如何解决？
+* 当转账业务之间出现异常(`int i =1/0`)，转账失败，`tbl_account`成功回滚，但是`tbl_log`表未添加数据。这个结果和我们想要的不一样，什么原因？该如何解决？
 
   失败原因：日志的记录与转账操作隶属同一个事务，同成功同失败。
 
-  最终效果：无论转账操作是否成功，日志必须保留
+  我们想要的最终效果：无论转账操作是否成功，日志必须保留
 
-### 事务传播行为
+这就需要用到下面的知识了：事务传播行为
+
+### 3.3.3 事务传播行为
+
+事务传播行为指的是：事务协调员对事务管理员所携带事务的处理态度。
 
 ![1630253779575](..\图片\3-02【Spring】\3-6.png)
 
 对于上述案例的分析：
 
-* log方法、inMoney方法和outMoney方法都属于增删改，分别有事务T1，T2，T3
-* transfer因为加了@Transactional注解，也开启了事务T
-* 前面我们讲过Spring事务会把T1，T2，T3都加入到事务T中
+* `log`方法、`inMoney`方法和`outMoney`方法都属于增删改，分别有`事务T1，T2，T3`
+* `transfer`因为加了`@Transactional`注解，也开启了`事务T`
+* 前面我们讲过Spring事务会把`T1，T2，T3`都加入到事务T中
 * 所以当转账失败后，所有的事务都回滚，导致日志没有记录下来
 * 这和我们的需求不符，这个时候我们就想能不能让log方法单独是一个事务呢？
 
-要想解决这个问题，就需要用到事务传播行为，所谓的事务传播行为指的是：**事务协调员对事务管理员所携带事务的处理态度。**
+要想解决这个问题，就需要用到事务传播行为，所谓的事务传播行为指的是：**事务协调员对事务管理员所携带事务的处理态度**。
 
 具体如何解决，就需要用到之前我们没有说的`propagation属性`。
 
-1. 修改logService改变事务的传播行为
+1. 修改`logService`改变事务的传播行为
 
-```java
-@Service
-public class LogServiceImpl implements LogService {
+   ```java
+   @Service
+   public class LogServiceImpl implements LogService {
+   
+       @Autowired
+       private LogDao logDao;
+       
+   	// propagation设置事务属性：传播行为设置为当前操作需要新事务
+       @Transactional(propagation = Propagation.REQUIRES_NEW)
+       public void log(String out, String in, Double money ) {
+           logDao.log("转账操作由"+out+"到"+in+"，金额："+money);
+       }
+   }
+   ```
 
-    @Autowired
-    private LogDao logDao;
-	//propagation设置事务属性：传播行为设置为当前操作需要新事务
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void log(String out，String in，Double money ) {
-        logDao.log("转账操作由"+out+"到"+in+"，金额："+money);
-    }
-}
-```
-
-运行后，就能实现我们想要的结果，不管转账是否成功，都会记录日志。
+   运行后，就能实现我们想要的结果，不管转账是否成功，都会记录日志。
 
 2. 事务传播行为的可选值
 
-![1630254257628](..\图片\3-02【Spring】\3-7.png)
+   ![1630254257628](..\图片\3-02【Spring】\3-7.png)
 
 对于我们开发实际中使用的话，因为默认值需要事务是常态的。根据开发过程选择其他的就可以了，例如案例中需要新事务就需要手工配置。其实入账和出账操作上也有事务，采用的就是默认值。

@@ -754,7 +754,7 @@ public class Demo02Servlet implements Servlet {
 
 `Servlet -- 接口` ——> `GenericServlet-- 抽象类` ——> `HttpServlet -- 抽象类`
 
-### GenericServlet
+### 3.5.1 GenericServlet
 
 源码：
 
@@ -827,7 +827,7 @@ public class Demo02Servlet extends GenericServlet {
 }
 ```
 
-### HttpServlet
+### 3.5.2 HttpServlet
 
 通过浏览器提交信息，有很多中协议，get,post等等。每一次我们都需要自行判断，那么`HttpServlet`抽象类里面就帮我们弄了。
 
@@ -873,7 +873,7 @@ public class Demo03Servlet extends HttpServlet {
 
 那么，当使用get的方法提交表单，控制台会输出get...。使用post方法提交表单，控制台会输出post...。
 
-## 4.2 Servlet的相关配置
+## 3.6 Servlet的相关配置
 
 `urlpartten`：`Servlet`访问路径。这是一种配置方式，通过注解也可以配置访问路径。
 
@@ -1025,17 +1025,13 @@ public class Demo03ServletContext extends HttpServlet {
 
 ## 4.5 文件下载
 
-<!--P734-->
-
-<!--P735-->
-
-### 需求
+需求如下：
 
 1. 页面显示超链接
 2. 点击超链接后弹出下载提示框
 3. 完成图片文件下载
 
-### 分析
+分析如下：
 
 1. 超链接指向的资源如果能够被浏览器解析，那么就会在浏览器中显示。如果不能够解析，则会弹出下载提示框。
 
@@ -1043,7 +1039,7 @@ public class Demo03ServletContext extends HttpServlet {
 
    `content-disposition:attachment;filename=xxx`
 
-### 步骤
+**实现步骤**
 
 1. 定义页面，编辑超链接`href`属性，指向`Servlet`，传递资源名称`filename`
 2. 定义`Servlet`
@@ -1105,7 +1101,7 @@ public class Demo01DownLoad extends HttpServlet {
 }
 ```
 
-### 中文名称问题
+**中文名称问题**
 
 从网上可以找到一个`DownLoadUtils`类
 

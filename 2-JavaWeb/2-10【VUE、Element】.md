@@ -1,52 +1,48 @@
 # 第一章 VUE
 
-## 1.1  概述
-
-接下来我们学习一款前端的框架，就是 VUE。
-
-<font color = "red">Vue 是一套前端框架，免除原生JavaScript中的DOM操作，简化书写。</font>
+Vue 是一套前端框架，免除原生JavaScript中的DOM操作，简化书写。
 
 我们之前也学习过后端的框架 `Mybatis` ，`Mybatis` 是用来简化 `jdbc` 代码编写的；而 `VUE` 是前端的框架，是用来简化 `JavaScript` 代码编写的。之前我们做了一个综合性的案例，里面进行了大量的DOM操作，如下
 
 ```javascript
-		// 获取表单数据
-        let brandName = document.getElementById("brandName").value;
-        // 设置数据
-        formData.brandName = brandName;
+// 获取表单数据
+let brandName = document.getElementById("brandName").value;
+// 设置数据
+formData.brandName = brandName;
 
-        // 获取表单数据
-        let companyName = document.getElementById("companyName").value;
-        // 设置数据
-        formData.companyName = companyName;
+// 获取表单数据
+let companyName = document.getElementById("companyName").value;
+// 设置数据
+formData.companyName = companyName;
 
-        // 获取表单数据
-        let ordered = document.getElementById("ordered").value;
-        // 设置数据
-        formData.ordered = ordered;
+// 获取表单数据
+let ordered = document.getElementById("ordered").value;
+// 设置数据
+formData.ordered = ordered;
 
-        // 获取表单数据
-        let description = document.getElementById("description").value;
-        // 设置数据
-        formData.description = description;
+// 获取表单数据
+let description = document.getElementById("description").value;
+// 设置数据
+formData.description = description;
 ```
 
-学习了 `VUE` 后，这部分代码我们就不需要再写了。那么 `VUE` 是如何简化 DOM 书写呢？<font color = "red">基于MVVM(Model-View-ViewModel)思想，实现数据的双向绑定，将编程的关注点放在数据上。</font>
+学习了 `VUE` 后，这部分代码我们就不需要再写了。那么 `VUE` 是如何简化 DOM 书写呢？基于`MVVM(Model-View-ViewModel)`思想，实现数据的双向绑定，将编程的关注点放在数据上。
 
 之前我们是将关注点放在了 DOM 操作上；而要了解 `MVVM` 思想，必须先聊聊 `MVC` 思想，如下图就是 `MVC` 思想图解
 
-<img src="..\图片\2-10【VUE、Element】/1-1.png" style="zoom:70%;" />
+<img src="..\图片\2-10【VUE、Element】/1-1.png"/>
 
-C 就是咱们 js 代码，M 就是数据，而 V 是页面上展示的内容，如下图是我们之前写的代码
+对于JavaScript而言，C 就是咱们 js 代码，M 就是数据，而 V 是页面上展示的内容。如下图是我们之前写的代码：
 
 <img src="..\图片\2-10【VUE、Element】/1-2.png" style="zoom:70%;" />
 
 `MVC` 思想是没法进行双向绑定的。双向绑定是指当数据模型数据发生变化时，页面展示的会随之发生变化，而如果表单数据发生变化，绑定的模型数据也随之发生变化。接下来我们聊聊 `MVVM` 思想，如下图是三个组件图解：
 
-<img src="..\图片\2-10【VUE、Element】/1-3.png" alt="image-20210831114805052" style="zoom:80%;" />
+<img src="..\图片\2-10【VUE、Element】/1-3.png"/>
 
 图中的 `Model` 就是我们的数据，`View` 是视图，也就是页面标签，用户可以通过浏览器看到的内容；`Model` 和 `View` 是通过 `ViewModel` 对象进行双向绑定的，而 `ViewModel` 对象是 `Vue` 提供的。
 
-## 1.2  快速入门
+## 1.1 快速入门
 
 Vue 使用起来是比较简单的，总共分为如下三步：
 
@@ -122,7 +118,6 @@ Vue 使用起来是比较简单的，总共分为如下三步：
             }
         }*/
     });
-
 </script>
 </body>
 </html>
@@ -130,20 +125,20 @@ Vue 使用起来是比较简单的，总共分为如下三步：
 
 通过浏览器打开该页面可以看到如下页面
 
-<img src="..\图片\2-10【VUE、Element】/1-4.png" style="zoom:80%;" />
+![](D:\Java\笔记\图片\2-10【VUE】\1-3.png)
 
 当我们在输入框中输入内容，而输入框后面随之实时的展示我们输入的内容，这就是双向绑定的效果。
 
-## 1.3  Vue 指令
+## 1.2 Vue 指令
 
-**指令：**HTML 标签上带有 v- 前缀的特殊属性，不同指令具有不同含义。例如：`v-if`，`v-for`…
+指令：HTML 标签上带有 v- 前缀的特殊属性，不同指令具有不同含义。例如：`v-if`，`v-for`…
 
-| **指令**  | **作用**                                            |
+| 指令      | 作用                                                |
 | --------- | --------------------------------------------------- |
 | v-bind    | 为HTML标签绑定属性值，如设置  href , css样式等      |
 | v-model   | 在表单元素上创建双向数据绑定                        |
 | v-on      | 为HTML标签绑定事件                                  |
-| v-if      | 条件性的渲染某元素，判定为true时渲染,否则不渲染     |
+| v-if      | 条件性的渲染某元素，判定为true时渲染，否则不渲染    |
 | v-else    |                                                     |
 | v-else-if |                                                     |
 | v-show    | 根据条件展示某元素，区别在于切换的是display属性的值 |
@@ -151,41 +146,41 @@ Vue 使用起来是比较简单的，总共分为如下三步：
 
 接下来我们挨个学习这些指令
 
-### v-bind & v-model 指令
+### 1.2.1 v-bind & v-model
 
 | **指令** | **作用**                                       |
 | -------- | ---------------------------------------------- |
 | v-bind   | 为HTML标签绑定属性值，如设置  href , css样式等 |
 | v-model  | 在表单元素上创建双向数据绑定                   |
 
-* **v-bind**
+**v-bind**
 
-  该指令可以给标签原有属性绑定模型数据。这样模型数据发生变化，标签属性值也随之发生变化
+该指令可以给标签原有属性绑定模型数据。这样模型数据发生变化，标签属性值也随之发生变化
 
-  例如：
+例如：
 
-  ```html
-  <a v-bind:href="url">百度一下</a>
-  ```
+```html
+<a v-bind:href="url">百度一下</a>
+```
 
-  上面的 `v-bind:"`  可以简化写成 `:`  ，如下：
+上面的 `v-bind:"`  可以简化写成 `:`，如下：
 
-  ```html
-  <!--
-  	v-bind 可以省略
-  -->
-  <a :href="url">百度一下</a>
-  ```
+```html
+<!--
+	v-bind 可以省略
+-->
+<a :href="url">百度一下</a>
+```
 
-* **v-model**
+**v-model**
 
-  该指令可以给表单项标签绑定模型数据。这样就能实现双向绑定效果。例如：
+该指令可以给表单项标签绑定模型数据。这样就能实现双向绑定效果。例如：
 
-  ```html
-  <input name="username" v-model="username">
-  ```
+```html
+<input name="username" v-model="username">
+```
 
-**代码演示：**
+**代码演示**
 
 ```html
 <!DOCTYPE html>
@@ -220,13 +215,13 @@ Vue 使用起来是比较简单的，总共分为如下三步：
 
 通过浏览器打开上面页面，并且使用检查查看超链接的路径，该路径会根据输入框输入的路径变化而变化，这是因为超链接和输入框绑定的是同一个模型数据
 
-<img src="..\图片\2-10【VUE、Element】/1-5.png" alt="image-20210831150945931" style="zoom:80%;" />
+<img src="..\图片\2-10【VUE、Element】/1-5.png" style="zoom:80%;" />
 
-###  v-on 指令
+###  1.2.2 v-on 指令
 
-| **指令** | **作用**           |
-| -------- | ------------------ |
-| v-on     | 为HTML标签绑定事件 |
+| 指令 | 作用               |
+| ---- | ------------------ |
+| v-on | 为HTML标签绑定事件 |
 
 我们在页面定义一个按钮，并给该按钮使用 `v-on` 指令绑定单击事件，html代码如下
 
@@ -253,12 +248,10 @@ new Vue({
 });
 ```
 
-> 注意：`v-on:` 后面的事件名称是之前原生事件属性名去掉on。
->
-> 例如：
->
-> * 单击事件 ： 事件属性名是 onclick，而在vue中使用是 `v-on:click`
-> * 失去焦点事件：事件属性名是 onblur，而在vue中使用时 `v-on:blur`
+`v-on:` 后面的事件名称是之前原生事件属性名去掉on。
+
+- 单击事件 ： 事件属性名是 onclick，而在vue中使用是 `v-on:click`
+- 失去焦点事件：事件属性名是 onblur，而在vue中使用时 `v-on:blur`
 
 **整体页面代码如下：**
 
@@ -295,9 +288,9 @@ new Vue({
 </html>
 ```
 
-### 条件判断指令
+### 1.2.3 条件判断指令
 
-| **指令**  | **作用**                                            |
+| 指令      | 作用                                                |
 | --------- | --------------------------------------------------- |
 | v-if      | 条件性的渲染某元素，判定为true时渲染，否则不渲染    |
 | v-else    |                                                     |
@@ -330,37 +323,37 @@ new Vue({
 </div>
 ```
 
-**整体页面代码如下：**
+**整体页面代码如下**
 
 ```html
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<div id="app">
-    <div v-if="count == 3">div1</div>
-    <div v-else-if="count == 4">div2</div>
-    <div v-else>div3</div>
-    <hr>
-    <input v-model="count">
-</div>
+    <head>
+        <meta charset="UTF-8">
+        <title>Title</title>
+    </head>
+    <body>
+        <div id="app">
+            <div v-if="count == 3">div1</div>
+            <div v-else-if="count == 4">div2</div>
+            <div v-else>div3</div>
+            <hr>
+            <input v-model="count">
+        </div>
 
-<script src="js/vue.js"></script>
-<script>
-    //1. 创建Vue核心对象
-    new Vue({
-        el:"#app",
-        data(){
-            return {
-                count:3
-            }
-        }
-    });
-</script>
-</body>
+        <script src="js/vue.js"></script>
+        <script>
+            //1. 创建Vue核心对象
+            new Vue({
+                el:"#app",
+                data(){
+                    return {
+                        count:3
+                    }
+                }
+            });
+        </script>
+    </body>
 </html>
 ```
 
@@ -386,7 +379,7 @@ new Vue({
 
 通过上图可以看出 `v-show` 不展示的原理是给对应的标签添加 `display` css属性，并将该属性值设置为 `none` ，这样就达到了隐藏的效果。而 `v-if` 指令是条件不满足时根本就不会渲染。
 
-### v-for 指令
+### 1.2.4 v-for 指令
 
 | **指令** | **作用**                               |
 | -------- | -------------------------------------- |
@@ -400,7 +393,7 @@ new Vue({
 </标签>
 ```
 
-> <font color = "red">注意：需要循环那个标签，`v-for` 指令就写在那个标签上。</font>
+> 注意：需要循环那个标签，`v-for` 指令就写在那个标签上。
 
 如果在页面需要使用到集合模型数据的索引，就需要使用如下格式：
 
@@ -465,7 +458,7 @@ new Vue({
 
 看到上面的图，大家无需过多的关注这张图。这些钩子方法我们只关注 `mounted` 就行了。
 
-`mounted`：挂载完成，Vue初始化成功，HTML页面渲染成功。而以后我们会在该方法中<font color = "red">发送异步请求，加载数据。</font>
+`mounted`：挂载完成，Vue初始化成功，HTML页面渲染成功。而以后我们会在该方法中发送异步请求，加载数据。
 
 ## 1.5  案例
 

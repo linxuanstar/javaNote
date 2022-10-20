@@ -1,6 +1,6 @@
 # 第一章 SpringBoot简介
 
-`SpringBoot` 是由 `Pivotal` 团队提供的全新框架，其设计目的是用来<font color = "red">简化</font> `Spring` 应用的<font color = "red">初始搭建</font>以及<font color = "red">开发过程</font>。
+`SpringBoot` 是由 `Pivotal` 团队提供的全新框架，其设计目的是用来简化 `Spring` 应用的初始搭建以及开发过程。
 
 使用了 `Spring` 框架后已经简化了我们的开发。而 `SpringBoot` 又是对 `Spring` 开发进行简化的，可想而知 `SpringBoot` 使用的简单及广泛性。
 
@@ -215,7 +215,7 @@ public class Application {
 
 <img src="..\图片\3-04【SpringBoot】/1-3.png" alt="image-20210911172200292" style="zoom:60%;" />
 
-<font color = "red">注意：基于Idea的 `Spring Initializr` 快速构建 `SpringBoot` 工程时需要联网。</font>
+注意：基于Idea的 `Spring Initializr` 快速构建 `SpringBoot` 工程时需要联网。
 
 为什么需要联网呢？其实IDEA能快速构建 `SpringBoot` 工程，是因为 `Idea` 使用了官网提供了快速构建 `SpringBoot` 工程的组件实现的。我们进入SpringBoot官网可以看一下：
 
@@ -264,7 +264,7 @@ public class Application {
 
 ## 1.3 SpringBoot概述
 
-`SpringBoot` 是由Pivotal团队提供的全新框架，其设计目的是用来<font color = "red">简化</font>Spring应用的<font color = "red">初始搭建</font>以及<font color = "red">开发过程</font>。
+`SpringBoot` 是由Pivotal团队提供的全新框架，其设计目的是用来简化Spring应用的初始搭建以及开发过程。
 
 原始 `Spring` 环境搭建和开发存在以下问题：
 
@@ -279,13 +279,13 @@ public class Application {
 
 接下来我们来说一下 `SpringBoot` 的起步依赖
 
-### 起步依赖
+### 1.3.1 起步依赖
 
 我们使用 `Spring Initializr`  方式创建的 `Maven` 工程的的 `pom.xml` 配置文件中自动生成了很多包含 `starter` 的依赖，如下图
 
 <img src="..\图片\3-04【SpringBoot】/1-4.png" alt="image-20210918220338109" style="zoom:70%;" />
 
-这些依赖就是<font color = "red">启动依赖</font>，接下来我们探究一下他是如何实现的。
+这些依赖就是启动依赖，接下来我们探究一下他是如何实现的。
 
 **探索父工程**
 
@@ -323,14 +323,14 @@ public class Application {
 
 而依赖 `spring-boot-starter-tomcat` ，从名字基本能确认内部依赖了 `tomcat`，所以我们的工程才能正常启动。
 
-<font color = "red">结论：以后需要使用技术，只需要引入该技术对应的起步依赖即可</font>
+结论：以后需要使用技术，只需要引入该技术对应的起步依赖即可
 
 - **starter**：`SpringBoot` 中常见项目名称，定义了当前项目使用的所有项目坐标，以达到减少依赖配置的目的
 - **parent**：所有 `SpringBoot` 项目要继承的项目，定义了若干个坐标版本号（依赖管理，而非依赖），以达到减少依赖冲突的目的。`spring-boot-starter-parent`（2.5.0）与 `spring-boot-starter-parent`（2.4.6）共计57处坐标版本不同
 
 * **实际开发**：使用任意坐标时，仅书写GAV（G：groupid、A：artifactId 、V：version）中的G和A，V由SpringBoot提供。如发生坐标错误，再指定version（要小心版本冲突）
 
-### 程序启动
+### 1.3.2 程序启动
 
 创建的每一个 `SpringBoot` 程序时都包含一个类似于下面的类，我们将这个类称作引导类
 
@@ -350,7 +350,7 @@ public class Springboot01QuickstartApplication {
 
   因为我们在 `pom.xml` 中配置了 `spring-boot-starter-web` 依赖，而该依赖通过前面的学习知道它依赖 `tomcat` ，所以运行 `main` 方法就可以使用 `tomcat` 启动咱们的工程。
 
-### 切换web服务器
+### 1.3.3 切换web服务器
 
 现在我们启动工程使用的是 `tomcat` 服务器，那能不能不使用 `tomcat` 而使用 `jetty` 服务器，`jetty` 在我们 `maven` 高级时讲 `maven` 私服使用的服务器。而要切换 `web` 服务器就需要将默认的 `tomcat` 服务器给排除掉，怎么排除呢？使用 `exclusion` 标签
 
@@ -431,7 +431,7 @@ public class Springboot01QuickstartApplication {
   	port: 82
   ```
 
-<font color = "red">注意：`SpringBoot` 程序的配置文件名必须是 `application` ，只是后缀名不同而已。</font>
+注意：`SpringBoot` 程序的配置文件名必须是 `application` ，只是后缀名不同而已。
 
 那么问题来了？这三种配置文件的优先级如何呢？如果同时设置那么哪一种配置文件会生效呢？答案就是：`application.properties`  >  `application.yml`   >  `application.yaml`
 
@@ -494,7 +494,7 @@ enterprise:
 
 * \# 表示注释
 
-* <font color = "red">核心规则：数据前面要加空格与冒号隔开</font>
+* 核心规则：数据前面要加空格与冒号隔开
 
 数组数据在数据书写位置的下方使用减号作为数据开始符号，每行书写一个数据，减号与数据间空格分隔，例如
 
@@ -531,7 +531,7 @@ enterprise:
     - 大数据
 ```
 
-### 使用 @Value注解
+### 2.3.1 使用 @Value注解
 
 使用 `@Value("表达式")` 注解可以从配合文件中读取数据，注解中用于读取属性名引用方式是：`${一级属性名.二级属性名……}`
 
@@ -559,7 +559,7 @@ public class BookController {
 }
 ```
 
-### Environment对象
+### 2.3.2 Environment对象
 
 上面方式读取到的数据特别零散，`SpringBoot` 还可以使用 `@Autowired` 注解注入 `Environment` 对象的方式读取数据。这种方式 `SpringBoot` 会将配置文件中所有的数据封装到 `Environment` 对象中，如果需要使用哪个数据只需要通过调用 `Environment` 对象的 `getProperty(String name)` 方法获取。具体代码如下：
 
@@ -583,7 +583,7 @@ public class BookController {
 
 > 注意：这种方式，框架内容大量数据，而在开发中我们很少使用。
 
-### 自定义对象
+### 2.3.3 自定义对象
 
 `SpringBoot` 还提供了将配置文件中的数据封装到我们自定义的实体类对象中的方式。具体操作如下：
 
@@ -658,7 +658,7 @@ public class BookController {
 
 来回的修改配置会很麻烦，而 `SpringBoot` 给开发者提供了多环境的快捷配置，需要切换环境时只需要改一个配置即可。不同类型的配置文件多环境开发的配置都不相同，接下来对不同类型的配置文件进行说明
 
-### yaml文件
+### 2.4.1 yaml文件
 
 在 `application.yml` 中使用 `---` 来分割不同的配置，内容如下
 
@@ -731,7 +731,7 @@ spring:
       on-profile: dev
 ```
 
-### properties文件
+### 2.4.2 properties文件
 
 `properties` 类型的配置文件配置多环境需要定义不同的配置文件
 
@@ -759,7 +759,7 @@ spring:
 spring.profiles.active=pro
 ```
 
-### 命令行启动参数设置
+### 2.4.3 命令行启动参数设置
 
 使用 `SpringBoot` 开发的程序以后都是打成 `jar` 包，通过 `java -jar xxx.jar` 的方式启动服务的。我们首先需要将开发的程序打包成一个jar包。这里打包之前需要做两件事：执行clean指令和修改字符编码集为utf-8。然后再打包。
 
@@ -981,7 +981,7 @@ class Springboot07TestApplicationTests {
 
 ## 3.2 SpringBoot整合mybatis
 
-### 回顾Spring整合Mybatis
+### 3.2.1 回顾Spring整合Mybatis
 
 `Spring` 整合 `Mybatis` 需要定义很多配置类
 
@@ -1051,7 +1051,7 @@ class Springboot07TestApplicationTests {
   
   ```
 
-### SpringBoot整合mybatis
+### 3.2.2 SpringBoot整合mybatis
 
 1. 创建模块
 

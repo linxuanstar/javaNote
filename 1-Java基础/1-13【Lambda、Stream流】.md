@@ -1,4 +1,4 @@
-# 第一章 Lambda表达式
+# 第一章 Lambda表达式【jdk1.8】
 
 数学中，函数式有输入量、输出量的一套计算方案，也就是”拿什么东西做什么事情“。相对而言，面向对象过分强调”必须通过对象的形式来做事情“，而函数式思想尽量忽略面向对象的复杂语法——强调做什么，而不是以什么形式做。
 
@@ -306,7 +306,7 @@ Lambda的语法非常简洁，完全没有面向对象复杂的束缚。但是�
 
   ![](D:\Java\笔记\图片\1-13【Lambda、Stream流】\7-1Lambda特性.png)
 
-# 第二章 函数式接口
+# 第二章 函数式接口【jdk1.8】
 
 函数式接口在java中是指：有且仅有一个抽象方法的接口。
 
@@ -564,11 +564,20 @@ JDK提供了大量的常用的函数式接口以丰富Lambda的典型使用场�
 
 下面是最简单的几个接口及使用实例。
 
-### 2.5.1 Supplier接口
+> 下面的接口的参数都是单个的，如果需要多个参数，那么可以使用`BiConsumer`、`BiFunction`、`BiPredicate`。
+
+### 2.5.1 Supplier无中生有
 
 <!--Supplier:供应商; 供货商; 供应者; 供货方;-->
 
 `java.util.function.Supplier<T>`接口仅包含一个无参的方法：`T get()`。用来获取一个泛型参数指定类型的对象数据。由于这是一个函数式接口，这就意味着对应的Lambda表达式需要“对外提供”一个符合泛型类型的对象数据。
+
+```java
+@FunctionalInterface
+public interface Supplier<T> {
+    T get();
+}
+```
 
 `Supplier<T>`接口被称为生产型接口，指定接口的泛型是什么类型，那么接口中的`get`方法就会生产什么类型的数据。
 
@@ -663,7 +672,7 @@ public class Demo01 {
 }
 ```
 
-### 2.5.2 Consumer接口
+### 2.5.2 Consumer有去无回
 
 `java.util.function.Consumer<T>`接口正好与`Supplier`接口相反，它不是生产一个数据，而是消费一个数据，其数据类型由泛型决定。
 
@@ -826,7 +835,152 @@ public class Demo03Test {
 }
 ```
 
-### 2.5.3 Predicate接口
+### 2.5.3 Function函数型接口
+
+`java.util.function.Function<T, R>`接口用来根据一个类型的数据得到另一个类型的数据，前者为前置条件，后者称为后置条件。
+
+```java
+@FunctionalInterface
+public interface Function<T, R> {
+
+    R apply(T t);
+
+    default <V> Function<V, R> compose(Function<? super V, ? extends T> before) {
+        Objects.requireNonNull(before);
+        return (V v) -> apply(before.apply(v));
+    }
+
+    default <V> Function<T, V> andThen(Function<? super R, ? extends V> after) {
+        Objects.requireNonNull(after);
+        return (T t) -> after.apply(apply(t));
+    }
+
+    static <T> Function<T, T> identity() {
+        return t -> t;
+    }
+}
+```
+
+* **抽象方法：apply**
+
+  `Function`接口中最主要的抽象方法为：`R apply(T t)`，根据类型T的参数获取类型R的结果。
+
+  使用场景例如：将`String`类型转换为`Integer`类型。
+
+  ```java
+  public class Demo01Function {
+      public static void change(String s, Function<String, Integer> fun) {
+          // Integer in = fun.apply(s);
+          int in = fun.apply(s); // 自动拆箱 Integer -> int
+          System.out.println(in);
+      }
+  
+      public static void main(String[] args) {
+          // 定义一个字符串类型的整数
+          String s = "12345";
+          // 调用change方法，传递字符串类型的整数，和Lambda表达式。
+          /*change(s, (String str) -> {
+              return Integer.parseInt(str);
+          });*/
+  
+          // 优化Lambda表达式
+          change(s, (str) -> Integer.parseInt(str)); // 12345
+      }
+  }
+  ```
+
+* **默认方法：andThen**
+
+  `Function`接口中有一个默认的`andThen`方法，用来进行组合操作。JDK源代码：
+
+  ```java
+  default <V> Function<T,V> andThen (Function<? super R,? extends V> after) {
+      Objcets.requireNonNull(after);
+      return (T t) -> after.apply(apply(t));
+  }
+  ```
+
+  该方法同样用于“先做什么，再做什么”的场景，和`Consumer`中的`andThen`差不多
+
+  看一下下面一个例子：第一个操作时将字符串解析成为int数字，第二个操作时乘以10。两个操作通过`andThen`
+
+  ```java
+  import java.util.function.Function;
+  
+  public class Demo02Function {
+      public static void change(String s, Function<String, Integer> fun1, Function<Integer, String> fun2) {
+          String str = fun1.andThen(fun2).apply(s);
+          System.out.println(str);
+      }
+  
+      public static void main(String[] args) {
+          String s = "13";
+          // 调用change方法，传递字符串和两个Lambda表达式
+          /*change(s, (String str) -> {
+              // 把字符串转换为整数并加10
+              return Integer.parseInt(str) + 10;
+          }, (Integer in) -> {
+              // 把整数转换为字符串
+              return in + "";
+          });*/
+  
+          // 优化Lambda表达式
+          change(s, str -> Integer.parseInt(str) + 10, in -> in + "");
+      }
+  }
+  ```
+
+
+练习：自定义函数模型拼接。请使用`Function`进行函数模型的拼接，按照顺序需要执行的多个函数操作为：	`String str = “赵丽颖，20”；`
+
+1. 将字符串截取数字年龄部分，得到字符串；
+2. 将上一步的字符串转换成为int类型的数字；
+3. 将上一步的int数字累加100，得到结果数字。
+
+第一种解：
+
+```java
+public class Demo03Function {
+    public static void change(String s, Function<String, Integer> fun) {
+        Integer integer = fun.apply(s);
+        System.out.println(integer);
+    }
+
+    public static void main(String[] args) {
+        String str = "赵丽颖, 20";
+        String s = str.split(", ")[1];
+
+        change(s, (String s1) -> {
+            return Integer.parseInt(s) + 100;
+        });
+    }
+}
+```
+
+第二种解：
+
+```java
+public class Demo03Function {
+    public static void change(String ss, Function<String, String> fun1, Function<String, Integer> fun2, Function<Integer, Integer> fun3) {
+        Integer integer = fun1.andThen(fun2).andThen(fun3).apply(ss);
+        System.out.println(integer);
+    }
+
+    public static void main(String[] args) {
+        String str = "赵丽颖, 20";
+
+        change(str, (String s) -> {
+            return s.split(", ")[1];
+        }, (String s) -> {
+            return Integer.parseInt(s);
+        }, (Integer in) -> {
+            return in + 100;
+        });
+    }
+}
+```
+
+### 2.5.4 Predicate断言型接口
 
 有时候我们需要对某种类型的数据进行判断，从而得到一个boolean值结果。这时候可以使用`java.util.function.Predicate<T>`接口。
 
@@ -992,152 +1146,7 @@ public class Demo03Test {
 }
 ```
 
-### 2.5.4 Function接口
-
-`java.util.function.Function<T, R>`接口用来根据一个类型的数据得到另一个类型的数据，前者为前置条件，后者称为后置条件。
-
-```java
-@FunctionalInterface
-public interface Function<T, R> {
-
-    R apply(T t);
-
-    default <V> Function<V, R> compose(Function<? super V, ? extends T> before) {
-        Objects.requireNonNull(before);
-        return (V v) -> apply(before.apply(v));
-    }
-
-    default <V> Function<T, V> andThen(Function<? super R, ? extends V> after) {
-        Objects.requireNonNull(after);
-        return (T t) -> after.apply(apply(t));
-    }
-
-    static <T> Function<T, T> identity() {
-        return t -> t;
-    }
-}
-```
-
-* **抽象方法：apply**
-
-  `Function`接口中最主要的抽象方法为：`R apply(T t)`，根据类型T的参数获取类型R的结果。
-
-  使用场景例如：将`String`类型转换为`Integer`类型。
-
-  ```java
-  public class Demo01Function {
-      public static void change(String s, Function<String, Integer> fun) {
-          // Integer in = fun.apply(s);
-          int in = fun.apply(s); // 自动拆箱 Integer -> int
-          System.out.println(in);
-      }
-  
-      public static void main(String[] args) {
-          // 定义一个字符串类型的整数
-          String s = "12345";
-          // 调用change方法，传递字符串类型的整数，和Lambda表达式。
-          /*change(s, (String str) -> {
-              return Integer.parseInt(str);
-          });*/
-  
-          // 优化Lambda表达式
-          change(s, (str) -> Integer.parseInt(str)); // 12345
-      }
-  }
-  ```
-
-* **默认方法：andThen**
-
-  `Function`接口中有一个默认的`andThen`方法，用来进行组合操作。JDK源代码：
-
-  ```java
-  default <V> Function<T,V> andThen (Function<? super R,? extends V> after) {
-      Objcets.requireNonNull(after);
-      return (T t) -> after.apply(apply(t));
-  }
-  ```
-
-  该方法同样用于“先做什么，再做什么”的场景，和`Consumer`中的`andThen`差不多
-
-  看一下下面一个例子：第一个操作时将字符串解析成为int数字，第二个操作时乘以10。两个操作通过`andThen`
-
-  ```java
-  import java.util.function.Function;
-  
-  public class Demo02Function {
-      public static void change(String s, Function<String, Integer> fun1, Function<Integer, String> fun2) {
-          String str = fun1.andThen(fun2).apply(s);
-          System.out.println(str);
-      }
-  
-      public static void main(String[] args) {
-          String s = "13";
-          // 调用change方法，传递字符串和两个Lambda表达式
-          /*change(s, (String str) -> {
-              // 把字符串转换为整数并加10
-              return Integer.parseInt(str) + 10;
-          }, (Integer in) -> {
-              // 把整数转换为字符串
-              return in + "";
-          });*/
-  
-          // 优化Lambda表达式
-          change(s, str -> Integer.parseInt(str) + 10, in -> in + "");
-      }
-  }
-  ```
-
-
-练习：自定义函数模型拼接。请使用`Function`进行函数模型的拼接，按照顺序需要执行的多个函数操作为：	`String str = “赵丽颖，20”；`
-
-1. 将字符串截取数字年龄部分，得到字符串；
-2. 将上一步的字符串转换成为int类型的数字；
-3. 将上一步的int数字累加100，得到结果数字。
-
-第一种解：
-
-```java
-public class Demo03Function {
-    public static void change(String s, Function<String, Integer> fun) {
-        Integer integer = fun.apply(s);
-        System.out.println(integer);
-    }
-
-    public static void main(String[] args) {
-        String str = "赵丽颖, 20";
-        String s = str.split(", ")[1];
-
-        change(s, (String s1) -> {
-            return Integer.parseInt(s) + 100;
-        });
-    }
-}
-```
-
-第二种解：
-
-```java
-public class Demo03Function {
-    public static void change(String ss, Function<String, String> fun1, Function<String, Integer> fun2, Function<Integer, Integer> fun3) {
-        Integer integer = fun1.andThen(fun2).andThen(fun3).apply(ss);
-        System.out.println(integer);
-    }
-
-    public static void main(String[] args) {
-        String str = "赵丽颖, 20";
-
-        change(str, (String s) -> {
-            return s.split(", ")[1];
-        }, (String s) -> {
-            return Integer.parseInt(s);
-        }, (Integer in) -> {
-            return in + 100;
-        });
-    }
-}
-```
-
-# 第三章 方法引用
+# 第三章 方法引用【jdk1.8】
 
 在使用Lambda表达式的时候，我们实际上传递进去的就是一种解决方案：拿什么参数做什么操作。那么考虑一种情况：如果我们在Lambda中所指定的操作方案，已经有地方存在相同方案，那是否还有必要再写重复逻辑？
 
@@ -1508,7 +1517,7 @@ public class Demo {
 }
 ```
 
-# 第四章 Stream流
+# 第四章 Stream流【jdk1.8】
 
 java8中，得益于Lambda所带来的函数式编程，引入了一个全新的Stream概念，用于解决已有的集合类库既有的弊端。
 
@@ -1888,3 +1897,118 @@ public class Demo08Stream_concat {
 }
 ```
 
+# 第五章 并行流和串行流
+
+前面提到过，JDK1.8提供了StreamAPI，而Stream又分为两种
+
+- 并行流
+- 顺序流
+
+## 5.1 并行流和串行流
+
+并行流就是把一个内容分成多个数据块，并用不同的线程分别处理每个数据块中的流。JDK8中将并行进行了优化，我们可以很容易的对数据进行并行操作。
+
+Stream Api可以声明式的通过parallel()与sequential()在并行流和串行流(又被称作“顺序流”)之间进行切换。
+
+默认的Stream就是串行流，但其是一个单线程的执行任务
+
+## 5.2 Fork/Join框架
+
+**注意，由于Fork/Join会充分发挥CPU多核性能，因此电脑不好的朋友不要轻易运行上述代码，或者在测试时把计算的数据量调低。我的笔记本CPU型号i5-6300HQ ，直接死机了。**
+
+Fork/Join框架就是在必要的情况下，将一个大任务拆分(fork)成若干个子任务(拆到不可再拆为止)，再将一个个子任务就是并行运算，最终将值进行join汇总。
+
+并行流底层的实现就是Fork/Join框架， 使用并行流其实就是调用StreamAPI的parallel方法。
+
+![](D:\Java\笔记\图片\Java版本\并行流与串行流.png)
+
+传统的线程池虽然也能把任务进行拆分成若干子任务，借助不同线程来执行任务，但有一个问题：一旦某个子任务由于某些原因无法继续执行，那么负责执行该任务的线程将进入阻塞状态，影响了分配给该线程的其他后续任务的执行。
+
+在Fork/Join框架中情况则大不相同。如果线程A被某个子任务阻塞，A不会进入阻塞状态，而是会主动寻找尚未被执行的其它子任务(可以从自己的后续任务队列中找，也可以从其它线程的任务队列中偷)。这种模式被称作“工作窃取”模式(Working Stealing)，当执行新的任务时，线程利用Fork/join框架可以将任务拆分成更小的任务，并将小任务分配/加入到线程队列中，如果自己空闲，就会从一个随机线程的任务队列中偷一个尚未被执行的任务来运行。
+
+其实早在jdk1.7中已经有Fork/Join的实现了，下面来看看在JDK1.7中如何使用:
+
+```java
+/**
+ * jdk1.7中使用Fork/Join框架
+ *
+ * 需要定义:
+ * 1. 如何拆分
+ * 2. 拆到什么程度为止
+ */
+public class ForkJoinCalculate extends RecursiveTask<Long> {
+    private static final long serialVersionUID = 1212853982210556381L;
+ 
+    private long start;
+    private long end;
+    //拆分的阈值，任务的最小单位是100000，拆到这个程度就不用再拆了
+    private static final long THRESHOLD = 100000;
+ 
+    public ForkJoinCalculate(long start, long end){
+        this.start = start;
+        this.end = end;
+    }
+ 
+    @Override
+    protected Long compute() {
+        long length = start - end;
+        if(length <= THRESHOLD){ //进行求和
+            long sum  = 0;
+            for(long i = start; i <= end; i++){
+                sum += i;
+            }
+            return sum;
+        }else{ //进行拆分
+            long middle = (start + end) / 2;
+ 
+            ForkJoinCalculate left = new ForkJoinCalculate(start, middle);
+            left.fork(); //拆分子任务，并将任务压入线程队列
+ 
+            ForkJoinCalculate right = new ForkJoinCalculate(middle + 1, end);
+            right.fork();
+ 
+            //结果汇总
+            return left.join() + right.join();
+        }
+    }
+}
+```
+
+```java
+/**
+ * 使用Fork/join求和
+ */
+@org.junit.Test
+public void test2(){
+	Instant start = Instant.now();
+ 
+	//需要ForkJoin线程池的支持
+	ForkJoinPool pool = new ForkJoinPool();
+	ForkJoinCalculate fork = new ForkJoinCalculate(0, 1000000000L);
+	Long sum = pool.invoke(fork);
+	System.out.println(sum);
+ 
+	Instant end = Instant.now();
+ 
+	System.out.println(Duration.between(start, end).toMillis());
+}
+```
+
+jdk1.8的写法如下：
+
+```java
+/**
+ * 使用jdk1.8求和
+ */
+public void test3(){
+	Instant start = Instant.now();
+ 
+	Long sum = LongStream.rangeClosed(0, 1000000000L)
+			.parallel()
+			.reduce(0, Long::sum);
+ 
+	Instant end = Instant.now();
+ 
+	System.out.println(Duration.between(start, end).toMillis());
+}
+```
