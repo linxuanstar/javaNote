@@ -1,6 +1,6 @@
 # 第一章 Feign远程调用
 
-先来看我们以前利用RestTemplate发起远程调用的代码：
+先来看我们以前利用`RestTemplate`发起远程调用的代码：
 
 ```java
 public Order queryOrderById(Long orderId) {
@@ -21,9 +21,7 @@ public Order queryOrderById(Long orderId) {
 * 代码可读性差，编程体验不统一
 * 参数复杂URL难以维护
 
-我们可以使用Feigh。Feign是一个声明式的http客户端，官方地址：https://github.com/OpenFeign/feign
-
-其作用就是帮助我们优雅的实现http请求的发送，解决上面提到的问题。
+我们可以使用Feigh。Feign是一个声明式的http客户端，官方地址：https://github.com/OpenFeign/feign。其作用就是帮助我们优雅的实现http请求的发送，解决上面提到的问题。
 
 ## 1.1 Feign替代RestTemplate
 
@@ -31,7 +29,7 @@ Fegin的使用步骤如下：
 
 1. 引入依赖
 
-   我们在order-service服务的pom文件中引入feign的依赖：
+   我们在order-service服务的`pom.xml`文件中引入feign的依赖：
 
    ```xml
    <dependency>
@@ -45,7 +43,7 @@ Fegin的使用步骤如下：
    在order-service的启动类添加注解开启Feign的功能：
 
    ```java
-   @MapperScan("cn.itcast.order.mapper")
+   @MapperScan("com.linxuan.order.mapper")
    @SpringBootApplication
    @EnableFeignClients // 添加注解开启Feign的功能
    public class OrderApplication {
@@ -67,9 +65,9 @@ Fegin的使用步骤如下：
    在order-service中新建一个接口，内容如下：
 
    ```java
-   package cn.itcast.order.client;
+   package com.linxuan.order.client;
    
-   import cn.itcast.order.pojo.User;
+   import com.linxuan.order.pojo.User;
    import org.springframework.cloud.openfeign.FeignClient;
    import org.springframework.web.bind.annotation.GetMapping;
    import org.springframework.web.bind.annotation.PathVariable;
@@ -141,13 +139,13 @@ Fegin的使用步骤如下：
 
 Feign可以支持很多的自定义配置，如下表所示：
 
-| 类型                   | 作用             | 说明                                                   |
-| ---------------------- | ---------------- | ------------------------------------------------------ |
-| **feign.Logger.Level** | 修改日志级别     | 包含四种不同的级别：NONE、BASIC、HEADERS、FULL         |
-| feign.codec.Decoder    | 响应结果的解析器 | http远程调用的结果做解析，例如解析json字符串为java对象 |
-| feign.codec.Encoder    | 请求参数编码     | 将请求参数编码，便于通过http请求发送                   |
-| feign. Contract        | 支持的注解格式   | 默认是SpringMVC的注解                                  |
-| feign. Retryer         | 失败重试机制     | 请求失败的重试机制，默认是没有，不过会使用Ribbon的重试 |
+| 类型                | 作用             | 说明                                                   |
+| ------------------- | ---------------- | ------------------------------------------------------ |
+| feign.Logger.Level  | 修改日志级别     | 包含四种不同的级别：NONE、BASIC、HEADERS、FULL         |
+| feign.codec.Decoder | 响应结果的解析器 | http远程调用的结果做解析，例如解析json字符串为java对象 |
+| feign.codec.Encoder | 请求参数编码     | 将请求参数编码，便于通过http请求发送                   |
+| feign. Contract     | 支持的注解格式   | 默认是SpringMVC的注解                                  |
+| feign. Retryer      | 失败重试机制     | 请求失败的重试机制，默认是没有，不过会使用Ribbon的重试 |
 
 一般情况下，默认值就能满足我们使用，如果要自定义时，只需要创建自定义的@Bean覆盖默认Bean即可。
 
@@ -335,7 +333,7 @@ UserController，在user-service中：
 
    ```xml
    <dependency>
-       <groupId>cn.itcast.demo</groupId>
+       <groupId>com.linxuan.demo</groupId>
        <artifactId>feign-api</artifactId>
        <version>1.0</version>
    </dependency>
@@ -349,7 +347,7 @@ UserController，在user-service中：
 
    ![image-20210714205623048](..\图片\4-02【Nacos配置管理、Feign、Gateway】/image-20210714205623048.png)
 
-   这是因为UserClient现在在cn.itcast.feign.clients包下，而order-service的`@EnableFeignClients`注解是在cn.itcast.order包下，不在同一个包，无法扫描到UserClient。
+   这是因为UserClient现在在com.linxuan.feign.clients包下，而order-service的`@EnableFeignClients`注解是在com.linxuan.order包下，不在同一个包，无法扫描到UserClient。
 
    无法为其创建对象，没有在Spring容器中管理。所以导入注入失败。
 
@@ -358,7 +356,7 @@ UserController，在user-service中：
    方式一：指定Feign应该扫描的包：
 
    ```java
-   @EnableFeignClients(basePackages = "cn.itcast.feign.clients")
+   @EnableFeignClients(basePackages = "com.linxuan.feign.clients")
    ```
 
    方式二：指定需要加载的Client接口：
@@ -380,7 +378,7 @@ Gateway网关是我们服务的守门神，所有微服务的统一入口。
 - **路由和负载均衡**：一切请求都必须先经过gateway，但网关不处理业务，而是根据某种规则，把请求转发到某个微服务，这个过程叫做路由。当然路由的目标服务有多个时，还需要做负载均衡。
 - **限流**：当请求流量过高时，在网关中按照下流的微服务能够接受的速度来放行请求，避免服务压力过大。
 
-![image-20210714210131152](..\图片\4-02【Nacos配置管理、Feign、Gateway】/image-20210714210131152.png)
+![](..\图片\4-02【Nacos配置管理、Feign、Gateway】/image-20210714210131152.png)
 
 在SpringCloud中网关的实现包括两种：gateway和zuul。
 
@@ -591,7 +589,7 @@ defaultFilters的作用是什么？
 
 * 对所有路由都生效的过滤器
 
-## 3.5 全局过滤器
+## 2.4 全局过滤器
 
 上一节学习的过滤器，网关提供了31种，但每一种过滤器的作用都是固定的。如果我们希望拦截请求，做自己的业务逻辑则没办法实现。
 
@@ -629,7 +627,7 @@ public interface GlobalFilter {
 在gateway中定义一个过滤器：
 
 ```java
-package cn.itcast.gateway.filters;
+package com.linxuan.gateway.filters;
 
 // Order是过滤器执行的顺序，值越小则越先执行。我们也可以实现Orderd接口，实现方法返回值来搞值
 // @Order(-1)
@@ -684,7 +682,7 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
 
 `org.springframework.cloud.gateway.handler.FilteringWebHandler#handle()`方法会加载全局过滤器，与前面的过滤器合并后根据order排序，组织过滤器链
 
-## 3.6 跨域问题
+## 2.5 跨域问题
 
 跨域：域名不一致就是跨域，主要包括：
 

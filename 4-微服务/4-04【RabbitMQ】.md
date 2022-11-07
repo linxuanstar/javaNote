@@ -36,7 +36,7 @@ MQ，中文是消息队列（MessageQueue），字面来看就是存放消息的
 
 为了解除事件发布者与订阅者之间的耦合，两者并不是直接通信，而是有一个中间人（Broker）。发布者发布事件到Broker，不关心谁来订阅事件。订阅者从Broker订阅事件，不关心谁发来的消息。
 
-![](D:\Java\笔记\图片\4-04【RabbitMQ高级篇】\0-1异步通信.png)
+![](..\图片\4-04【RabbitMQ】\0-1异步通信.png)
 
 Broker 是一个像数据总线一样的东西，所有的服务要接收数据和发送数据都发到这个总线上，这个总线就像协议一样，让服务间的通讯变得标准和可控。
 
@@ -118,7 +118,7 @@ docker run \
 
 MQ的基本结构：
 
-![](D:\Java\笔记\图片\4-04【RabbitMQ高级篇】\0-2MQ.png)
+![](..\图片\4-04【RabbitMQ】\0-2MQ.png)
 
 RabbitMQ中的一些角色：
 
@@ -130,7 +130,7 @@ RabbitMQ中的一些角色：
 
 RabbitMQ官方https://www.rabbitmq.com/，提供了5个不同的Demo示例，对应了不同的消息模型：
 
-![image-20210717163332646](D:\Java\笔记\图片\4-04【RabbitMQ高级篇】\0-3MQ消息模型.png)
+![image-20210717163332646](..\图片\4-04【RabbitMQ】\0-3MQ消息模型.png)
 
 ## 1.3 入门案例
 
@@ -144,7 +144,7 @@ RabbitMQ官方https://www.rabbitmq.com/，提供了5个不同的Demo示例，对
 
 简单队列模式的模型图：
 
-![image-20210717163434647](D:\Java\笔记\图片\4-04【RabbitMQ高级篇】\0-4简单队列.png)
+![image-20210717163434647](..\图片\4-04【RabbitMQ】\0-4简单队列.png)
 
 官方的HelloWorld是基于最基础的消息队列模型来实现的，只包括三个角色：
 
@@ -263,7 +263,7 @@ SpringAMQP提供了三个功能：
 - 基于注解的监听器模式，异步接收消息
 - 封装了RabbitTemplate工具，用于发送消息 
 
-![](D:\Java\笔记\图片\4-04【RabbitMQ高级篇】\0-5SpringAMQP.png)
+![](..\图片\4-04【RabbitMQ】\0-5SpringAMQP.png)
 
 ## 2.1 BasicQueue基本消息队列
 
@@ -353,7 +353,7 @@ public class SpringRabbitListener {
 
 Work queues，也被称为（Task queues），任务模型。简单来说就是让多个消费者绑定到一个队列，共同消费队列中的消息。
 
-![](D:\Java\笔记\图片\4-04【RabbitMQ高级篇】\0-6WorkQueue.png)
+![](..\图片\4-04【RabbitMQ】\0-6WorkQueue.png)
 
 当消息处理比较耗时的时候，可能生产消息的速度会远远大于消息的消费速度。长此以往，消息就会堆积越来越多，无法及时处理。
 
@@ -426,7 +426,7 @@ spring:
 
 发布订阅的模型如图：
 
-![](D:\Java\笔记\图片\4-04【RabbitMQ高级篇】\0-7发布订阅.png)
+![](..\图片\4-04【RabbitMQ】\0-7发布订阅.png)
 
 可以看到，在订阅模型中，多了一个exchange角色，而且过程略有变化：
 
@@ -442,13 +442,13 @@ Exchange（交换机）只负责转发消息，不具备存储消息的能力，
 
 Spring提供了一个接口Exchange，来表示所有不同类型的交换机：
 
-![](D:\Java\笔记\图片\4-04【RabbitMQ高级篇】\0-8交换机.png)
+![](..\图片\4-04【RabbitMQ】\0-8交换机.png)
 
 ### 2.3.1 Fanout广播
 
 Fanout，英文翻译是扇出，在MQ中叫广播更合适。
 
-![](D:\Java\笔记\图片\4-04【RabbitMQ高级篇】\0-9Fanout.png)
+![](..\图片\4-04【RabbitMQ】\0-9Fanout.png)
 
 在广播模式下，消息发送流程是这样的：
 
@@ -566,7 +566,7 @@ Direct交换机与Fanout交换机的差异：
 
 基于`@RabbitListener`注解声明队列和交换机有常见注解：`@Queue`、`@Exchange`。
 
-![](D:\Java\笔记\图片\4-04【RabbitMQ高级篇】\0-10Direct.png)
+![](..\图片\4-04【RabbitMQ】\0-10Direct.png)
 
  在Direct模型下：
 
@@ -647,7 +647,7 @@ Direct交换机与Topic交换机的差异：
 - `item.#`：能够匹配`item.spu.insert` 或者 `item.spu`
 - `item.*`：只能匹配`item.spu`
 
-![image-20210717170705380](D:\Java\笔记\图片\4-04【RabbitMQ高级篇】\0-11Topic.png)
+![image-20210717170705380](..\图片\4-04【RabbitMQ】\0-11Topic.png)
 
 解释：
 
@@ -713,7 +713,7 @@ public class SpringRabbitListener {
 
 之前说过，Spring会把你发送的消息序列化为字节发送给MQ，接收消息的时候，还会把字节反序列化为Java对象。
 
-![](D:\Java\笔记\图片\4-04【RabbitMQ高级篇】\0-12消息转换器.png)
+![](..\图片\4-04【RabbitMQ】\0-12消息转换器.png)
 
 只不过，默认情况下Spring采用的序列化方式是JDK序列化。众所周知，JDK序列化存在下列问题：数据体积过大、有安全漏洞、可读性差。下面我们来测试一下。
 
@@ -735,7 +735,7 @@ public void testSendMap() throws InterruptedException {
 
 发送消息后查看控制台：
 
-![](D:\Java\笔记\图片\4-04【RabbitMQ高级篇】\0-13测试消息转换器.png)
+![](..\图片\4-04【RabbitMQ】\0-13测试消息转换器.png)
 
 **配置JSON转换器**
 
@@ -775,7 +775,7 @@ public MessageConverter jsonMessageConverter(){
 
 消息从发送，到消费者接收，会经历多个过程：
 
-![](D:\Java\笔记\图片\4-04【RabbitMQ高级篇】\0-7发布订阅.png)
+![](..\图片\4-04【RabbitMQ】\0-7发布订阅.png)
 
 其中的每一步都可能导致消息丢失，常见的丢失原因包括：
 
@@ -816,7 +816,7 @@ RabbitMQ提供了`publisher confirm`机制来避免消息发送到MQ过程中丢
 - `publisher-return`，发送者回执。
   - 消息投递到交换机了，但是没有路由到队列。返回ACK，及路由失败原因。调用ReturnCallBack。
 
-![](D:\Java\笔记\图片\4-04【RabbitMQ高级篇】\1-1.png)
+![](..\图片\4-04【RabbitMQ】\1-1.png)
 
 注意：确认机制发送消息的时候，需要给每一个消息设置一个全局唯一的ID，用来区分不同的消息，避免ack冲突。
 
@@ -911,15 +911,15 @@ public class SpringAmqpTest {
 
 交换机如下：
 
-![](D:\Java\笔记\图片\4-04【RabbitMQ高级篇】\1-3交换机.png)
+![](..\图片\4-04【RabbitMQ】\1-3交换机.png)
 
 将交换机与队列绑定
 
-![](D:\Java\笔记\图片\4-04【RabbitMQ高级篇】\1-4交换机绑定.png)
+![](..\图片\4-04【RabbitMQ】\1-4交换机绑定.png)
 
 上面代码运行之后就会将消息发送成功：`消息发送成功, ID:e258d4f2-2805-4d7d-b8fa-ff7c7e172a7e`
 
-![](D:\Java\笔记\图片\4-04【RabbitMQ高级篇】\1-2消息发送成功.png)
+![](..\图片\4-04【RabbitMQ】\1-2消息发送成功.png)
 
 接下来演示一下消息发送错误的情况：
 
@@ -954,7 +954,7 @@ public class SpringAmqpTest {
 
 我们可以模拟一下MQ的宕机，前面我们已经创建了一个`simple.queue`的队列，并且发送了一条消息。接下来我们重启一下MQ：`docker restart mq`。可以发现，队列和消息都没有了！但是系统创建的交换机仍然存在：
 
-![](D:\Java\笔记\图片\4-04【RabbitMQ高级篇】\1-5交换机存在.png)
+![](..\图片\4-04【RabbitMQ】\1-5交换机存在.png)
 
 可以看到交换机上面有一个`Features`，`Features`有一个属性为`durable -> D`，该属性的值为`true`。
 
@@ -1012,7 +1012,7 @@ public abstract class AbstractExchange extends AbstractDeclarable implements Exc
 
 可以在RabbitMQ控制台看到持久化的交换机都会带上`D`的标示：
 
-![](D:\Java\笔记\图片\4-04【RabbitMQ高级篇】\2-1持久化交换机.png)
+![](..\图片\4-04【RabbitMQ】\2-1持久化交换机.png)
 
 **队列持久化**
 
@@ -1028,7 +1028,7 @@ public Queue simpleQueue(){
 
 事实上，默认情况下，由SpringAMQP声明的队列都是持久化的。可以在RabbitMQ控制台看到持久化的队列都会带上`D`的标示：
 
-![](D:\Java\笔记\图片\4-04【RabbitMQ高级篇】\2-1队列持久化.png)
+![](..\图片\4-04【RabbitMQ】\2-1队列持久化.png)
 
 **消息持久化**
 
@@ -1036,13 +1036,13 @@ public Queue simpleQueue(){
 
 这时我们在Rabbit MQ中发送一条消息：
 
-![](D:\Java\笔记\图片\4-04【RabbitMQ高级篇】\2-2发送消息.png)
+![](..\图片\4-04【RabbitMQ】\2-2发送消息.png)
 
-![](D:\Java\笔记\图片\4-04【RabbitMQ高级篇】\2-3显示消息.png)
+![](..\图片\4-04【RabbitMQ】\2-3显示消息.png)
 
 可是这个时候我们再重启mq容器，那么消息便会消失了。这是因为我们只持久化了交换机和队列，并没有持久化消息。
 
-![](D:\Java\笔记\图片\4-04【RabbitMQ高级篇】\2-4消息为空.png)
+![](..\图片\4-04【RabbitMQ】\2-4消息为空.png)
 
 这个时候我们就要持久化消息了。利用SpringAMQP发送消息时，可以设置消息的属性（MessageProperties），指定delivery-mode。
 
@@ -1113,7 +1113,7 @@ spring:
 
 RabbitMQ中已经有一条消息了：
 
-![](D:\Java\笔记\图片\4-04【RabbitMQ高级篇】\2-5RabbitMQ消息.png)
+![](..\图片\4-04【RabbitMQ】\2-5RabbitMQ消息.png)
 
 修改consumer服务的`SpringRabbitListener`类中的方法，模拟一个消息处理异常：
 
@@ -1129,7 +1129,7 @@ public void listenSimpleQueue(String msg) {
 
 测试可以发现，当消息处理抛异常时，消息依然被RabbitMQ删除了。
 
-![](D:\Java\笔记\图片\4-04【RabbitMQ高级篇】\2-6消息被消费了.png)
+![](..\图片\4-04【RabbitMQ】\2-6消息被消费了.png)
 
 **演示auto模式**
 
@@ -1147,11 +1147,11 @@ spring:
 
 在异常位置打断点，再次发送消息，程序卡在断点时，可以发现此时消息状态为unack（未确定状态）：
 
-![](D:\Java\笔记\图片\4-04【RabbitMQ高级篇】\2-7消息unack.png)
+![](..\图片\4-04【RabbitMQ】\2-7消息unack.png)
 
 抛出异常后，因为Spring会自动返回nack，所以消息恢复至Ready状态，并且没有被RabbitMQ删除：
 
-![](D:\Java\笔记\图片\4-04【RabbitMQ高级篇】\2-8消息恢复Ready.png)
+![](..\图片\4-04【RabbitMQ】\2-8消息恢复Ready.png)
 
 但是当消费者出现异常后，消息会不断requeue（重入队）到队列，再重新发送给消费者，然后再次异常，再次requeue，无限循环。我们即时将打的端点放行，那么又会回来，这是因为RabbitMQ重新发送消息了！
 
@@ -1159,7 +1159,7 @@ spring:
 
 当消费者出现异常后，消息会不断requeue（重入队）到队列，再重新发送给消费者，然后再次异常，再次requeue，无限循环，导致mq的消息处理飙升，带来不必要的压力：
 
-![](D:\Java\笔记\图片\4-04【RabbitMQ高级篇】\2-9消费者失败重试.png)
+![](..\图片\4-04【RabbitMQ】\2-9消费者失败重试.png)
 
 **本地重试**
 
@@ -1208,7 +1208,7 @@ spring:
 
 比较优雅的一种处理方案是`RepublishMessageRecoverer`，失败后将消息投递到一个指定的，专门存放异常消息的队列，后续由人工集中处理。
 
-![](D:\Java\笔记\图片\4-04【RabbitMQ高级篇】\2-10RepublishMessageRecoverer.png)
+![](..\图片\4-04【RabbitMQ】\2-10RepublishMessageRecoverer.png)
 
 实现方式如下：
 
@@ -1284,15 +1284,15 @@ public class ErrorMessageConfig {
 
 如图，一个消息被消费者拒绝了，变成了死信：
 
-![](D:\Java\笔记\图片\4-04【RabbitMQ高级篇】\4-1死信.png)
+![](..\图片\4-04【RabbitMQ】\4-1死信.png)
 
 因为`simple.queue`绑定了死信交换机 dl.direct，因此死信会投递给这个交换机。如果这个死信交换机也绑定了一个队列，则消息最终会进入这个存放死信的队列：
 
-![](D:\Java\笔记\图片\4-04【RabbitMQ高级篇】\4-2进入死信队列.png)
+![](..\图片\4-04【RabbitMQ】\4-2进入死信队列.png)
 
 另外，队列将死信投递给死信交换机时，必须知道两个信息：死信交换机名称和死信交换机与死信队列绑定的RoutingKey。这样才能确保投递的消息能到达死信交换机，并且正确的路由到死信队列。
 
-![](D:\Java\笔记\图片\4-04【RabbitMQ高级篇】\4-3死信信息.png)
+![](..\图片\4-04【RabbitMQ】\4-3死信信息.png)
 
 可以利用死信交换机收集所有消费者处理失败的消息（死信），交由人工处理，进一步提高消息队列的可靠性。
 
@@ -1302,11 +1302,11 @@ public class ErrorMessageConfig {
 
 对于消费失败重试机制中的RepublishMessageRecoverer策略而言是由消费者投递的：
 
-![](D:\Java\笔记\图片\4-04【RabbitMQ高级篇】\2-10RepublishMessageRecoverer.png)
+![](..\图片\4-04【RabbitMQ】\2-10RepublishMessageRecoverer.png)
 
 而对于死信交换机中是由queue队列投递消息的：
 
-![](D:\Java\笔记\图片\4-04【RabbitMQ高级篇】\4-2进入死信队列.png)
+![](..\图片\4-04【RabbitMQ】\4-2进入死信队列.png)
 
 ## 4.1 利用死信交换机接收死信
 
@@ -1314,7 +1314,7 @@ public class ErrorMessageConfig {
 
 我们可以给`simple.queue`添加一个死信交换机，给死信交换机绑定一个队列。这样消息变成死信后也不会丢弃，而是最终投递到死信交换机，路由到与死信交换机绑定的队列。
 
-![](D:\Java\笔记\图片\4-04【RabbitMQ高级篇】\4-2进入死信队列.png)
+![](..\图片\4-04【RabbitMQ】\4-2进入死信队列.png)
 
 我们在consumer服务中，定义一组死信交换机、死信队列：
 
@@ -1350,7 +1350,7 @@ TTL，也就是Time-To-Live。如果一个队列中的消息如果超时未消�
 - 消息所在的队列设置了超时时间
 - 消息本身设置了超时时间
 
-![](D:\Java\笔记\图片\4-04【RabbitMQ高级篇】\4-4TTL.png)
+![](..\图片\4-04【RabbitMQ】\4-4TTL.png)
 
 **接收超时死信的死信交换机**
 
@@ -1725,11 +1725,11 @@ public class CommonConfig implements ApplicationContextAware {
 
 # 第五章 惰性队列
 
-## 3.1 消息堆积问题
+## 5.1 消息堆积问题
 
 当生产者发送消息的速度超过了消费者处理消息的速度，就会导致队列中的消息堆积，直到队列存储消息达到上限。之后发送的消息就会成为死信，可能会被丢弃，这就是消息堆积问题。
 
-![](D:\Java\笔记\图片\4-04【RabbitMQ高级篇】\5-1消息堆积.png)
+![](..\图片\4-04【RabbitMQ】\5-1消息堆积.png)
 
 解决消息堆积有两种思路：
 
@@ -1738,7 +1738,7 @@ public class CommonConfig implements ApplicationContextAware {
 
 要提升队列容积，把消息保存在内存中显然是不行的。这时候我们就可以用到惰性队列了！
 
-## 3.2 惰性队列
+## 5.2 惰性队列
 
 从RabbitMQ的3.6.0版本开始，就增加了Lazy Queues的概念，也就是惰性队列。惰性队列的特征如下：
 
@@ -1807,7 +1807,7 @@ public class SpringRabbitListener {
 - 基于磁盘存储，消息时效性会降低
 - 性能受限于磁盘的IO
 
-## 3.3 测试惰性队列和普通队列
+## 5.3 测试惰性队列和普通队列
 
 在consumer消费端声明两个Bean，分别是惰性队列和普通队列：
 
@@ -1874,11 +1874,11 @@ public class SpringAmqpTest {
 
 * LazyQueue，一条消息都没有在memory内存中，全部paged out刷出到磁盘中了。
 
-  ![](D:\Java\笔记\图片\4-04【RabbitMQ高级篇】\5-2测试.png)
+  ![](..\图片\4-04【RabbitMQ】\5-2测试.png)
 
 * NormalQueue，总共40多万条，只有4000条在内存中是，剩下的都在磁盘中。内存也会波动，达到30000条的时候就会刷出到磁盘中。
 
-  ![](D:\Java\笔记\图片\4-04【RabbitMQ高级篇】\5-3测试.png)
+  ![](..\图片\4-04【RabbitMQ】\5-3测试.png)
 
 # 第六章 MQ集群
 
@@ -1889,7 +1889,7 @@ RabbitMQ的是基于Erlang语言编写，而Erlang又是一个面向并发的语
 
 镜像集群虽然支持主从，但主从同步并不是强一致的，某些情况下可能有数据丢失的风险。因此在RabbitMQ的3.8版本以后，推出了新的功能：**仲裁队列**来代替镜像集群，底层采用Raft协议确保主从的数据一致性。
 
-## 4.2.普通集群
+## 6.1 普通集群
 
 普通集群，或者叫标准集群（classic cluster），具备下列特征：
 
@@ -1899,11 +1899,219 @@ RabbitMQ的是基于Erlang语言编写，而Erlang又是一个面向并发的语
 
 结构如图：
 
-![image-20210718220843323](D:\Java\笔记\图片\4-04【RabbitMQ高级篇】\image-20210718220843323.png)
+![](..\图片\4-04【RabbitMQ】\6-1集群.png)
 
-参考课前资料：《RabbitMQ部署指南.md》
+**搭建集群**
 
-## 4.3.镜像集群
+在RabbitMQ的官方文档中，讲述了两种集群的配置方式：
+
+- 普通模式：普通模式集群不进行数据同步，每个MQ都有自己的队列、数据信息（其它元数据信息如交换机等会同步）。例如我们有2个MQ：mq1，和mq2，如果你的消息在mq1，而你连接到了mq2，那么mq2会去mq1拉取消息，然后返回给你。如果mq1宕机，消息就会丢失。
+- 镜像模式：与普通模式不同，队列会在各个mq的镜像节点之间同步，因此你连接到任何一个镜像节点，均可获取到消息。而且如果一个节点宕机，并不会导致数据丢失。不过，这种方式增加了数据同步的带宽消耗。
+
+我们先来看普通模式集群，我们的计划部署3节点的mq集群：
+
+| 主机名 | 控制台端口      | amqp通信端口    |
+| ------ | --------------- | --------------- |
+| mq1    | 8081 ---> 15672 | 8071 ---> 5672  |
+| mq2    | 8082 ---> 15672 | 8072 ---> 5672  |
+| mq3    | 8083 ---> 15672 | 8073  ---> 5672 |
+
+集群中的节点标示默认都是：`rabbit@[hostname]`，因此以上三个节点的名称分别为：
+
+- rabbit@mq1
+- rabbit@mq2
+- rabbit@mq3
+
+RabbitMQ底层依赖于Erlang，而Erlang虚拟机就是一个面向分布式的语言，默认就支持集群模式。集群模式中的每个RabbitMQ 节点使用 cookie 来确定它们是否被允许相互通信。
+
+要使两个节点能够通信，它们必须具有相同的共享秘密，称为**Erlang cookie**。cookie 只是一串最多 255 个字符的字母数字字符。每个集群节点必须具有**相同的 cookie**。实例之间也需要它来相互通信。
+
+我们先在之前启动的mq容器中获取一个cookie值，作为集群的cookie。执行下面的命令：
+
+```sh
+docker exec -it mq cat /var/lib/rabbitmq/.erlang.cookie
+```
+
+可以看到cookie值如下：
+
+```sh
+EZFYFWUJLZKQKTTQSEQV
+```
+
+接下来，停止并删除当前的mq容器，我们重新搭建集群。
+
+```sh
+docker rm -f mq
+```
+
+在`/tmp`目录新建一个配置文件 `rabbitmq.conf`：
+
+```sh
+cd /tmp
+# 创建文件
+touch rabbitmq.conf
+```
+
+写入文件内容如下：
+
+```nginx
+loopback_users.guest = false
+listeners.tcp.default = 5672
+cluster_formation.peer_discovery_backend = rabbit_peer_discovery_classic_config
+cluster_formation.classic_config.nodes.1 = rabbit@mq1
+cluster_formation.classic_config.nodes.2 = rabbit@mq2
+cluster_formation.classic_config.nodes.3 = rabbit@mq3
+```
+
+再创建一个文件，记录cookie
+
+```sh
+cd /tmp
+# 创建cookie文件
+touch .erlang.cookie
+# 写入cookie
+echo "EZFYFWUJLZKQKTTQSEQV" > .erlang.cookie
+# 修改cookie文件的权限
+chmod 600 .erlang.cookie
+```
+
+准备三个目录,mq1、mq2、mq3：
+
+```sh
+cd /tmp
+# 创建目录
+mkdir mq1 mq2 mq3
+```
+
+然后拷贝`rabbitmq.conf`、`cookie`文件到mq1、mq2、mq3：
+
+```sh
+# 进入/tmp
+cd /tmp
+# 拷贝
+cp rabbitmq.conf mq1
+cp rabbitmq.conf mq2
+cp rabbitmq.conf mq3
+cp .erlang.cookie mq1
+cp .erlang.cookie mq2
+cp .erlang.cookie mq3
+```
+
+**启动集群**
+
+进入`/tmp`目录：
+
+```sh
+cd /tmp
+```
+
+创建一个网络：
+
+```sh
+docker network create mq-net
+```
+
+运行命令
+
+```sh
+docker run -d --net mq-net \
+-v ${PWD}/mq1/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf \
+-v ${PWD}/.erlang.cookie:/var/lib/rabbitmq/.erlang.cookie \
+-e RABBITMQ_DEFAULT_USER=linxuan \
+-e RABBITMQ_DEFAULT_PASS=123321 \
+--name mq1 \
+--hostname mq1 \
+-p 8071:5672 \
+-p 8081:15672 \
+rabbitmq:3.8-management
+```
+
+```sh
+docker run -d --net mq-net \
+-v ${PWD}/mq2/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf \
+-v ${PWD}/.erlang.cookie:/var/lib/rabbitmq/.erlang.cookie \
+-e RABBITMQ_DEFAULT_USER=linxuan \
+-e RABBITMQ_DEFAULT_PASS=123321 \
+--name mq2 \
+--hostname mq2 \
+-p 8072:5672 \
+-p 8082:15672 \
+rabbitmq:3.8-management
+```
+
+```sh
+docker run -d --net mq-net \
+-v ${PWD}/mq3/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf \
+-v ${PWD}/.erlang.cookie:/var/lib/rabbitmq/.erlang.cookie \
+-e RABBITMQ_DEFAULT_USER=linxuan \
+-e RABBITMQ_DEFAULT_PASS=123321 \
+--name mq3 \
+--hostname mq3 \
+-p 8073:5672 \
+-p 8083:15672 \
+rabbitmq:3.8-management
+```
+
+> 这里老师之前的用户名称是itcast。
+
+**测试集群**
+
+在mq1这个节点上添加一个队列：
+
+![](..\图片\4-04【RabbitMQ】\6-2集群测试.png)
+
+如图，在mq2和mq3两个控制台也都能看到：
+
+![](..\图片\4-04【RabbitMQ】\6-3测试集群.png)
+
+**数据共享测试**
+
+接下来我们测试一下数据是否共享：
+
+* 点击这个队列，进入管理页面，然后利用控制台发送一条消息到这个队列。
+
+  ![](..\图片\4-04【RabbitMQ】\6-4测试集群.png)
+
+* 结果在mq2、mq3上都能看到这条消息
+
+  ![](..\图片\4-04【RabbitMQ】\6-5测试集群.png)
+
+* 这是为什么呢？我们看一下普通集群的特点：会在集群的各个节点间共享部分数据，包括：交换机、队列元信息。不包含队列中的消息。当访问集群某节点时，如果队列不在该节点，会从数据所在节点传递到当前节点并返回。
+
+* 当访问集群某节点时，如果队列不在该节点，会从数据所在节点传递到当前节点并返回。
+
+接下来测试一下集群的可用性：
+
+* 我们让其中一台节点mq1宕机：`docker stop mq1`
+
+  ```apl
+  Error: could not connect to server since 2022-11-01 19:36:44. Will retry at 2022-11-01 19:37:51
+  ```
+
+  ![](..\图片\4-04【RabbitMQ】\6-6mq1挂机.png)
+
+* 然后登录mq2或mq3的控制台，发现simple.queue也不可用了：
+
+  ![](..\图片\4-04【RabbitMQ】\6-7mq2不可用.png)
+
+* 说明数据并没有拷贝到mq2和mq3。
+
+* 重新恢复mq1，那么数据就可以访问了
+
+## 6.2 镜像集群
+
+在刚刚的案例中，一旦创建队列的主机宕机，队列就会不可用。不具备高可用能力。如果要解决这个问题，必须使用官方提供的镜像集群方案。官方文档地址：https://www.rabbitmq.com/ha.html
+
+默认情况下，队列只保存在创建该队列的节点上。而镜像模式下，创建队列的节点被称为该队列的主节点，队列还会拷贝到集群中的其它节点，也叫做该队列的镜像节点。但是，不同队列可以在集群中的任意节点上创建，因此不同队列的主节点可以不同。甚至，**一个队列的主节点可能是另一个队列的镜像节点**。
+
+用户发送给队列的一切请求，例如发送消息、消息回执默认都会在主节点完成，如果是从节点接收到请求，也会路由到主节点去完成。**镜像节点仅仅起到备份数据作用**。当主节点接收到消费者的ACK时，所有镜像都会删除节点中的数据。
+
+总结如下：
+
+- 镜像队列结构是一主多从（从就是镜像）
+- 所有操作都是主节点完成，然后同步给镜像节点
+- 主宕机后，镜像节点会替代成新的主（如果在主从同步完成前，主就已经宕机，可能出现数据丢失）
+- 不具备负载均衡功能，因为所有操作都会有主节点完成（但是不同队列，其主节点可以不同，可以利用这个提高吞吐量）
 
 镜像集群：本质是主从模式，具备下面的特征：
 
@@ -1915,13 +2123,107 @@ RabbitMQ的是基于Erlang语言编写，而Erlang又是一个面向并发的语
 
 结构如图：
 
-![image-20210718221039542](D:\Java\笔记\图片\4-04【RabbitMQ高级篇】\image-20210718221039542.png)
+![](..\图片\4-04【RabbitMQ】\6-8镜像集群.png)
 
-参考课前资料：《RabbitMQ部署指南.md》
+镜像模式的配置有3种模式：
 
+| ha-mode         | ha-params         | 效果                                                         |
+| :-------------- | :---------------- | :----------------------------------------------------------- |
+| 准确模式exactly | 队列的副本量count | 集群中队列副本（主服务器和镜像服务器之和）的数量。count如果为1意味着单个副本：即队列主节点。count值为2表示2个副本：1个队列主和1个队列镜像。换句话说：count = 镜像数量 + 1。如果群集中的节点数少于count，则该队列将镜像到所有节点。如果有集群总数大于count+1，并且包含镜像的节点出现故障，则将在另一个节点上创建一个新的镜像。 |
+| all             | (none)            | 队列在群集中的所有节点之间进行镜像。队列将镜像到任何新加入的节点。镜像到所有节点将对所有群集节点施加额外的压力，包括网络I / O，磁盘I / O和磁盘空间使用情况。推荐使用exactly，设置副本数为（N / 2 +1）。 |
+| nodes           | *node names*      | 指定队列创建到哪些节点，如果指定的节点全部不存在，则会出现异常。如果指定的节点在集群中存在，但是暂时不可用，会创建节点到当前客户端连接到的节点。 |
 
+这里我们以`rabbitmqctl`命令作为案例来讲解配置语法。
 
-## 4.4.仲裁队列
+命令随便在哪一个节点敲都可以，不过记住需要进入mq容器内部：`docker exec -it mq1 bash`
+
+**exactly模式**
+
+```sh
+rabbitmqctl set_policy ha-two "^two\." '{"ha-mode":"exactly","ha-params":2,"ha-sync-mode":"automatic"}'
+```
+
+- `rabbitmqctl set_policy`：固定写法
+- `ha-two`：策略名称，自定义。ha高可用
+- `"^two\."`：匹配队列的正则表达式，符合命名规则的队列才生效，这里是任何以`two.`开头的队列名称
+- `'{"ha-mode":"exactly","ha-params":2,"ha-sync-mode":"automatic"}'`: 策略内容
+  - `"ha-mode":"exactly"`：策略模式，此处是exactly模式，指定副本数量
+  - `"ha-params":2`：策略参数，这里是2，就是副本数量为2，1主1镜像
+  - `"ha-sync-mode":"automatic"`：同步策略，默认是manual，即新加入的镜像节点不会同步旧的消息。如果设置为automatic，则新加入的镜像节点会把主节点中所有消息都同步，会带来额外的网络开销
+
+**all模式**
+
+```sh
+rabbitmqctl set_policy ha-all "^all\." '{"ha-mode":"all"}'
+```
+
+- `ha-all`：策略名称，自定义
+- `"^all\."`：匹配所有以`all.`开头的队列名
+- `'{"ha-mode":"all"}'`：策略内容
+  - `"ha-mode":"all"`：策略模式，此处是all模式，即所有节点都会称为镜像节点
+
+**nodes模式**
+
+```sh
+rabbitmqctl set_policy ha-nodes "^nodes\." '{"ha-mode":"nodes","ha-params":["rabbit@nodeA", "rabbit@nodeB"]}'
+```
+
+- `rabbitmqctl set_policy`：固定写法
+- `ha-nodes`：策略名称，自定义
+- `"^nodes\."`：匹配队列的正则表达式，符合命名规则的队列才生效，这里是任何以`nodes.`开头的队列名称
+- `'{"ha-mode":"nodes","ha-params":["rabbit@nodeA", "rabbit@nodeB"]}'`: 策略内容
+  - `"ha-mode":"nodes"`：策略模式，此处是nodes模式
+  - `"ha-params":["rabbit@mq1", "rabbit@mq2"]`：策略参数，这里指定副本所在节点名称
+
+**测试**
+
+我们使用exactly模式的镜像，因为集群节点数量为3，因此镜像数量就设置为2.
+
+运行下面的命令：
+
+```sh
+docker exec -it mq1 rabbitmqctl set_policy ha-two "^two\." '{"ha-mode":"exactly","ha-params":2,"ha-sync-mode":"automatic"}'
+```
+
+![](..\图片\4-04【RabbitMQ】\6-9镜像集群.png)
+
+下面，我们创建一个新的队列：
+
+![](..\图片\4-04【RabbitMQ】\6-10测试镜像集群.png)
+
+在任意一个控制台查看队列：
+
+![](..\图片\4-04【RabbitMQ】\6-11.png)
+
+接下来测试一下数据共享：
+
+* 给two.queue发送一条消息：
+
+  ![](..\图片\4-04【RabbitMQ】\6-12.png)
+
+* 然后在mq1、mq2、mq3的任意控制台查看消息：
+
+  ![](..\图片\4-04【RabbitMQ】\6-13.png)
+
+下面来测试一下高可用：
+
+* 现在，我们让two.queue的主节点mq1宕机：`docker stop mq1`
+
+* 查看集群状态：
+
+  ![](..\图片\4-04【RabbitMQ】\6-14.png)
+
+* 查看队列状态：
+
+  ![](..\图片\4-04【RabbitMQ】\6-15.png)
+
+* 发现依然是健康的！并且其主节点切换到了`rabbit@mq2`上
+
+* 如果过了一会mq1恢复了，那么并不会变成主节点了！
+
+## 6.3 仲裁队列
+
+<!--Quorum仲裁 法定人数-->
 
 仲裁队列：仲裁队列是3.8版本以后才有的新功能，用来替代镜像队列，具备下列特征：
 
@@ -1929,7 +2231,17 @@ RabbitMQ的是基于Erlang语言编写，而Erlang又是一个面向并发的语
 - 使用非常简单，没有复杂的配置
 - 主从同步基于Raft协议，强一致
 
-参考课前资料：《RabbitMQ部署指南.md》
+**添加仲裁队列**
+
+在任意控制台添加一个队列，一定要选择队列类型为Quorum类型。
+
+![](..\图片\4-04【RabbitMQ】\7-1.png)
+
+在任意控制台查看队列：
+
+![](..\图片\4-04【RabbitMQ】\7-2.png)
+
+可以看到，仲裁队列的 + 2字样。代表这个队列有2个镜像节点。因为仲裁队列默认的镜像数为5。如果你的集群有7个节点，那么镜像数肯定是5；而我们集群只有3个节点，因此镜像数量就是3.
 
 **Java代码创建仲裁队列**
 
@@ -1951,7 +2263,7 @@ public Queue quorumQueue() {
 spring:
   rabbitmq:
     addresses: 192.168.150.105:8071, 192.168.150.105:8072, 192.168.150.105:8073
-    username: itcast
+    username: linxuan
     password: 123321
     virtual-host: /
 ```
