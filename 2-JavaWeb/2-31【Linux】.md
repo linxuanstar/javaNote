@@ -484,6 +484,14 @@ BROADCAST=192.168.0.255 #广播地址
 NBOOT=yes #  系统启动时是否设置此网络接口，设置为yes时，系统启动时激活此设备。
 ```
 
+```sh
+查看外网IP
+
+curl cip.cc
+curl ifconfig.me
+curl ipinfo.io
+```
+
 ## 4.3 域名映射
 
 `/etc/hosts`文件用于在通过主机名进行访问时做ip地址解析之用，相当于windows系统的`C:\Windows\System32\drivers\etc\hosts`文件的功能
@@ -532,6 +540,12 @@ Centos7的防火墙操作
 
 # 第五章 软件安装与项目部署
 
+```sh
+# /export/目录下面创建这三个文件夹 用于存放 数据 软件 安装包
+[root@node1 ~]# ls /export/
+data  server  software
+```
+
 ## 5.1 软件安装
 
 一般我们下载的软件都会放在/usr/local里面
@@ -574,6 +588,12 @@ Linux上的软件安装有以下几种常见方式介绍
 
    使用get命令下载
 
+```sh
+# /export/目录下面创建这三个文件夹 用于存放 数据 软件 安装包
+[root@linxuan ~]# ls /export/
+data  server  software
+```
+
 ### 5.1.1 安装jdk
 
 1. 使用上传工具FileZilla上传到Linux，上传的是二进制发布包，这里的是jdk1.7
@@ -582,7 +602,7 @@ Linux上的软件安装有以下几种常见方式介绍
 
    不过我们是在usr/local下面创建了一个jdk文件夹，让安装包解压到了jdk文件夹里面。`tar -zxvf jdk版本 -C /usr/local/jdk`
 
-3. 配置环境变量，使用vim修改/etc/profile文件，在文件末尾加入如下配置
+3. 配置环境变量，使用vim修改`/etc/profile`文件，在文件末尾加入如下配置
 
    ```bah
    JAVA_HOME=/usr/local/jdk/jdk1.7.0_75
@@ -637,14 +657,14 @@ Linux上的软件安装有以下几种常见方式介绍
 
 ### 5.1.3 安装MySql
 
-安装Mysql的话我们使用的是RPM安装方式，RPM软件包管理器，是红帽用于管理和安装软件的工具。
+安装Mysql的话我们使用的是RPM安装方式，RPM软件包管理器，是红帽用于管理和安装软件的工具。`mysql-5.7.29-1.el7.x86_64.rpm-bundle.tar`。
 
 1. 检查当前系统中是否安装MySql数据库
 
    如果当前系统中已经安装有MySql数据库，安装将会失败。Centos7自带mariadb，与MySql数据库冲突。
 
    ```apl
-   rpm -qa							# 查询当前系统中安装的所有软件
+   rpm -qa						   # 查询当前系统中安装的所有软件
    rpm -qa | grep mysql			# 查询当前系统中安装的名称带有mysql的软件
    rpm -qa | grep mariadb			# 查询当前系统中安装的名称带有mariadb的软件
    ```
@@ -656,22 +676,153 @@ Linux上的软件安装有以下几种常见方式介绍
    rpm -e --nodeps mariadb-libs-libs版本号		# 卸载mariadb软件
    ```
 
-3. 将MySql安装包上传到Linux并且解压，解压后会得到6个rpm的安装包文件。
+3. 将MySql安装包上传到Linux并且解压，解压后会得到6个乃至多个rpm的安装包文件。
 
    ```apl
-   mkdir /usr/local/mysql							# 创建一个mysql目录
-   tar -zxvf mysql-版本号 -C /usr/local/mysql		  # 解压至mysql目录
+   mkdir /export/software/mysql							# 创建一个mysql目录
+   tar -xvf mysql-版本号 -C /usr/local/mysql		            # 解压至mysql目录
    ```
 
-4. 启动Mysql，我们在Centos7上面安装的东西是之前的999集中老师教的，有点缺陷。凑活用吧。
+4. 安装依赖
 
-   启动Mysql服务：service mysql start
+   ```sh
+   yum -y install libaio
+   ```
 
-   进去Mysql：mysql -uroot -p132456
+5. 安装
 
-   我们也可以使用SQLyog来连接，已经保存好东西了。
+   ```sh
+   rpm -ivh mysql-community-common-5.7.29-1.el7.x86_64.rpm mysql-community-libs-5.7.29-1.el7.x86_64.rpm mysql-community-client-5.7.29-1.el7.x86_64.rpm mysql-community-server-5.7.29-1.el7.x86_64.rpm 
+   ```
 
-   上面的是之前的老师教的，与后面老师弄得有出入。
+   如果出现报错，那么就是用下一条命令
+
+   ```sh
+   warning: mysql-community-client-5.7.28-1.el7.x86_64.rpm: Header V3 DSA/SHA1 Signature, key ID 5072e1f5: NOKEY
+   # 原因：这是由于yum安装了旧版本的GPG keys造成的
+   # 解决办法：后面加上 --force --nodeps
+   ```
+
+   ```sh
+   rpm -ivh mysql-community-common-5.7.29-1.el7.x86_64.rpm mysql-community-libs-5.7.29-1.el7.x86_64.rpm mysql-community-client-5.7.29-1.el7.x86_64.rpm mysql-community-server-5.7.29-1.el7.x86_64.rpm  --force --nodeps
+   ```
+
+6. 初始化设置
+
+   ```sh
+   #初始化
+   mysqld --initialize
+   
+   #更改所属组
+   chown mysql:mysql /var/lib/mysql -R
+   
+   #启动mysql
+   systemctl start mysqld.service
+   
+   #查看生成的临时root密码
+   cat  /var/log/mysqld.log
+   
+   2022-11-12T09:10:39.165263Z 1 [Note] A temporary password is generated for root@localhost: wrljqkrty2%Y
+   ```
+
+7. 进入有可能报错
+
+   ```sh
+   [root@node2 ~]# mysql -u root -p
+   mysql: error while loading shared libraries: libncurses.so.5: cannot open shared object file: No such file or directory
+   ```
+
+   ```sh
+   # 联网状态可以安装包
+   yum install libncurses* -y
+   ```
+
+8. 修改root密码 授权远程访问 设置开机自启动。这里Centos8的设置为root123
+
+   ```sh
+   [root@node2 ~]# mysql -u root -p
+   Enter password:     #这里输入在日志中生成的临时密码
+   Welcome to the MySQL monitor.  Commands end with ; or \g.
+   Your MySQL connection id is 3
+   Server version: 5.7.29
+   
+   Copyright (c) 2000, 2020, Oracle and/or its affiliates. All rights reserved.
+   
+   Oracle is a registered trademark of Oracle Corporation and/or its
+   affiliates. Other names may be trademarks of their respective
+   owners.
+   
+   Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+   
+   mysql> 
+   
+   
+   #更新root密码  设置为root123
+   mysql> alter user user() identified by "root123";
+   Query OK, 0 rows affected (0.00 sec)
+   
+   
+   #授权
+   mysql> use mysql;
+   mysql> GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root123' WITH GRANT OPTION;
+   
+   # 权限刷新
+   mysql> FLUSH PRIVILEGES;
+   
+   # 退出
+   mysql> exit
+   Bye
+   
+   #mysql的启动和关闭 状态查看 （这几个命令必须记住）
+   systemctl stop mysqld
+   systemctl status mysqld
+   systemctl start mysqld
+   
+   #建议设置为开机自启动服务
+   [root@node2 ~]# systemctl enable  mysqld
+   
+   Created symlink from /etc/systemd/system/multi-user.target.wants/mysqld.service to /usr/lib/systemd/system/mysqld.service.
+   
+   #查看是否已经设置自启动成功
+   [root@node2 ~]# systemctl list-unit-files | grep mysqld
+   mysqld.service                                enabled 
+   
+   # systemctl disable mysqld 关闭开机自启动服务
+   ```
+
+9. Centos7 干净卸载mysql 5.7
+
+   ```sh
+   #关闭mysql服务
+   systemctl stop mysqld.service
+   
+   #查找安装mysql的rpm包
+   [root@node3 ~]# rpm -qa | grep -i mysql      
+   mysql-community-libs-5.7.29-1.el7.x86_64
+   mysql-community-common-5.7.29-1.el7.x86_64
+   mysql-community-client-5.7.29-1.el7.x86_64
+   mysql-community-server-5.7.29-1.el7.x86_64
+   
+   #卸载
+   [root@node3 ~]# yum remove mysql-community-libs-5.7.29-1.el7.x86_64 mysql-community-common-5.7.29-1.el7.x86_64 mysql-community-client-5.7.29-1.el7.x86_64 mysql-community-server-5.7.29-1.el7.x86_64
+   
+   #查看是否卸载干净
+   rpm -qa | grep -i mysql
+   
+   #查找mysql相关目录 删除
+   [root@node1 ~]# find / -name mysql
+   /var/lib/mysql
+   /var/lib/mysql/mysql
+   /usr/share/mysql
+   
+   [root@node1 ~]# rm -rf /var/lib/mysql
+   [root@node1 ~]# rm -rf /var/lib/mysql/mysql
+   [root@node1 ~]# rm -rf /usr/share/mysql
+   
+   #删除默认配置 日志
+   rm -rf /etc/my.cnf 
+   rm -rf /var/log/mysqld.log
+   ```
 
 ## 5.2 项目部署
 

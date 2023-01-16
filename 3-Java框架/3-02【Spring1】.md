@@ -19,9 +19,7 @@ Spring的优势如下：
 我们可以看到Spring框架主要的优势是在`简化开发`和`框架整合`上，我们就是学的这两方面的的主要内容。而关于简化开发，Spring框架中提供了两个核心技术：IOC和AOP。
 
 
-综上所述，对于Spring的学习，主要学习四块内容：
-
-* IOC、整合Mybatis(IOC的具体应用)、AOP、声明式事务(AOP的具体应用)
+综上所述，对于Spring的学习，主要学习四块内容：IOC、整合Mybatis(IOC的具体应用)、AOP、声明式事务(AOP的具体应用)
 
 ## 1.1 Spring介绍
 
@@ -30,13 +28,11 @@ Spring的优势如下：
 * Spring能做什么：用以开发web、微服务以及分布式系统等，光这三块就已经占了JavaEE开发的九成多。
 * Spring并不是单一的一个技术，而是一个大家族，可以从官网的`Projects`中查看其包含的所有技术。
 
-Spring发展到今天已经形成了一种开发的生态圈，Spring提供了若干个项目，每个项目用于完成特定的功能。
+Spring发展到今天已经形成了一种开发的生态圈，Spring提供了若干个项目，每个项目用于完成特定的功能。Spring已形成了完整的生态圈，也就是说我们可以完全使用Spring技术完成整个项目的构建、设计与开发。
 
-* Spring已形成了完整的生态圈，也就是说我们可以完全使用Spring技术完成整个项目的构建、设计与开发。
+Spring有若干个项目，可以根据需要自行选择，把这些个项目组合起来，起了一个名称叫全家桶，如下图所示
 
-* Spring有若干个项目，可以根据需要自行选择，把这些个项目组合起来，起了一个名称叫全家桶，如下图所示
-
-  ![](..\图片\3-02【Spring】\1-0.png)
+![](..\图片\3-02【Spring】\1-0.png)
 
 这些技术并不是所有的都需要学习，额外需要重点关注`Spring Framework`、`SpringBoot`和`SpringCloud`：
 
@@ -46,47 +42,45 @@ Spring发展到今天已经形成了一种开发的生态圈，Spring提供了�
 * `SpringBoot`：Spring是来简化开发，而SpringBoot是来帮助Spring在简化的基础上能更快速进行开发。
 * `SpringCloud`：这个是用来做分布式之微服务架构的相关开发。
 
-除了上面的这三个技术外，还有很多其他的技术，也比较流行，如`SpringData`，`SpringSecurity`等，这些都可以被应用在我们的项目中。我们今天所学习的Spring其实指的是`Spring Framework`。
+除了上面的这三个技术外，还有很多其他的技术，也比较流行，如`SpringData`，`SpringSecurity`等，这些都可以被应用在我们的项目中。我们今天所学习的Spring指的是`Spring Framework`。
 
 ## 1.2 Spring系统架构
 
-前面我们说spring指的是`Spring Framework`，下面从系统架构图来进行说明一下：
+前面我们说spring指的是`Spring Framework`，下面从系统架构图来进行说明一下。
 
-* `Spring Framework`是Spring生态圈中最基础的项目，是其他项目的根基。
+`Spring Framework`是Spring生态圈中最基础的项目，是其他项目的根基。`Spring Framework`的发展也经历了很多版本的变更，每个版本都有相应的调整
 
-* `Spring Framework`的发展也经历了很多版本的变更，每个版本都有相应的调整
+![](..\图片\3-02【Spring】\1-2.png)
 
-  ![](..\图片\3-02【Spring】\1-2.png)
+`Spring Framework`的5版本目前没有最新的架构图，而最新的是4版本，所以接下来主要研究的是4的架构图
 
-* `Spring Framework`的5版本目前没有最新的架构图，而最新的是4版本，所以接下来主要研究的是4的架构图
+![](..\图片\3-02【Spring】\1-3.png)
 
-  ![](..\图片\3-02【Spring】\1-3.png)
+1. 核心层。
 
-  1. 核心层
+   - `Core Container`：核心容器，这个模块是Spring最核心的模块，其他的都需要依赖该模块。
 
-     - `Core Container`：核心容器，这个模块是Spring最核心的模块，其他的都需要依赖该模块
+2. AOP层
 
-  2. AOP层
+   * AOP：面向切面编程，它依赖核心层容器，目的是在不改变原有代码的前提下对其进行功能增强
 
-     * AOP：面向切面编程，它依赖核心层容器，目的是在不改变原有代码的前提下对其进行功能增强
-  
-     * `Aspects`：AOP是思想，Aspects是对AOP思想的具体实现
-  
-  3. 数据层
-  
-     * `Data Access`：数据访问，Spring全家桶中有对数据访问的具体实现技术
-  
-     * `Data Integration`：数据集成，Spring支持整合其他的数据层解决方案，比如Mybatis
-  
-     * `Transactions`：事务，Spring中事务管理是Spring AOP的一个具体实现。
-  
-  4. Web层
-  
-     * 这一层的内容将在SpringMVC框架具体学习
-  
-  5. Test层
-  
-     * Spring主要整合了Junit来完成单元测试和集成测试
+   * `Aspects`：AOP是思想，Aspects是对AOP思想的具体实现
+
+3. 数据层
+
+   * `Data Access`：数据访问，Spring全家桶中有对数据访问的具体实现技术
+
+   * `Data Integration`：数据集成，Spring支持整合其他的数据层解决方案，比如Mybatis
+
+   * `Transactions`：事务，Spring中事务管理是Spring AOP的一个具体实现。
+
+4. Web层
+
+   * 这一层的内容将在SpringMVC框架具体学习
+
+5. Test层
+
+   * Spring主要整合了Junit来完成单元测试和集成测试
 
 ## 1.3 Spring核心概念
 
@@ -170,7 +164,7 @@ Spring发展到今天已经形成了一种开发的生态圈，Spring提供了�
    </project>
    ```
 
-3. 添加案例中需要的类。创建`BookService`，`BookServiceImpl`，`BookDao`和`BookDaoImpl`四个类
+3. 添加案例中需要的类。创建`com.linxuan.service.`，`com.linxuan.service.impl.BookServiceImpl`，`com.linxuan.dao.BookDao`和`com.linxuan.dao.impl.BookDaoImpl`四个类
 
    ```java
    public interface BookDao {
@@ -198,18 +192,18 @@ Spring发展到今天已经形成了一种开发的生态圈，Spring提供了�
 5. 在配置文件中完成bean的配置
 
    ```xml
-   <？xml version="1.0" encoding="UTF-8"？>
+   <?xml version="1.0" encoding="UTF-8"?>
    <beans xmlns="http://www.springframework.org/schema/beans"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
    
        <!--
-   		bean标签标示配置bean
-       	id属性标示给bean起名字
+   		bean标签表示配置bean
+       	id属性表示给bean起名字
        	class属性表示给bean定义类型
    	-->
-       <bean id="bookDao" class="cn.com.linxuan.demo01.dao.impl.BookDaoImpl"/>
-       <bean id="bookService" class="cn.com.linxuan.demo01.service.impl.BookServiceImpl"/>
+       <bean id="bookDao" class="com.linxuan.dao.impl.BookDaoImpl"/>
+       <bean id="bookService" class="com.linxuan.service.impl.BookServiceImpl"/>
    </beans>
    ```
 
@@ -287,7 +281,7 @@ Spring的IOC入门案例已经完成，但是在`BookServiceImpl`的类中依然
 3. 修改配置完成注入，在配置文件中添加依赖注入的配置
 
    ```xml
-   <？xml version="1.0" encoding="UTF-8"？>
+   <?xml version="1.0" encoding="UTF-8"?>
    <beans xmlns="http://www.springframework.org/schema/beans"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
@@ -297,8 +291,8 @@ Spring的IOC入门案例已经完成，但是在`BookServiceImpl`的类中依然
        	id属性标示给bean起名字
        	class属性表示给bean定义类型
    	-->
-       <bean id="bookDao" class="cn.com.linxuan.demo01.dao.impl.BookDaoImpl"/>
-       <bean id="bookService" class="cn.com.linxuan.demo01.service.impl.BookServiceImpl">
+       <bean id="bookDao" class="com.linxuan.dao.impl.BookDaoImpl"/>
+       <bean id="bookService" class="com.linxuan.service.impl.BookServiceImpl">
            <!--配置service与dao的关系-->
            <!--
                property标签表示配置当前bean的属性
@@ -314,9 +308,9 @@ Spring的IOC入门案例已经完成，但是在`BookServiceImpl`的类中依然
 
    * `name="bookDao"`中`bookDao`的作用是让Spring的IOC容器在获取到名称后，将首字母大写，前面加set找对应的`setBookDao()`方法进行对象注入
 
-   * `ref="bookDao"`中`bookDao`的作用是让Spring能在IOC容器中找到id为`bookDao`的Bean对象给`bookService`进行注入
+   * `ref="bookDao"`中`bookDao`的作用是让Spring能在IOC容器中找到id为`bookDao`的Bean对象给`bookService`进行注入。bean依赖注入的ref属性指定bean，必须在容器中存在。如果不存在，则会报错。
 
-   所以如果我们把`<bean id="bookDao" class="cn.com.linxuan.demo01.dao.impl.BookDaoImpl"/>`中`id`的值修改为：`bookDao1`，那么`<property name="bookDao" ref="bookDao"/>`应该修改为：`<property name="bookDao" ref="bookDao1"/>`
+   所以如果我们把`<bean id="bookDao" class="com.linxuan.dao.impl.BookDaoImpl"/>`中`id`的值修改为：`bookDao1`，那么`<property name="bookDao" ref="bookDao"/>`应该修改为：`<property name="bookDao" ref="bookDao1"/>`
 
    综上所述，对应关系如下：
 
@@ -331,40 +325,43 @@ Spring的IOC入门案例已经完成，但是在`BookServiceImpl`的类中依然
    -->
    ```
 
-# 第二章 IOC
+# 第二章 IOC控制反转
 
 ## 2.1 bean配置
 
-![](..\图片\3-02【Spring】\1-11.png)
+bean标签可配置属性如下：
+
+```xml
+<bean
+      id="bean的唯一标识"
+      class="bean的全类名"
+      scope="bean的取值范围，有singleton(默认)和prototype"
+      name="为bean取的别名"/>
+```
 
 ### 2.1.1 id与class
 
 对于bean的基础配置，在前面的案例中已经使用过：
 
 ```xml
-<bean id="bookDao" class="cn.com.linxuan.demo01.dao.impl.BookDaoImpl"/>
+<bean id="bookDao" class="com.linxuan.dao.impl.BookDaoImpl"/>
 ```
 
-> class属性不能直接写接口如`BookDao`的全类名。显而易见，这里用到了反射来创建Bean对象，而接口是没办法创建对象的，所以这里不能写接口的全类名。class属性表示给bean定义类型
+> class属性不能直接写接口如`BookDao`的全类名。显而易见，这里用到了反射来创建Bean对象，而接口是没办法创建对象的，所以这里不能写接口的全类名。class属性表示给bean定义类型。
 
 ### 2.1.2 name属性
 
 <!-- Ebi全称Enterprise Business Interface，翻译为企业业务接口 -->
 
-name：为bean指定别名，别名可以有多个，使用逗号，分号，空格进行分隔。接下来我们来使用一下：
+name：为bean指定别名。别名可以有多个，可以使用逗号、分号和空格进行分隔。接下来我们来使用一下：
 
-1. 配置别名。打开Spring的配置文件`applicationContext.xml`
+1. 配置别名。打开Spring的配置文件`applicationContext.xml`修改依赖注入的配置：
 
    ```xml
-   <!--
-   	name：为bean指定别名，别名可以有多个，使用逗号，分号，空格进行分隔
-   	Ebi全称Enterprise Business Interface，翻译为企业业务接口
-   -->
-   <bean id="bookService" name="service service4 bookEbi" class="cn.com.linxuan.demo01.service.impl.BookServiceImpl">
+   <bean id="bookDao" name="dao" class="com.linxuan.dao.impl.BookDaoImpl"/>
+   <bean id="bookService" name="service bookEbi" class="com.linxuan.service.impl.BookServiceImpl">
        <property name="bookDao" ref="bookDao"/>
    </bean>
-   
-   <bean id="bookDao" name="dao" class="cn.com.linxuan.demo01.dao.impl.BookDaoImpl"/>
    ```
 
 2. 根据名称容器中获取bean对象
@@ -373,8 +370,8 @@ name：为bean指定别名，别名可以有多个，使用逗号，分号，空
    public class AppForName {
        public static void main(String[] args) {
            ApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
-           //此处根据bean标签的id属性和name属性的任意一个值来获取bean对象
-           BookService bookService = (BookService) ctx.getBean("service4");
+           // 此处根据bean标签的id属性和name属性的任意一个值来获取bean对象
+           BookService bookService = (BookService) ctx.getBean("bookEbi");
            bookService.save();
        }
    }
@@ -387,19 +384,19 @@ name：为bean指定别名，别名可以有多个，使用逗号，分号，空
    // book dao save ...
    ```
 
-注意事项：
-
-* `name="bookDao"`中`bookDao`的作用是让Spring的IOC容器在获取到名称后，将首字母大写，前面加set找对应的`setBookDao()`方法进行对象注入
-
-* `ref="bookDao"`中`bookDao`的作用是让Spring能在IOC容器中找到id为`bookDao`的Bean对象给`bookService`进行注入。bean依赖注入的ref属性指定bean，必须在容器中存在。如果不存在，则会报错。
-
-获取bean无论是通过id还是name获取，如果无法获取到，将抛出异常`NoSuchBeanDefinitionException`
+获取bean无论是通过id还是name获取，如果无法获取到，将抛出异常`NoSuchBeanDefinitionException`。
 
 ### 2.1.3 作用范围scope
 
 看到这个作用范围，我们就得思考bean的作用范围是来控制bean哪块内容的？我们先来看下`bean作用范围的配置属性`：
 
-![image-20210729183628138](..\图片\3-02【Spring】\1-12.png)
+| 类别 | 描述                                                         |
+| ---- | ------------------------------------------------------------ |
+| 名称 | scope                                                        |
+| 类型 | 属性                                                         |
+| 所属 | bean标签                                                     |
+| 功能 | 定义bean的作用范围，可选范围：singleton单例（默认）、prototype非单例 |
+| 范例 | `<bean id="bookDao" class="com.linxuan.dao.impl.BookDaoImpl" scope="prototype"/>` |
 
 来看一段程序：
 
@@ -415,8 +412,8 @@ public class App2 {
     }
 }
 
-// cn.com.linxuan.demo01.dao.impl.BookDaoImpl@6293abcc
-// cn.com.linxuan.demo01.dao.impl.BookDaoImpl@6293abcc
+// com.linxuan.dao.impl.BookDaoImpl@6293abcc
+// com.linxuan.dao.impl.BookDaoImpl@6293abcc
 ```
 
 可以发现，Spring默认给我们创建的Bean对象都是单例的。如果想要创建非单例的，那么可以在Spring配置文件中，配置scope属性来实现bean的非单例创建。
@@ -424,40 +421,28 @@ public class App2 {
 `singleton`默认为单例，`prototype`为非单例。在Spring的配置文件中，修改`<bean>`的scope属性。将scope设置为`prototype`：
 
 ```xml
-<bean id="bookDao" name="dao" class="cn.com.linxuan.demo01.dao.impl.BookDaoImpl" scope="prototype"/>
+<bean id="bookDao" name="dao" class="com.linxuan.dao.impl.BookDaoImpl" scope="prototype"/>
 ```
 
 运行`App2`，打印看结果
 
 ```java
-// cn.com.linxuan.demo01.dao.impl.BookDaoImpl@6293abcc
-// cn.com.linxuan.demo01.dao.impl.BookDaoImpl@7995092a
+// com.linxuan.dao.impl.BookDaoImpl@6293abcc
+// com.linxuan.dao.impl.BookDaoImpl@7995092a
 ```
 
-那么问题来了，为什么bean默认为单例？
-* bean为单例的意思是在Spring的IOC容器中只会有该类的一个对象，bean对象只有一个就避免了对象的频繁创建与销毁，达到了bean对象的复用，性能高。
+bean默认为单例：bean为单例的意思是在Spring的IOC容器中只会有该类的一个对象，bean对象只有一个就避免了对象的频繁创建与销毁，达到了bean对象的复用，性能高。
 
 bean在容器中是单例的，会不会产生线程安全问题？
 * 如果对象是有状态对象，即该对象有成员变量可以用来存储数据的，因为所有请求线程共用一个bean对象，所以会存在线程安全问题。
 * 如果对象是无状态对象，即该对象没有成员变量没有进行数据存储的，因为方法中的局部变量在方法调用完成后会被销毁，所以不会存在线程安全问题。
 
-哪些bean对象适合交给容器进行管理？
-* 表现层对象
-* 业务层对象
-* 数据层对象
-* 工具对象
+适合交给容器进行管理的bean对象有：表现层对象、业务层对象、数据层对象和工具对象。
 
-哪些bean对象不适合交给容器进行管理？
-* 封装实例的域对象，因为会引发线程安全问题，所以不适合。
-
+不适合交给容器进行管理的bean对象：封装实例的域对象，因为会引发线程安全问题，所以不适合。
 ## 2.2 bean实例化
 
-对象已经能交给Spring的IOC容器来创建了，但是容器是如何来创建对象的呢？
-
-这就需要研究下`bean的实例化过程`，在这块内容中主要解决两部分内容，分别是：
-
-* bean是如何创建的
-* 实例化bean的三种方式，`构造方法`，`静态工厂`和`实例工厂`
+对象已经能交给Spring的IOC容器来创建了，我们来研究一下实例化bean的三种方式：`构造方法`、`静态工厂`和`实例工厂`。
 
 在讲解这三种创建方式之前，我们需要先确认一件事：bean本质上就是对象，对象在new的时候会使用构造方法完成，那创建bean也是使用构造方法完成的。
 
@@ -487,7 +472,7 @@ bean在容器中是单例的，会不会产生线程安全问题？
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
    
-       <bean id="bookDao" name="dao" class="cn.com.linxuan.demo01.dao.impl.BookDaoImpl"/>
+       <bean id="bookDao" name="dao" class="com.linxuan.dao.impl.BookDaoImpl"/>
    </beans>
    ```
 
@@ -566,24 +551,24 @@ bean在容器中是单例的，会不会产生线程安全问题？
 
 错误信息从下往上依次查看，因为上面的错误大都是对下面错误的一个包装，最核心错误是在最下面。
 
-```asciiarmor
-Caused by: java.lang.NoSuchMethodException: cn.com.linxuan.demo01.dao.impl.BookDaoImpl.<init>()
+```apl
+Caused by: java.lang.NoSuchMethodException: com.linxuan.dao.impl.BookDaoImpl.<init>()
 	at java.base/java.lang.Class.getConstructor0(Class.java:3517)
 	at java.base/java.lang.Class.getDeclaredConstructor(Class.java:2691)
 	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:78)
 	... 14 more
 ```
 
-`Caused by: java.lang.NoSuchMethodException: cn.com.linxuan.demo01.dao.impl.BookDaoImpl.<init>()`
+`Caused by: java.lang.NoSuchMethodException: com.linxuan.dao.impl.BookDaoImpl.<init>()`
 
 * `Caused by` 翻译为引起，即出现错误的原因
-* `java.lang.NoSuchMethodException`：抛出的异常为没有这样的方法异常
-* `com.itheima.dao.impl.BookDaoImpl.<init>()`：哪个类的哪个方法没有被找到导致的异常，`<init>()`指定是类的构造方法，即该类的无参构造方法
+* `java.lang.NoSuchMethodException`：没有这样的方法异常
+* `com.linxuan.dao.impl.BookDaoImpl.<init>()`：哪个类的哪个方法没有被找到导致的异常，`<init>()`指定是类的构造方法，即该类的无参构造方法
 
 如果最后一行错误获取不到错误信息，接下来查看第二层：
 
-```asciiarmor
-Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [cn.com.linxuan.demo01.dao.impl.BookDaoImpl]: No default constructor found; nested exception is java.lang.NoSuchMethodException: cn.com.linxuan.demo01.dao.impl.BookDaoImpl.<init>()
+```apl
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [com.linxuan.dao.impl.BookDaoImpl]: No default constructor found; nested exception is java.lang.NoSuchMethodException: com.linxuan.dao.impl.BookDaoImpl.<init>()
 	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:83)
 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateBean(AbstractAutowireCapableBeanFactory.java:1310)
 	... 13 more
@@ -659,8 +644,7 @@ Caused by: org.springframework.beans.BeanInstantiationException: Failed to insta
    	class：工厂类的全类名
    	factory-mehod：具体工厂类中创建对象的方法名
    -->
-   
-   <bean id="orderDao" class="cn.com.linxuan.demo01.factory.OrderDaoFactory" factory-method="getOrderDao"/>
+   <bean id="orderDao" class="com.linxuan.factory.OrderDaoFactory" factory-method="getOrderDao"/>
    ```
    
 2. 在`AppForInstanceOrder`运行类，使用从IOC容器中获取bean的方法进行运行测试
@@ -717,7 +701,7 @@ public class OrderDaoFactory {
    }
    ```
 
-2. 创建一个工厂类`OrderDaoFactory`并提供一个普通方法，注意此处和静态工厂的工厂类不一样的地方是方法不是静态方法。
+2. 创建一个工厂类`OrderDaoFactory`并提供一个普通方法，注意此处和静态工厂的工厂类不一样，此处的方法不是静态方法。
 
    ```java
    public class UserDaoFactory {
@@ -753,7 +737,7 @@ public class OrderDaoFactory {
 1. 在spring的配置文件中添加以下内容：
 
    ```xml
-   <bean id="userDaoFactory" class="cn.com.linxuan.demo01.factory.UserDaoFactory"/>
+   <bean id="userDaoFactory" class="com.linxuan.factory.UserDaoFactory"/>
    
    <!--
    	factory-bean：工厂的实例对象
@@ -793,12 +777,15 @@ public class OrderDaoFactory {
 
    ```java
    public class UserDaoFactoryBean implements FactoryBean<UserDao> {
-       //代替原始实例工厂中创建对象的方法
+       // 代替原始实例工厂中创建对象的方法
+       @Override
        public UserDao getObject() throws Exception {
            return new UserDaoImpl();
        }
-       //返回所创建类的Class对象
-       public Class<？> getObjectType() {
+   
+       // 返回所创建类的Class对象
+       @Override
+       public Class<?> getObjectType() {
            return UserDao.class;
        }
    }
@@ -807,7 +794,7 @@ public class OrderDaoFactory {
 2. 在Spring的配置文件中进行配置
 
    ```xml
-   <bean id="userDao" class="cn.com.linxuan.demo01.factory.UserDaoFactoryBean"/>
+   <bean id="userDao" class="com.linxuan.factory.UserDaoFactoryBean"/>
    ```
 
 3. `AppForInstanceUser`运行类不用做任何修改，直接运行
@@ -848,20 +835,11 @@ public interface FactoryBean<T> {
 
 bean生命周期：bean对象从创建到销毁的整体过程。
 
-bean生命周期控制：在bean创建后到销毁前做一些事情。
-
 对于bean的生命周期控制在bean的整个生命周期中所处的位置如下：
 
-* 初始化容器
-  * 创建对象(内存分配)
-  * 执行构造方法
-  * 执行属性注入(set操作)
-  * 执行bean 初始化方法
-
-  * 使用bean 执行业务操作
-
-* 关闭/销毁容器
-  * 执行bean销毁方法
+* 初始化容器：创建对象(内存分配) -> 执行构造方法 -> 执行属性注入(set操作) -> 执行bean 初始化方法 -> 使用bean 执行业务操作。
+  
+* 关闭/销毁容器：执行bean销毁方法
 
 现在我们面临的问题是如何在bean的创建之后和销毁之前把我们需要添加的内容添加进去。
 
@@ -874,11 +852,11 @@ bean生命周期控制：在bean创建后到销毁前做一些事情。
        public void save() {
            System.out.println("book dao save ...");
        }
-       //表示bean初始化对应的操作
+       // 表示bean初始化对应的操作
        public void init(){
            System.out.println("init...");
        }
-       //表示bean销毁前对应的操作
+       // 表示bean销毁前对应的操作
        public void destroy(){
            System.out.println("destory...");
        }
@@ -888,18 +866,12 @@ bean生命周期控制：在bean创建后到销毁前做一些事情。
 2. 配置生命周期。在配置文件添加配置，如下：
 
    ```xml
-   <bean id="bookDao" class="cn.com.linxuan.demo01.dao.impl.BookDaoImpl" init-method="init" destroy-method="destroy"/>
-   <bean id="bookService" class="cn.com.linxuan.demo01.service.impl.BookServiceImpl">
-       <!--配置service与dao的关系-->
-       <!--
-           property标签表示配置当前bean的属性
-           	name属性表示配置哪一个具体的属性
-           	ref属性表示参照哪一个bean
-   	-->
+   <bean id="bookDao" class="com.linxuan.dao.impl.BookDaoImpl" init-method="init" destroy-method="destroy"/>
+   <bean id="bookService" class="com.linxuan.service.impl.BookServiceImpl">
        <property name="bookDao" ref="bookDao"/>
    </bean>
    ```
-
+   
 3. 运行程序。运行主方法：
 
    ```java
@@ -1095,13 +1067,13 @@ public class BookServiceImpl implements BookService{
 `resources`下提供spring的配置文件
 
 ```xml
-<？xml version="1.0" encoding="UTF-8"？>
-<beans xmlns="http：//www.springframework.org/schema/beans"
-       xmlns：xsi="http：//www.w3.org/2001/XMLSchema-instance"
-       xsi：schemaLocation="http：//www.springframework.org/schema/beans http：//www.springframework.org/schema/beans/spring-beans.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="bookDao" class="cn.com.linxuan.dao.impl.BookDaoImpl"/>
-    <bean id="bookService" class="cn.com.linxuan.service.impl.BookServiceImpl">
+    <bean id="bookDao" class="com.linxuan.dao.impl.BookDaoImpl"/>
+    <bean id="bookService" class="com.linxuan.service.impl.BookServiceImpl">
         <property name="bookDao" ref="bookDao"/>
     </bean>
 </beans>
@@ -1134,21 +1106,20 @@ public class AppForDISet {
    }
    ```
 
-2. 配置中使用property标签ref属性注入引用类型对象
+2. 配置中使用property标签`ref`属性注入引用类型对象
 
    ```xml
-   <bean id="bookService" class="com.itheima.service.impl.BookServiceImpl">
-   	<property name="bookDao" ref="bookDao"/>
+   <bean id="bookDao" class="com.linxuan.dao.impl.BookDaoImpl"/>
+   <bean id="bookService" class="com.linxuan.service.impl.BookServiceImpl">
+       <property name="bookDao" ref="bookDao"/>
    </bean>
-   
-   <bean id="bookDao" class="com.itheima.dao.imipl.BookDaoImpl"/>
    ```
 
 上面就是setter注入了，接下来讲述一下如何注入引用数据类型和注入简单数据类型：
 
 ### 3.1.1 注入引用数据类型
 
-需求：在bookServiceImpl对象中注入userDao
+需求：在bookServiceImpl对象中注入userDao和bookDao。
 
 1. 声明属性并提供setter方法。在`BookServiceImpl`中声明`userDao`属性，并提供`setter`方法
 
@@ -1180,9 +1151,9 @@ public class AppForDISet {
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
    
-       <bean id="bookDao" class="cn.com.linxuan.dao.impl.BookDaoImpl"/>
-       <bean id="userDao" class="cn.com.linxuan.dao.impl.UserDaoImpl"/>
-       <bean id="bookService" class="cn.com.linxuan.service.impl.BookServiceImpl">
+       <bean id="bookDao" class="com.linxuan.dao.impl.BookDaoImpl"/>
+       <bean id="userDao" class="com.linxuan.dao.impl.UserDaoImpl"/>
+       <bean id="bookService" class="com.linxuan.service.impl.BookServiceImpl">
            <property name="bookDao" ref="bookDao"/>
            <property name="userDao" ref="userDao"/>
        </bean>
@@ -1231,7 +1202,7 @@ public class AppForDISet {
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
    
-       <bean id="bookDao" class="com.itheima.dao.impl.BookDaoImpl">
+       <bean id="bookDao" class="com.linxuan.dao.impl.BookDaoImpl">
            <!--
    			两个property注入标签的顺序可以任意。
                    value：后面跟的是简单数据类型，对于参数类型，Spring在注入的时候会自动转换
@@ -1241,8 +1212,8 @@ public class AppForDISet {
            <property name="databaseName" value="mysql"/>
         	<property name="connectionNum" value=10/>
        </bean>
-       <bean id="userDao" class="cn.com.linxuan.dao.impl.UserDaoImpl"/>
-       <bean id="bookService" class="cn.com.linxuan.service.impl.BookServiceImpl">
+       <bean id="userDao" class="com.linxuan.dao.impl.UserDaoImpl"/>
+       <bean id="bookService" class="com.linxuan.service.impl.BookServiceImpl">
            <property name="bookDao" ref="bookDao"/>
            <property name="userDao" ref="userDao"/>
        </bean>
@@ -1302,13 +1273,13 @@ public class AppForDIConstructor {
    > 对于注入多个应用数据类型配置的时候记得都需要配置。
 
    ```xml
-   <？xml version="1.0" encoding="UTF-8"？>
+   <?xml version="1.0" encoding="UTF-8"?>
    <beans xmlns="http：//www.springframework.org/schema/beans"
           xmlns：xsi="http：//www.w3.org/2001/XMLSchema-instance"
           xsi：schemaLocation="http：//www.springframework.org/schema/beans http：//www.springframework.org/schema/beans/spring-beans.xsd">
    
-       <bean id="bookDao" class="com.itheima.dao.impl.BookDaoImpl"/>
-       <bean id="bookService" class="com.itheima.service.impl.BookServiceImpl">
+       <bean id="bookDao" class="com.linxuan.dao.impl.BookDaoImpl"/>
+       <bean id="bookService" class="com.linxuan.service.impl.BookServiceImpl">
            <!--
    			标签<constructor-arg>中
                    * name属性对应的值为构造函数中方法形参的参数名，必须要保持一致。
@@ -1336,7 +1307,7 @@ public class AppForDIConstructor {
 1. 方式一：删除name属性，添加type属性，按照类型注入
 
    ```xml
-   <bean id="bookDao" class="com.itheima.dao.impl.BookDaoImpl">
+   <bean id="bookDao" class="com.linxuan.dao.impl.BookDaoImpl">
        <constructor-arg type="int" value="10"/>
        <constructor-arg type="java.lang.String" value="mysql"/>
    </bean>
@@ -1347,7 +1318,7 @@ public class AppForDIConstructor {
 2. 方式二：删除type属性，添加index属性，按照索引下标注入，下标从0开始
 
    ```xml
-   <bean id="bookDao" class="com.itheima.dao.impl.BookDaoImpl">
+   <bean id="bookDao" class="com.linxuan.dao.impl.BookDaoImpl">
        <constructor-arg index="1" value="100"/>
        <constructor-arg index="0" value="mysql"/>
    </bean>
@@ -1370,12 +1341,7 @@ public class AppForDIConstructor {
 
 依赖自动装配：IOC容器根据bean所依赖的资源在容器中自动查找并注入到bean中的过程称为自动装配。
 
-自动装配方式如下：
-
-* 按类型(常用)
-* 按名称
-* 按构造方法
-* 不启用自动装配
+自动装配方式如下：按类型(常用)、按名称、按构造方法、不启用自动装配。
 
 自动装配只需要修改`applicationContext.xml`配置文件即可：
 
@@ -1384,14 +1350,14 @@ public class AppForDIConstructor {
 2. 在`<bean>`标签中添加`autowire`属性。首先来实现按照类型注入的配置，`autowire="byType"`
 
    ```xml
-   <？xml version="1.0" encoding="UTF-8"？>
-   <beans xmlns="http：//www.springframework.org/schema/beans"
-          xmlns：xsi="http：//www.w3.org/2001/XMLSchema-instance"
-          xsi：schemaLocation="http：//www.springframework.org/schema/beans http：//www.springframework.org/schema/beans/spring-beans.xsd">
+   <?xml version="1.0" encoding="UTF-8"?>
+   <beans xmlns="http://www.springframework.org/schema/beans"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
    
-       <bean class="com.itheima.dao.impl.BookDaoImpl"/>
+       <bean class="com.linxuan.dao.impl.BookDaoImpl"/>
        <!--autowire属性：开启自动装配，通常使用按类型装配-->
-       <bean id="bookService" class="com.itheima.service.impl.BookServiceImpl" autowire="byType"/>
+       <bean id="bookService" class="com.linxuan.service.impl.BookServiceImpl" autowire="byType"/>
    
    </beans>
    ```
@@ -1401,20 +1367,19 @@ public class AppForDIConstructor {
    一个类型在IOC中有多个对象，还想要注入成功，这个时候就需要按照名称注入，`autowire="byName"`
 
    ```xml
-   <？xml version="1.0" encoding="UTF-8"？>
-   <beans xmlns="http：//www.springframework.org/schema/beans"
-          xmlns：xsi="http：//www.w3.org/2001/XMLSchema-instance"
-          xsi：schemaLocation="http：//www.springframework.org/schema/beans http：//www.springframework.org/schema/beans/spring-beans.xsd">
+   <?xml version="1.0" encoding="UTF-8"?>
+   <beans xmlns="http://www.springframework.org/schema/beans"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
    
-       <bean class="com.itheima.dao.impl.BookDaoImpl"/>
-       <!--autowire属性：开启自动装配，通常使用按类型装配-->
-       <bean id="bookService" class="com.itheima.service.impl.BookServiceImpl" autowire="byName"/>
+       <bean class="com.linxuan.dao.impl.BookDaoImpl"/>
+       <bean id="bookService" class="com.linxuan.service.impl.BookServiceImpl" autowire="byName"/>
    
    </beans>
    ```
    
    按照名称注入中的名称指的是什么？
-
+   
    ```java
    public class BookServiceImpl implements BookService{
         private BookDao bookDao;
@@ -1432,7 +1397,7 @@ public class AppForDIConstructor {
    
    bookDao是private修饰的，外部类无法直接访问，外部类只能通过属性的set方法进行访问。对外部类来说，setBookDao方法名，去掉set后首字母小写是其属性名，为什么是去掉set首字母小写？这个规则是set方法生成的默认规则，set方法的生成是把属性名首字母大写前面加set形成的方法名。
    
-   所以按照名称注入，其实是和对应的set方法有关，但是如果按照标准起名称，属性名和set对应的名是一致的，如果按照名称去找对应的bean对象，找不到则注入Null。当某一个类型在IOC容器中有多个对象，按照名称注入只找其指定名称对应的bean对象，不会报错 
+   所以按照名称注入，其实是和对应的set方法有关，但是如果按照标准起名称，属性名和set对应的名是一致的，如果按照名称去找对应的bean对象，找不到则注入Null。当某一个类型在IOC容器中有多个对象，按照名称注入只找其指定名称对应的bean对象，不会报错 。
 
 两种方式介绍完后，以后用的更多的是按照类型注入。
 
@@ -1445,9 +1410,7 @@ public class AppForDIConstructor {
 
 ## 3.5 集合注入
 
-前面我们已经能完成引入数据类型和简单数据类型的注入，但是还有一种数据类型集合，集合中既可以装简单数据类型也可以装引用数据类型，对于集合，在Spring中该如何注入呢？
-
-先来回顾下，常见的集合类型有哪些？`数组、List、Set、Map、Properties`。针对不同的集合类型，该如何实现注入呢？
+前面我们已经能完成引入数据类型和简单数据类型的注入，但是还有一种数据类型集合，集合中既可以装简单数据类型也可以装引用数据类型。`数组、List、Set、Map、Properties`。针对不同的集合类型，该如何实现注入呢？
 
 我们首先来搭建一个环境，创建Maven项目：
 
@@ -1459,42 +1422,42 @@ public class AppForDIConstructor {
    }
     
    public class BookDaoImpl implements BookDao {
-   
        private int[] array;
    
        private List<String> list;
    
        private Set<String> set;
    
-       private Map<String，String> map;
+       private Map<String, String> map;
    
        private Properties properties;
    
-        public void save() {
+       @Override
+       public void save() {
            System.out.println("book dao save ...");
    
-           System.out.println("遍历数组：" + Arrays.toString(array));
+           System.out.println("遍历数组: " + Arrays.toString(array));
    
-           System.out.println("遍历List" + list);
+           System.out.println("遍历List: " + list);
    
-           System.out.println("遍历Set" + set);
+           System.out.println("遍历Set: " + set);
    
-           System.out.println("遍历Map" + map);
+           System.out.println("遍历Map: " + map);
    
-           System.out.println("遍历Properties" + properties);
+           System.out.println("遍历Properties: " + properties);
        }
-   	//setter....方法省略，自己使用工具生成
+   	// setter....方法省略，自己使用工具生成
    }
    ```
    
-2. resources下提供spring的配置文件，applicationContext.xml
+2. resources下提供spring的配置文件，`applicationContext.xml`
 
    ```xml
    <?xml version="1.0" encoding="UTF-8"?>
    <beans xmlns="http://www.springframework.org/schema/beans"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
-       <bean id="bookDao" class="cn.com.linxuan.dao.impl.BookDaoImpl"/>
+       <bean id="bookDao" class="com.linxuan.dao.impl.BookDaoImpl"/>
    </beans>
    ```
    

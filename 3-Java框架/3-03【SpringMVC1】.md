@@ -1061,7 +1061,7 @@ public class UserController {
 // name-->李四, age-->23
 ```
 
-> 注意：写上@RequestParam注解框架就不需要自己去解析注入，能提升框架处理性能
+> 注意：写上`@RequestParam`注解框架就不需要自己去解析注入，能提升框架处理性能
 
 **POJO数据类型**
 

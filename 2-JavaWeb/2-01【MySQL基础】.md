@@ -293,8 +293,6 @@ INSERT INTO dept (id, name) VALUES (1, '研发部'), (2, '市场部'),(3, '财�
 
 3. 除了数字类型，其他类型需要使用引号（单引号和双引号都可以）引起来。
 
-
-
 **删除数据**
 
 ```sql
@@ -302,8 +300,6 @@ delete from 表名 [where条件];		-- 删除数据，如果不加上条件，会
 delete from 表名;					 -- 不推荐使用，效率低下，表里面有多少行就会执行多少
 truncate table 表名;		          -- 推荐使用，效率更高，先删除表，然后再创建一个一样名称的空表。
 ```
-
-
 
 **修改数据**
 
@@ -364,6 +360,12 @@ limit
   ```sql
   select 字段名 as 新的名称，...from 表名;		-- as关键字可以省略，用空格来代替
   ```
+  
+* 默认填充值
+
+  ```sql
+  select '填充值' 字段名称 from 表名;            -- 字段名称可以不存在，最后行数与表行数相同
+  ```
 
 **条件查询**
 
@@ -410,6 +412,10 @@ select 函数名称(字段名称) from 表名称;
   select count(*) from 表名称;		-- * 代表全部，找到一个非空的列来搞，不建议
   ```
 
+  ```sql
+  SELECT COUNT(DISTINCT COUNTRY) FROM psur_list;  -- 在聚合函数中DISTINCT 一般跟 COUNT 结合使用
+  ```
+
 * `max`：计算最大值
 
   ```sql
@@ -441,7 +447,7 @@ select 函数名称(字段名称) from 表名称;
 2. `IFNULL函数`
 
    ```sql
-   select 函数(IFNULL(字段名称， 值)) from 表名称;  -- IFNULL函数会判断NULL，如果是NULL那么会将NULL变为值
+   select 函数(IFNULL(字段名称, 值)) from 表名称;  -- IFNULL函数会判断NULL，如果是NULL那么会将NULL变为值
    select count(IFNULL(math, 0)) from student;		-- count函数计算math列个数，IFNULL函数对math列进行判断，如果有着NULL，那么将NULL变为0，其他的不改变
    ```
 
@@ -622,17 +628,26 @@ limit
 
 常用函数：
 
-| 函数                       | 功能                                                       |
-| -------------------------- | ---------------------------------------------------------- |
-| CONCAT(s1, s2, ..., sn)    | 字符串拼接，将s1, s2, ..., sn拼接成一个字符串              |
-| LOWER(str)                 | 将字符串全部转为小写                                       |
-| UPPER(str)                 | 将字符串全部转为大写                                       |
-| LPAD(str, n, pad)          | 左填充，用字符串pad对str的左边进行填充，达到n个字符串长度  |
-| RPAD(str, n, pad)          | 右填充，用字符串pad对str的右边进行填充，达到n个字符串长度  |
-| TRIM(str)                  | 去掉字符串头部和尾部的空格                                 |
-| SUBSTRING(str, start, len) | 返回从字符串str从start位置起的len个长度的字符串，**没有0** |
+| 函数                               | 功能                                                       |
+| ---------------------------------- | ---------------------------------------------------------- |
+| CONCAT(s1, s2, ..., sn)            | 字符串拼接，将s1, s2, ..., sn拼接成一个字符串              |
+| GROUP_CONCAT()                     | 分组中括号里对应的字符串进行连接                           |
+| SUBSTRING_INDEX(str, delim, count) | 有分隔符的字符串拆分                                       |
+| LOWER(str)                         | 将字符串全部转为小写                                       |
+| UPPER(str)                         | 将字符串全部转为大写                                       |
+| LPAD(str, n, pad)                  | 左填充，用字符串pad对str的左边进行填充，达到n个字符串长度  |
+| RPAD(str, n, pad)                  | 右填充，用字符串pad对str的右边进行填充，达到n个字符串长度  |
+| TRIM(str)                          | 去掉字符串头部和尾部的空格                                 |
+| SUBSTRING(str, start, len)         | 返回从字符串str从start位置起的len个长度的字符串，**没有0** |
+| LENGTH(str)                        | 获取传入的字符串str长度                                    |
+| CHAR_LENGTH(str)                   | 获取传入的字符串str的字符数                                |
 
 使用示例：
+
+```mysql
+# 如果没有指定SEPARATOR的话，也就是说没有写，那么就会默认以 ','分隔
+GROUP_CONCAT([DISTINCT] 要连接的字段 [Order BY ASC/DESC 排序字段] [Separator '分隔符'])
+```
 
 ```mysql
 SELECT CONCAT('Hello', 'World');			-- 拼接 打印：Helloworld
@@ -928,7 +943,7 @@ alter table employee add constraint emp_dept_fk foreign key (dep_id) references 
 
 多表关系有：
 
-1. 一对一(了解)	如：人和身份证
+1. 一对一(了解)。如：人和身份证
 
    实现方式：一对一关系实现，可以在任意一方添加**唯一外键**指向另一方的主键。
 
@@ -936,7 +951,7 @@ alter table employee add constraint emp_dept_fk foreign key (dep_id) references 
 
    
 
-2. 一对多(多对一)   如：部门和员工
+2. 一对多(多对一)。 如：部门和员工
 
    实现方式：在多的一方建立外键，指向一的一方的主键。
 
@@ -944,7 +959,7 @@ alter table employee add constraint emp_dept_fk foreign key (dep_id) references 
 
    
 
-3. 多对多     如：学生和课程
+3. 多对多。如：学生和课程
 
    实现方式：多对多关系实现需要借助第三张中间表。
 
@@ -1106,7 +1121,7 @@ SELECT 字段列表 FROM 表A 别名A JOIN 表A 别名B ON 条件 ... ;
 而对于自连接查询，可以是内连接查询，也可以是外连接查询。
 
 ```sql
-select a.name , b.name from emp a , emp b where a.managerid = b.id;  -- 查询员工 及其 所属领导的名字
+select a.name, b.name from emp a, emp b where a.managerid = b.id;  -- 查询员工及其所属领导的名字
 ```
 
 ```sql
@@ -1143,7 +1158,7 @@ SELECT * FROM t1 WHERE column1 = ( SELECT column1 FROM t2 );
 
 根据子查询结果不同，分为： 
 
-- A. 标量子查询（子查询结果为单个值） 
+- A. 标量子查询(子查询结果为单个值） 
 - B. 列子查询(子查询结果为一列) 
 - C. 行子查询(子查询结果为一行) 
 - D. 表子查询(子查询结果为多行多列) 

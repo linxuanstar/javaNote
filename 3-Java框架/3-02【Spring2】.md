@@ -25,12 +25,10 @@
 2. 配置第三方bean。在`applicationContext.xml`配置文件中添加`DruidDataSource`的配置
 
    ```xml
-   <？xml version="1.0" encoding="UTF-8"？>
-   <beans xmlns="http：//www.springframework.org/schema/beans"
-          xmlns：xsi="http：//www.w3.org/2001/XMLSchema-instance"
-          xsi：schemaLocation="
-               http：//www.springframework.org/schema/beans
-               http：//www.springframework.org/schema/beans/spring-beans.xsd">
+   <?xml version="1.0" encoding="UTF-8"?>
+   <beans xmlns="http://www.springframework.org/schema/beans"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
        
        <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
    	<!--管理DruidDataSource对象-->
@@ -48,7 +46,7 @@
        </bean>
    </beans>
    ```
-
+   
 3. 从IOC容器中获取对应的bean对象
 
    ```java
@@ -94,7 +92,7 @@
    </dependency>
    ```
 
-   对于新的技术，不知道具体的坐标该如何查找？我们可以直接百度搜索，也可以从mvn的仓库`https：//mvnrepository.com/`中进行搜索
+   对于新的技术，不知道具体的坐标该如何查找？我们可以直接百度搜索，也可以从mvn的仓库`https://mvnrepository.com/`中进行搜索
 
 
 2. 配置第三方bean。在`applicationContext.xml`配置文件中添加配置
@@ -119,7 +117,7 @@
 
    ![1629889170229](..\图片\3-02【Spring】\2-1.png)
 
-   报的错为`ClassNotFoundException`，翻译出来是`类没有发现的异常`，具体的类为`com.mysql.jdbc.Driver`。错误的原因是缺少mysql的驱动包。分析出错误的原因，具体的解决方案就比较简单，只需要在pom.xml把驱动包引入即可。
+   报的错为`ClassNotFoundException`，翻译出来是`类没有发现的异常`，具体的类为`com.mysql.jdbc.Driver`。错误的原因是缺少mysql的驱动包。分析出错误的原因，具体的解决方案就比较简单，只需要在`pom.xml`把驱动包引入即可。
 
    ```xml
    <dependency>
@@ -145,16 +143,41 @@
 
 实现步骤如下：
 
-1. 准备`properties`配置文件。`resources`下创建一个`jdbc.properties`文件，并添加对应的属性键值对
+1. 创建需要的Java类
+
+   ```java
+   public interface BookDao {
+   
+       public void save();
+   }
+   ```
+
+   ```java
+   public class BookDaoImpl implements BookDao {
+   
+       private String driverClassName;
+   
+       public void setDriverClassName(String driverClassName) {
+           this.driverClassName = driverClassName;
+       }
+   
+       @Override
+       public void save() {
+           System.out.println("bookDao..." + ", driverClassName = " + driverClassName);
+       }
+   }
+   ```
+
+2. 准备`properties`配置文件。`resources`下创建一个`jdbc.properties`文件，并添加对应的属性键值对
 
    ```properties
    jdbc.driver=com.mysql.jdbc.Driver
-   jdbc.url=jdbc:mysql://localhost:3306/day14
+   jdbc.url=jdbc:mysql://localhost:3306/linxuan
    jdbc.username=root
    jdbc.password=root
    ```
 
-2. 开启`context`命名空间。在`applicationContext.xml`中开`context`命名空间
+3. 开启`context`命名空间。在`applicationContext.xml`中开`context`命名空间
 
    ```xml
    <?xml version="1.0" encoding="UTF-8"?>
@@ -170,14 +193,14 @@
    </beans>
    ```
 
-3. 加载properties配置文件。在配置文件中使用`context`命名空间下的标签来加载properties配置文件
+4. 加载properties配置文件。在配置文件中使用`context`命名空间下的标签来加载properties配置文件
 
    ```xml
    <!--开启context命名空间，使用context命名空间加载properties文件-->
    <context:property-placeholder location="jdbc.properties"/>
    ```
 
-4. 完成属性注入。使用`${key}`来读取properties配置文件中的内容并完成属性注入
+5. 完成属性注入。使用`${key}`来读取properties配置文件中的内容并完成属性注入
 
    ```xml
    <?xml version="1.0" encoding="UTF-8"?>
@@ -201,13 +224,13 @@
            <property name="username" value="${jdbc.username}"/>
            <property name="password" value="${jdbc.password}"/>
        </bean>
-       <bean id="bookDao" class="cn.com.linxuan.dao.impl.BookDaoImpl">
+       <bean id="bookDao" class="com.linxuan.dao.impl.BookDaoImpl">
            <property name="name" value="${jdbc.driver}"/>
        </bean>
    </beans>
    ```
 
-5. 运行程序。在App类中，从IOC容器中获取bookDao对象，调用方法，查看值是否已经被获取到并打印控制台
+6. 运行程序。在App类中，从IOC容器中获取bookDao对象，调用方法，查看值是否已经被获取到并打印控制台
 
    ```java
    public class App {
@@ -217,47 +240,66 @@
            bookDao.save();
        }
    }
-   // book dao save...com.mysql.jdbc.Driver
+   // bookDao..., driverClassName = com.mysql.jdbc.Driver
    ```
 
 **注意事项**
 
 问题一：键值对的key为`username`引发的问题
 
-1. 在properties中配置键值对的时候，如果key设置为`username`，重新弄一个配置文件，里面只放`username=root666`
+1. 修改类BookDaoImpl
+
+   ```java
+   public class BookDaoImpl implements BookDao {
+   
+       private String username;
+   
+       public void setUsername(String username) {
+           this.username = username;
+       }
+   
+       @Override
+       public void save() {
+           System.out.println("bookDao..." + ", driverClassName = " + username);
+       }
+   }
+   ```
+
+2. 在properties中配置键值对的时候，如果key设置为`username`，重新弄一个配置文件，里面只放`username=root666`
 
    ```properties
    username=root666
    ```
 
-2. 在`applicationContext.xml`注入该属性
+3. 在`applicationContext.xml`注入该属性
 
    ```xml
-   <？xml version="1.0" encoding="UTF-8"？>
-   <beans xmlns="http：//www.springframework.org/schema/beans"
-          xmlns：xsi="http：//www.w3.org/2001/XMLSchema-instance"
-          xmlns：context="http：//www.springframework.org/schema/context"
-          xsi：schemaLocation="
-               http：//www.springframework.org/schema/beans
-               http：//www.springframework.org/schema/beans/spring-beans.xsd
-               http：//www.springframework.org/schema/context
-               http：//www.springframework.org/schema/context/spring-context.xsd">
+   <?xml version="1.0" encoding="UTF-8"?>
+   <beans xmlns="http://www.springframework.org/schema/beans"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xmlns:context="http://www.springframework.org/schema/context"
+          xsi:schemaLocation="
+                           http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                           ">
        
        <context：property-placeholder location="jdbc.properties"/>
        
        <bean id="bookDao" class="com.linxuan.dao.impl.BookDaoImpl">
-           <property name="name" value="${username}"/>
+           <property name="username" value="${username}"/>
        </bean>
    </beans>
    ```
 
-3. 运行后，在控制台打印的却不是`root666`，而是自己电脑的用户名
+4. 运行后，在控制台打印的却不是`root666`，而是自己电脑的用户名
 
    ```java
-   // book dao save...林轩
+   // bookDao..., driverClassName = 林轩
    ```
 
-4. 出现问题的原因是`<context：property-placeholder/>`标签会加载系统的环境变量，而且环境变量的值会被优先加载，如何查看系统的环境变量？
+5. 出现问题的原因是`<context：property-placeholder/>`标签会加载系统的环境变量，而且环境变量的值会被优先加载，如何查看系统的环境变量？
 
    ```java
    public static void main(String[] args) throws Exception{
@@ -266,18 +308,19 @@
    }
    ```
 
-5. 解决方案
+6. 解决方案
 
    ```xml
-   <？xml version="1.0" encoding="UTF-8"？>
-   <beans xmlns="http：//www.springframework.org/schema/beans"
-          xmlns：xsi="http：//www.w3.org/2001/XMLSchema-instance"
-          xmlns：context="http：//www.springframework.org/schema/context"
-          xsi：schemaLocation="
-               http：//www.springframework.org/schema/beans
-               http：//www.springframework.org/schema/beans/spring-beans.xsd
-               http：//www.springframework.org/schema/context
-               http：//www.springframework.org/schema/context/spring-context.xsd">
+   <?xml version="1.0" encoding="UTF-8"?>
+   <beans xmlns="http://www.springframework.org/schema/beans"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xmlns:context="http://www.springframework.org/schema/context"
+          xsi:schemaLocation="
+                           http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                           ">
        
        <context：property-placeholder location="jdbc.properties" system-properties-mode="NEVER"/>
    </beans>
@@ -295,7 +338,7 @@
 
    ```properties
    jdbc.driver=com.mysql.jdbc.Driver
-   jdbc.url=jdbc：mysql：//127.0.0.1：3306/spring_db
+   jdbc.url=jdbc:mysql://127.0.0.1:3306/spring_db
    jdbc.username=root
    jdbc.password=root
    ```
@@ -309,15 +352,16 @@
 2. 修改`applicationContext.xml`
 
    ```xml
-   <？xml version="1.0" encoding="UTF-8"？>
-   <beans xmlns="http：//www.springframework.org/schema/beans"
-          xmlns：xsi="http：//www.w3.org/2001/XMLSchema-instance"
-          xmlns：context="http：//www.springframework.org/schema/context"
-          xsi：schemaLocation="
-               http：//www.springframework.org/schema/beans
-               http：//www.springframework.org/schema/beans/spring-beans.xsd
-               http：//www.springframework.org/schema/context
-               http：//www.springframework.org/schema/context/spring-context.xsd">
+   <?xml version="1.0" encoding="UTF-8"?>
+   <beans xmlns="http://www.springframework.org/schema/beans"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xmlns:context="http://www.springframework.org/schema/context"
+          xsi:schemaLocation="
+                           http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                           ">
        
        <!--方式一 可以实现，如果配置文件多的话，每个都需要配置-->
        <context：property-placeholder location="jdbc.properties, jdbc2.properties" system-properties-mode="NEVER"/>
@@ -569,7 +613,7 @@ Spring的IOC/DI对应的配置开发前面已经讲解完成，但是使用起�
            * 包路径越少[如：com.linxuan]，扫描的范围越大速度越慢
            * 一般扫描到项目的组织名称即Maven的groupId下[如：com.linxuan]即可。
    -->
-       <context：component-scan base-package="com.linxuan"/>
+       <context:component-scan base-package="com.linxuan"/>
    </beans>
    ```
 
@@ -700,7 +744,7 @@ Spring的IOC/DI对应的配置开发前面已经讲解完成，但是使用起�
 * `@ComponentScan`注解用于设定扫描路径，此注解只能添加一次，多个数据请用数组格式
 
   ```java
-  @ComponentScan({com.linxuan.service"，"com.linxuan.dao"})
+  @ComponentScan({com.linxuan.service", "com.linxuan.dao"})
   ```
 
 * 读取Spring核心配置文件初始化容器对象切换为读取Java配置类初始化容器对象
