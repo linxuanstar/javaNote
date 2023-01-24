@@ -34,17 +34,11 @@ unlock tables ;					-- 释放锁
 mysqldump --single-transaction -uroot –p123456 linxuan > D:/linxuan.sql
 ```
 
-
-
 ## 7.2 表级锁
 
 表级锁，每次操作锁住整张表。锁定粒度大，发生锁冲突的概率最高，并发度最低。应用在MyISAM、InnoDB、BDB等存储引擎中。
 
-对于表级锁，主要分为以下三类： 
-
-- 表锁 
-- 元数据锁（meta data lock，MDL） 
-- 意向锁
+对于表级锁，主要分为以下三类： 表锁、元数据锁（meta data lock，MDL） 、意向锁。
 
 ### 7.2.1 表锁
 
@@ -65,7 +59,7 @@ mysqldump --single-transaction -uroot –p123456 linxuan > D:/linxuan.sql
 
 表独占写锁：写锁既会阻塞其他客户端的读，又会阻塞其他客户端的写。
 
-![](..\图片\3-day01 【MySQL基础】\17-2.png)
+![](..\图片\2-01【MySQL】\17-2.png)
 
  读锁不会阻塞其他客户端的读，但是会阻塞写。写锁既会阻塞其他客户端的读，又会阻塞其他客户端的写。
 

@@ -1,26 +1,146 @@
-![](D:\Java\笔记\图片\2-31【Linux】\1.png)
+![](..\图片\2-24【Maven】\1面试.png)
 
 # 第一章 Maven基础
 
 `Maven` 的正确发音是`[ˈmevən]`，而不是“马瘟”以及其他什么瘟。`Maven` 在美国是一个口语化的词语，代表专家、内行的意思。 
 
-一个对 `Maven` 比较正式的定义是这么说的：`Maven` 是一个项目管理工具，它包含了一个项目对象模型 `(POM：Project Object Model)`，一组标准集合，一个项目生命周期`(Project Lifecycle)`，一个依赖管理系统`(Dependency Management System)`，和用来运行定义在生命周期阶段`(phase)`中插件`(plugin)`目标 `(goal)`的逻辑。
+一个对 `Maven` 比较正式的定义是这么说的：`Maven` 是一个项目管理工具，它包含了一个项目对象模型 `(POM：Project Object Model)`，一组标准集合，一个项目生命周期`(Project Lifecycle)`，一个依赖管理系统`(Dependency Management System)`和用来运行定义在生命周期阶段`(phase)`中插件`(plugin)`目标 `(goal)`的逻辑。
 
-Maven能够解决的问题：构建工程，管理 jar 包，编译代码，还能帮我们自动运行单元测试，打包，生成报表，甚至能帮我们部署项目，生成 Web 站点。
+Maven的本质是一个项目管理工具，将项目开发和管理过程抽象成一个项目对象模型（POM）。Maven是用Java语言编写的。他管理的东西统统以面向对象的形式进行设计，最终它把一个项目看成一个对象，而这个对象叫做**POM**(project object model)，即项目对象模型。
 
-## 1.1 Maven工程目录结构
+Maven作用如下：
 
-![](..\图片\2-24【Maven】\02-Maven目录结构.png)
+* 项目构建：提供标准的，跨平台的自动化构建项目的方式。
+* 依赖管理：方便快捷的管理项目依赖的资源（jar包），避免资源间的版本冲突等问题。
+* 统一开发结构：提供标准的，统一的项目开发结构。
 
-## 1.2 Maven使用
+## 1.1 下载安装
 
-maven 的工作需要从仓库下载一些 jar 包，本地的项目 A、项目 B 等都会通过 maven 软件从远程仓库（可以理解为互联网上的仓库）下载 jar 包并存在本地仓库，本地仓库就是本地文件夹，当第二次需要此 jar 包时则不再从远程仓库下载，因为本地仓库已经存在了，可以将本地仓库理解为缓存，有了本地仓库就不用每次从远程仓库下载了。
+官网目录：https://maven.apache.org/。
 
-* 本地仓库 ：用来存储从远程仓库或中央仓库下载的插件和 jar 包，项目使用一些插件或 jar 包， 优先从本地仓库查找 默认本地仓库位置在 `${user.dir}/.m2/repository`，`${user.dir}`表示 windows 用户目录。我们可以修改。
+maven是一个绿色软件，解压即安装。我将下载的`apache-maven-3.6.0-bin.zip`直接解压到`E:\Maven`目录下面。解压完成后可以查看一下maven自己的一个目录结构如下：
 
-* 远程仓库：如果本地需要插件或者 jar 包，本地仓库没有，默认去远程仓库下载。 远程仓库可以在互联网内也可以在局域网内。
+```apl
+apache-maven-3.6.0
+     |-- bin：可执行程序目录，
+     |-- boot：maven自身的启动加载器
+     |-- conf：maven配置文件的存放目录
+     |-- lib：maven运行所需库的存放目录
+```
 
-* 中央仓库 ：在 maven 软件中内置一个远程仓库地址 `http://repo1.maven.org/maven2` ，它是中 央仓库，服务于整个互联网，它是由 Maven 团队自己维护，里面存储了非常全的 jar 包，它包 含了世界上大部分流行的开源项目构件。
+接下来配置环境变量：`MAVEN_HOME=E:\Maven\apache-maven-3.6.0`、`%MAVEN_HOME%\bin`。之后在命令行窗口中测试一下环境变量是否配置成功：
+
+```apl
+C:\Windows\System32>mvn -v
+Apache Maven 3.6.0 (97c98ec64a1fdfee7767ce5ffb20918da4f719f3; 2018-10-25T02:41:47+08:00)
+Maven home: E:\Maven\apache-maven-3.6.0\bin\..
+Java version: 1.8.0_144, vendor: Oracle Corporation, runtime: E:\JAVA\jdk1.8.0_144\jre
+Default locale: zh_CN, platform encoding: GBK
+OS name: "windows 10", version: "10.0", arch: "amd64", family: "windows"
+```
+
+接下来配置一下jar包下载的镜像网站：
+
+```xml
+<!-- 在settings.xml里面的mirrors标签里面导入 -->
+<mirror>
+  <id>aliyunmaven</id>
+  <mirrorOf>*</mirrorOf>
+  <name>阿里云公共仓库</name>
+  <url>https://maven.aliyun.com/repository/public</url>
+</mirror>
+```
+
+配置本地仓库：
+
+```xml
+<!-- 创建一个本地仓库 E:\Maven\apache-maven-3.6.0\mvn_repository文件夹，用于存放jar包 -->
+<!-- 在settings.xml里面的localRepository下导入 -->
+<localRepository>E:\Maven\apache-maven-3.6.0\mvn_repository</localRepository>
+```
+
+## 1.2 Maven基本概念
+
+**仓库**
+
+maven 的工作需要从仓库下载一些 jar 包，本地的项目都会通过 maven 从远程仓库下载 jar 包并存在本地仓库，本地仓库就是本地文件夹，当第二次需要此 jar 包时则不再从远程仓库下载，因为本地仓库已经存在了，可以将本地仓库理解为缓存，有了本地仓库就不用每次从远程仓库下载了。
+
+本地仓库 ：用来存储从远程仓库下载的插件和 jar 包。项目中使用一些插件或 jar 包优先从本地仓库查找默认本地仓库位置在 `${user.dir}/.m2/repository`，`${user.dir}`表示 windows 用户目录。我们可以修改。
+
+远程仓库分为中央仓库和私服：
+
+* 中央仓库 ：在 maven 软件中内置一个远程仓库地址 http://repo1.maven.org/maven2。它是中央仓库，服务于整个互联网。它是由 Maven 团队自己维护，里面存储了非常全的 jar 包，它包含了世界上大部分流行的开源项目构件。
+* 私服：各公司/部门等小范围内存储资源的仓库，私服也可以从中央仓库获取资源。私服可以保存具有版权的资源，包含购买或自主研发的jar；一定范围内共享资源，能做到仅对内不对外开放。
+
+**坐标**
+
+我们说maven的仓库里存储了各种各样的资源（jar包），那这些资源我们如何找到它们呢？我们需要知道它们具体的一个位置才能知道如何找到它们，这个就叫坐标。
+
+坐标：被Maven管理的资源的唯一标识。maven坐标的主要组成如下：
+
+- groupId：定义当前资源隶属组织名称，通常是域名反写。
+
+- artifactId：定义当前资源的名称，通常是项目或模块名称。
+
+- version：定义当前资源的版本号。
+
+- packaging：定义资源的打包方式。取值一般有三种：`jar` java工程打包为jar默认的取值就是jar、`war`项目为web工程并且打包方式为war、`pom`资源是一个分模块管理的父资源并且打包时只生成一个`pom.xml`不生成jar或其他包结构。
+
+
+```xml
+<!-- pom.xml文件内容 -->
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <!--指定pom的模型版本-->
+    <modelVersion>4.0.0</modelVersion>
+    <!--打包方式 web工程打包为war java工程打包为jar-->
+    <packaging>war</packaging>
+    
+    <!--组织id-->
+    <groupId>com.linxuan</groupId>
+    <!--项目id-->
+    <artifactId>javaweb</artifactId>
+    <!--组织id  release代表完成版,SNAPSHOT代表开发版-->
+    <version>1.0-SNAPSHOT</version>
+    
+    <!--设置当前工程的所有依赖-->
+    <dependencies>
+        <!--具体的依赖-->
+        <dependency>
+        </dependency>
+    </dependencies>
+</project>
+```
+
+**Maven工程目录结构**
+
+```apl
+项目的根目录:
+      |-- src # 源码
+      |    |-- main # 主工程代码
+      |    |    |-- java # 业务逻辑代码
+      |    |    |-- resources # 业务逻辑代码配置文件
+      |    |    |-- webapp # web项目的资源目录。例如:jps/html/css/js
+      |    |          |-- WEB-INF # 存放的是一些编译后的class文件和运行所必须的配置文件
+      |    |                |-- web.xml文件
+      |    |          |-- jsp/html/css/js # 存放前端资源文件
+      |    |
+      |    |-- test # 测试代码
+      |         |-- java # 测试代码
+      |         |-- resources # 测试代码所需要的配置文件
+      |-- target # 
+      |    |-- classes # 业务逻辑代码编译后的文件存放到这个目录下面
+      |    |-- test-classes # 测试代码编译后的文件存放到这个目录下面
+      |-- pom.xml # 项目的核心配置文件
+```
+
+## 1.3 创建项目
+
+**手动创建**
+
+
 
 ## 1.3 Maven基本命令
 
@@ -43,14 +163,6 @@ maven 对项目构建过程分为三套相互独立的生命周期，请注意�
 - `Site Lifecycle`：生成项目报告，站点，发布站点。
 
 同一套生命周期中，执行后边的操作，会自动执行之前所有操作。
-
-## 1.4 Maven坐标
-
-坐标：被Maven管理的资源的唯一标识
-
-- `groupid`：组织名称
-- `artifactid`：模块名称
-- `version`：版本号
 
 # 第二章 分模块开发
 
@@ -235,7 +347,7 @@ maven 对项目构建过程分为三套相互独立的生命周期，请注意�
 
 传递依赖：如果我们的项目引用了一个Jar包，而该Jar包又引用了其他Jar包，那么在默认情况下项目编译时，Maven会把直接引用和间接引用的Jar包都下载到本地。
 
-因为有依赖传递的存在，就会导致jar包在依赖的过程中出现冲突问题。这里所说的<font color = "red">依赖冲突</font>是指项目依赖的某一个jar包，有多个不同的版本，因而造成类包版本冲突。
+因为有依赖传递的存在，就会导致jar包在依赖的过程中出现冲突问题。这里所说的依赖冲突是指项目依赖的某一个jar包，有多个不同的版本，因而造成类包版本冲突。
 
 若项目中多个Jar同时引用了相同的Jar时，会产生依赖冲突，但Maven采用了三种避免冲突的策略，因此在Maven中是不存在依赖冲突的。
 
@@ -294,7 +406,7 @@ maven 对项目构建过程分为三套相互独立的生命周期，请注意�
 </dependency>
 ```
 
-此时BookServiceImpl就已经报错了,说明由于maven_04_dao将maven_03_pojo设置成可选依赖，导致maven_02_ssm无法引用到maven_03_pojo中的内容，导致Book类找不到。
+此时BookServiceImpl就已经报错了，说明由于maven_04_dao将maven_03_pojo设置成可选依赖，导致maven_02_ssm无法引用到maven_03_pojo中的内容，导致Book类找不到。
 
 ### 排除依赖
 
@@ -363,7 +475,7 @@ maven 对项目构建过程分为三套相互独立的生命周期，请注意�
 
 项目少的话还好，但是如果项目多的话，一个个操作项目就容易出现漏掉或重复操作的问题，所以我们就想能不能抽取一个项目，把所有的项目管理起来，以后我们要想操作这些项目，只需要操作这一个项目，其他所有的项目都走一样的流程，这个不就很省事省力。
 
-这就用到了我们接下来要讲解的<font color = "red">聚合</font>，
+这就用到了我们接下来要讲解的聚合，
 
 * 所谓聚合：将多个模块组织成一个整体，同时进行项目构建的过程称为聚合。
 
@@ -444,7 +556,7 @@ maven 对项目构建过程分为三套相互独立的生命周期，请注意�
 * `spring-test`只在ssm_crm和ssm_goods中出现，而在ssm_order中没有，这里是部分重复的内容
 * 我们使用的spring版本目前是`5.2.10.RELEASE`，假如后期要想升级spring版本，所有跟Spring相关jar包都得被修改，涉及到的项目越多，维护成本越高
 
-面对上面的这些问题，我们就得用到接下来要学习的<font color = "red">继承</font>
+面对上面的这些问题，我们就得用到接下来要学习的继承
 
 * 所谓继承：描述的是两个工程间的关系，与java中的继承相似，子工程可以继承父工程中的配置信息，常见于依赖关系的继承。
 * 作用：简化配置、减少版本冲突。
@@ -576,7 +688,7 @@ maven 对项目构建过程分为三套相互独立的生命周期，请注意�
 
       ![1630944335419](..\图片\2-24【Maven】\1-11.png)
 
-      刷新完会发现，在maven_02_ssm项目中的junit依赖并没有出现，这是因为：<font color = "red">`<dependencyManagement>`标签不真正引入jar包，而是配置可供子项目选择的jar包依赖</font>。子项目要想使用它所提供的这些jar包，需要自己添加依赖，并且不需要指定`<version>`
+      刷新完会发现，在maven_02_ssm项目中的junit依赖并没有出现，这是因为：`<dependencyManagement>`标签不真正引入jar包，而是配置可供子项目选择的jar包依赖。子项目要想使用它所提供的这些jar包，需要自己添加依赖，并且不需要指定`<version>`
 
    3. 在maven_02_ssm的pom.xml添加junit的依赖
 
@@ -1077,7 +1189,7 @@ maven提供配置多种环境的设定，帮助开发者在使用过程中快速
 
 - Maven的中央仓库不允许私人上传自己的jar包,那么我们就得换种思路，自己搭建一个类似于中央仓库的东西，把自己的内容上传上去，其他人就可以从上面下载jar包使用
 
-- 这个类似于中央仓库的东西就是我们接下来要学习的<font color = "red">私服</font>
+- 这个类似于中央仓库的东西就是我们接下来要学习的私服
 
 
 所以到这就有两个概念，一个是私服，一个是中央仓库
@@ -1087,7 +1199,7 @@ maven提供配置多种环境的设定，帮助开发者在使用过程中快速
 - 远程仓库：Maven开发团队维护的用于存储Maven资源的服务器
 
 
-所以说<font color = "red">私服是一台独立的服务器，用于解决团队内部的资源共享与资源同步问题</font>
+所以说私服是一台独立的服务器，用于解决团队内部的资源共享与资源同步问题
 
 搭建Maven私服的方式有很多，我们来介绍其中一种使用量比较大的实现方式：
 
