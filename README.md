@@ -36,19 +36,6 @@ JavaWeb知识点
 
 # 第二章 学习路线
 
-![](https://github.com/linxuanstar/javaNote/raw/master/%E5%9B%BE%E7%89%87/Java%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF.png?raw=true)
-
-
-------
-
-111111111111111111111111
-
-2222222222222222222
-
-<img src=".\图片\Java学习路线.png" style="zoom:50%;" />
-
->>>>>>> ca4b510c7e17addf24c5b3a13afd23f92430668c
-
 ## 2.2 黑马程序员
 
 入门： Java SE基础 → Java Web(含数据库+H5+js+vue)

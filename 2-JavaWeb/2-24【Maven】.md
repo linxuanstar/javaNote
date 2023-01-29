@@ -1,4 +1,4 @@
-![](..\图片\2-24【Maven】\0-1面试.png)
+<img src="..\图片\2-24【Maven】\0-1面试.png"/>
 
 # 第一章 Maven基础
 
@@ -263,23 +263,23 @@ mvn archetype:generate -DgroupId=com.linxuan -DartifactId=web-project -Darchetyp
 
 **Idea集成Maven**
 
-![](..\图片\2-24【Maven】\1-1Idea集成Maven.png)
+<img src="..\图片\2-24【Maven】\1-1Idea集成Maven.png"/>
 
 **创建Maven项目**
 
 这里因为已经创建了一个项目了，所以是在该项目下面创建一个Maven模块。右键项目名称，创建模块。
 
-![](..\图片\2-24【Maven】\1-2创建项目.png)
+<img src="..\图片\2-24【Maven】\1-2创建项目.png"/>
 
-![](..\图片\2-24【Maven】\1-2创建项目2.png)
+<img src="..\图片\2-24【Maven】\1-2创建项目2.png"/>
 
 **使用Maven控制面板执行命令**
 
-![](..\图片\2-24【Maven】\1-3Idea执行命令.png)
+<img src="..\图片\2-24【Maven】\1-3Idea执行命令.png"/>
 
 **使用配置文件执行命令**
 
-![](..\图片\2-24【Maven】\1-4配置文件编写命令.png)
+<img src="..\图片\2-24【Maven】\1-4配置文件编写命令.png"/>
 
 **Idea创建Web项目**
 
@@ -322,7 +322,7 @@ mvn archetype:generate -DgroupId=com.linxuan -DartifactId=web-project -Darchetyp
 
 同样的，也可以使用配置文件执行命令
 
-![](..\图片\2-24【Maven】\1-5tomcat7.png)
+<img src="..\图片\2-24【Maven】\1-5tomcat7.png"/>
 
 ```xml
 <!--配置maven打包war时，忽略web.xml检查-->
@@ -422,7 +422,7 @@ maven 对项目构建过程分为三套相互独立的生命周期，请注意�
 
 将该插件添加Idea之后
 
-![](..\图片\2-24【Maven】\1-6添加插件.png)
+<img src="..\图片\2-24【Maven】\1-6添加插件.png"/>
 
 这时候我们就可以执行声明周期（lifecycle）来测试了：
 
@@ -476,7 +476,7 @@ maven 对项目构建过程分为三套相互独立的生命周期，请注意�
 
 上面这些结果，我们不需要刻意去记它。因为不管Maven怎么选，最终的结果都会在Maven的`Dependencies`面板中展示出来。如果想更全面的查看Maven中各个坐标的依赖关系，可以点击Maven面板中的`show Dependencies`
 
-![](..\图片\2-24【Maven】\2-1依赖传递及冲突.png)
+<img src="..\图片\2-24【Maven】\2-1依赖传递及冲突.png"/>
 
 在这个视图中就能很明显的展示出jar包之间的相互依赖关系。
 
@@ -567,7 +567,7 @@ maven 对项目构建过程分为三套相互独立的生命周期，请注意�
 
 我们可以将其他的层也拆成一个个对立的模块，如：
 
-![](..\图片\2-24【Maven】\3-1分模块划分.png)
+<img src="..\图片\2-24【Maven】\3-1分模块划分.png"/>
 
 这样的话，项目中的每一层都可以单独维护，也可以很方便的被别人使用。
 
@@ -575,13 +575,13 @@ maven 对项目构建过程分为三套相互独立的生命周期，请注意�
 
 步骤很简单，直接新建一个模块（目录直接放到根目录下面，不要放到原始项目目录下面），然后创建对应的包，最后将domain包下面的所有类复制过去就行了。
 
-![](..\图片\2-24【Maven】\3-2pojo实体类拆分.png)
+<img src="..\图片\2-24【Maven】\3-2pojo实体类拆分.png"/>
 
 ## 3.2 抽取Dao数据层
 
 新建模块，然后拷贝原始项目中相应的相关内容到ssm_dao模块中即可。这个里面需要拷贝的内容有：数据层接口、配置文件、pom.xml文件依赖的坐标。
 
-![](..\图片\2-24【Maven】\3-3dao拆分.png)
+<img src="..\图片\2-24【Maven】\3-3dao拆分.png"/>
 
 复制完数据层接口接口之后发现导入的依赖并没有，所以会报错。因此我们修改一下原始项目的pom.xml文件，粘贴到ssm-dao模块中。
 
@@ -790,7 +790,7 @@ maven 对项目构建过程分为三套相互独立的生命周期，请注意�
 
 新建模块，然后拷贝原始项目中相应的相关内容到ssm_service模块中即可。这个里面需要拷贝的内容有：业务层接口及实现类、配置文件、pom.xml文件依赖的坐标、测试代码、测试代码配置文件。
 
-![](..\图片\2-24【Maven】\3-4service拆分.png)
+<img src="..\图片\2-24【Maven】\3-4service拆分.png"/>
 
 首先来导入依赖，原始项目pom.xml依赖及插件如下：
 
@@ -868,7 +868,7 @@ maven 对项目构建过程分为三套相互独立的生命周期，请注意�
 
 根据web模板创建模块。
 
-![](..\图片\2-24【Maven】\3-5controller拆分.png)
+<img src="..\图片\2-24【Maven】\3-5controller拆分.png"/>
 
 pom.xml添加依赖及插件
 
@@ -1268,7 +1268,7 @@ maven提供配置多种环境的设定，帮助开发者在使用过程中快速
 mvn 指令 -P 环境定义ID[环境定义中获取]
 ```
 
-![](..\图片\2-24【Maven】\4-1调出命令行.png)
+<img src="..\图片\2-24【Maven】\4-1调出命令行.png"/>
 
 ## 4.5 跳过测试
 
@@ -1280,7 +1280,7 @@ mvn 指令 -P 环境定义ID[环境定义中获取]
 
 1. IDEA工具实现跳过测试。图中的按钮为`Toggle 'Skip Tests' Mode`，Toggle翻译为切换的意思，也就是说在测试与不测试之间进行切换。
 
-   ![](..\图片\2-24【Maven】\4-2跳过test.png)
+   <img src="..\图片\2-24【Maven】\4-2跳过test.png"/>
 
    这种方式最简单，但是有点"暴力"，会把所有的测试都跳过，如果我们想更精细的控制哪些跳过哪些不跳过，就需要使用配置插件的方式。
 
@@ -1349,7 +1349,7 @@ Nexus是Sonatype公司的一款maven私服产品，下载地址：https://help.s
 
 当我们要使用的资源远程中央仓库有的第三方jar包，这个时候就需要从远程中央仓库下载，私服就再准备一个仓库，用来专门存储从远程中央仓库下载的第三方jar包，第一次访问没有就会去远程中央仓库下载，下次再访问就直接走私服下载。
 
-![](..\图片\2-24【Maven】\5-1私服.png)
+<img src="..\图片\2-24【Maven】\5-1私服.png"/>
 
 所有私服仓库总共分为三大类：
 
@@ -1367,7 +1367,7 @@ Nexus是Sonatype公司的一款maven私服产品，下载地址：https://help.s
 
 **Nexus界面**
 
-![](..\图片\2-24【Maven】\5-2nexus界面.png)
+<img src="..\图片\2-24【Maven】\5-2nexus界面.png"/>
 
 创建仓库步骤如下：
 
@@ -1375,29 +1375,29 @@ Nexus是Sonatype公司的一款maven私服产品，下载地址：https://help.s
 - 选择右侧Repository仓库下面的Repositories储存库，点击上方的Create repository创建存储库。
 - 选择maven2 (hosted)，创建linxuan-snapshot仓库。在name里面输入`linxuan-snapshot`，将下方的Version policy（版本政策）选择Snapshot（快照）。最后直接点击创建。
 
-![](..\图片\2-24【Maven】\5-3创建仓库.png)
+<img src="..\图片\2-24【Maven】\5-3创建仓库.png"/>
 
 可以将刚刚创建的仓库添加到仓库组里面，步骤如下：
 
 * 进入设置，选择右侧Repository仓库下面的Repositories储存库。
 * 选择仓库组并进入，然后找到要添加的仓库添加。
 
-![](..\图片\2-24【Maven】\5-4添加进仓库组.png)
+<img src="..\图片\2-24【Maven】\5-4添加进仓库组.png"/>
 
 添加jar包进仓库，步骤如下：
 
 * 进入浏览使用，选择Browse浏览，选择需要上传jar包的仓库
 * 点击Uplocad component，进入上传jar包的界面。
 
-![](..\图片\2-24【Maven】\5-5上传文件.png)
+<img src="..\图片\2-24【Maven】\5-5上传文件.png"/>
 
-![](..\图片\2-24【Maven】\5-6查看仓库.png)
+<img src="..\图片\2-24【Maven】\5-6查看仓库.png"/>
 
 ## 5.1 本地仓库访问私服配置
 
 我们通过IDEA将开发的模块上传到私服，中间是要经过本地Maven的，本地Maven需要知道私服的访问地址以及私服访问的用户名和密码。如图：
 
-![](..\图片\2-24【Maven】\5-6私服配置.png)
+<img src="..\图片\2-24【Maven】\5-6私服配置.png"/>
 
 上面所说的这些内容，我们需要在本地Maven的配置文件`settings.xml`中进行配置。
 
@@ -1467,7 +1467,7 @@ Nexus是Sonatype公司的一款maven私服产品，下载地址：https://help.s
 
 第二步：发布资源到私服。点击deploy或者执行Maven命令`mvn deploy`
 
-![](..\图片\2-24【Maven】\5-7上传.png)
+<img src="..\图片\2-24【Maven】\5-7上传.png"/>
 
 
 
