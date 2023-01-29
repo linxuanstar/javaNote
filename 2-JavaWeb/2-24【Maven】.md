@@ -1,4 +1,4 @@
-![](..\图片\2-24【Maven】\1面试.png)
+![](..\图片\2-24【Maven】\0-1面试.png)
 
 # 第一章 Maven基础
 
@@ -43,11 +43,16 @@ OS name: "windows 10", version: "10.0", arch: "amd64", family: "windows"
 
 ```xml
 <!-- 在settings.xml里面的mirrors标签里面导入 -->
+<!--配置阿里云镜像仓库-->
 <mirror>
-  <id>aliyunmaven</id>
-  <mirrorOf>*</mirrorOf>
-  <name>阿里云公共仓库</name>
-  <url>https://maven.aliyun.com/repository/public</url>
+    <!--此镜像的唯一标识符号，用来区分不同的mirror元素-->
+    <id>nexus-aliyun</id>
+    <!--对哪种仓库进行镜像，简单来说就是替代哪个仓库-->
+    <mirrorOf>central</mirrorOf>
+    <!--镜像名称-->
+    <name>Nexus aliyun</name>
+    <!--镜像URL-->
+    <url>http://maven.aliyun.com/nexus/content/groups/public</url>
 </mirror>
 ```
 
@@ -59,7 +64,7 @@ OS name: "windows 10", version: "10.0", arch: "amd64", family: "windows"
 <localRepository>E:\Maven\apache-maven-3.6.0\mvn_repository</localRepository>
 ```
 
-## 1.2 Maven基本概念
+## 1.2 基本概念
 
 **仓库**
 
@@ -69,14 +74,14 @@ maven 的工作需要从仓库下载一些 jar 包，本地的项目都会通过
 
 远程仓库分为中央仓库和私服：
 
-* 中央仓库 ：在 maven 软件中内置一个远程仓库地址 http://repo1.maven.org/maven2。它是中央仓库，服务于整个互联网。它是由 Maven 团队自己维护，里面存储了非常全的 jar 包，它包含了世界上大部分流行的开源项目构件。
+* 中央仓库 ：在 maven 软件中内置一个远程仓库地址 https://repo1.maven.org/maven2。它是中央仓库，服务于整个互联网。它是由 Maven 团队自己维护，里面存储了非常全的 jar 包，它包含了世界上大部分流行的开源项目构件。
 * 私服：各公司/部门等小范围内存储资源的仓库，私服也可以从中央仓库获取资源。私服可以保存具有版权的资源，包含购买或自主研发的jar；一定范围内共享资源，能做到仅对内不对外开放。
 
 **坐标**
 
-我们说maven的仓库里存储了各种各样的资源（jar包），那这些资源我们如何找到它们呢？我们需要知道它们具体的一个位置才能知道如何找到它们，这个就叫坐标。
+我们说maven的仓库里存储了各种各样的资源（jar包），那这些资源我们如何找到它们呢？我们需要知道它们具体的一个位置才能知道如何找到它们，这个就叫坐标。https://mvnrepository.com/从这里获取坐标。
 
-坐标：被Maven管理的资源的唯一标识。maven坐标的主要组成如下：
+坐标：被Maven管理的资源的唯一标识。maven坐标（GAV）的主要组成如下：
 
 - groupId：定义当前资源隶属组织名称，通常是域名反写。
 
@@ -102,7 +107,7 @@ maven 的工作需要从仓库下载一些 jar 包，本地的项目都会通过
     <groupId>com.linxuan</groupId>
     <!--项目id-->
     <artifactId>javaweb</artifactId>
-    <!--组织id  release代表完成版,SNAPSHOT代表开发版-->
+    <!--版本号  release代表完成版，SNAPSHOT代表开发版-->
     <version>1.0-SNAPSHOT</version>
     
     <!--设置当前工程的所有依赖-->
@@ -125,7 +130,7 @@ maven 的工作需要从仓库下载一些 jar 包，本地的项目都会通过
       |    |    |-- webapp # web项目的资源目录。例如:jps/html/css/js
       |    |          |-- WEB-INF # 存放的是一些编译后的class文件和运行所必须的配置文件
       |    |                |-- web.xml文件
-      |    |          |-- jsp/html/css/js # 存放前端资源文件
+      |    |          |-- index.jsp/html/css/js # 存放前端资源文件
       |    |
       |    |-- test # 测试代码
       |         |-- java # 测试代码
@@ -133,198 +138,301 @@ maven 的工作需要从仓库下载一些 jar 包，本地的项目都会通过
       |-- target # 
       |    |-- classes # 业务逻辑代码编译后的文件存放到这个目录下面
       |    |-- test-classes # 测试代码编译后的文件存放到这个目录下面
+      |    |-- 项目.jar # 项目打包存放目录
       |-- pom.xml # 项目的核心配置文件
 ```
 
-## 1.3 创建项目
+## 1.3 基本命令
+
+Maven命令使用mvn开头，后面添加功能参数，可以执行多个命令，使用空格分隔。
+
+| 命令         | 作用                                             |
+| ------------ | ------------------------------------------------ |
+| mvn -version | 查看Maven版本。                                  |
+| mvn compile  | 编译。将main目录下面java文件编译输出到target目录 |
+| mvn test     | 测试。执行test目录下面单元测试类                 |
+| mvn clean    | 清理。删除target目录内容                         |
+| mvn package  | 打包                                             |
+| mvn install  | 安装到本地仓库，不会安装测试代码                 |
+
+`mvn dependency:get -DgroupId=XXX -DartifactId=XXX -Dversion=XXX`：读取maven配置，下载jar包到本地仓库。需要在下载的位置打开CMD窗口。
+
+## 1.4 手动创建项目
 
 **手动创建**
 
+手动创建一个Maven项目，目录结构如下：
 
+```apl
+Maven-pro:
+      |-- src # 源码
+      |    |-- main # 主工程代码
+      |    |    |-- java # 业务逻辑代码
+      |    |         |-- com
+      |    |              |-- linxuan
+      |    |                   |-- Demo.java
+      |    |    |-- resources # 业务逻辑代码配置文件
+      |    |
+      |    |-- test # 测试代码
+      |         |-- java # 测试代码
+      |              |-- com
+      |                   |-- linxuan
+      |                        |-- DemoTest.java
+      |         |-- resources # 测试代码所需要的配置文件
+      |-- pom.xml # 项目的核心配置文件
+```
 
-## 1.3 Maven基本命令
+```java
+package com.linxuan;
 
-- `mvn -version`：查看Maven版本。
-- `mvn dependency:get -DgroupId=XXX -DartifactId=XXX -Dversion=XXX`：读取maven配置，下载jar包到本地仓库。需要在下载的位置打开CMD窗口。
-- `compile` 是 `maven` 工程的编译命令，作用是将 `src/main/java` 下的文件编译为 `class` 文件输出到 `target` 目录下。
-- `test` 是 `maven` 工程的测试命令 `mvn test`，会执行 `src/test/java` 下的单元测试类。
-- `clean` 是 `maven` 工程的清理命令，执行 `clean` 会删除 `target` 目录及内容。
-- `package` 是 `maven` 工程的打包命令，对于 `java` 工程执行 `package` 打成 `jar` 包，对于 `web` 工程打成 `war` 包。
-- `install` 是 `maven` 工程的安装命令，执行 `install` 将 `maven` 打成 `jar` 包或 `war` 包发布到本地仓库。
+public class Demo{
+	public String say(String name) {
+		System.out.println("hello " + name);
+		return "hello " + name;
+	}
+}
+```
 
- 从运行结果中，可以看出： 当后面的命令执行时，前面的操作过程也都会自动执行，
+```java
+package com.linxuan;
 
-## 1.4 Maven指令的生命周期
+import org.junit.Test;
+import org.junit.Assert;
 
-maven 对项目构建过程分为三套相互独立的生命周期，请注意这里说的是“三套”，而且“相互独立”， 这三套生命周期分别是：
+public class DemoTest{
+	
+	@Test
+	public void testSay() {
+		Demo d = new Demo();
+		String ret = d.say("maven");
+		Assert.assertEquals("hello maven", ret);
+	}
+}
+```
 
-- `Clean Lifecycle`： 在进行真正的构建之前进行一些清理工作。 
-- `Default Lifecycle`： 构建的核心部分，编译，测试，打包，部署等等。 
-- `Site Lifecycle`：生成项目报告，站点，发布站点。
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+		 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <packaging>jar</packaging>
+    
+    <groupId>com.linxuan</groupId>
+    <artifactId>Maven-pro</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    
+    <dependencies>
+		<!-- 单元测试 -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+		</dependency>
+    </dependencies>
+</project>
+```
+
+这样一个Maven工程就创建好了。之后就可以在Maven-pro目录下面使用Maven命令了。
+
+**插件创建**
+
+```sh
+mvn archetype:generate # 使用插件生成
+    -DgroupId={project-packaging} 
+    -DartifactId={project-name} 
+    -DarchetypeArtifactId=maven-archetype-quickstart # 指定生成项目的模板
+    -Dversion=0.0.1-snapshot # 指定版本号
+    -DinteractiveMode=false
+```
+
+```sh
+# 创建一个java工程 使用的是maven-archetype-quickstart模板 项目名称为java-project
+mvn archetype:generate -DgroupId=com.linxuan -DartifactId=java-project -DarchetypeArtifactId=maven-archetype-quickstart -Dversion=1.0-SNAPSHOT -DinteractiveMode=false
+```
+
+```sh
+# 创建一个web工程 使用的是maven-archetype-webapp模板
+mvn archetype:generate -DgroupId=com.linxuan -DartifactId=web-project -DarchetypeArtifactId=maven-archetype-webapp -Dversion=1.0-SNAPSHOT -DinteractiveMode=false
+```
+
+## 1.5 Idea创建Maven项目
+
+创建一个空的项目，不使用任何的构建工具。项目名称为maven-project。然后设置项目运行SDK。
+
+**Idea集成Maven**
+
+![](..\图片\2-24【Maven】\1-1Idea集成Maven.png)
+
+**创建Maven项目**
+
+这里因为已经创建了一个项目了，所以是在该项目下面创建一个Maven模块。右键项目名称，创建模块。
+
+![](..\图片\2-24【Maven】\1-2创建项目.png)
+
+![](..\图片\2-24【Maven】\1-2创建项目2.png)
+
+**使用Maven控制面板执行命令**
+
+![](..\图片\2-24【Maven】\1-3Idea执行命令.png)
+
+**使用配置文件执行命令**
+
+![](..\图片\2-24【Maven】\1-4配置文件编写命令.png)
+
+**Idea创建Web项目**
+
+与普通的项目步骤一样，只是在模板上更换为了`org.apache.maven.archetypes:maven-archetype-webapp`。创建好项目之后就是集成Tomcat，这里我们使用插件。
+
+打开Maven网路仓库，搜索`tomcat maven`，找到包路径为`org.apache.tomcat.maven`的tomcat插件，挑选版本。
+
+```xml
+<!-- 添加到pom.xml的build标签下面的plugins标签下面的plugin标签下面-->
+<!-- https://mvnrepository.com/artifact/org.apache.tomcat.maven/tomcat7-maven-plugin -->
+<groupId>org.apache.tomcat.maven</groupId>
+<artifactId>tomcat7-maven-plugin</artifactId>
+<version>2.1</version>
+```
+
+启动该项目只需要点击Plugins-->tomcat7-->tomcat7:run即可。
+
+当然对于tomcat插件我们也可以进一步修改
+
+```xml
+<!--构建-->
+<build>
+    <!--设置插件-->
+    <plugins>
+        <!--具体的插件配置-->
+        <plugin>
+            <groupId>org.apache.tomcat.maven</groupId>
+            <artifactId>tomcat7-maven-plugin</artifactId>
+            <version>2.1</version>
+            <configuration>
+                <!--端口号-->
+                <port>80</port>
+                <!--虚拟路径-->
+                <path>/</path>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
+```
+
+同样的，也可以使用配置文件执行命令
+
+![](..\图片\2-24【Maven】\1-5tomcat7.png)
+
+```xml
+<!--配置maven打包war时，忽略web.xml检查-->
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-war-plugin</artifactId>
+            <version>3.2.3</version>
+            <configuration>
+                <failOnMissingWebXml>false</failOnMissingWebXml>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
+```
+
+## 1.6 生命周期和插件
 
 同一套生命周期中，执行后边的操作，会自动执行之前所有操作。
 
-# 第二章 分模块开发
+maven 对项目构建过程分为三套相互独立的生命周期，请注意这里说的是“三套”，而且“相互独立”。每套声明周期执行之前会将前面的命令执行。这三套生命周期分别是：
 
-有两种拆分方式：按照功能拆分和按照模块拆分。
+- `Clean Lifecycle`： 在进行真正的构建之前进行一些清理工作。 
 
-将原始模块按照功能拆分成若干个子模块，方便模块间的相互调用，接口共享。
+  | Clean声明周期阶段 | 作用                              |
+  | ----------------- | --------------------------------- |
+  | pre-clean         | 执行一些需要在clean之前完成的工作 |
+  | clean             | 移除上一次构建产生的所有文件      |
+  | post-clean        | 执行一些在clean之后立刻完成的工作 |
 
-我们可以将其他的层也拆成一个个对立的模块，如：
+- `Default Lifecycle`： 构建的核心部分，编译，测试，打包，部署等等。 
 
-<img src="..\图片\2-24【Maven】\1-1.png" alt="1630768869208" style="zoom: 67%;" />
+  | 阶段                                        | 描述                                               |
+  | ------------------------------------------- | -------------------------------------------------- |
+  | validate（校验）                            | 验证项目是否正确以及所有必要信息是否可用。         |
+  | initialize（初始化）                        | 初始化构建状态。                                   |
+  | generate-sources（生成源代码）              | 生成编译阶段需要的所有源码文件。                   |
+  | process-sources（处理源代码）               | 处理源码文件，例如过滤某些值。                     |
+  | generate-resources（生成资源文件）          | 生成项目打包阶段需要的资源文件。                   |
+  | process-resources（处理资源文件）           | 复制和处理资源到输出目录，为打包阶段做准备。       |
+  | **compile**（编译）                         | 编译源代码，并移动到输出目录。                     |
+  | process-classes（处理类文件）               | 处理编译生成的字节码文件                           |
+  | generate-test-sources（生成测试源代码）     | 生成编译阶段需要的测试源代码。                     |
+  | process-test-sources（处理测试源代码）      | 处理测试资源，并复制到测试输出目录。               |
+  | generate-test-resources（生成测试资源文件） | 为测试创建资源文件                                 |
+  | process-test-resources（处理测试资源文件）  | 复制和处理测试资源到目标目录                       |
+  | **test-compile**（编译测试源代码）          | 编译测试源代码并移动到测试输出目录中。             |
+  | process-test-classes（处理测试类文件）      | 处理测试源码编译生成的文件                         |
+  | **test**（测试）                            | 使用适当的单元测试框架（例如 JUnit）运行测试。     |
+  | prepare-package（准备打包）                 | 在真正打包之前，执行一些必要的操作。               |
+  | **package**（打包）                         | 获取编译后的代码，并按照可发布的格式进行打包。     |
+  | pre-integration-test（集成测试前）          | 集成测试执行前，执行所需的操作，例如设置环境变量。 |
+  | integration-test（集成测试）                | 处理和部署所需的包到集成测试能够运行的环境中。     |
+  | post-integration-test（集成测试后）         | 在集成测试被执行后执行必要的操作，例如清理环境。   |
+  | verify（验证）                              | 对集成测试的结果进行检查，以保证质量达标。         |
+  | **install**（安装）                         | 安装打包的项目到本地仓库，以供其他项目使用。       |
+  | deploy（部署）                              | 拷贝最终的包文件到远程仓库中。                     |
 
-这样的话，项目中的每一层都可以单独维护，也可以很方便的被别人使用。
+- `Site Lifecycle`：生成项目报告，站点，发布站点。
 
-前面我们已经完成了SSM整合，接下来，咱们就基于SSM整合的项目来实现对项目的拆分。
+  | Site声明周期阶段 | 描述                                               |
+  | ---------------- | -------------------------------------------------- |
+  | pre-site         | 执行一些在生成站点文档之前的工作                   |
+  | site             | 生成项目的站点文档                                 |
+  | post-site        | 执行一些在生成站点文档之后完成的工作，为部署做准备 |
+  | site-deploy      | 将生成的站点文档部署到特定的服务器上               |
 
-将我们之前做过的SSM整合案例，也就是`D:\Java\IdeaProjects\ssm\springmvc04`部署到IDEA中。这里新建了一个Maven项目，里面创建了一个`maven_02_ssm`的Moudle。`D:\Java\IdeaProjects\ssm\springmvc04`变成了`maven_02_ssm`。
+插件与生命周期内的阶段绑定，在执行到对应生命周期时执行对应的插件。maven默认在各个生命周期上都绑定了预先设定的插件来完成相应功能，插件还可以完成一些自定义功能。Maven官网插件对应网站：https://maven.apache.org/plugins/index.html
 
-## 2.1 抽取domain层
+我们来测试一下打源码包的插件：
 
-1. 创建新模块
+```xml
+<build>
+    <plugins>
+        <!--打源码包的插件-->
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>2.2.1</version>
+            <!--该插件执行的时候以及动作-->
+            <executions>
+                <execution>
+                    <!--执行的动作-->
+                    <goals>
+                        <!--jar是对main代码打包、test-jar是对test代码打包-->
+                        <goal>jar</goal>
+                    </goals>
+                    <!--声明周期阶段 也就是到该阶段就要运行插件了-->
+                    <phase>generate-test-resources</phase>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build>
+```
 
-   创建一个名称为`maven_03_pojo`的jar项目，为什么项目名是从02到03这样创建，原因后面我们会提到，这块的名称可以任意。
+将该插件添加Idea之后
 
-2. 项目中创建domain包
+![](..\图片\2-24【Maven】\1-6添加插件.png)
 
-   在`maven_03_pojo`项目中创建`com.linxuan.domain`包，并将`maven_02_ssm`中Book类拷贝到该包中
+这时候我们就可以执行声明周期（lifecycle）来测试了：
 
-3. 删除原项目中的domain包
+* 首先执行`clean`将target目录清理掉。
+* 执行`compile`编译将main目录下面编译到target目录下面。这时候target目录下面有两个目录：classes、maven-status。
+* 执行`test`测试，测试test目录下面的代码。可以发现这时候target目录下面有四个目录和一个jar包：classes、maven-status、surefire-reports、test-classes、web01-1.0-SNAPSHOT-sources.jar。正常来说执行test阶段会将该生命周期前面的阶段都执行一下，但是前面并没有打包的阶段，这里偏偏就出现了一个源码包。这就是插件起作用了，当执行到`generate-test-resources`阶段就会执行打源码包操作。
 
-   删除后，`maven_02_ssm`项目中用到`Book`的类中都会有红色提示。
+# 第二章 依赖管理
 
-   **说明：**出错的原因是`maven_02_ssm`中已经将Book类删除，所以该项目找不到Book类，所以报错
-
-   要想解决上述问题，我们需要在`maven_02_ssm`中添加`maven_03_pojo`的依赖。
-
-4. 建立依赖关系
-
-   在`maven_02_ssm`项目的pom.xml添加`maven_03_pojo`的依赖。打开`maven_03_pojo`的pom.xml文件可以看到下面的信息，将其导入进去`maven_02_ssm`就可以了。
-
-   ```xml
-   <dependency>
-       <groupId>com.linxuan</groupId>
-       <artifactId>maven_03_pojo</artifactId>
-       <version>1.0-SNAPSHOT</version>
-   </dependency>
-   ```
-
-   因为添加了依赖，所以在`maven_02_ssm`中就已经能找到Book类，所以刚才的报红提示就会消失。
-
-5. 编译`maven_02_ssm`项目
-
-   点击Maven里面`maven_02_ssm`项目下面的compile，去编译`maven_02_ssm`，这时我们会看到一些错误：
-
-   ```asciiarmor
-   [ERROR] Failed to execute goal on project maven_02_ssm: Could not resolve dependencies for project com.linxuan:maven_02_ssm:war:1.0-SNAPSHOT: Could not find artifact com.linxuan:maven_03_pojo:jar:1.0-SNAPSHOT -> [Help 1]
-   ```
-
-   错误信息为：不能解决`maven_02_ssm`项目的依赖问题，找不到`maven_03_pojo`这个jar包。
-
-   为什么找不到呢？原因是Maven会从本地仓库找对应的jar包，但是本地仓库又不存在该jar包所以会报错。
-
-   在IDEA中是有`maven_03_pojo`这个项目，所以我们只需要将`maven_03_pojo`项目安装到本地仓库即可。
-
-6. 将项目安装本地仓库
-
-   将需要被依赖的项目`maven_03_pojo`，使用maven的install命令，把其安装到Maven的本地仓库中。
-
-   安装成功后，在对应的路径下就看到安装好的jar包
-
-   当再次执行`maven_02_ssm`的compile的命令后，就已经能够成功编译。
-
-## 2.2 抽取Dao层
-
-1. 创建新模块
-
-   创建一个名称为`maven_04_dao`的jar项目
-
-2. 项目中创建dao包
-
-   在`maven_04_dao`项目中创建`com.linxuan.dao`包，并将`maven_02_ssm`中BookDao类拷贝到该包中
-
-   在`maven_04_dao`中会有如下几个问题需要解决下:
-
-   1. 项目`maven_04_dao`的BookDao接口中Book类找不到报错
-
-      解决方案在`maven_04_dao`项目的pom.xml中添加`maven_03_pojo`项目
-
-      ```xml
-      <dependencies>
-          <dependency>
-              <groupId>com.linxuan</groupId>
-              <artifactId>maven_03_pojo</artifactId>
-              <version>1.0-SNAPSHOT</version>
-          </dependency>
-      </dependencies>
-      ```
-
-   2. 项目`maven_04_dao`的BookDao接口中，Mybatis的增删改查注解报错
-
-      解决方案在`maven_04_dao`项目的pom.xml中添加`mybatis`的相关依赖
-
-      ```xml
-      <dependencies>
-          <dependency>
-              <groupId>org.mybatis</groupId>
-              <artifactId>mybatis</artifactId>
-              <version>3.5.6</version>
-          </dependency>
-      
-          <dependency>
-              <groupId>mysql</groupId>
-              <artifactId>mysql-connector-java</artifactId>
-              <version>5.1.47</version>
-          </dependency>
-      </dependencies>
-      ```
-
-3. 删除原项目中的dao包
-
-   删除Dao包以后，因为`maven_02_ssm`中的BookServiceImpl类中有使用到Dao的内容，所以需要在`maven_02_ssm`的pom.xml添加`maven_04_dao`的依赖
-
-   ```xml
-   <dependency>
-       <groupId>com.linxuan</groupId>
-       <artifactId>maven_04_dao</artifactId>
-       <version>1.0-SNAPSHOT</version>
-   </dependency>
-   ```
-
-   此时在`maven_02_ssm`项目中就已经添加了`maven_03_pojo`和`maven_04_dao`包
-
-   再次对`maven_02_ssm`项目进行编译，又会报错。和刚才的错误原因是一样的，maven在仓库中没有找到`maven_04_dao`,所以此时我们只需要将`maven_04_dao`安装到Maven的本地仓库即可。
-
-4. 将项目安装到本地仓库
-
-   将需要被依赖的项目`maven_04_dao`，使用maven的install命令，把其安装到Maven的本地仓库中。
-
-   安装成功后，在对应的路径下就看到了安装好对应的jar包。
-
-   当再次执行`maven_02_ssm`的compile的指令后，就已经能够成功编译。
-
-## 2.3 运行测试并总结
-
-将抽取后的项目进行运行，测试之前的增删改查功能依然能够使用。
-
-所以对于项目的拆分，大致会有如下几个步骤:
-
-1. 创建Maven模块
-
-2. 书写模块代码
-
-   分模块开发需要先针对模块功能进行设计，再进行编码。不会先将工程开发完毕，然后进行拆分。拆分方式可以按照功能拆也可以按照模块拆。
-
-3. 通过maven指令安装模块到本地仓库(install 指令)
-
-团队内部开发需要发布模块功能到团队内部可共享的仓库中(私服)，私服我们后面会讲解。
-
-# 第三章 依赖管理
-
-我们现在已经能把项目拆分成一个个独立的模块，当在其他项目中想要使用独立出来的这些模块，只需要在其pom.xml使用<dependency>标签来进行jar包的引入即可。
-
-<dependency>其实就是依赖，我们先来说说什么是依赖：依赖指当前项目运行所需的jar，一个项目可以设置多个依赖。
+依赖指当前项目运行所需的jar，一个项目可以设置多个依赖。
 
 格式为:
 
@@ -343,7 +451,7 @@ maven 对项目构建过程分为三套相互独立的生命周期，请注意�
 </dependencies>
 ```
 
-## 3.1 依赖传递与冲突
+## 2.1 依赖传递与冲突
 
 传递依赖：如果我们的项目引用了一个Jar包，而该Jar包又引用了其他Jar包，那么在默认情况下项目编译时，Maven会把直接引用和间接引用的Jar包都下载到本地。
 
@@ -353,373 +461,501 @@ maven 对项目构建过程分为三套相互独立的生命周期，请注意�
 
 1. 特殊优先：当同级配置了相同资源的不同版本，后配置的覆盖先配置的。
 
-   当引入同一个依赖(例如junit)不同版本的时候，后配置的会覆盖之前配置的。
-
 2. 路径优先：当依赖中出现相同的资源时，层级越深，优先级越低，层级越浅，优先级越高
 
    ```apl
+   # Maven只会引用引用路径最短的Jar。
+   # 本项目直接依赖于A.jar、C.jar，间接依赖于B.jar、X.jar。
    本项目——>A.jar——>B.jar——>X.jar
    本项目——>C.jar——>X.jar
    ```
-
-   若本项目引用了A.jar，A.jar又引用了B.jar，B.jar又引用了X.jar，并且C.jar也引用了X.jar。在此时，Maven只会引用引用路径最短的Jar。
+   
 
 
 3. 声明优先：当资源在相同层级被依赖时，配置顺序靠前的覆盖配置顺序靠后的
 
+上面这些结果，我们不需要刻意去记它。因为不管Maven怎么选，最终的结果都会在Maven的`Dependencies`面板中展示出来。如果想更全面的查看Maven中各个坐标的依赖关系，可以点击Maven面板中的`show Dependencies`
 
-
-但是对应上面这些结果，我们不需要刻意去记它。因为不管Maven怎么选，最终的结果都会在Maven的`Dependencies`面板中展示出来，展示的是哪个版本，也就是说它选择的就是哪个版本。
-
-如果想更全面的查看Maven中各个坐标的依赖关系，可以点击Maven面板中的`show Dependencies`
-
-![1630853519736](..\图片\2-24【Maven】\1-7.png)
+![](..\图片\2-24【Maven】\2-1依赖传递及冲突.png)
 
 在这个视图中就能很明显的展示出jar包之间的相互依赖关系。
 
-## 3.2 可选依赖和排除依赖
+## 2.2 可选依赖与排除依赖
 
-依赖传递介绍完以后，我们来思考一个问题，
+简单梳理下，就是
 
-![1630854436435](..\图片\2-24【Maven】\1-8.png)
+* `A依赖B,B依赖C`,`C`通过依赖传递会被`A`使用到，现在要想办法让`A`不去依赖`C`
+* 可选依赖是在B上设置`<optional>`,`A`不知道有`C`的存在。
+* 排除依赖是在A上设置`<exclusions>`,`A`知道有`C`的存在，主动将其排除掉。
 
-* maven_02_ssm 依赖了 maven_04_dao
-* maven_04_dao 依赖了 maven_03_pojo
-* 因为现在有依赖传递，所以maven_02_ssm能够使用到maven_03_pojo的内容
-* 如果说现在不想让maven_02_ssm依赖到maven_03_pojo，有哪些解决方案？
+**可选依赖**
 
-> 在真实使用的过程中，maven_02_ssm中是需要用到maven_03_pojo的，我们这里只是用这个例子描述我们的需求。因为有时候，maven_04_dao出于某些因素的考虑，就是不想让别人使用自己所依赖的maven_03_pojo。
-
-### 可选依赖
-
-* 可选依赖指对外隐藏当前所依赖的资源——不透明
-
-在`maven_04_dao`的pom.xml,在引入`maven_03_pojo`的时候，添加`optional`
+可选依赖指对外隐藏当前所依赖的资源——不透明
 
 ```xml
 <dependency>
-    <groupId>com.linxuan</groupId>
-    <artifactId>maven_03_pojo</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <!--可选依赖是隐藏当前工程所依赖的资源，隐藏后对应资源将不具有依赖传递-->
+    <groupId>junit</groupId>
+    <artifactId>junit</artifactId>
+    <version>4.12</version>
+    <!-- 可选依赖是隐藏当前工程所依赖的资源，隐藏后对应资源将不具有依赖传递 默认为false-->
     <optional>true</optional>
 </dependency>
 ```
 
-此时BookServiceImpl就已经报错了，说明由于maven_04_dao将maven_03_pojo设置成可选依赖，导致maven_02_ssm无法引用到maven_03_pojo中的内容，导致Book类找不到。
+**排除依赖**
 
-### 排除依赖
-
-* 排除依赖指主动断开依赖的资源，被排除的资源无需指定版本---不需要
-
-前面我们已经通过可选依赖实现了阻断`maven_03_pojo`的依赖传递，对于排除依赖，则指的是已经有依赖的事实，也就是说`maven_02_ssm`项目中已经通过依赖传递用到了`maven_03_pojo`，此时我们需要做的是将其进行排除，所以接下来需要修改`maven_02_ssm`的pom.xml
+排除依赖指主动断开依赖的资源，被排除的资源无需指定版本---不需要
 
 ```xml
+<dependencies>
+    <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>3.8.1</version>
+        <!--排除依赖是隐藏当前资源对应的依赖关系-->
+        <exclusions>
+            <exclusion>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest-core</artifactId>
+            </exclusion>
+        </exclusions>
+    </dependency>
+</dependencies>
+```
+
+## 2.3 依赖范围
+
+```xml
+<dependencies>
+    <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>3.8.1</version>
+        <!-- 指定作用范围 -->
+        <scope>test</scope>
+    </dependency>
+</dependencies>
+```
+
+依赖的jar默认情况可以在任何地方可用，可以通过`scope`标签设定其作用范围。`scope`标签的取值一共有四种`compile`、`test`、`provided`、`runtime`。这里的范围主要是指以下三种范围：
+
+1. 主程序范围有效（src/main目录范围内）
+2. 测试程序范围内有效（src/test目录范围内）。主程序不能够使用，打包的时候也不参与进去。
+3. 是否参与打包（package指令范围内）
+
+四种取值与范围的对应情况如下：
+
+| scope           | 主代码 | 测试代码 | 打包 | 范例        |
+| --------------- | ------ | -------- | ---- | ----------- |
+| compile（默认） | Y      | Y        | Y    | Log4j       |
+| test            |        | Y        |      | junit       |
+| provided        | Y      | Y        |      | servlet-api |
+| runtime         |        |          | Y    | jdbc        |
+
+带有依赖范围的资源在进行传递的时候，作用范围将受到影响。如下表，空的是不传递。
+
+| 横\竖为直接依赖\间接依赖 | compile | test | provided | runtime |
+| ------------------------ | ------- | ---- | -------- | ------- |
+| **compile**              | compile | test | provided | runtime |
+| **test**                 |         |      |          |         |
+| **provided**             |         |      |          |         |
+| **runtime**              | runtime | test | provided | runtime |
+
+# 第三章 SpringMVC分模块开发
+
+分模块开发有两种拆分方式：按照功能拆分和按照模块拆分。将原始模块按照功能拆分成若干个子模块，这样方便模块间的相互调用，接口共享。
+
+我们可以将其他的层也拆成一个个对立的模块，如：
+
+![](..\图片\2-24【Maven】\3-1分模块划分.png)
+
+这样的话，项目中的每一层都可以单独维护，也可以很方便的被别人使用。
+
+## 3.1 抽取POJO实体层
+
+步骤很简单，直接新建一个模块（目录直接放到根目录下面，不要放到原始项目目录下面），然后创建对应的包，最后将domain包下面的所有类复制过去就行了。
+
+![](..\图片\2-24【Maven】\3-2pojo实体类拆分.png)
+
+## 3.2 抽取Dao数据层
+
+新建模块，然后拷贝原始项目中相应的相关内容到ssm_dao模块中即可。这个里面需要拷贝的内容有：数据层接口、配置文件、pom.xml文件依赖的坐标。
+
+![](..\图片\2-24【Maven】\3-3dao拆分.png)
+
+复制完数据层接口接口之后发现导入的依赖并没有，所以会报错。因此我们修改一下原始项目的pom.xml文件，粘贴到ssm-dao模块中。
+
+原始项目pom.xml依赖及插件如下：
+
+* mybatis环境：mybatis环境、mysql环境、spring整合jdbc、spring整合mybatis、druid连接池、分页插件坐标、
+* springmvc环境：springmvc环境、jackson相关坐标、servlet环境、
+* 其他组件：junit单元测试、spring整合junit
+* 插件：tomcat7-maven-plugin
+
+因为实在数据层dao里面，所以会用到mybatis环境。springmvc环境和tomcat7插件删掉即可，而junit单元测试可留可不留（数据层做完可以来单元测试）。最后在加上spring的环境，之前因为有springmvc环境，它依赖于spring的环境，这下将springmvc环境删掉了，所以这里添加上spring的环境。
+
+最后pom.xml文件如下：
+
+```xml
+<dependencies>
+    <!--spring环境-->
+    <!--spring环境-->
+    <!--spring环境-->
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId>
+        <version>5.1.9.RELEASE</version>
+    </dependency>
+
+    <!--mybatis环境-->
+    <!--mybatis环境-->
+    <!--mybatis环境-->
+    <dependency>
+        <groupId>org.mybatis</groupId>
+        <artifactId>mybatis</artifactId>
+        <version>3.5.3</version>
+    </dependency>
+    <!--mysql环境-->
+    <dependency>
+        <groupId>mysql</groupId>
+        <artifactId>mysql-connector-java</artifactId>
+        <version>5.1.47</version>
+    </dependency>
+    <!--spring整合jdbc-->
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-jdbc</artifactId>
+        <version>5.1.9.RELEASE</version>
+    </dependency>
+    <!--spring整合mybatis-->
+    <dependency>
+        <groupId>org.mybatis</groupId>
+        <artifactId>mybatis-spring</artifactId>
+        <version>2.0.3</version>
+    </dependency>
+    <!--druid连接池-->
+    <dependency>
+        <groupId>com.alibaba</groupId>
+        <artifactId>druid</artifactId>
+        <version>1.1.16</version>
+    </dependency>
+    <!--分页插件坐标-->
+    <dependency>
+        <groupId>com.github.pagehelper</groupId>
+        <artifactId>pagehelper</artifactId>
+        <version>5.1.2</version>
+    </dependency>
+</dependencies>
+```
+
+接下来来修改一下配置文件，resources目录下面有：数据层操控数据库文件userDao.xml、Spring配置文件applicationContext.xml、数据库连接配置文件jdbc.properties、SpringMVC配置文件spring-mvc.xml。
+
+这些配置文件中userDao.xml不用动，jdbc.properties修改为自己数据库信息，spring-mvc.xml直接删除，所以我们只需要动一下applicationContext.xml即可。
+
+```xml
+<!-- applicationContext.xml更名为applicationContext-dao.xml 防止和service模块重名现象-->
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+    <!--主程序对应的配置文件-->
+    <!--主程序对应的配置文件-->
+
+    <!--开启bean注解扫描 排除Controller包-->
+    <context:component-scan base-package="com.linxuan">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+
+    <!--开启注解式事务-->
+    <tx:annotation-driven transaction-manager="txManager"/>
+
+    <!--加载properties文件-->
+    <context:property-placeholder location="classpath*:jdbc.properties"/>
+
+    <!--数据源-->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="${jdbc.driver}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+    </bean>
+
+    <!--整合mybatis到spring中-->
+    <bean class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="typeAliasesPackage" value="com.linxuan.domain"/>
+        <!--分页插件-->
+        <property name="plugins">
+            <array>
+                <bean class="com.github.pagehelper.PageInterceptor">
+                    <property name="properties">
+                        <props>
+                            <prop key="helperDialect">mysql</prop>
+                            <prop key="reasonable">true</prop>
+                        </props>
+                    </property>
+                </bean>
+            </array>
+        </property>
+    </bean>
+
+    <!--映射扫描-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.linxuan.dao"/>
+    </bean>
+
+    <!--事务管理器-->
+    <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+</beans>
+```
+
+修改为如下：
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!--稍微修改一下约束-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+    <!--主程序对应的配置文件-->
+    <!--主程序对应的配置文件-->
+
+    <!--开启bean注解扫描 不需要过滤掉Controller层 这里根本没有-->
+    <context:component-scan base-package="com.linxuan"/>
+
+    <!--不需要在dao层开启事务-->
+
+    <!--加载properties文件-->
+    <context:property-placeholder location="classpath*:jdbc.properties"/>
+
+    <!--数据源-->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="${jdbc.driver}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+    </bean>
+
+    <!--整合mybatis到spring中-->
+    <bean class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="typeAliasesPackage" value="com.linxuan.domain"/>
+        <!--分页插件-->
+        <property name="plugins">
+            <array>
+                <bean class="com.github.pagehelper.PageInterceptor">
+                    <property name="properties">
+                        <props>
+                            <prop key="helperDialect">mysql</prop>
+                            <prop key="reasonable">true</prop>
+                        </props>
+                    </property>
+                </bean>
+            </array>
+        </property>
+    </bean>
+
+    <!--映射扫描-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.linxuan.dao"/>
+    </bean>
+
+    <!--也不需要留事务管理器-->
+</beans>
+```
+
+最后就是在pom.xml中导入一下实体层，并且将ssm_pojo使用install命令将其安装到仓库中供ssm_dao模块调用。
+
+```xml
+<!--实体层-->
 <dependency>
     <groupId>com.linxuan</groupId>
-    <artifactId>maven_04_dao</artifactId>
+    <artifactId>ssm_pojo</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <!--排除依赖是隐藏当前资源对应的依赖关系-->
-    <exclusions>
-        <exclusion>
-            <groupId>com.linxuan</groupId>
-            <artifactId>maven_03_pojo</artifactId>
-        </exclusion>
-    </exclusions>
 </dependency>
 ```
 
-这样操作后，BookServiceImpl中的Book类一样也会报错。
+最后测试一下整个环节是否打通只需要在ssm_dao模块执行compile编译命令看看是否报错。
 
-当然`exclusions`标签带`s`说明我们是可以依次排除多个依赖到的jar包，比如maven_04_dao中有依赖junit和mybatis,我们也可以一并将其排除。
+## 3.3 抽取service业务层
+
+新建模块，然后拷贝原始项目中相应的相关内容到ssm_service模块中即可。这个里面需要拷贝的内容有：业务层接口及实现类、配置文件、pom.xml文件依赖的坐标、测试代码、测试代码配置文件。
+
+![](..\图片\2-24【Maven】\3-4service拆分.png)
+
+首先来导入依赖，原始项目pom.xml依赖及插件如下：
+
+* mybatis环境：mybatis环境、mysql环境、spring整合jdbc、spring整合mybatis、druid连接池、分页插件坐标、
+* springmvc环境：springmvc环境、jackson相关坐标、servlet环境、
+* 其他组件：junit单元测试、spring整合junit
+* 插件：tomcat7-maven-plugin
+
+因为是在业务侧层service里面，所以将mybatis环境、springmvc环境和tomcat7插件删掉即可，而junit单元测试留下，这里我们会做一下单元测试。最后在加上spring的环境和数据层的依赖即可（不要忘记让dao层install一下）。
 
 ```xml
-<dependency>
-    <groupId>com.linxuan</groupId>
-    <artifactId>maven_04_dao</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <!--排除依赖是隐藏当前资源对应的依赖关系-->
-    <exclusions>
-        <exclusion>
-            <groupId>com.linxuan</groupId>
-            <artifactId>maven_03_pojo</artifactId>
-        </exclusion>
-        <exclusion>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-        </exclusion>
-        <exclusion>
-            <groupId>org.mybatis</groupId>
-            <artifactId>mybatis</artifactId>
-        </exclusion>
-    </exclusions>
-</dependency>
+<dependencies>
+    <!--导入dao层依赖-->
+    <dependency>
+        <groupId>com.linxuan</groupId>
+        <artifactId>ssm_dao</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </dependency>
+
+    <!--spring环境-->
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId>
+        <version>5.1.9.RELEASE</version>
+    </dependency>
+
+
+    <!--其他组件-->
+    <!--junit单元测试-->
+    <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.12</version>
+    </dependency>
+    <!--spring整合junit-->
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-test</artifactId>
+        <version>5.1.9.RELEASE</version>
+    </dependency>
+</dependencies>
 ```
 
-介绍这两种方式后，简单来梳理下，就是
+接下来修改配置文件applicationContext-service.xml，里面配置有：bean注解扫描、事务配置、mybatis配置。只需要保留bean注解扫描和事务配置即可，bean注解扫描也需要动一下。
+
+```xml
+<!--主程序对应的配置文件-->
+<!--开启bean注解扫描-->
+<context:component-scan base-package="com.linxuan"/>
+
+<!--开启注解式事务-->
+<tx:annotation-driven transaction-manager="txManager"/>
+
+<!--事务管理器-->
+<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+    <!--这里表示引用外部bean，dataSource会报红，不过不用担心，在dao层里面有，我们已经导入dao层的依赖了-->
+    <property name="dataSource" ref="dataSource"/>
+</bean>
+```
+
+到这里已经完成一大半了，主要业务代码已经弄好了，可以编译一下看看是否成功。
+
+接下来就是修改测试代码了。测试代码的配置文件和主业务代码的配置文件并不相同，所以这里复制主业务代码配置文件到测试代码位置，然后将原来的删掉。
+
+相应的测试代码也需要进行修改，因为配置文件里面只配置了业务层的配置，并没有配置数据层的配置。对此有两种解决方法：导入两个配置文件（业务层和数据层）、补全配置文件（业务层配置文件添加上数据层的配置）。这里采用第一种：
+
+```java
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath:applicationContext-service.xml", "classpath:applicationContext-dao.xml"})
+```
+
+之后test一下，执行所有的测试代码，发现成功。然后将service模块安装到本地仓库就可以了。
+
+## 3.4 抽取Controller表现层
+
+根据web模板创建模块。
+
+![](..\图片\2-24【Maven】\3-5controller拆分.png)
+
+pom.xml添加依赖及插件
+
+```xml
+<dependencies>
+    <!--springmvc环境-->
+    <!--springmvc环境-->
+    <!--springmvc环境-->
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-webmvc</artifactId>
+        <version>5.1.9.RELEASE</version>
+    </dependency>
+    <!--jackson相关坐标3个-->
+    <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>2.9.0</version>
+    </dependency>
+    <!--<dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.9.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>2.9.0</version>
+        </dependency>-->
+    <!--servlet环境-->
+    <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>javax.servlet-api</artifactId>
+        <version>3.1.0</version>
+        <scope>provided</scope>
+    </dependency>
+</dependencies>
+
+<build>
+    <!--设置插件-->
+    <plugins>
+        <!--具体的插件配置-->
+        <plugin>
+            <groupId>org.apache.tomcat.maven</groupId>
+            <artifactId>tomcat7-maven-plugin</artifactId>
+            <version>2.1</version>
+            <configuration>
+                <port>80</port>
+                <path>/</path>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
+```
+
+web.xml里面有一个配置信息需要修改：
+
+```xml
+<context-param>
+    <param-name>contextConfigLocation</param-name>
+    <!--
+        原始为：<param-value>classpath*:applicationContext.xml</param-value>
+        因为这里我们将Spring的配置文件拆分了，一个是Dao层，一个是Service层，所以这里让他全部导入。
+    -->
+    <!--<param-value>classpath*:applicationContext.xml</param-value>-->
+    <param-value>classpath*:applicationContext-*.xml</param-value>
+</context-param>
+```
 
-* `A依赖B,B依赖C`,`C`通过依赖传递会被`A`使用到，现在要想办法让`A`不去依赖`C`
-* 可选依赖是在B上设置`<optional>`,`A`不知道有`C`的存在，
-* 排除依赖是在A上设置`<exclusions>`,`A`知道有`C`的存在，主动将其排除掉。
+springmvc配置文件spring-mvc.xml不需要动
 
-## 3.3 聚合和继承
+```xml
+<!--驱动-->
+<mvc:annotation-driven/>
+<!--包扫描-->
+<context:component-scan base-package="com.linxuan.controller"/>
+```
 
-我们的项目已经从以前的单模块，变成了现在的多模块开发。项目一旦变成了多模块开发以后，就会引发一些问题，在这一节中我们主要会学习两个内容`聚合`和`继承`，用这两个知识来解决下分模块后的一些问题。
+编译通过，然后tomcat插件运行，最后拿Postman测试一下即可。新增POST：`localhost:8080/user?userName=jack2&password=1234&realName=jack3&gender=1&1999/09/09`
 
-### 聚合
+# 第四章 Maven高级
 
-![1630858596147](..\图片\2-24【Maven】\1-9.png)
+## 4.1 聚合和继承
 
-* 分模块开发后，需要将这四个项目都安装到本地仓库，目前我们只能通过项目Maven面板的`install`来安装，并且需要安装四个，如果我们的项目足够多，那么一个个安装起来还是比较麻烦的
-* 如果四个项目都已经安装成功，当`ssm_pojo`发生变化后，我们就得将`ssm_pojo`重新安装到maven仓库，但是为了确保我们对`ssm_pojo`的修改不会影响到其他项目模块，我们需要对所有的模块进行重新编译，那又需要将所有的模块再来一遍
+上面项目分模块开发后，通过项目Maven面板的`install`来安装到本地仓库，如果我们的项目足够多，那么一个个安装起来还是比较麻烦的。并且当其中一个模块发生变化，为了确保不会影响到其他项目模块，需要对所有的模块进行重新编译安装。这样就太麻烦了，这就用到了我们接下来要讲解的聚合和继承。
 
-项目少的话还好，但是如果项目多的话，一个个操作项目就容易出现漏掉或重复操作的问题，所以我们就想能不能抽取一个项目，把所有的项目管理起来，以后我们要想操作这些项目，只需要操作这一个项目，其他所有的项目都走一样的流程，这个不就很省事省力。
-
-这就用到了我们接下来要讲解的聚合，
-
-* 所谓聚合：将多个模块组织成一个整体，同时进行项目构建的过程称为聚合。
-
-* 聚合工程：通常是一个不具有业务功能的"空"工程（有且仅有一个pom文件）。
-
-* 作用：使用聚合工程可以将多个工程编组，通过对聚合工程进行构建，实现对所包含的模块进行同步构建。
-  
-  当工程中某个模块发生更新（变更）时，必须保障工程中与已更新模块关联的模块同步更新，此时可以使用聚合工程来解决批量模块同步构建的问题。
-
-关于聚合具体的实现步骤为：
-
-1. 创建一个空的maven项目，不用任何模板，这里创建一个`maven_01_parent`。
-
-2. 将项目的打包方式改为pom
-
-   ```xml
-   <?xml version="1.0" encoding="UTF-8"?>
-   <project xmlns="http://maven.apache.org/POM/4.0.0"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-       <modelVersion>4.0.0</modelVersion>
-   
-       <groupId>com.linxuan</groupId>
-       <artifactId>maven_01_parent</artifactId>
-       <version>1.0-RELEASE</version>
-       <packaging>pom</packaging>
-       
-   </project>
-   ```
-
-   **说明:**项目的打包方式，我们接触到的有三种，分别是
-
-   * jar:默认情况，说明该项目为java项目
-
-   * war:说明该项目为web项目
-
-   * pom:说明该项目为聚合或继承(后面会讲)项目
-
-
-3. pom.xml添加所要管理的项目
-
-   ```xml
-   <?xml version="1.0" encoding="UTF-8"?>
-   <project xmlns="http://maven.apache.org/POM/4.0.0"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-       <modelVersion>4.0.0</modelVersion>
-   
-       <groupId>com.linxuan</groupId>
-       <artifactId>maven_01_parent</artifactId>
-       <version>1.0-RELEASE</version>
-       <packaging>pom</packaging>
-       
-       <!--设置管理的模块名称-->
-       <modules>
-           <module>../maven_02_ssm</module>
-           <module>../maven_03_pojo</module>
-           <module>../maven_04_dao</module>
-       </modules>
-   </project>
-   ```
-
-4. 使用聚合统一管理项目
-
-   测试发现，当`maven_01_parent`的`compile`被点击后，所有被其管理的项目都会被执行编译操作。这就是聚合工程的作用。
-
-   **说明：**聚合工程管理的项目在进行运行的时候，会按照项目与项目之间的依赖关系来自动决定执行的顺序和配置的顺序无关。
-
-聚合的知识我们就讲解完了，最后总结一句话就是，**聚合工程主要是用来管理项目**。
-
-### 继承
-
-我们已经完成了使用聚合工程去管理项目，聚合工程进行某一个构建操作，其他被其管理的项目也会执行相同的构建操作。那么接下来，我们再来分析下，多模块开发存在的另外一个问题，`重复配置`的问题，我们先来看张图：
-
-![1630860344968](..\图片\2-24【Maven】\1-10.png)
-
-* `spring-webmvc`、`spring-jdbc`在三个项目模块中都有出现，这样就出现了重复的内容
-* `spring-test`只在ssm_crm和ssm_goods中出现，而在ssm_order中没有，这里是部分重复的内容
-* 我们使用的spring版本目前是`5.2.10.RELEASE`，假如后期要想升级spring版本，所有跟Spring相关jar包都得被修改，涉及到的项目越多，维护成本越高
-
-面对上面的这些问题，我们就得用到接下来要学习的继承
-
-* 所谓继承：描述的是两个工程间的关系，与java中的继承相似，子工程可以继承父工程中的配置信息，常见于依赖关系的继承。
-* 作用：简化配置、减少版本冲突。
-
-接下来，我们到程序中去看看继承该如何实现?
-
-1. 创建一个空的Maven项目并将其打包方式设置为pom
-
-   因为这一步和前面maven创建聚合工程的方式是一摸一样，所以我们可以单独创建一个新的工程，也可以直接和聚合公用一个工程。实际开发中，聚合和继承一般也都放在同一个项目中，但是这两个的功能是不一样的。
-
-2. 在子项目中设置其父工程
-
-   分别在`maven_02_ssm`、`maven_03_pojo`、`maven_04_dao`的pom.xml中添加其父项目为`maven_01_parent`
-
-   ```xml
-   <!--配置当前工程继承自parent工程-->
-   <parent>
-       <groupId>com.linxuan</groupId>
-       <artifactId>maven_01_parent</artifactId>
-       <version>1.0-RELEASE</version>
-       <!--设置父项目pom.xml位置路径-->
-       <relativePath>../maven_01_parent/pom.xml</relativePath>
-   </parent>
-   ```
-
-3. 优化子项目共有依赖导入问题
-
-   1. 将子项目共同使用的jar包都抽取出来，维护在父项目的pom.xml中
-
-      ```xml
-      <?xml version="1.0" encoding="UTF-8"?>
-      <project xmlns="http://maven.apache.org/POM/4.0.0"
-               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-          <modelVersion>4.0.0</modelVersion>
-      
-          <groupId>com.linxuan</groupId>
-          <artifactId>maven_01_parent</artifactId>
-          <version>1.0-RELEASE</version>
-          <packaging>pom</packaging>
-          
-          <!--设置管理的模块名称-->
-          <modules>
-              <module>../maven_02_ssm</module>
-              <module>../maven_03_pojo</module>
-              <module>../maven_04_dao</module>
-          </modules>
-          
-          <!--将子项目共同使用的jar包都抽取出来，维护在父项目的pom.xml中-->
-          <dependencies>
-              <dependency>
-                  <groupId>org.springframework</groupId>
-                  <artifactId>spring-core</artifactId>
-                  <version>5.2.10.RELEASE</version>
-              </dependency>
-      
-              <dependency>
-                  <groupId>org.springframework</groupId>
-                  <artifactId>spring-webmvc</artifactId>
-                  <version>5.2.10.RELEASE</version>
-              </dependency>
-      
-              <!--省略一些抽取的jar包-->
-          </dependencies>
-      </project>
-      ```
-
-   2. 删除子项目中已经被抽取到父项目的pom.xml中的jar包，如在`maven_02_ssm`的pom.xml中将已经出现在父项目的jar包删除掉
-
-      删除完后，我们会发现父项目中有依赖对应的jar包，子项目虽然已经将重复的依赖删除掉了，但是刷新的时候，子项目中所需要的jar包依然存在。
-
-      当项目的`<parent>`标签被移除掉，会发现多出来的jar包依赖也会随之消失。
-
-   3. 将`maven_04_dao`项目的pom.xml中的所有依赖删除，然后添加上`maven_01_parent`的父项目坐标
-
-      ```xml
-      <?xml version="1.0" encoding="UTF-8"?>
-      <project xmlns="http://maven.apache.org/POM/4.0.0"
-               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-          <modelVersion>4.0.0</modelVersion>
-      
-          <groupId>com.linxuan</groupId>
-          <artifactId>maven_04_dao</artifactId>
-          <version>1.0-SNAPSHOT</version>
-      
-          <!--配置当前工程继承自parent工程-->
-          <parent>
-              <groupId>com.linxuan</groupId>
-              <artifactId>maven_01_parent</artifactId>
-              <version>1.0-RELEASE</version>
-              <relativePath>../maven_01_parent/pom.xml</relativePath>
-          </parent>
-      </project>
-      ```
-
-      刷新并查看Maven的面板，会发现maven_04_dao同样引入了父项目中的所有依赖。
-
-      这样我们就可以解决刚才提到的第一个问题，将子项目中的公共jar包抽取到父工程中进行统一添加依赖，这样做的可以简化配置，并且当父工程中所依赖的jar包版本发生变化，所有子项目中对应的jar包版本也会跟着更新。
-
-
-4. 优化子项目依赖版本问题
-
-   如果把所有用到的jar包都管理在父项目的pom.xml，看上去更简单些，但是这样就会导致有很多项目引入了过多自己不需要的jar包。如下面看到的这张图：
-
-   ![1630860344968](..\图片\2-24【Maven】\1-10.png)
-
-   如果把所有的依赖都放在了父工程中进行统一维护，就会导致ssm_order项目中多引入了`spring-test`的jar包，如果这样的jar包过多的话，对于ssm_order来说也是一种"负担"。
-
-   那针对于这种部分项目有的jar包，我们该如何管理优化呢？
-
-   1. 在父工程mavne_01_parent的pom.xml来定义依赖管理
-
-      ```xml
-      <!--定义依赖管理-->
-      <dependencyManagement>
-          <dependencies>
-              <dependency>
-                  <groupId>junit</groupId>
-                  <artifactId>junit</artifactId>
-                  <version>4.12</version>
-                  <scope>test</scope>
-              </dependency>
-          </dependencies>
-      </dependencyManagement>
-      ```
-
-   2. 将maven_02_ssm的pom.xml中的junit依赖删除掉，刷新Maven
-
-      ![1630944335419](..\图片\2-24【Maven】\1-11.png)
-
-      刷新完会发现，在maven_02_ssm项目中的junit依赖并没有出现，这是因为：`<dependencyManagement>`标签不真正引入jar包，而是配置可供子项目选择的jar包依赖。子项目要想使用它所提供的这些jar包，需要自己添加依赖，并且不需要指定`<version>`
-
-   3. 在maven_02_ssm的pom.xml添加junit的依赖
-
-      ```xml
-      <dependency>
-          <groupId>junit</groupId>
-          <artifactId>junit</artifactId>
-          <scope>test</scope>
-      </dependency>
-      ```
-
-      > **注意：这里就不需要添加版本了，这样做的好处就是当父工程dependencyManagement标签中的版本发生变化后，子项目中的依赖版本也会跟着发生变化**
-
-   4. 在maven_04_dao的pom.xml添加junit的依赖
-
-      ```xml
-      <dependency>
-          <groupId>junit</groupId>
-          <artifactId>junit</artifactId>
-          <scope>test</scope>
-      </dependency>
-      ```
-
-      这个时候，maven_02_ssm和maven_04_dao这两个项目中的junit版本就会跟随着父项目中的标签dependencyManagement中junit的版本发生变化而变化。不需要junit的项目就不需要添加对应的依赖即可。
-
-
-至此继承就已经学习完了，最后总结一句话就是，**父工程主要是用来快速配置依赖jar包和管理项目中所使用的资源**。
-
-### 聚合与继承的区别
-
-两种之间的作用:
+聚合和继承的工程构建，需要在聚合项目中手动添加`modules`标签，需要在所有的子项目中添加`parent`标签。
 
 * 聚合用于快速构建项目，对项目进行管理
 * 继承用于快速配置和管理子项目中所使用jar包的版本
@@ -734,31 +970,123 @@ maven 对项目构建过程分为三套相互独立的生命周期，请注意�
 * 聚合是在当前模块中配置关系，聚合可以感知到参与聚合的模块有哪些
 * 继承是在子模块中配置关系，父模块无法感知哪些子模块继承了自己
 
-相信到这里，大家已经能区分开什么是聚合和继承，但是有一个稍微麻烦的地方就是聚合和继承的工程构建，需要在聚合项目中手动添加`modules`标签，需要在所有的子项目中添加`parent`标签。
+**聚合**
 
-### IDEA构建聚合与继承工程
+所谓聚合就是将多个模块组织成一个整体，同时进行项目构建的过程称为聚合。聚合工程通常是一个不具有业务功能的"空"工程（有且仅有一个pom文件）。聚合工程主要是用来管理项目。
 
-其实对于聚合和继承工程的创建，IDEA已经能帮助我们快速构建，具体的实现步骤为:
+使用聚合工程可以将多个工程编组，通过对聚合工程进行构建，实现对所包含的模块进行同步构建。
 
-1. 创建一个Maven项目
+实现步骤为：不用任何模板创建一个空的maven项目ssm、将项目的打包方式改为pom、pom.xml添加所要管理的项目。这样以后执行命令的时候只需要执行父工程的命令就行了。
 
-   创建一个空的Maven项目，可以将项目中的`src`目录删除掉，这个项目作为聚合工程和父工程。
+```xml
+<!--父工程项目坐标GAV-->
+<groupId>com.linxuan</groupId>
+<artifactId>ssm</artifactId>
+<version>1.0-SNAPSHOT</version>
+<!--将项目的打包方式改为pom-->
+<packaging>pom</packaging>
 
-2. 创建子项目
+<!-- pom.xml添加所要管理的项目 设置管理的模块名称-->
+<modules>
+    <module>../ssm_controller</module>
+    <module>../ssm_service</module>
+    <module>../ssm_dao</module>
+    <module>../ssm_pojo</module>
+</modules>
+```
 
-   该项目可以被聚合工程管理，同时会继承父工程。
+聚合工程管理的项目在进行运行的时候，会按照项目与项目之间的依赖关系来自动决定执行的顺序和配置的顺序无关。
 
-   ![1630947082716](..\图片\2-24【Maven】\1-12.png)
+**继承**
 
-   创建成功后，maven_parent即是聚合工程又是父工程，maven_web中也有parent标签，继承的就是maven_parent,对于难以配置的内容都自动生成。
+继承用于快速配置和管理子项目中所使用jar包的版本。子工程可以继承父工程中的配置信息，常见于依赖关系的继承。这样可以简化配置、减少版本冲突。
 
-# 第四章 属性和版本管理
+实现步骤为：不用任何模板创建一个空的父工程maven项目、将项目的打包方式改为pom、在子项目中设置父项目pom.xml位置、将子项目共同使用的jar包抽取出来维护在父项目的pom.xml中。这样就实现了继承。
 
-属性中会继续解决分模块开发项目存在的问题，版本管理主要是认识下当前主流的版本定义方式。
+```xml
+<!--配置当前工程继承自parent工程-->
+<parent>
+    <groupId>com.linxuan</groupId>
+    <artifactId>ssm_controller</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <!--设置父项目pom.xml位置路径-->
+    <relativePath>../ssm/pom.xml</relativePath>
+</parent>
+```
 
-## 4.1 属性
+如果把所有用到的jar包都管理在父项目的pom.xml，看上去更简单些，但是这样就会导致有很多项目引入了过多自己不需要的jar包。针对于这种部分项目有的jar包，我们可以在父工程定义依赖管理：
 
-前面我们已经在父工程中的dependencyManagement标签中对项目中所使用的jar包版本进行了统一的管理，但是如果在标签中有如下的内容：
+```xml
+<!--定义依赖管理-->
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+```
+
+`<dependencyManagement>`标签不真正引入jar包，而是配置可供子项目选择的jar包依赖。子项目要想使用它所提供的这些jar包，需要自己添加依赖，并且不需要指定`<version>`。然后在子工程里面引入依赖即可：
+
+```xml
+<!--这里就不需要添加版本了，当父工程中的版本发生变化后，子项目中的依赖版本也会跟着发生变化-->
+<dependency>
+    <groupId>junit</groupId>
+    <artifactId>junit</artifactId>
+    <scope>test</scope>
+</dependency>
+```
+
+继承的资源如下：
+
+| 继承标签                | 作用         | 继承标签             | 作用                                                       |
+| ----------------------- | ------------ | -------------------- | ---------------------------------------------------------- |
+| groupId                 | 项目组 ID    |                      |                                                            |
+| version                 | 项目版本     | ciManagement         | 持续继承信息                                               |
+| description             | 描述信息     | scm                  | 版本控制信息                                               |
+| organization            | 组织信息     | mailingListserv      | 邮件列表信息                                               |
+| inceptionYear           | 创始年份     | properties           | 自定义的 Maven 属性                                        |
+| url                     | url 地址     | dependencies         | 依赖配置                                                   |
+| develoers               | 开发者信息   | dependencyManagement | 依赖管理配置                                               |
+| contributors            | 贡献者信息   | repositories         | 仓库配置                                                   |
+| distributionManagerment | 部署信息     | build                | 源码目录配置、输出目录配置、<br />插件配置、插件管理配置等 |
+| issueManagement         | 缺陷跟踪信息 | reporting            | 报告输出目录配置、报告插件配置等                           |
+
+## 4.2 属性properties
+
+在Maven中的属性分为：自定义属性（常用）、内置属性、Setting属性、Java系统属性、环境变量属性。
+
+| 属性分类     | 引用格式                     | 实例                        |
+| ------------ | ---------------------------- | --------------------------- |
+| 自定义属性   | ${自定义属性名称}            | ${spring.version}           |
+| 内置属性     | ${内置属性名称}              | ${basedir}     ${version}   |
+| Setting属性  | ${settings.属性名称}         | ${settings.localRepository} |
+| Java系统属性 | ${系统属性分类.系统属性名称} | ${user.home}                |
+| 环境变量属性 | ${env.环境变量属性名称}      | ${env.JAVA_HOME}            |
+
+可以在cmd命令行中输入`mvn help:system`查看Java系统属性和环境变量属性 
+
+```apl
+C:\Windows\System32>mvn help:system
+===============================================================================
+System Properties
+===============================================================================
+
+java.runtime.name=Java(TM) SE Runtime Environment
+sun.boot.library.path=E:\JAVA\jdk1.8.0_144\jre\bin
+java.vm.version=25.144-b01
+java.vm.vendor=Oracle Corporation...
+```
+
+接下来详细介绍一下自定义属性，自定义属性会继续解决分模块开发项目存在的问题。
+
+**自定义属性**
+
+前面我们已经在父工程中的dependencyManagement标签中对项目中所使用的jar包版本进行了统一的管理，但是如果在父工程的标签中有如下的内容：
 
 ```xml
 <dependency>
@@ -772,66 +1100,43 @@ maven 对项目构建过程分为三套相互独立的生命周期，请注意�
     <artifactId>spring-webmvc</artifactId>
     <version>5.2.10.RELEASE</version>
 </dependency>
-
-<!--省略一些抽取的jar包-->
 ```
 
-我们会发现，如果我们现在想更新Spring的版本，我们会发现我们依然需要更新多个jar包的版本，这样的话还是有可能出现漏改导致程序出问题，而且改起来也是比较麻烦。
+这时想更新Spring的版本，依然需要更新多个jar包的版本。这时候就用到了自定义属性，用properties标签定义属性设置版本，其他的地方应用这个版本值。这样更改的时候只需要更改properties标签内容即可。
 
-问题清楚后，我们需要解决的话，就可以参考咱们java基础所学习的变量，声明一个变量，在其他地方使用该变量，当变量的值发生变化后，所有使用变量的地方，就会跟着修改，即：
+```xml
+<!-- 定义属性 设置版本-->
+<properties>
+    <!--这里的标签命名自定义，但是习惯是技术栈名称+.version-->
+    <spring.version>5.2.10.RELEASE</spring.version>
+    <junit.version>4.12</junit.version>
+    <mybatis-spring.version>1.3.0</mybatis-spring.version>
+</properties>
+```
 
-![1630947749661](..\图片\2-24【Maven】\1-13.png)
+```xml
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-core</artifactId>
+    <version>${spring.version}</version>
+</dependency>
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-webmvc</artifactId>
+    <version>${spring.version}</version>
+</dependency>
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-jdbc</artifactId>
+    <version>${spring.version}</version>
+</dependency>
+```
 
-1. 父工程中定义属性
+**配置文件加载属性**
 
-   ```xml
-   <properties>
-       <spring.version>5.2.10.RELEASE</spring.version>
-       <junit.version>4.12</junit.version>
-       <mybatis-spring.version>1.3.0</mybatis-spring.version>
-   </properties>
-   ```
+让Maven对于属性的管理范围能更大些，比如我们之前项目中的`jdbc.properties`这个配置文件中的属性，也让Maven进行管理。具体的实现步骤如下：
 
-2. 修改依赖的version
-
-   ```xml
-   <dependency>
-       <groupId>org.springframework</groupId>
-       <artifactId>spring-core</artifactId>
-       <version>${spring.version}</version>
-   </dependency>
-   <dependency>
-       <groupId>org.springframework</groupId>
-       <artifactId>spring-webmvc</artifactId>
-       <version>${spring.version}</version>
-   </dependency>
-   <dependency>
-       <groupId>org.springframework</groupId>
-       <artifactId>spring-jdbc</artifactId>
-       <version>${spring.version}</version>
-   </dependency>
-   ```
-
-   此时，我们只需要更新父工程中properties标签中所维护的jar包版本，所有子项目中的版本也就跟着更新。当然除了将spring相关版本进行维护，我们可以将其他的jar包版本也进行抽取，这样就可以对项目中所有jar包的版本进行统一维护，如：
-
-   ```xml
-   <!--定义属性-->
-   <properties>
-       <spring.version>5.2.10.RELEASE</spring.version>
-       <junit.version>4.12</junit.version>
-       <mybatis-spring.version>1.3.0</mybatis-spring.version>
-   </properties>
-   ```
-
-## 4.2 配置文件加载属性
-
-Maven中的属性我们已经介绍过了，现在也已经能够通过Maven来集中管理Maven中依赖jar包的版本。但是又有新的需求，就是想让Maven对于属性的管理范围能更大些，比如我们之前项目中的`jdbc.properties`，这个配置文件中的属性，能不能也来让Maven进行管理呢？
-
-答案是肯定的，具体的实现步骤如下：
-
-1. 父工程定义属性
-
-   在父工程maven_01_parent的properties标签中添加属性，属性标签自定义，这里我们定义为jdbc.url。
+1. 父工程定义属性。在父工程ssm的properties标签中添加属性，属性标签自定义，这里我们定义为jdbc.url。
 
    ```xml
    <properties>
@@ -839,9 +1144,7 @@ Maven中的属性我们已经介绍过了，现在也已经能够通过Maven来�
    </properties>
    ```
 
-2. jdbc.properties文件中引用属性
-
-   在jdbc.properties，将jdbc.url的值直接获取Maven配置的属性
+2. jdbc.properties文件中引用属性。在jdbc.properties，将jdbc.url的值直接获取Maven配置的属性
 
    ```properties
    jdbc.driver=com.mysql.jdbc.Driver
@@ -850,16 +1153,16 @@ Maven中的属性我们已经介绍过了，现在也已经能够通过Maven来�
    jdbc.password=root
    ```
 
-3. 设置maven过滤文件范围
-
-   扩大maven的控制范围，默认情况下我们上面定义的属性只能在pom文件中使用，不能够在配置文件下使用，所以我们需要使用插件来扩大maven控制范围。
+3. 父工程设置maven过滤文件范围。扩大maven的控制范围，默认情况下我们上面定义的属性只能在pom文件中使用，不能够在配置文件下使用，所以我们需要使用插件来扩大maven控制范围。
 
    ```xml
    <build>
+       <!--这里标签是resources代表是主文件代码里面地配置文件，如果改为testResources是test里面地配置文件-->
        <resources>
            <!--设置资源目录-->
            <resource>
-               <directory>../maven_02_ssm/src/main/resources</directory>
+               <!--最后是在ssm_dao模块下面地jdbc.properties里面解析-->
+               <directory>../ssm_dao/src/main/resources</directory>
                <!--设置能够解析${}，默认是false -->
                <filtering>true</filtering>
            </resource>
@@ -867,278 +1170,121 @@ Maven中的属性我们已经介绍过了，现在也已经能够通过Maven来�
    </build>
    ```
 
-   **说明:**directory路径前要添加`../`的原因是`maven_02_ssm`相对于父工程`maven_01_parent`的pom.xml路径是在其上一层的目录中，所以需要添加。
+4. 测试是否生效。测试的时候，只需要将`ssm`项目进行打包，然后观察打包结果中最终生成的内容是否为Maven中配置的内容。
 
-   修改完后，注意maven_02_ssm项目的resources目录就多了些东西，如下：
+如果有多个项目需要有属性被父工程管理，对此我们有两种解决方案：设置多个资源目录并让它能够解析`${}`、使用通配符。这里来说明一下第二种：
 
-   ![1630977419627](..\图片\2-24【Maven】\1-14.png)
+```xml
+<build>
+    <resources>
+        <!--
+			${project.basedir}: 当前项目所在目录,子项目继承了父项目，
+			相当于所有的子项目都添加了资源目录的过滤
+		-->
+        <resource>
+            <directory>${project.basedir}/src/main/resources</directory>
+            <filtering>true</filtering>
+        </resource>
+    </resources>
+</build>
+```
 
-4. 测试是否生效
-
-   测试的时候，只需要将`maven_02_ssm`项目进行打包，然后观察打包结果中最终生成的内容是否为Maven中配置的内容。
-
-上面的属性管理就已经完成，但是有一个问题没有解决，因为不只是`maven_02_ssm`项目需要有属性被父工程管理，如果有多个项目需要配置，该如何实现呢？对此我们有两种解决方案：
-
-* 第一种方式：
-
-  ```xml
-  <build>
-      <resources>
-          <!--设置资源目录，并设置能够解析${}-->
-          <resource>
-              <directory>../maven_02_ssm/src/main/resources</directory>
-              <filtering>true</filtering>
-          </resource>
-          <resource>
-              <directory>../maven_03_pojo/src/main/resources</directory>
-              <filtering>true</filtering>
-          </resource>
-          ...
-      </resources>
-  </build>
-  ```
-
-  可以配，但是如果项目够多的话，这个配置也是比较繁琐
-
-* 第二种方式：
-
-  ```xml
-  <build>
-      <resources>
-          <!--
-  			${project.basedir}: 当前项目所在目录,子项目继承了父项目，
-  			相当于所有的子项目都添加了资源目录的过滤
-  		-->
-          <resource>
-              <directory>${project.basedir}/src/main/resources</directory>
-              <filtering>true</filtering>
-          </resource>
-      </resources>
-  </build>
-  ```
-
-  **说明:**打包的过程中如果报如下错误：
-
-  ![1630948929828](..\图片\2-24【Maven】\1-15.png)
-
-  原因就是Maven发现我们的项目为web项目，就会去找web项目的入口web.xml[配置文件配置的方式]，发现没有找到，就会报错。
-
-  解决方案1：在`maven_02_ssm`项目的`src\main\webapp\WEB-INF\`添加一个web.xml文件
-
-  ```
-  <?xml version="1.0" encoding="UTF-8"?>
-  <web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
-           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-           xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
-           version="3.1">
-  </web-app>
-  ```
-
-  解决方案2：配置maven打包war时，忽略web.xml检查
-
-  ```xml
-  <build>
-      <plugins>
-          <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-war-plugin</artifactId>
-              <version>3.2.3</version>
-              <configuration>
-                  <failOnMissingWebXml>false</failOnMissingWebXml>
-              </configuration>
-          </plugin>
-      </plugins>
-  </build>
-  ```
-
-上面我们所使用的都是Maven的自定义属性，除了${project.basedir},它属于Maven的内置系统属性。
-
-在Maven中的属性分为:
-
-- 自定义属性（常用）
-- 内置属性
-- Setting属性
-- Java系统属性
-- 环境变量属性
-
-![1630981519370](..\图片\2-24【Maven】\1-16.png)
-
-具体如何查看这些属性：在cmd命令行中输入`mvn help:system`
-
-![1630981585748](..\图片\2-24【Maven】\1-17.png)
-
-具体使用，就是使用 `${key}`来获取，key为等号左边的，值为等号右边的，比如获取红线的值，对应的写法为 `${java.runtime.name}`。
-
-## 4.3 版本管理
+## 4.3 项目版本管理
 
 关于这个版本管理解决的问题是，在Maven创建项目和引用别人项目的时候，我们都看到过如下内容：
 
-![1630982018031](..\图片\2-24【Maven】\1-18.png)
+```xml
+<!--自己编写的项目ssm_controller-->
+<groupId>com.linxuan</groupId>
+<artifactId>ssm_controller</artifactId>
+<version>1.0-SNAPSHOT</version>
 
-这里面有两个单词，SNAPSHOT和RELEASE，它们所代表的含义是什么呢?
+<!--引入的SpringMVCjar包-->
+<groupId>org.springframework</groupId>
+<artifactId>spring-webmvc</artifactId>
+<version>5.1.9.RELEASE</version>
+```
 
-- SNAPSHOT（快照版本）
-  
-  项目开发过程中临时输出的版本，称为快照版本。
-  
-  快照版本会随着开发的进展不断更新。
-  
-- RELEASE（发布版本）
-  
-  项目开发到一定阶段里程碑后，向团队外部发布较为稳定的版本，这种版本所对应的构件文件是稳定的。
-  
-  即便进行功能的后续开发，也不会改变当前发布版本内容，这种版本称为发布版本
+SNAPSHOT（快照版本）：项目开发过程中临时输出的版本，称为快照版本。快照版本会随着开发的进展不断更新。
+
+RELEASE（发布版本）：项目开发到一定阶段里程碑后，向团队外部发布较为稳定的版本，这种版本所对应的构件文件是稳定的。即便进行功能的后续开发，也不会改变当前发布版本内容，这种版本称为发布版本。
 
 除了上面的工程版本，我们还经常能看到一些发布版本:
 
-* alpha版：内测版，bug多不稳定内部版本不断添加新功能
-* beta版：公测版，不稳定(比alpha稳定些)，bug相对较多不断添加新功能
+* alpha版：内测版。bug多、不稳定、内部版本、不断添加新功能。
+* beta版：公测版。不稳定(比alpha稳定些)，bug相对较多、不断添加新功能。
 * 纯数字版
 
-# 第五章 多环境配置与私服
+工程版本号约定规范：`<主版本>.<此版本>.<增量版本>.<里程碑版本>`。例如：5.1.9.RELEASE。
 
-这一节中，我们会讲两个内容，分别是`多环境开发`和`跳过测试`
+* 主版本：表示项目重大架构的变更。例如Spring5相较于Spring4的迭代。
+* 次版本：表示有较大的功能增加和变化，或者全面系统地修复漏洞。
+* 增量版本：表示有重大漏洞地修复。
+* 里程碑版本：表示一个版本地里程碑（版本内部）。这样地版本同下一个正式版本对比，相对来说不是很稳定，有待更多地测试。
 
-## 5.1 多环境开发
+## 4.4 多环境开发配置
 
-![1630983617755](..\图片\2-24【Maven】\1-19.png)
-
-我们平常都是在自己的开发环境进行开发，当开发完成后，需要把开发的功能部署到测试环境供测试人员进行测试使用，等测试人员测试通过后，我们会将项目部署到生成环境上线使用。
+我们平常都是在自己的开发环境进行开发，当开发完成后，需要把开发的功能部署到测试环境供测试人员进行测试使用，等测试人员测试通过后，会将项目部署到生成环境上线使用。
 
 这个时候就有一个问题是，不同环境的配置是不相同的，如不可能让三个环境都用一个数据库，所以就会有三个数据库的url配置，我们在项目中如何配置？要想实现不同环境之间的配置切换又该如何来实现呢？
 
-maven提供配置多种环境的设定，帮助开发者在使用过程中快速切换环境。具体实现步骤：
+maven提供配置多种环境的设定，帮助开发者在使用过程中快速切换环境。
 
-1. 父工程配置多个环境,并指定默认激活环境
+```xml
+<!--父工程配置多个环境，并指定默认激活环境-->
+<profiles>
+    <!--开发环境-->
+    <profile>
+        <!--注意：这里使用的是id标签，因为要保证唯一，所以不能够使用name标签-->
+        <id>env_dep</id>
+        <properties>
+            <jdbc.url>jdbc:mysql://127.1.1.1:3306/ssm_db</jdbc.url>
+        </properties>
+        <!--设定是否为默认启动环境-->
+        <activation>
+            <activeByDefault>true</activeByDefault>
+        </activation>
+    </profile>
+    <!--生产环境-->
+    <profile>
+        <id>env_pro</id>
+        <properties>
+            <jdbc.url>jdbc:mysql://127.2.2.2:3306/ssm_db</jdbc.url>
+        </properties>
+    </profile>
+    <!--测试环境-->
+    <profile>
+        <id>env_test</id>
+        <properties>
+            <jdbc.url>jdbc:mysql://127.3.3.3:3306/ssm_db</jdbc.url>
+        </properties>
+    </profile>
+</profiles>
+```
 
-   ```xml
-   <profiles>
-       <!--开发环境-->
-       <profile>
-           <!--注意：这里使用的是id标签，因为要保证唯一，所以不能够使用name标签-->
-           <id>env_dep</id>
-           <properties>
-               <jdbc.url>jdbc:mysql://127.1.1.1:3306/ssm_db</jdbc.url>
-           </properties>
-           <!--设定是否为默认启动环境-->
-           <activation>
-               <activeByDefault>true</activeByDefault>
-           </activation>
-       </profile>
-       <!--生产环境-->
-       <profile>
-           <id>env_pro</id>
-           <properties>
-               <jdbc.url>jdbc:mysql://127.2.2.2:3306/ssm_db</jdbc.url>
-           </properties>
-       </profile>
-       <!--测试环境-->
-       <profile>
-           <id>env_test</id>
-           <properties>
-               <jdbc.url>jdbc:mysql://127.3.3.3:3306/ssm_db</jdbc.url>
-           </properties>
-       </profile>
-   </profiles>
-   ```
+可以通过install命令安装包到本地进行查看是否能够进行切换。虽然已经能够实现不同环境的切换，但是每次切换都是需要手动修改，当然也可以使用命令行实现环境切换：
 
-2. 执行安装查看env_dep环境是否生效
+```sh
+mvn 指令 -P 环境定义ID[环境定义中获取]
+```
 
-   执行install命令，打开文件，查看到的结果为:
+![](..\图片\2-24【Maven】\4-1调出命令行.png)
 
-   ![](..\图片\2-24【Maven】\1-20.png)
+## 4.5 跳过测试
 
-3. 切换默认环境为生产环境
+前面在执行`install`指令的时候，Maven都会执行`Default Lifecycle`这个声明周期，每一次都会执行`test`。对于`test`来说有它存在的意义：可以确保每次打包或者安装的时候，程序的正确性。
 
-   ```xml
-   <profiles>
-       <!--开发环境-->
-       <profile>
-           <id>env_dep</id>
-           <properties>
-               <jdbc.url>jdbc:mysql://127.1.1.1:3306/ssm_db</jdbc.url>
-           </properties>
-       </profile>
-       <!--生产环境-->
-       <profile>
-           <id>env_pro</id>
-           <properties>
-               <jdbc.url>jdbc:mysql://127.2.2.2:3306/ssm_db</jdbc.url>
-           </properties>
-           <!--设定是否为默认启动环境-->
-           <activation>
-               <activeByDefault>true</activeByDefault>
-           </activation>
-       </profile>
-       <!--测试环境-->
-       <profile>
-           <id>env_test</id>
-           <properties>
-               <jdbc.url>jdbc:mysql://127.3.3.3:3306/ssm_db</jdbc.url>
-           </properties>
-       </profile>
-   </profiles>
-   ```
+但是假如测试已经通过，在我们没有修改程序的前提下再次执行打包或安装命令，测试会被再次执行，这就有点耗费时间了。或者功能开发过程中有部分模块还没有开发完毕，这样就会导致测试无法通过，但是想要把其中某一部分进行快速打包，此时就会导致打包失败。
 
-4. 执行安装并查看env_pro环境是否生效
+遇到上面这些情况的时候，我们就想跳过测试执行下面的构建命令，具体实现方式有很多：IDEA工具实现跳过测试、配置插件实现跳过测试、命令行跳过测试。接下来详细介绍一下：
 
-   查看到的结果为`jdbc:mysql://127.2.2.2:3306/ssm_db`
+1. IDEA工具实现跳过测试。图中的按钮为`Toggle 'Skip Tests' Mode`，Toggle翻译为切换的意思，也就是说在测试与不测试之间进行切换。
 
-虽然已经能够实现不同环境的切换，但是每次切换都是需要手动修改，如何来实现在不改变代码的前提下完成环境的切换呢？
+   ![](..\图片\2-24【Maven】\4-2跳过test.png)
 
-这里我们可以使用命令行实现环境切换
+   这种方式最简单，但是有点"暴力"，会把所有的测试都跳过，如果我们想更精细的控制哪些跳过哪些不跳过，就需要使用配置插件的方式。
 
-![1630984476202](..\图片\2-24【Maven】\1-21.png)
-
-执行安装并查看env_test环境是否生效，查看到的结果为`jdbc:mysql://127.3.3.3:3306/ssm_db`。
-
-所以总结来说，对于多环境切换只需要两步即可：
-
-* 父工程中定义多环境
-
-  ```xml
-  <profiles>
-  	<profile>
-      	<id>环境名称</id>
-          <properties>
-          	<key>value</key>
-          </properties>
-          <activation>
-          	<activeByDefault>true</activeByDefault>
-          </activation>
-      </profile>
-      ...
-  </profiles>
-  ```
-
-* 使用多环境(构建过程)
-
-  ```
-  mvn 指令 -P 环境定义ID[环境定义中获取]
-  ```
-
-## 5.2 跳过测试
-
-前面在执行`install`指令的时候，Maven都会按照顺序从上往下依次执行，每次都会执行`test`，对于`test`来说有它存在的意义：
-
-* 可以确保每次打包或者安装的时候，程序的正确性，假如测试已经通过在我们没有修改程序的前提下再次执行打包或安装命令，由于顺序执行，测试会被再次执行，就有点耗费时间了。
-* 功能开发过程中有部分模块还没有开发完毕，测试无法通过，但是想要把其中某一部分进行快速打包，此时由于测试环境失败就会导致打包失败。
-
-遇到上面这些情况的时候，我们就想跳过测试执行下面的构建命令，具体实现方式有很多：
-
-1. IDEA工具实现跳过测试
-
-   ![1630985300814](..\图片\2-24【Maven】\1-22.png)
-
-   图中的按钮为`Toggle 'Skip Tests' Mode`，Toggle翻译为切换的意思，也就是说在测试与不测试之间进行切换。
-
-   点击一下，出现测试画横线的图片，如下:![1630985411766](..\图片\2-24【Maven】\1-23.png)
-
-   说明测试已经被关闭，再次点击就会恢复。这种方式最简单，但是有点"暴力"，会把所有的测试都跳过，如果我们想更精细的控制哪些跳过哪些不跳过，就需要使用配置插件的方式。
-
-2. 配置插件实现跳过测试
-
-   在父工程中的pom.xml中添加测试插件配置
+2. 配置插件实现跳过测试。在父工程中的pom.xml中添加测试插件配置
 
    ```xml
    <build>
@@ -1147,8 +1293,10 @@ maven提供配置多种环境的设定，帮助开发者在使用过程中快速
                <artifactId>maven-surefire-plugin</artifactId>
                <version>2.12.4</version>
                <configuration>
+                   <!--如果为true，则跳过所有测试，如果为false，则不跳过测试-->
                    <skipTests>false</skipTests>
-                   <!--排除掉不参与测试的内容-->
+                   <!--includes哪些测试类要参与测试 针对skipTests为true来设置的-->
+                   <!--excludes排除掉不参与测试的内容-->
                    <excludes>
                        <exclude>**/BookServiceTest.java</exclude>
                    </excludes>
@@ -1158,151 +1306,104 @@ maven提供配置多种环境的设定，帮助开发者在使用过程中快速
    </build>
    ```
 
-   skipTests:如果为true，则跳过所有测试，如果为false，则不跳过测试
-
-   excludes：哪些测试类不参与测试，即排除，针对skipTests为false来设置的
-
-   includes: 哪些测试类要参与测试，即包含,针对skipTests为true来设置的
-
-3. 命令行跳过测试
-
-   使用Maven的命令行，`mvn 指令 -D skipTests`
-
-注意事项:
-
-* 执行的项目构建指令必须包含测试生命周期，否则无效果。例如执行compile生命周期，不经过test生命周期。
-* 该命令可以不借助IDEA，直接使用cmd命令行进行跳过测试，需要注意的是cmd要在pom.xml所在目录下进行执行。
-
-## 8.3 私服简介
-
-首先来说一说什么是私服：
-
-团队开发现状分析：
-
-![1630987192620](..\图片\2-24【Maven】\1-24.png)
-
-- 张三负责`ssm_crm`的开发，自己写了一个`ssm_pojo`模块，要想使用直接将`ssm_pojo`安装到本地仓库即可
-
-- 李四负责`ssm_order`的开发，需要用到张三所写的`ssm_pojo`模块，这个时候如何将张三写的`ssm_pojo`模块交给李四呢?
-
-- 如果直接拷贝，那么团队之间的jar包管理会非常混乱而且容器出错，这个时候我们就想能不能将写好的项目上传到中央仓库，谁想用就直接联网下载即可
-
-- Maven的中央仓库不允许私人上传自己的jar包,那么我们就得换种思路，自己搭建一个类似于中央仓库的东西，把自己的内容上传上去，其他人就可以从上面下载jar包使用
-
-- 这个类似于中央仓库的东西就是我们接下来要学习的私服
+3. 命令行跳过测试。使用Maven的命令行，`mvn 指令 -D skipTests`cmd要在pom.xml所在目录下进行执行。
 
 
-所以到这就有两个概念，一个是私服，一个是中央仓库
+# 第五章 Maven私服
 
-- 私服：公司内部搭建的用于存储Maven资源的服务器
+私服是公司内部搭建的用于存储Maven资源的服务器。所以说私服是一台独立的服务器，用于解决团队内部的资源共享与资源同步问题
 
-- 远程仓库：Maven开发团队维护的用于存储Maven资源的服务器
+搭建Maven私服的方式有很多，我们来介绍其中一种使用量比较大的实现方式Nexus。
 
+**私服安装**
 
-所以说私服是一台独立的服务器，用于解决团队内部的资源共享与资源同步问题
+Nexus是Sonatype公司的一款maven私服产品，下载地址：https://help.sonatype.com/repomanager3/download。私服安装步骤如下：
 
-搭建Maven私服的方式有很多，我们来介绍其中一种使用量比较大的实现方式：
+1. 下载解压。将`latest-win64.zip`解压到一个空目录下，这里解压到了`E:\nexus`。里面有两个文件夹：nexus-3.30.1-01和sonatype-work。
 
-* Nexus
-  
-  Sonatype公司的一款maven私服产品
-  
-  下载地址：https://help.sonatype.com/repomanager3/download
+2. 启动Nexus。
 
-## 5.4 私服安装
-
-1. 下载解压
-
-   将`资料\latest-win64.zip`解压到一个空目录下。里面有两个文件夹，分别是：nexus-3.30.1-01和sonatype-work。两个都很重要，不能够删除。
-
-2. 启动Nexus
-
-   使用cmd进入到解压目录下的`nexus-3.30.1-01\bin`,执行如下命令：
-
-   ```
-   nexus.exe /run nexus
-   ```
-
-   看到如下内容，说明启动成功。
-
-   ```asciiarmor
+   ```apl
+   # 启动Nexus
+   E:\nexus\nexus-3.30.1-01\bin>nexus.exe /run nexus
+   2023-01-28 13:13:05,229+0800 INFO  [FelixStartLevel] *SYSTEM org.sonatype.nexus.pax.logging.NexusLogActivator - start
+   2023-01-28 13:13:05,817+0800 INFO  [FelixStartLevel] *SYSTEM org.sonatype.nexus.features.internal.FeaturesWrapper - Fast FeaturesService starting
+   ......
+   # 看到如下内容，说明启动成功
+   -------------------------------------------------
    Started Sonatype Nexus OSS 3.30.1-01
+   -------------------------------------------------
    ```
 
-3. 浏览器访问
+3. 浏览器访问。访问地址为http://localhost:8081
 
-   访问地址为：`http://localhost:8081`
+4. 首次登录重置密码。这里我们设置成了`admin`--`admin`
 
-4. 首次登录重置密码
+至此私服就已经安装成功。安装路径下etc目录中`nexus-default.properties`文件保存有nexus基础配置信息。安装路径下bin目录中`nexus.vmoptions`文件保存有nexus服务器启动对应的配置信息，可以修改服务器运行配置信息，例如默认占用内存空间。
 
-   这里我们设置成了`admin`--`admin`
+**私服仓库**
 
-至此私服就已经安装成功。如果要想修改一些基础配置信息，可以使用：
+在没有私服的情况下，我们自己创建的服务都是安装在Maven的本地仓库中。私服中也有仓库，我们要把自己的资源上传到私服，最终也是放在私服的仓库中，其他人要想使用我们所上传的资源，就需要从私服的仓库中获取。
 
-- 修改基础配置信息
-  
-  安装路径下etc目录中`nexus-default.properties`文件保存有nexus基础配置信息，例如默认访问端口。
-  
-- 修改服务器运行配置信息
-  
-  安装路径下bin目录中`nexus.vmoptions`文件保存有nexus服务器启动对应的配置信息，例如默认占用内存空间。
+自己写的服务代码有多种版本`SNAPSHOT`和`RELEASE`，如果把这两类的都放到同一个仓库，比较混乱，所以私服就把这两个种jar包放入不同的仓库。但是这样获取的时候要遍历所有地仓库来找寻，所以为了方便获取，我们将若干个仓库编成一个组，我们只需要访问仓库组去获取资源。
 
-## 5.5 私服仓库分类
+当我们要使用的资源远程中央仓库有的第三方jar包，这个时候就需要从远程中央仓库下载，私服就再准备一个仓库，用来专门存储从远程中央仓库下载的第三方jar包，第一次访问没有就会去远程中央仓库下载，下次再访问就直接走私服下载。
 
-私服资源操作流程分析：
-
-![1630989320979](..\图片\2-24【Maven】\1-25.png)
-
-在没有私服的情况下，我们自己创建的服务都是安装在Maven的本地仓库中，私服中也有仓库，我们要把自己的资源上传到私服，最终也是放在私服的仓库中，其他人要想使用我们所上传的资源，就需要从私服的仓库中获取。
-
-当我们要使用的资源不是自己写的，是远程中央仓库有的第三方jar包，这个时候就需要从远程中央仓库下载，每个开发者都去远程中央仓库下速度比较慢(中央仓库服务器在国外)
-
-- 私服就再准备一个仓库，用来专门存储从远程中央仓库下载的第三方jar包，第一次访问没有就会去远程中央仓库下载，下次再访问就直接走私服下载
-
-- 前面在介绍版本管理的时候提到过有`SNAPSHOT`和`RELEASE`，如果把这两类的都放到同一个仓库，比较混乱，所以私服就把这两个种jar包放入不同的仓库
-
-
-上面我们已经介绍了有三种仓库，一种是存放`SNAPSHOT`的，一种是存放`RELEASE`还有一种是存放从远程仓库下载的第三方jar包，那么我们在获取资源的时候要从哪个仓库种获取呢？为了方便获取，我们将所有的仓库编成一个组，我们只需要访问仓库组去获取资源。
+![](..\图片\2-24【Maven】\5-1私服.png)
 
 所有私服仓库总共分为三大类：
 
-* **宿主仓库hosted** 
+* 宿主仓库hosted：保存无法从中央仓库获取的资源。比如自主研发的项目、企业购买的第三方非开源项目。
 
-  保存无法从中央仓库获取的资源
+* 代理仓库proxy ：代理远程仓库，通过nexus访问其他公共仓库，例如中央仓库。
 
-  自主研发。第三方非开源项目，比如Oracle，因为是付费产品，所以中央仓库没有。
+* 仓库组group：将若干个仓库组成一个群组，简化配置。仓库组不能保存资源，属于设计型仓库
 
-* **代理仓库proxy** 
+| 仓库类别 | 英文名称 | 功能                    | 关联操作 |
+| -------- | -------- | ----------------------- | -------- |
+| 宿主仓库 | hosted   | 保存自主研发+第三方资源 | 上传     |
+| 代理仓库 | proxy    | 代理连接中央仓库        | 下载     |
+| 仓库组   | group    | 为仓库编组简化下载操作  | 下载     |
 
-  代理远程仓库，通过nexus访问其他公共仓库，例如中央仓库
+**Nexus界面**
 
-* **仓库组group** 
+![](..\图片\2-24【Maven】\5-2nexus界面.png)
 
-  将若干个仓库组成一个群组，简化配置。仓库组不能保存资源，属于设计型仓库
+创建仓库步骤如下：
 
-![1630990244010](..\图片\2-24【Maven】\1-26.png)
+- 进入私服，选择齿轮`Server administration and configuration`(服务器管理和配置)设置使用。旁边的是浏览使用，我们这里选择齿轮，设置使用。
+- 选择右侧Repository仓库下面的Repositories储存库，点击上方的Create repository创建存储库。
+- 选择maven2 (hosted)，创建linxuan-snapshot仓库。在name里面输入`linxuan-snapshot`，将下方的Version policy（版本政策）选择Snapshot（快照）。最后直接点击创建。
 
-## 5.6 本地仓库访问私服配置
+![](..\图片\2-24【Maven】\5-3创建仓库.png)
+
+可以将刚刚创建的仓库添加到仓库组里面，步骤如下：
+
+* 进入设置，选择右侧Repository仓库下面的Repositories储存库。
+* 选择仓库组并进入，然后找到要添加的仓库添加。
+
+![](..\图片\2-24【Maven】\5-4添加进仓库组.png)
+
+添加jar包进仓库，步骤如下：
+
+* 进入浏览使用，选择Browse浏览，选择需要上传jar包的仓库
+* 点击Uplocad component，进入上传jar包的界面。
+
+![](..\图片\2-24【Maven】\5-5上传文件.png)
+
+![](..\图片\2-24【Maven】\5-6查看仓库.png)
+
+## 5.1 本地仓库访问私服配置
 
 我们通过IDEA将开发的模块上传到私服，中间是要经过本地Maven的，本地Maven需要知道私服的访问地址以及私服访问的用户名和密码。如图：
 
-![1630990538229](..\图片\2-24【Maven】\1-27.png)
+![](..\图片\2-24【Maven】\5-6私服配置.png)
 
 上面所说的这些内容，我们需要在本地Maven的配置文件`settings.xml`中进行配置。
 
-1. 私服上配置仓库
+1. 私服上配置仓库。上面已经创建了一个linxuan-snapshot的仓库，再按照上面的路径创建一个linxuan.release仓库。
 
-   进入私服，选择齿轮`Server administration and configuration`(服务器管理和配置)设置使用。旁边的是浏览使用，我们这里选择齿轮，设置使用。
-
-   选择右侧Repository仓库下面的Repositories储存库，点击上方的Create repository创建存储库。
-
-   选择maven2 (hosted)，创建linxuan-snapshot仓库。在name里面输入`linxuan-snapshot`，将下方的Version policy（版本政策）选择Snapshot（快照）。最后直接点击创建。
-
-   接下来再创建一个linxuan-release仓库，这个仓库的版本不用动，直接是release。
-
-2. 配置本地Maven对私服的访问权限
-
-   打开本地Maven的setting.xml文件，修改servers里面的内容，默认情况下servers里面内容被注释掉了，所以需要添加一些东西：
+2. 配置本地Maven对私服的访问权限。打开本地Maven的setting.xml文件，修改servers里面的内容，默认情况下servers里面内容被注释掉了，所以需要添加一些东西：
 
    ```xml
    <servers>
@@ -1320,10 +1421,8 @@ maven提供配置多种环境的设定，帮助开发者在使用过程中快速
        </server>
    </servers>
    ```
-
-3. 配置私服的访问路径
-
-   上面没有对Maven说明私服的URL地址，所以接下来就是配置私服的访问路径：
+   
+3. 配置私服的访问路径。上面没有对Maven说明私服的URL地址，所以接下来就是配置私服的访问路径：
 
    ```xml
    <mirrors>
@@ -1338,21 +1437,18 @@ maven提供配置多种环境的设定，帮助开发者在使用过程中快速
        </mirror>
    </mirrors>
    ```
+   
 
-   为了避免阿里云Maven私服地址的影响，建议先将之前配置的阿里云Maven私服镜像地址注释掉，等练习完后，再将其恢复。
+至此本地仓库就能与私服进行交互了。如果一会关闭私服，那么这些也要给注释掉。
 
-   ![1630991535107](..\图片\2-24【Maven】\1-28.png)
+## 5.2 IDEA私服资源上传与下载
 
-至此本地仓库就能与私服进行交互了。
-
-## 5.7 私服资源上传与下载
-
-本地仓库与私服已经建立了连接，接下来我们就需要往私服上上传资源和下载资源，具体的实现步骤为：
+本地仓库与私服已经建立了连接，接下来我们就需要借助IDEA向私服上上传资源和下载资源，具体的实现步骤为：
 
 第一步：配置工程上传私服的具体位置
 
 ```xml
- <!--配置当前工程保存在私服中的具体位置-->
+<!--IDEApom.xml 配置当前工程保存在私服中的具体位置-->
 <distributionManagement>
     <repository>
         <!--和maven/settings.xml中server中的id一致，表示使用该id对应的用户名和密码-->
@@ -1369,24 +1465,9 @@ maven提供配置多种环境的设定，帮助开发者在使用过程中快速
 </distributionManagement>
 ```
 
-第二步：发布资源到私服
+第二步：发布资源到私服。点击deploy或者执行Maven命令`mvn deploy`
 
-点击deploy或者执行Maven命令`mvn deploy`
+![](..\图片\2-24【Maven】\5-7上传.png)
 
-**注意:**
 
-要发布的项目都需要配置`distributionManagement`标签，要么在自己的pom.xml中配置，要么在其父项目中配置，然后子项目中继承父项目即可。
 
-发布成功，在私服中就能看到：
-
-![1630992513299](..\图片\2-24【Maven】\1-29.png)
-
-现在发布是在linxuan-snapshot仓库中，如果想发布到linxuan-release仓库中就需要将项目pom.xml中的version修改成RELEASE即可。
-
-如果想删除已经上传的资源，可以在界面上进行删除操作。
-
-如果私服中没有对应的jar，会去中央仓库下载，速度很慢。可以配置让私服去阿里云中下载依赖。
-
-![1630993028454](..\图片\2-24【Maven】\1-30.png)
-
-至此私服的搭建就已经完成，相对来说有点麻烦，但是步骤都比较固定。
