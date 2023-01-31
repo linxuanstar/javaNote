@@ -1,6 +1,6 @@
 # 第一章 Request对象
 
-![](..\图片\2-14【HTTP、Req、Resp】\1.png)
+![](..\图片\2-14【Req、Resp】\1.png)
 
 * `request`和`response`对象是由服务器创建的。我们只是来使用他们。Tomcat创建的。
 * `request`对象是来获取请求消息的，而`response`对象是来设置响应消息的
@@ -465,7 +465,7 @@ public class Demo01Request extends HttpServlet {
 
 **分析**
 
-![](..\图片\2-14【HTTP、Req、Resp】\2.png)
+![](..\图片\2-14【Req、Resp】\2.png)
 
 **实现**
 
@@ -831,7 +831,7 @@ try {
 
 重定向：资源跳转的方式
 
-![](..\图片\2-14【HTTP、Req、Resp】\1重定向.png)
+![](..\图片\2-14【Req、Resp】\1重定向.png)
 
 ```java
 @WebServlet("/demo01Response")

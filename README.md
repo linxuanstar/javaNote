@@ -2,13 +2,14 @@
 
 我的Java学习笔记
 
-- 第一阶段：Java基础
-- 第二阶段：JavaWeb
-- 第三阶段：Java框架
-- 第四阶段：微服务
-- 第五阶段：大数据
-- 第六阶段：扩展
-- 第七阶段：面试
+- 1-Java基础
+- 2-JavaWeb
+- 3-Java框架
+- 4-数据库
+- 5-微服务
+- 6-大数据
+- 7-扩展
+- 8-面试
 
 ## 1.1 Java基础
 
@@ -16,23 +17,31 @@
 
 ## 1.2 JavaWeb
 
-JavaWeb知识点
+JavaWeb知识点+工具
 
 ## 1.3 Java框架
 
-框架和一些中间件
+框架
 
-## 1.4 微服务
+## 1.4 数据库
 
-分布式、微服务
+MySQL、Redis
 
-## 1.5 扩展
+## 1.5 微服务
+
+分布式、微服务 + 中间件
+
+## 1.6 大数据
 
 大数据相关知识
 
-## 1.6 扩展
+## 1.7 扩展
 
-编程四大件+设计模式。
+变成基础知识+编程四大件+设计模式。
+
+## 1.8 面试
+
+面试题以及题解
 
 # 第二章 学习路线
 
@@ -57,220 +66,21 @@ JavaSE --> MySQL--> JDBC --> JavaWeb --> Spring5 --> SpringMVC --> MyBatis--> Ma
 
 尚硅谷 https://www.bilibili.com/read/cv5216534?spm_id_from=333.999.0.0 
 
-# 第三章 mermaid
+# 第三章 未学习的
 
-Mermaid 是一个用于画流程图、[状态图](https://so.csdn.net/so/search?q=状态图&spm=1001.2101.3001.7020)、时序图、甘特图的库，使用 JS 进行本地渲染，广泛集成于许多 Markdown 编辑器中。
+Java工具：jmh
 
-Mermaid 作为一个使用 JS 渲染的库，生成的不是一个“图片”，而是一段 HTML 代码。
+数据库：MongoDB
 
-[点击进入官网](https://mermaidjs.github.io/)
-[点击进入Github 项目地址](https://github.com/knsv/mermaid)
+中间件：Kafaka
 
-```apl
-graph LR; # 其中LR指的是方向
-	A --> B # 不同的箭头表示
-```
+编程四大件：计算机组成原理、操作系统、计算机网络
 
-```mermaid
-graph LR; 
-	A --> B 
-```
+学到一半的：zookeeper、设计模式
 
-## 3.1 方向和箭头
-
-| 用词 graph x; | 含义     | 箭头       | 含义           |
-| ------------- | -------- | ---------- | -------------- |
-| `TB`          | 从上到下 | `>`        | 添加尾部箭头   |
-| `BT`          | 从下到上 | `-`        | 不添加尾部箭头 |
-| `RL`          | 从左到右 | `--`       | 单线           |
-| `LR`          | 从右到左 | `--text--` | 单线加文字     |
-|               |          | `==`       | 粗线           |
-|               |          | `==text==` | 粗线加文字     |
-|               |          | `-.-`      | 虚线           |
-|               |          | `-.text.-` | 虚线加文字     |
-
-## 3.2 节点
-
-```apl
-默认方形
-    id1[方形]
-    id2(圆边矩形)
-    id3([体育场形])
-    id4[[子程序形]]
-    id5[(圆柱形)]
-    id6((圆形))
-    id1{菱形}
-    id2{{六角形}}
-    id3[/平行四边形/]
-    id4[\反向平行四边形\]
-    id5[/梯形\]
-    id6[\反向梯形/]
-```
-
-## 3.3 示例
-
-### 3.3.1 示例1
-
-```apl
-graph LR;
-	A>"Ubuntu<br>(Linux)"] -.soft.-> C{TV}
-	B["MAC"] ==> D((ARM64))
-	D--> C
-	A --> B
-```
-
-```mermaid
-graph LR;
-	A>"Ubuntu<br>(Linux)"] -.soft.-> C{TV}
-	B["MAC"] ==> D((ARM64))
-	D--> C
-	A --> B
-```
-
-### 3.3.2 示例2
-
-```apl
-graph LR
-	a---b
-	b--文本1!---c
-	c---|文本2|d
-	d===e
-	e==文本3===f
-	f-.-g
-	g-.文本.-h
-```
-
-```mermaid
-graph LR
-	a---b
-	b--文本1!---c
-	c---|文本2|d
-	d===e
-	e==文本3===f
-	f-.-g
-	g-.文本.-h
-
-```
-
-### 3.3.3 示例3
-
-```apl
-flowchart LR
-    A o--o B
-    B <--> C
-    C x--x D
-    
-    旧连线 --文本--> 也会不同
-
-```
-
-```mermaid
-flowchart LR
-    A o--o B
-    B <--> C
-    C x--x D
-    
-    旧连线 --文本--> 也会不同
-
-```
+需要二次学习：JVM
 
 
 
-### 3.3.4 示例4
 
-延长连线：
-增加相应字符即可，如下图中的B到E，连线中增加了一个 `-` 。字符可多次添加。
-
-```apl
-graph LR
-    A[Start] --> B{Is it?};
-    B -->|Yes| C[OK];
-    C --> D[Rethink];
-    D --> B;
-    B --->|No| E[End];
-
-```
-
-```mermaid
-graph LR
-    A[Start] --> B{Is it?};
-    B -->|Yes| C[OK];
-    C --> D[Rethink];
-    D --> B;
-    B --->|No| E[End];
-
-```
-
-多重链
-
-```apl
-graph LR
-   a --> b & c--> d
-   
-   A & B--> C & D
-   
-    X --> M
-    X --> N
-    Y --> M
-    Y --> N
-
-```
-
-```mermaid
-graph LR
-   a --> b & c--> d
-   
-   A & B--> C & D
-   
-    X --> M
-    X --> N
-    Y --> M
-    Y --> N
-
-```
-
-
-
-### 3.3.5 示例5
-
-- 注释 `%%这是一条注释，在渲染图中不可见`
-- 子图
-
-```apl
-%%这是一条注释，在渲染图中不可见
-flowchart TB
-    c1-->a2
-    subgraph one
-    a1-->a2
-    end
-    subgraph two
-    b1-->b2
-    end
-    subgraph three
-    c1-->c2
-    end
-    one --> two
-    three --> two
-    two --> c2
-
-```
-
-```mermaid
-%%这是一条注释，在渲染图中不可见
-flowchart TB
-    c1-->a2
-    subgraph one
-    a1-->a2
-    end
-    subgraph two
-    b1-->b2
-    end
-    subgraph three
-    c1-->c2
-    end
-    one --> two
-    three --> two
-    two --> c2
-
-```
 
