@@ -1,111 +1,119 @@
-# 第二章 Tomcat
+# 第一章 Tomcat
 
-`JavaEE`：`Java`语言在企业级开发中使用的技术规范的总和，一共规定了13项大的规范。
+JavaEE（Java Platform, Enterprise Edition）：Java开发语言的分支，是Sun公司为企业级应用推出的标准平台。JavaEE是个大杂烩，包括Applet、EJB、JDBC、JNDI、Servlet、JSP等技术的标准，运行在一个完整的应用服务器上，用来开发大规模、分布式、健壮的网络应用。一共对丁了13项大的规范。
 
-服务器：安装了服务器软件的计算机。
+JavaWeb：使用java语言为基础，利用JavaEE中的Servlet、JSP等技术开发动态页面，方便用户通过浏览器与服务器后台交互。JavaWeb应用程序可运行在一个轻量级的Web服务器中，比如Tomcat。可以粗略地认为JavaWeb就是JavaEE的一部分，是成为JavaEE大师过程中的第一站。
 
-服务器软件：接受用户的请求，处理请求，做出响应。
+web资源即放在Internet网上供外界访问的文件或程序，又根据它们呈现的效果及原理不同，将它们划分为静态资源和动态资源。
 
-web服务器软件：又叫做web容器，可以接受用户的请求，处理请求，做出响应。在web服务器软件当中，可以部署web项目，让用户通过浏览器来访问这些项目。
+* 静态资源：固定不变数据文件，例如HTML+CSS+JavaScript
+* 动态资源：一段服务程序，运行后，生成的数据文件。例如：servlet、jsp、php、.net、ruby、python等
 
-常见的`java`相关的`web`服务器软件：
+服务器就是安装了服务器软件的计算机。web服务器软件又叫做web容器，可以接受用户的请求，处理请求，做出响应。在web服务器软件当中，可以部署web项目，让用户通过浏览器来访问这些项目。常见服务器：
 
-* `webLogic`：`Oracle`公司的，大型的`JavaEE`服务器，支持所有的`JavaEE`规范，收费。
-* `webSphere`：`IBM`公司的，大型的`JavaEE`服务器，支持所有的`JavaEE`规范，收费。
-* `JBOSS`：`JBOSS`公司的，大型的`JavaEE`服务器，支持所有的`JavaEE`规范，收费。
-* `Tomcat`：`Apache`基金组织的，中小型的`JavaEE`服务器，仅仅支持少量的`JavaEE`规范。当然，支持`servlet/jsp`。
+| 名称     | 公司             | 介绍                                                         |
+| -------- | ---------------- | ------------------------------------------------------------ |
+| Tomcat   | `Apache`基金组织 | 中小型的`JavaEE`服务器，仅支持少量的`JavaEE`规范，支持`servlet/jsp`。 |
+| JBOSS    | `JBOSS`公司      | 大型的`JavaEE`服务器，支持所有的`JavaEE`规范，开源免费。     |
+| webLogic | `Oracle`公司     | 大型的`JavaEE`服务器，支持所有的`JavaEE`规范，收费。         |
 
-`Tomcat`：一款`web`服务器软件。
+## 1.1 Tomcat安装下载
 
-## 2.1 Tomcat基础
-
-安装方式：`https://tomcat.apache.org/`，直接解压缩即可，安装目录不要包含中文。
-
-卸载直接删除安装目录即可。
+官网：https://tomcat.apache.org/。下载绿色版直接解压缩即可，安装目录不要包含中文。如果需要卸载直接删除安装目录即可。
 
 Tomcat目录如下：
 
-* `bin`：存放可执行文件。
-* `conf`：存放配置文件。
-* `lib`：存放依赖jar包。
-* `logs`：存放日志文件。
-* `temp`：存放临时文件。
-* `webapps`：存放web项目。
-* `work`：存放运行时的数据。
+```apl
+apache-tomcat-9.0.11
+    |-- bin      # 存放可执行文件，启动Tomcat文件就在该目录下
+    |-- conf     # 存放配置文件
+    |-- lib      # 存放依赖jar包
+    |-- logs     # 存放日志文件
+    |-- temp     # 存放临时文件
+    |-- webapps  # 存放web项目
+    |-- work     # 存放运行时的数据
+```
 
-启动：找到Tomcat下载位置，`bin/startup.bat`，双击该文件。
+```apl
+# 使用命令行方式启动，或者可以直接进入到该目录双击该文件运行
+E:\Tomcat\apache-tomcat-9.0.11\bin>startup.bat
+Using CATALINA_BASE:   "E:\Tomcat\apache-tomcat-9.0.11"
+Using CATALINA_HOME:   "E:\Tomcat\apache-tomcat-9.0.11"
+Using CATALINA_TMPDIR: "E:\Tomcat\apache-tomcat-9.0.11\temp"
+Using JRE_HOME:        "E:\JAVA\jdk1.8.0_144"
+Using CLASSPATH:       "E:\Tomcat\apache-tomcat-9.0.11\bin\bootstrap.jar;E:\Tomcat\apache-tomcat-9.0.11\bin\tomcat-juli.jar"
+```
 
-访问：浏览器输入`http://localhost:8080`  也就是: `http://别人的ip:8080`    因为Tomcat的端口号就是8080
+```apl
+# 关闭方式：1.双击shutdown.bat。2.在额外打开的黑窗口中按Ctrl+C关闭。3.直接叉掉额外打开的黑窗口。（建议1或2）
+```
+
+浏览器输入http://localhost:8080，验证是否启动。用`ip:端口号`的方式打开，`ip`是localhost也就是`127.0.0.1`，Tomcat的端口号是8080。
 
 在启动过程中可能会遇到的两种问题：
 
-1. 黑窗口一闪而过
+1. 黑窗口一闪而过。没有正确的配置`JAVA_HOME`环境变量，配置一下就可以了。
 
-   原因：没有正确的配置JAVA_HOME环境变量
-
-2. 端口号占用了导致启动报错
-
-   暴力解决：通过DOS命令来操作，打开cmd，键入netstat -ano，就会出现这时候使用端口号的软件，找到使用端口号为8080的软件。再打开任务管理器，杀死该软件进程。
-
-   温柔解决：修改自身端口号。找到Tomcat下载位置，conf/server.xml，双击该文件。找到代码，将port = “8080”修改。
+2. 端口号占用了导致启动报错。这时候解决有两种方式：找到使用端口号为8080的软件将其杀死、修改Tomcat自身的端口号。
 
    ```xml
-       <Connector port="8080" protocol="HTTP/1.1"
-                  connectionTimeout="20000"
-                  redirectPort="8443" />
+   <!-- conf/server.xml -->
+   <Connector port="8080" protocol="HTTP/1.1" connectionTimeout="20000" redirectPort="8443" />
    ```
+   
 
-   > 一般我们会将Tomcat的默认端口设置为80.80端口号是http协议的默认端口号，这样，访问的时候直接输入localhost就可以了，不用输入端口号了。
+一般会将Tomcat的默认端口设置为80，80端口号是http协议的默认端口号，这样，访问的时候直接输入localhost就可以了，不用输入端口号了。
 
-Tomcat关闭方式：
+## 2.2 Tomcat部署项目
 
-1. 正常关闭：`bin/shutdown.bat`或者`Ctrl+C`
-2. 强制关闭：点击启动窗口的`×`
+部署项目，因为Tomcat就是一个web服务器软件，所以需要有项目在Tomcat上面部署。使用Tomcat部署项目一共有三种方式：将项目放到`webapps`目录下面、配置`conf/server.xml`文件、在`conf/catalina/localhost`创建任意名称的XML文件。创建一个文件夹测试一下：
 
-## 2.2 Tomcat配置
+```apl
+D:（D盘）
+ |-- hello(文件夹)
+        |-- hello.html
+```
 
-配置：部署项目，因为Tomcat就是一个web服务器软件，所以需要有项目在Tomcat上面部署。
+```html
+<!--hello.html内容-->
+<html>
+    <body>
+        <h2>Hello World!</h2>
+    </body>
+</html>
+```
 
-* **直接将项目放到webapps目录下面就可以。**
+接下来详细介绍一下：
 
-  例如：在webapps目录下面创建一个hello文件夹，在hello目录下面创建hello.html文件。hello.html文件里面写一些静态资源，现在已经可以通过Tomcat来访问hello文件了。
+**将项目放到webapps目录下面**
 
-  1. 启动Tomcat
+将在D盘创建的文件夹复制到`webapps`目录下，然后就可以通过Tomcat来访问hello文件了。打开浏览器，地址为http://localhost:8080/hello/hello.html。这里的`/hello`是项目的访问路径，也叫做虚拟目录，和项目的名称一样。
 
-  2. 打开浏览器，地址栏输入：`http://localhost:8080/hello/hello.html`
+这种有一个简化的部署方式，将项目打成一个war包，再将war包放置到webapps目录下面。然后war包会自动解压缩，如果删除的话，删除war包就可以了，项目也会自动删除。
 
-     /hello：项目的访问路径-->也叫做虚拟目录-->和项目名称一样
+**配置conf/server.xml文件**
 
-  这种有一个简化的部署方式，将项目打成一个war包，再将war包放置到webapps目录下面。然后war包会自动解压缩，如果删除的话，删除war包就可以了，项目也会自动删除。但是我弄不了。
+上面的方式必须将文件放到webapps目录下面，但是假如不想将资源放到该目录下，那么可以通过配置文件方式来修改：
 
-* **配置conf/server.xml文件。**
+```xml
+<!-- 打开conf/server.xml，找到Hhost标签，在该标签内部配置如下代码 -->
+<!-- Context docBase="项目的访问路径" path="项目资源文件=虚拟目录"/ 虚拟目录可以设置为其他的-->
+<Context docBase="D:\hello" path="/hello" />
+```
 
-  1. 打开`conf/server.xml`文件，在最下方找到`<Host>`标签，在`<Host>`标签里面配置下面代码：
+修改完毕之后，保存。打开浏览器http://localhost:8080/hehe/hello.html。这种方式不建议使用，因为乱修改会把`server.xml`配置文件修改错误。
 
-     ```html
-     <!-- Context docBase="项目的访问路径" path="项目资源文件"/ -->
-     <!-- docBase：项目存放的路径     path：虚拟目录 -->
-     <Context docBase="E:\Tomcat\Demo_Tomcat\hello" path="/hello" />
-     ```
+**在conf/catalina/localhost创建任意名称的XML文件**
 
-  2. 打开浏览器，地址栏输入：`http://localhost:8080/hehe/hello.html`
+在`conf/catalina/localhost`目录下面创建一个`index.xml`文件。在文件里面配置下面代码：
 
-  这种方式**不建议**，因为乱修改会把`server.xml`配置文件修改错误。
+```html
+<!-- Context docBase="项目的访问路径"/ -->
+<!-- 这里的虚拟目录变成了xml文件的名称，所以这个项目的虚拟目录是index -->
+<Context docBase="D:\hello" />
+```
 
-* **在conf/catalina/localhost创建任意名称的XML文件**
-
-  1. 在`conf/catalina/localhost`目录下面创建一个xml文件。随意命名，这里命名为`index`。打开`index.xml`文件，在文件里面配置下面代码：
-
-     ```html
-     <!-- Context docBase="项目的访问路径"/ -->
-     <!-- docBase：项目存放的路径 -->
-     <!-- 这里的虚拟目录变成了xml文件的名称，所以这个项目的虚拟目录是index -->
-     <Context docBase="E:\Tomcat\Demo_Tomcat\hello" />
-     ```
-
-  2. 打开浏览器，地址栏输入：`http://localhost:8080/index/hello.html`
-
-  建议使用这种方式，假如不需要这个文件了，那么只需要在**index.xml后面加上_bak**，弄成临时文件，`index.xml_bak`。这样就无法读取了，所以也就废掉了。**即使服务器没有关掉，也会无法读取。**
+打开浏览器，地址栏输入：http://localhost:8080/index/hello.html。建议使用这种方式来部署项目。
 
 ## 2.4 项目介绍
 

@@ -974,6 +974,8 @@ myGame-1.0.zip
 
 ## 3.2 依赖及依赖冲突
 
+获取依赖坐标：https://mvnrepository.com/
+
 当执行 `build` 命令时，gradle 就会去配置的依赖仓库中下载对应的 Jar，并应用到项目中。Gradle 中的依赖分别为本地 jar 依赖、项目依赖、直接依赖。
 
 ```groovy

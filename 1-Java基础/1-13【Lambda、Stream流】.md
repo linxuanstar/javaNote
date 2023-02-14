@@ -66,9 +66,7 @@ new Thread(new Runnable() {
 }).start();
 ```
 
-一方面，匿名内部类可以帮我们省去实现类的定义；另一方面，匿名内部类的语法——确实太复杂了！
-
-仔细分析代码中语义，`Runnable`接口只有一个`run`方法的定义：`public abstract void run()`;
+一方面，匿名内部类可以帮我们省去实现类的定义；另一方面，匿名内部类的语法——确实太复杂了！仔细分析代码中语义，`Runnable`接口只有一个`run`方法的定义：`public abstract void run()`;
 
 即制定了一种做事情的方案（其实就是一个函数）：
 
@@ -274,37 +272,34 @@ Lambda强调的是“做什么”而不是“怎么做”，所以凡事可以�
 
 Lambda的语法非常简洁，完全没有面向对象复杂的束缚。但是使用时有几个问题需要特别注意：
 
-1. 使用Lambda必须具有接口，且要求接口中有且仅有一个抽象对象。
+1. 使用Lambda必须具有接口，且要求接口中有且仅有一个抽象方法。无论是JDK内置的`Runnable`、`Comparator`接口还是自定义的接口，只有当接口中的抽象方法存在且唯一时，才可以使用Lambda。
 
-   无论是JDK内置的`Runnable`、`Comparator`接口还是自定义的接口，只有当接口中的抽象方法存在且唯一时，才可以使用Lambda。
+2. 使用Lambda必须具有上下文判断。也就是方法的参数或局部变量必须为Lambda对应的接口类型，才能使用Lambda作为该接口的案例。
 
-2. 使用Lambda必须具有上下文判断。
-
-   也就是方法的参数或局部变量必须为Lambda对应的接口类型，才能使用Lambda作为该接口的案例。
 
 > 备注：有且仅有一个抽象方法的接口，称为“函数式接口”。
 
 **引用变量**
 
-* Lambda表达式要求引用外部的变量必须是final的。lambda 表达式的局部变量可以不用声明为 final，但是必须不可被后面的代码修改。即隐性的具有 final 的语义。看下面的代码：
+Lambda表达式要求引用外部的变量必须是final的。lambda 表达式的局部变量可以不用声明为 final，但是必须不可被后面的代码修改。即隐性的具有 final 的语义。看下面的代码：
 
-  ```java
-  public class Demo02 {
-      public static void main(String[] args) {
-          int x = 10;
-  
-          BiFunction<Integer, Integer, Integer> function = (x1, x2) -> {
-              return x1 + x2 + x;
-          };
-  
-          System.out.println(function.apply(3, 4));
-      }
-  }
-  ```
+```java
+public class Demo02 {
+    public static void main(String[] args) {
+        int x = 10;
 
-  上面的代码没有任何问题，但是只需要修改一下x的值，那么就有问题了：`x`报错了。
+        BiFunction<Integer, Integer, Integer> function = (x1, x2) -> {
+            return x1 + x2 + x;
+        };
 
-  ![](D:\Java\笔记\图片\1-13【Lambda、Stream流】\7-1Lambda特性.png)
+        System.out.println(function.apply(3, 4));
+    }
+}
+```
+
+上面的代码没有任何问题，但是只需要修改一下x的值，那么就有问题了：`x`报错了。
+
+![](..\图片\1-13【Lambda、Stream流】\7-1Lambda特性.png)
 
 # 第二章 函数式接口【jdk1.8】
 
@@ -331,7 +326,7 @@ public interface MyFunctionaliInterface{
 
 ## 2.1 FunctionalInterface注解
 
-`@FunctionalInterface`注解作用：可以检测接口是否是一个函数式接口。这种类型的接口也成为SAM接口，即Single Abstract Method interface。
+`@FunctionalInterface`注解作用：可以检测接口是否是一个函数式接口。这种类型的接口也称位SAM接口，即Single Abstract Method interface。
 
 特点如下：
 
@@ -493,9 +488,7 @@ public class Demo02Lambda {
 
 ## 2.4 Lambda有参数和返回值
 
-如果抛开实现原理不说，java中的Lambda表达式可以被当做是匿名内部类的替代品。如果方法的参数是一个函数式接口类型，那么就可以使用Lambda表达式进行代替。
-
-使用Lambda表达式作为方法参数，其实就是使用函数式接口作为方法参数。
+如果抛开实现原理不说，java中的Lambda表达式可以被当做是匿名内部类的替代品。如果方法的参数是一个函数式接口类型，那么就可以使用Lambda表达式进行代替。使用Lambda表达式作为方法参数，其实就是使用函数式接口作为方法参数。
 
 例如`java.lang.Runnable`接口就是一个函数式接口，假设有一个`startThread`方法使用该接口作为参数，那么就可以使用Lambda进行传参。这种情况其实和`Thread`类的构造方法参数为`Runnable`没有本质区别。
 
@@ -596,7 +589,6 @@ public class Demo01Supplier {
         
         // 优化Lambda表达式
         String s = getString(() -> "林炫");
-        
         System.out.println(s);
     }
 }
@@ -626,9 +618,7 @@ public class Demo01 {
 }
 ```
 
-看下面的案例：
-
-求数组元素最大值。使用`Supplier`接口作为方法参数类型，通过Lambda表达式求出int数组的最大值。接口的泛型使用`java.lang.Integer`类。
+看下面的案例：求数组元素最大值。使用`Supplier`接口作为方法参数类型，通过Lambda表达式求出int数组的最大值。接口的泛型使用`java.lang.Integer`类。
 
 ```java
 public class Demo02Test {
@@ -674,6 +664,8 @@ public class Demo01 {
 
 ### 2.5.2 Consumer有去无回
 
+<!-- Consumer 消费者; 顾客; 用户; --> <!-- accept接收 -->
+
 `java.util.function.Consumer<T>`接口正好与`Supplier`接口相反，它不是生产一个数据，而是消费一个数据，其数据类型由泛型决定。
 
 源码如下：
@@ -696,114 +688,113 @@ public interface Consumer<T> {
 
 一个抽象方法accept和一个默认方法andThen。
 
-* **抽象方法accept**
+**抽象方法accept**
 
-  `Consumer`接口中包含抽象方法`void accept(T t)`，意为消费一个指定泛型的数据。基本使用如：
+`Consumer`接口中包含抽象方法`void accept(T t)`，意为消费一个指定泛型的数据。基本使用如：
 
-  ```java
-  public class Demo01Consumer {
-      public static void method(String name, Consumer<String> cons) {
-          cons.accept(name);
-      }
-  
-      public static void main(String[] args) {
-          method("林炫", (String name) -> {
-              // 对传递的字符串进行消费
-              // 消费方式：直接输出字符串
-              // System.out.println(name);
-  
-              // 消费方式：把字符串进行反转输出
-              System.out.println(new StringBuffer(name).reverse().toString());
-          });
-      }
-  }
-  ```
+```java
+public class Demo01Consumer {
+    public static void method(String name, Consumer<String> cons) {
+        cons.accept(name);
+    }
 
-  或者下面这种方式：
+    public static void main(String[] args) {
+        method("林炫", (String name) -> {
+            // 对传递的字符串进行消费
+            // 消费方式：直接输出字符串
+            // System.out.println(name);
 
-  ```java
-  // 未简化前
-  public class Demo01 {
-      public static void main(String[] args) {
-          Consumer<String> con = (String msg) -> {
-              System.out.println(msg);
-          };
-          con.accept("linxuan");
-      }
-  }
-  ```
+            // 消费方式：把字符串进行反转输出
+            System.out.println(new StringBuffer(name).reverse().toString());
+        });
+    }
+}
+```
 
-  ```java
-  // 简化后
-  public class Demo01 {
-      public static void main(String[] args) {
-          Consumer<String> con = msg -> System.out.println(msg);
-          con.accept("linxuan");
-      }
-  }
-  ```
+或者下面这种方式：
 
-  
+```java
+// 未简化前
+public class Demo01 {
+    public static void main(String[] args) {
+        Consumer<String> con = (String msg) -> {
+            System.out.println(msg);
+        };
+        con.accept("linxuan");
+    }
+}
+```
 
-* **默认方法andThen**
+```java
+// 简化后
+public class Demo01 {
+    public static void main(String[] args) {
+        Consumer<String> con = msg -> System.out.println(msg);
+        con.accept("linxuan");
+    }
+}
+```
 
-  如果一个方法的参数和返回值全部都是`Consumer`类型，那么就可以实现效果：消费数据的时候，首先做一个操作，然后再做一个操作，实现组合。而这个方法就是`Consumer`接口中的`default`方法`andThen`。
+**默认方法andThen**
 
-  ```java
-  default Consumer<T> andThen(Consumer<? super T> after) {
-      Objects.requireNonNull(after);
-      return (T t) -> { 
-          accept(t); 
-          after.accept(t); 
-      };
-  }
-  ```
+如果一个方法的参数和返回值全部都是`Consumer`类型，那么就可以实现效果：消费数据的时候，首先做一个操作，然后再做一个操作，实现组合。而这个方法就是`Consumer`接口中的`default`方法`andThen`。
 
-  ```java
-  // 返回一个组合的Consumer ，依次执行此操作，然后执行after操作。 如果执行任一操作会抛出异常，它将被转发到组合操作的调用者。 如果执行此操作会引发异常，则不会执行after操作。
-  
-  Consumer<String> con1;
-  Consumer<String> con2;
-  String s = "Hello";
-  
-  con1.accept(s);
-  con2.accept(s);
-  // 等价于
-  con1.andThen(con2).accpet(s);
-  ```
+```java
+default Consumer<T> andThen(Consumer<? super T> after) {
+    Objects.requireNonNull(after);
+    return (T t) -> { 
+        accept(t); 
+        after.accept(t); 
+    };
+}
+```
 
-  > 备注：java.util.Objects的requireNonNull静态方法将会在参数为null时主动抛出异常。这就省去了重复编写if语句和抛出空指针异常的麻烦。
+```java
+// 返回一个组合的Consumer ，依次执行此操作，然后执行after操作。 如果执行任一操作会抛出异常，它将被转发到组合操作的调用者。 如果执行此操作会引发异常，则不会执行after操作。
 
-  要想实现组合，需要两个或者多个Lambda表达式，而andThen的语义正是“一步一步”操作。例如两个步骤组合的情况：
+Consumer<String> con1;
+Consumer<String> con2;
+String s = "Hello";
 
-  ```java
-  public class Demo02AndThen {
-      // 定义一个方法，方法的参数传递一个字符串和两个Consumer接口，Consumer接口的泛型使用String
-      public static void method(String s, Consumer<String> con1, Consumer<String> con2) {
-          // con1.accept(s);
-          // con2.accept(s);
-  
-          // 使用andThen方法，把两个Consumer接口连接到一起，再消费数据
-          // con1连接con2，先执行con1消费数据再执行con2消费数据
-          con1.andThen(con2).accept(s);
-      }
-  
-      public static void main(String[] args) {
-          method("Hello",
-                  (t) -> {
-                      // 消费方式：把字符串转换为大写输出
-                      System.out.println(t.toUpperCase());
-                  },
-                  (t) -> {
-                      // 消费方式：把字符串转换为小写输出
-                      System.out.println(t.toLowerCase());
-                  });
-      }
-  }
-  ```
+con1.accept(s);
+con2.accept(s);
+// 等价于
+con1.andThen(con2).accpet(s);
+```
 
+> 备注：java.util.Objects的requireNonNull静态方法将会在参数为null时主动抛出异常。这就省去了重复编写if语句和抛出空指针异常的麻烦。
 
-下面来看一个案例，格式化打印信息：
+要想实现组合，需要两个或者多个Lambda表达式，而andThen的语义正是“一步一步”操作。例如两个步骤组合的情况：
+
+```java
+public class Demo02AndThen {
+    // 定义一个方法，方法的参数传递一个字符串和两个Consumer接口，Consumer接口的泛型使用String
+    public static void method(String s, Consumer<String> con1, Consumer<String> con2) {
+        // con1.accept(s);
+        // con2.accept(s);
+
+        // 使用andThen方法，把两个Consumer接口连接到一起，再消费数据
+        // con1连接con2，先执行con1消费数据再执行con2消费数据
+        con1.andThen(con2).accept(s);
+    }
+
+    public static void main(String[] args) {
+        method("Hello",
+                (t) -> {
+                    // 消费方式：把字符串转换为大写输出
+                    System.out.println(t.toUpperCase());
+                },
+                (t) -> {
+                    // 消费方式：把字符串转换为小写输出
+                    System.out.println(t.toLowerCase());
+                });
+    }
+}
+```
+
+**案例**
+
+下面来看一个案例：格式化打印信息。
 
 下面的字符串数组当中存有多条信息，请按照“姓名：XX。性别：XX。”的格式将信息打印出来。要求将打印姓名的动作作为第一个Consumer接口的Lambda实例，将打印性别的动作作为第二个Consumer接口的Lambda实例，将两个Consumer接口按照顺序“拼接”到一起。`String[] array = {"迪丽热巴, 女", "古力娜扎, 女", "马尔扎哈, 男"};`
 
@@ -861,75 +852,76 @@ public interface Function<T, R> {
 }
 ```
 
-* **抽象方法：apply**
+**抽象方法：apply**
 
-  `Function`接口中最主要的抽象方法为：`R apply(T t)`，根据类型T的参数获取类型R的结果。
+`Function`接口中抽象方法为：`R apply(T t)`，根据类型T的参数获取类型R的结果。
 
-  使用场景例如：将`String`类型转换为`Integer`类型。
+使用场景例如：将`String`类型转换为`Integer`类型。
 
-  ```java
-  public class Demo01Function {
-      public static void change(String s, Function<String, Integer> fun) {
-          // Integer in = fun.apply(s);
-          int in = fun.apply(s); // 自动拆箱 Integer -> int
-          System.out.println(in);
-      }
-  
-      public static void main(String[] args) {
-          // 定义一个字符串类型的整数
-          String s = "12345";
-          // 调用change方法，传递字符串类型的整数，和Lambda表达式。
-          /*change(s, (String str) -> {
-              return Integer.parseInt(str);
-          });*/
-  
-          // 优化Lambda表达式
-          change(s, (str) -> Integer.parseInt(str)); // 12345
-      }
-  }
-  ```
+```java
+public class Demo01Function {
+    public static void change(String s, Function<String, Integer> fun) {
+        // Integer in = fun.apply(s);
+        int in = fun.apply(s); // 自动拆箱 Integer -> int
+        System.out.println(in);
+    }
 
-* **默认方法：andThen**
+    public static void main(String[] args) {
+        // 定义一个字符串类型的整数
+        String s = "12345";
+        // 调用change方法，传递字符串类型的整数，和Lambda表达式。
+        /*change(s, (String str) -> {
+            return Integer.parseInt(str);
+        });*/
 
-  `Function`接口中有一个默认的`andThen`方法，用来进行组合操作。JDK源代码：
+        // 优化Lambda表达式
+        change(s, str -> Integer.parseInt(str)); // 12345
+    }
+}
+```
 
-  ```java
-  default <V> Function<T,V> andThen (Function<? super R,? extends V> after) {
-      Objcets.requireNonNull(after);
-      return (T t) -> after.apply(apply(t));
-  }
-  ```
+**默认方法：andThen**
 
-  该方法同样用于“先做什么，再做什么”的场景，和`Consumer`中的`andThen`差不多
+`Function`接口中有一个默认的`andThen`方法，用来进行组合操作。JDK源代码：
 
-  看一下下面一个例子：第一个操作时将字符串解析成为int数字，第二个操作时乘以10。两个操作通过`andThen`
+```java
+default <V> Function<T,V> andThen (Function<? super R,? extends V> after) {
+    Objcets.requireNonNull(after);
+    return (T t) -> after.apply(apply(t));
+}
+```
 
-  ```java
-  import java.util.function.Function;
-  
-  public class Demo02Function {
-      public static void change(String s, Function<String, Integer> fun1, Function<Integer, String> fun2) {
-          String str = fun1.andThen(fun2).apply(s);
-          System.out.println(str);
-      }
-  
-      public static void main(String[] args) {
-          String s = "13";
-          // 调用change方法，传递字符串和两个Lambda表达式
-          /*change(s, (String str) -> {
-              // 把字符串转换为整数并加10
-              return Integer.parseInt(str) + 10;
-          }, (Integer in) -> {
-              // 把整数转换为字符串
-              return in + "";
-          });*/
-  
-          // 优化Lambda表达式
-          change(s, str -> Integer.parseInt(str) + 10, in -> in + "");
-      }
-  }
-  ```
+该方法同样用于“先做什么，再做什么”的场景，和`Consumer`中的`andThen`差不多
 
+看一下下面一个例子：第一个操作时将字符串解析成为int数字，第二个操作时乘以10。两个操作通过`andThen`
+
+```java
+import java.util.function.Function;
+
+public class Demo02Function {
+    public static void change(String s, Function<String, Integer> fun1, Function<Integer, String> fun2) {
+        String str = fun1.andThen(fun2).apply(s);
+        System.out.println(str);
+    }
+
+    public static void main(String[] args) {
+        String s = "13";
+        // 调用change方法，传递字符串和两个Lambda表达式
+        /*change(s, (String str) -> {
+            // 把字符串转换为整数并加10
+            return Integer.parseInt(str) + 10;
+        }, (Integer in) -> {
+            // 把整数转换为字符串
+            return in + "";
+        });*/
+
+        // 优化Lambda表达式
+        change(s, str -> Integer.parseInt(str) + 10, in -> in + "");
+    }
+}
+```
+
+**案例**
 
 练习：自定义函数模型拼接。请使用`Function`进行函数模型的拼接，按照顺序需要执行的多个函数操作为：	`String str = “赵丽颖，20”；`
 
@@ -1014,95 +1006,97 @@ public interface Predicate<T> {
 
 一个抽象方法test和三个默认方法and、or、negate，以及静态方法isEqual。
 
-* **抽象方法：test**
+**抽象方法：test**
 
-  `Predicate`接口中包含一个抽象方法：`boolean test(T t)`。用于条件判断的场景：
+`Predicate`接口中包含一个抽象方法：`boolean test(T t)`。用于条件判断的场景：
 
-  ```java
-  import java.util.function.Predicate;
-  
-  public class Demo01Predicate {
-      public static boolean checkString(String s, Predicate<String> pre) {
-          return pre.test(s);
-      }
-  
-      public static void main(String[] args) {
-          // 定义一个字符串
-          String s = "abcdef";
-  
-          // 调用checkString方法对字符串进行校验，参数传递字符串和Lambda表达式
-          boolean b = checkString(s, (String str) -> {
-                      return str.length() > 5;
-          });
-          System.out.println(b);
-      }
-  }
-  ```
+```java
+import java.util.function.Predicate;
 
-  条件判断的标准是传入的Lambda表达式逻辑，只要字符串长度大于5则认为很长。
+public class Demo01Predicate {
+    public static boolean checkString(String s, Predicate<String> pre) {
+        return pre.test(s);
+    }
 
-* **默认方法：and**
+    public static void main(String[] args) {
+        // 定义一个字符串
+        String s = "abcdef";
 
-  既然是条件判断，就会存在与、或、非三种常见的逻辑关系，其中将两个`Predicate`条件使用“**与**”逻辑连接起来实现“**并且**”的效果的时候，可以使用`default`方法`and`。其JDK源代码为：
+        // 调用checkString方法对字符串进行校验，参数传递字符串和Lambda表达式
+        boolean b = checkString(s, (String str) -> {
+                    return str.length() > 5;
+        });
+        System.out.println(b);
+    }
+}
+```
 
-  ```java
-  default Predicate<T> and(Predicate<? super T> other) {
-      Objects.requireNonNull(other);
-      return (t) -> test(t) && other.test(t);
-  }
-  ```
+条件判断的标准是传入的Lambda表达式逻辑，只要字符串长度大于5则认为很长。
 
-  如果要判断一个字符串既要包含"a"，并且字符串长度还要大于5，那么：
+**默认方法：and**
 
-  ```java
-  import java.util.function.Predicate;
-  
-  public class Demo02Predicate_and {
-      public static boolean checkString (String s, Predicate<String> pre1, Predicate<String> pre2) {
-          // return pre1.test(s) && pre2.test(s);
-          return pre1.and(pre2).test(s); // 等价于return pre1.test(s) && pre2.test(s);
-  
-      }
-  
-      public static void main(String[] args) {
-          // 定义一个字符串
-          String str = "abcdef";
-          boolean b = checkString(str, 
-  			(String s1) -> {
-              	// 判断字符串的长度是否大于5
-              	return s1.length() > 5;
-          	}, 
-  			(String s2) -> {
-              	// 判断字符串中是否包含a
-              	return s2.contains("a");
-          	});
-          System.out.println(b);
-      }
-  }
-  ```
+既然是条件判断，就会存在与、或、非三种常见的逻辑关系，其中将两个`Predicate`条件使用“**与**”逻辑连接起来实现“**并且**”的效果的时候，可以使用`default`方法`and`。其JDK源代码为：
 
-* **默认方法：or**
+```java
+default Predicate<T> and(Predicate<? super T> other) {
+    Objects.requireNonNull(other);
+    return (t) -> test(t) && other.test(t);
+}
+```
 
-  与`and`的“与”类似，默认方法`or`实现逻辑关系中的“**或**”。JDK源代码为：
+如果要判断一个字符串既要包含"a"，并且字符串长度还要大于5，那么：
 
-  ```java
-  default Predicate<T> or(Predicate<? super T> other) {
-      Objects.requireNonNull(other);
-      return (t) -> test(t) || other.test(t);
-  }
-  ```
+```java
+import java.util.function.Predicate;
 
-* **默认方法：negate**
+public class Demo02Predicate_and {
+    public static boolean checkString (String s, Predicate<String> pre1, Predicate<String> pre2) {
+        // return pre1.test(s) && pre2.test(s);
+        return pre1.and(pre2).test(s); // 等价于return pre1.test(s) && pre2.test(s);
 
-  "与"、"或"已经了解了，剩下的"非"（取反）也很简单。默认方法negate的JDK源代码为：
+    }
 
-  ```java
-  default Predicate<T> negate() {
-      return (t) -> !test(t);
-  }
-  ```
+    public static void main(String[] args) {
+        // 定义一个字符串
+        String str = "abcdef";
+        boolean b = checkString(str, 
+			(String s1) -> {
+            	// 判断字符串的长度是否大于5
+            	return s1.length() > 5;
+        	}, 
+			(String s2) -> {
+            	// 判断字符串中是否包含a
+            	return s2.contains("a");
+        	});
+        System.out.println(b);
+    }
+}
+```
 
-  很容易可以看出，它是执行了test方法后，对结果Boolean值进行"!"取反而已。
+**默认方法：or**
+
+与`and`的“与”类似，默认方法`or`实现逻辑关系中的“**或**”。JDK源代码为：
+
+```java
+default Predicate<T> or(Predicate<? super T> other) {
+    Objects.requireNonNull(other);
+    return (t) -> test(t) || other.test(t);
+}
+```
+
+**默认方法：negate**
+
+"与"、"或"已经了解了，剩下的"非"（取反）也很简单。默认方法negate的JDK源代码为：
+
+```java
+default Predicate<T> negate() {
+    return (t) -> !test(t);
+}
+```
+
+很容易可以看出，它是执行了test方法后，对结果Boolean值进行"!"取反而已。
+
+**案例**
 
 练习：集合信息筛选
 
@@ -1203,7 +1197,6 @@ public class Demo01Printable {
 public class Demo01 {
     public static void main(String[] args) {
         Consumer<String> consumer = (System.out::printf);
-        
         consumer.accept("linxuan");
     }
 }
@@ -1275,12 +1268,6 @@ public class Demo01ObjectMethodReference {
 ```java
 // 函数式接口，这个注解@FunctionalInterface代表了这个是函数式接口
 @FunctionalInterface
-public interface Calcable {
-    int calc(int num);
-}
-```
-
-```java
 public interface Calcable {
     int calcable(int number);
 }
@@ -1420,6 +1407,11 @@ public class Husband {
 
     public static void main(String[] args) {
         new Husband().soHappy();
+    }
+
+    @FunctionalInterface
+    public interface Richable {
+        void buy();
     }
 }
 ```

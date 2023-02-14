@@ -1,14 +1,8 @@
 # 第一章 Spring Cache
 
-## 1.1 Spring Cache介绍
+Spring cache是一个框架，实现了基于注解的缓存功能，只需要简单地加一个注解，就能实现缓存功能。Spring Cache提供了一层抽象，底层可以切换不同的cache实现。具体就是通过CacheManager接口来统一不同的缓存技术。
 
-Spring cache是一个框架，实现了基于注解的缓存功能，只需要简单地加一个注解，就能实现缓存功能。
-
-Spring Cache提供了一层抽象，底层可以切换不同的cache实现。具体就是通过CacheManager接口来统一不同的缓存技术。
-
-CacheManager是Spring提供的各种缓存技术抽象接口。
-
-针对不同的缓存技术需要实现不同的CacheManager：
+CacheManager是Spring提供的各种缓存技术抽象接口。针对不同的缓存技术需要实现不同的CacheManager：
 
 | CacheManager        | 描述                               |
 | ------------------- | ---------------------------------- |
@@ -16,17 +10,20 @@ CacheManager是Spring提供的各种缓存技术抽象接口。
 | GuavaCacheManager   | 使用Google的GuavaCache作为缓存技术 |
 | RedisCacheManager   | 使用Redis作为缓存技术              |
 
-## 1.2 Spring Cache常用注解
+## 1.1 常用注解
 
-![](..\图片\4-06【SpringCache】\1-2.png)
+| 注解           | 说明                                                         |
+| -------------- | ------------------------------------------------------------ |
+| @EnableCaching | 开启缓存注解功能                                             |
+| @Cacheable     | 方法执行前查看缓存中是否有数据，有数据则返回，无数据则调用方法并将返回值存入缓存 |
+| @CachePut      | 将方法的返回值放到缓存中                                     |
+| @CacheEvict    | 将一条或多条数据从缓存中删除                                 |
 
-在spring boot项目中，使用缓存技术只需在项目中导入相关缓存技术的依赖包，并在启动类上使用@EnableCaching开启缓存支持即可。
+在spring boot项目中，使用缓存技术只需在项目中导入相关缓存技术的依赖包，并在启动类上使用`@EnableCaching`开启缓存支持即可。
 
 例如，使用Redis作为缓存技术，只需要导入Spring data Redis的maven坐标即可。
 
-# 第二章 入门案例
-
-## 2.1 环境搭建
+## 1.2 入门案例
 
 我们先使用最基本的缓存方式来使用一下Spring Cache，Map缓存
 
@@ -117,7 +114,7 @@ CacheManager是Spring提供的各种缓存技术抽象接口。
      port: 8080
    spring:
      application:
-       #应用的名称，可选
+       # 应用的名称，可选
        name: cache_demo
      datasource:
        druid:
@@ -142,18 +139,13 @@ CacheManager是Spring提供的各种缓存技术抽象接口。
    public class User implements Serializable {
    
        private static final long serialVersionUID = 1L;
-   
        private Long id;
-   
        private String name;
-   
        private int age;
-   
        private String address;
-   
    }
    ```
-
+   
 5. Mapper接口、Service接口、Service接口实现类：
 
    ```java
@@ -221,7 +213,7 @@ CacheManager是Spring提供的各种缓存技术抽象接口。
    }
    ```
 
-## 2.2 使用CachePut注解
+## 1.3 使用CachePut注解
 
 `@CachePut`：将方法的返回值放到缓存中。一般该注解放在新增的方法上面。该注解我们操作的时候需要关注两个属性：value和key，value属性在前、key属性在后。
 
@@ -245,7 +237,7 @@ CacheManager是Spring提供的各种缓存技术抽象接口。
 
 这些都是缓存的数据，userCache的缓存的名称是一大类，缓存的键是id，值是user对象。缓存到了ConcurrentHashMap对象里面，这个Map是基于内存的，如果我们的项目关闭，那么缓存的数据也就没有了。
 
-## 2.3 使用CacheEvict 注解
+## 1.4 使用CacheEvict 注解
 
 <!-- evict 驱逐; (尤指依法从房屋或土地上)赶出; 逐出; -->
 
@@ -277,7 +269,7 @@ public User update(User user){
 }
 ```
 
-##  2.4 使用Cacheable注解
+##  1.5 使用Cacheable注解
 
 `@Cacheable`：在方法执行前Spring先查看缓存中是否有数据，如果有数据，那么直接返回缓存数据，若没有数据，调用方法并将方法返回值放到缓存中。
 
@@ -319,20 +311,20 @@ public List<User> list(User user){
 }
 ```
 
-## 2.5 使用Redis缓存数据
+## 1.6 使用Redis缓存数据
 
 1. 导入Maven坐标
 
    ```xml
-           <dependency>
-               <groupId>org.springframework.boot</groupId>
-               <artifactId>spring-boot-starter-cache</artifactId>
-           </dependency>
+   <dependency>
+       <groupId>org.springframework.boot</groupId>
+       <artifactId>spring-boot-starter-cache</artifactId>
+   </dependency>
    
-           <dependency>
-               <groupId>org.springframework.boot</groupId>
-               <artifactId>spring-boot-starter-data-redis</artifactId>
-           </dependency>
+   <dependency>
+       <groupId>org.springframework.boot</groupId>
+       <artifactId>spring-boot-starter-data-redis</artifactId>
+   </dependency>
    ```
 
 2. yml文件添加：

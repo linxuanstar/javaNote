@@ -3,45 +3,35 @@
 我的Java学习笔记
 
 - 1-Java基础
-- 2-JavaWeb
-- 3-Java框架
-- 4-数据库
+- 2-DB数据库
+- 3-JavaWeb
+- 4-Java框架
 - 5-微服务
-- 6-大数据
-- 7-扩展
-- 8-面试
+- 6-扩展
 
 ## 1.1 Java基础
 
 加上了JVM和JUC的知识。
 
-## 1.2 JavaWeb
+## 1.2 DB数据库
 
-JavaWeb知识点+工具
+MySQL + Redis + Orcal + MongoDB
 
-## 1.3 Java框架
+## 1.3 JavaWeb
+
+JavaWeb知识点 + 常用工具
+
+## 1.4 Java框架
 
 框架
 
-## 1.4 数据库
-
-MySQL、Redis
-
 ## 1.5 微服务
 
-分布式、微服务 + 中间件
+分布式、微服务 + 中间件 + 大数据
 
-## 1.6 大数据
+## 1.6 扩展
 
-大数据相关知识
-
-## 1.7 扩展
-
-变成基础知识+编程四大件+设计模式。
-
-## 1.8 面试
-
-面试题以及题解
+编程基础知识+编程四大件+设计模式。
 
 # 第二章 学习路线
 
@@ -65,20 +55,6 @@ Dubbo → Zookeeper → RabbitMQ → RocketMQ → Docker → Redis → MongoDB �
 JavaSE --> MySQL--> JDBC --> JavaWeb --> Spring5 --> SpringMVC --> MyBatis--> Maven --> Ssm框架整合案例 --> Git/GitHub --> Redis6 --> MySQL高级优化 --> MyBatisPlus --> Spring注解驱动开发 -->  ZooKeeper --> Dubbo --> 消息中间件ActiveMQ --> RabbitMQ -->RocketMQ-->SpringBoot2 -->  SpringCloud --> 尚筹网项目 --> 在线教育项目 --> 谷粒商城项目 --> 尚医通项目 --> 尚融宝项目--> 高频面试题第一季 --> 大厂面试题第二季 --> 大厂面试题第三季  
 
 尚硅谷 https://www.bilibili.com/read/cv5216534?spm_id_from=333.999.0.0 
-
-# 第三章 未学习的
-
-Java工具：jmh
-
-数据库：MongoDB
-
-中间件：Kafaka
-
-编程四大件：计算机组成原理、操作系统、计算机网络
-
-学到一半的：zookeeper、设计模式
-
-需要二次学习：JVM
 
 
 

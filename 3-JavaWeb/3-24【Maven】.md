@@ -662,9 +662,13 @@ maven 对项目构建过程分为三套相互独立的生命周期，请注意�
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-                           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context 
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/tx 
+                           http://www.springframework.org/schema/tx/spring-tx.xsd
+                           ">
     <!--主程序对应的配置文件-->
     <!--主程序对应的配置文件-->
 
@@ -1471,6 +1475,3 @@ Nexus是Sonatype公司的一款maven私服产品，下载地址：https://help.s
 第二步：发布资源到私服。点击deploy或者执行Maven命令`mvn deploy`
 
 <img src="..\图片\3-24【Maven】\5-7上传.png"/>
-
-
-
