@@ -325,48 +325,22 @@ server {
 地址栏输入http://www.hmtravel.com/
 ```
 
-
-
-Nginx编程需要用到Lua语言，因此我们必须先入门Lua的基本语法。
-
 # 第二章 Lua
 
-## 3.1.初识Lua
+Lua 是一种轻量小巧的脚本语言，用标准C语言编写并以源代码形式开放， 其设计目的是为了嵌入应用程序中，从而为应用程序提供灵活的扩展和定制功能。Lua经常嵌入到C语言开发的程序中，例如游戏开发、游戏插件等。Nginx本身也是C语言开发，因此也允许基于Lua做拓展。官网：https://www.lua.org/
 
-Lua 是一种轻量小巧的脚本语言，用标准C语言编写并以源代码形式开放， 其设计目的是为了嵌入应用程序中，从而为应用程序提供灵活的扩展和定制功能。官网：https://www.lua.org/
-
-Lua经常嵌入到C语言开发的程序中，例如游戏开发、游戏插件等。
-
-Nginx本身也是C语言开发，因此也允许基于Lua做拓展。
-
-## 3.1.HelloWorld
-
-CentOS7默认已经安装了Lua语言环境，所以可以直接运行Lua代码。
-
-1）在Linux虚拟机的任意目录下，新建一个hello.lua文件
+HelloWorld案例如下：
 
 ```sh
-[root@192 lua]# touch hello.lua
+# 新建一个hello.lua文件
+touch hello.lua
+# 添加如下内容
+print("Hello World!")
+# 运行该文件
+lua hello.lua
 ```
 
-2）添加下面的内容
-
-```lua
-print("Hello World!")  
-```
-
-3）运行
-
-```sh
-[root@192 lua]# lua hello.lua
-hello world
-```
-
-## 3.2 变量和循环
-
-学习任何语言必然离不开变量，而变量的声明必须先知道数据的类型。
-
-### 3.2.1 Lua的数据类型
+## 2.1 数据类型
 
 Lua中支持的常见数据类型包括：
 
@@ -379,7 +353,7 @@ Lua中支持的常见数据类型包括：
 | function | 由C或者Lua编写的函数                                         |
 | table    | 关联数组，数组的索引可以是数字、字符串或者表类型。创建通过构造表达式完成 `{}`创建空表 |
 
-另外，Lua提供了type()函数来判断一个变量的数据类型：
+另外，Lua提供了`type()`函数来判断一个变量的数据类型：
 
 ```sh
 [root@192 lua]# lua
@@ -392,7 +366,9 @@ number
 function
 ```
 
-### 3.2.2 声明变量
+## 3.2 变量和循环
+
+**变量**
 
 Lua声明变量的时候无需指定数据类型，而是用local来声明变量为局部变量：
 
@@ -431,7 +407,7 @@ print(map['name'])
 print(map.name)
 ```
 
-### 3.2.3 循环
+**循环**
 
 对于table，我们可以利用for循环来遍历。不过数组和普通table遍历略有差异。
 
@@ -441,7 +417,7 @@ print(map.name)
 -- 声明数组 key为索引的 table
 local arr = {'java', 'python', 'lua'}
 -- 遍历数组
-for index,value in ipairs(arr) do
+for index, value in ipairs(arr) do
     print(index, value) 
 end
 ```
@@ -452,23 +428,38 @@ end
 -- 声明map，也就是table
 local map = {name='Jack', age=21}
 -- 遍历table
-for key,value in pairs(map) do
+for key, value in pairs(map) do
    print(key, value) 
 end
 ```
 
+## 3.3 流程控制
 
-
-## 3.3 条件控制、函数
-
-Lua中的条件控制和函数声明与Java类似。
-
-### 3.3.1 函数
-
-定义函数的语法：
+类似Java的条件控制，例如if、else语法：
 
 ```lua
-function 函数名( argument1, argument2..., argumentn)
+if(布尔表达式)
+then
+   --[ 布尔表达式为 true 时执行该语句块 --]
+else
+   --[ 布尔表达式为 false 时执行该语句块 --]
+end
+```
+
+与java不同，布尔表达式中的逻辑运算是基于英文单词：
+
+| 操作符 | 描述                                                         | 实例                  |
+| ------ | ------------------------------------------------------------ | --------------------- |
+| and    | 逻辑与操作符。A为false，则返回A，否则返回B。                 | (A and B) 为 false    |
+| or     | 逻辑或操作符。A为true，则返回A，否则返回B。                  | (A or B) 为 true      |
+| not    | 逻辑非操作符。与逻辑运算结果相反，如果条件为true，逻辑非为false | not (A and B) 为 true |
+
+## 3.4 函数
+
+Lua中的条件控制和函数声明与Java类似。定义函数的语法：
+
+```lua
+function 函数名(argument1, argument2..., argumentn)
     -- 函数体
     return 返回值
 end
@@ -483,61 +474,3 @@ function printArr(arr)
     end
 end
 ```
-
-### 3.3.2 条件控制
-
-类似Java的条件控制，例如if、else语法：
-
-```lua
-if(布尔表达式)
-then
-   --[ 布尔表达式为 true 时执行该语句块 --]
-else
-   --[ 布尔表达式为 false 时执行该语句块 --]
-end
-
-```
-
-与java不同，布尔表达式中的逻辑运算是基于英文单词：
-
-| 操作符 | 描述                                                         | 实例                  |
-| ------ | ------------------------------------------------------------ | --------------------- |
-| and    | 逻辑与操作符。A为false，则返回A，否则返回B。                 | (A and B) 为 false    |
-| or     | 逻辑或操作符。A为true，则返回A，否则返回B。                  | (A or B) 为 true      |
-| not    | 逻辑非操作符。与逻辑运算结果相反，如果条件为true，逻辑非为false | not (A and B) 为 true |
-
-
-
-### 3.3.3.案例
-
-需求：自定义一个函数，可以打印table，当参数为nil时，打印错误信息
-
-```lua
-function printArr(arr)
-    if not arr then
-        print('数组不能为空！')
-    end
-    for index, value in ipairs(arr) do
-        print(value)
-    end
-end
-```
-
-```sh
-[root@192 lua]# vim hello.lua 
-  1 function printArr(arr)
-  2     if (not arr) then
-  3         print('数组不能够为空')
-  4         return nil
-  5     end
-  6 
-  7     for index, value in ipairs(arr) do
-  8         print(value)
-  9     end
- 10 end
- 11 
- 12 local arr = {'java', 'python', 'lua'}
- 13 
- 14 printArr(nil)
-```
-

@@ -50,161 +50,145 @@ NOSQL数据库与关系型数据库对比：
 * 优势：利用图结构相关算法。
 * 劣势：需要对整个图做计算才能得出结果，不容易做分布式的集群方案。
 
-# 第一章 Redis基础
-
-`redis`是一款高性能的`NOSQL`系列的**非关系型数据库**。
-
-![](..\图片\2-10【Redis单机缓存】\1.关系型和非关系型数据库比较.bmp)
-
-Redis是用C语言开发的一个开源的高性能键值对（key-value）数据库，官方提供测试数据，50个并发执行100000个请求,读的速度是110000次/s,写的速度是81000次/s ，且Redis通过提供多种键值数据类型来适应不同场景下的存储需求。
-
-目前为止Redis支持的键值数据类型如下：
-
-1. **字符串类型 string**
-
-2. **哈希类型 hash**
-
-3. **列表类型 list**
-
-4. **集合类型 set**
-
-5. **有序集合类型 sortedset**
-
-redis的应用场景如下：
-
-- 缓存（数据查询、短连接、新闻内容、商品内容等等）
-- 聊天室的在线好友列表
-- 任务队列。（秒杀、抢购、12306等等）
-- 应用排行榜
-- 网站访问统计
-- 数据过期处理（可以精确到毫秒）
-- 分布式集群架构中的`session`分离
-
-## 1.1 NOSQL介绍
-
-## 1.2 Redis下载安装
-
-官网：`https://redis.io`     中文网：`http://www.redis.net.cn/`
-
-解压直接可以使用
-
-* 双击`redis-server.exe`让服务器端运行
-* 双击`redis-cli.exe`让客户端运行
-
-文件讲解：
-
-* `redis.windows.conf`：配置文件
-* `redis-cli.exe`：redis的客户端
-* `redis-server.exe`：redis服务器端
-
-**Linux中操作redis-3.0.4**
-
-我们将redis放在了`/usr/local/redis`里面，在里面操作就可以了，版本是redis-3.0.4。
-
-如果想要打开redis首先要进入`/usr/local/redis/redis-3.0.4/src`，里面有着`redis-server`和`redis-cli`文件。我们要是想要运行的话和Windows一样，首先运行`redis-server`文件，命令为：`./redis-server`。然后就会发现`redis-server`启动了，当然当前页面也霸屏了，所以需要克隆一个页面再启动客户端：`./redis-cli`。这样再客户端就可以操作redis了。
+## 1.2 Redis介绍
 
 <!--daemonize 守护进程;-->
 
-之前启动redis有霸屏操作，我们可以修改一下：
+Redis是一款高性能的NOSQL系列的非关系型数据库。Redis是用C语言开发的一个开源的高性能键值对（key-value）数据库，且Redis通过提供多种键值数据类型来适应不同场景下的存储需求。
 
-1. 进入redis里面，找到`redis.conf`文件，使用vim进入该文件。`vim redis.conf`
-2. 这里面的内容非常的多，所以我们可以使用vim的搜索命令：`/dae`，然后光标就会定位到 `daemonize no`，我们将其修改为yes就可以了
-3. 打开redis-server，重新加载配置文件。进入`/usr/local/redis/redis-3.0.4`目录，键入如下命令：`src/redis-server ./redis.conf`。这时候启动就不会出现霸屏了，但是如果我们不指定配置文件的话又会回到霸屏状态。
+redis的应用场景如下：缓存（数据查询、短连接、新闻内容、商品内容等等）、聊天室的在线好友列表、任务队列（秒杀、抢购、12306等等）、应用排行榜、网站访问统计、数据过期处理（可以精确到毫秒）、分布式集群架构中的`session`分离。
 
-启动redis是没有密码的，这很不安全，所以可以设置一下：
+目前为止Redis支持的键值数据类型如下：字符串类型 string、哈希类型 hash、列表类型 list、集合类型 set、有序集合类型 sortedset
 
-1. 进入redis里面，找到redis.conf文件，使用vim进入该文件。`vim redis.conf`
+官网：https://redis.io，中文网：http://www.redis.net.cn/。
 
-2. 命令行模式键入：`/pass`，找到`# requirepass foobared`，将注释弄掉，然后把foobared换成密码即可，这里我们就不创建密码了。
+绿色版，直接解压便可以使用，目录如下：
 
-3. 启动的时候我们也可以使用长命令：`redis-cli -h localhost -p 6379 -a 密码`。
+```apl
+redis-2.8.9
+  |-- redis.windows.conf   # 配置文件
+  |-- redis-benchmark.exe
+  |-- redis-check-aof.exe
+  |-- redis-check-dump.exe
+  |-- redis-cli.exe        # redis的客户端，使用的时候先双击启动服务端，然后才可以使用客户端
+  |-- redis-server.exe     # redis服务器端
+```
 
-   服务端启动直接启动就好了，来解释一下客户端启动命令：-h 就是host 后面是localhost代表我们连接本地，-p 就是端口 后面就是连接的服务端的端口号，-a 是密码 后面跟的是我们设置的密码。如果后面不跟任何参数，那么都是默认值，连接本地，端口为6379，无密码登录。
+## 1.3 Linux操作
 
-   如果设置密码了，但是登录的时候不使用密码登录进去了，命令是使用不了的，我们可以键入命令：`auth 密码`。
+```sh
+# /export/目录下面创建这三个文件夹 用于存放 数据 软件 安装包
+[root@node1 ~]# ls /export/
+data  server  software
+```
 
-如果想要远程连接redis的话，我们又需要设置一下了：
+**Linux中操作redis-3.0.4**
 
-1. 如果从远程连接redis，就是从win10连接我们的Linux，我们可以使用如下方式：在redis安装位置按住shift键再右键，选择打开PowerShell窗口。 `.\redis-cli.exe -h 192.168.66.130 -p 6379`
-2. 命令行模式键入：`/bind`。将`# bind 127.0.0.1`注释起来，因为我们的就是注释的所以可以直接远程连接。
+在Linux中操作和Windows一样，首先启动服务器端然后再启动客户端即可。
+
+```sh
+# 启动服务器端。启动之后页面就会霸屏了
+[root@node1 src]# ./redis-server
+# 启动客户端。服务端启动之后页面就会霸屏了，所以重新克隆一个页面启动客户端
+[root@node1 src]# ./redis-cli
+```
 
 配置环境变量：
 
-* `vim /etc/profile`，添加下面命令：
+```sh
+# 配置环境变量
+vim /etc/profile
+# 文件添加下面内容
+export REDIS_HOME=/usr/local/redis/redis-3.0.4
+export PATH=$PATH:$REDIS_HOME/src
+# 刷新配置
+source /etc/profile
+```
 
-  ```sh
-  export REDIS_HOME=/usr/local/redis/redis-3.0.4
-  export PATH=$PATH:$REDIS_HOME/src
-  ```
+修改Redis霸屏操作：
 
-* 使其立即生效：`source /etc/profile`。
+```sh
+# 修改Redis霸屏操作
+[root@node1 src]# vim redis.conf
+# 进入vim编辑器，使用搜索命令/dae，光标定位daemonize no，修改为yes
+# 重新加载配置文件
+[root@node1 /usr/local/redis/redis-3.0.4]# src/redis-server ./redis.conf
+```
+
+设置密码
+
+```sh
+# 设置密码
+[root@node1 src]# vim redis.conf
+# 进入vim编辑器，使用搜索命令/pass，光标定位# requirepass foobared。注释取消，将foobared换成密码即可。
+# 重新加载配置文件
+[root@node1 /usr/local/redis/redis-3.0.4/src]# ./redis-server ./redis.conf
+# 使用密码启动客户端。如果不使用密码登录进去，是无法使用命令的，可以使用auth 密码使用命令。
+[root@node1 /usr/local/redis/redis-3.0.4/src]# redis-cli -h localhost -p 6379 -a 密码
+```
+
+远程连接Redis
+
+```sh
+# 修改Redis配置文件IP地址访问
+[root@node1 src]# vim redis.conf
+# 将bind 127.0.0.1注释起来。绑定地址，默认是127.0.0.1，会导致只能在本地访问。修改为0.0.0.0可以在任意IP访问
+
+# windows客户端操作：打开PowerShell窗口
+.\redis-cli.exe -h 192.168.66.130 -p 6379
+```
 
 **Linux中操作redis-6.2.4**
 
-安装在Centos7_clone虚拟机里面，将之前的Redis删除了，然后搞的新的。安装在了`/usr/local/redis`里面。
-
-首先需要安装Redis所需要的依赖：
-
 ```sh
+# 安装Redis所需要的依赖
 yum install -y gcc tcl
-```
-
-然后将课前资料提供的Redis安装包上传到虚拟机的任意目录，我放到了`/usr/local/redis`里面。
-
-解压缩：
-
-```sh
+# 解压缩redis-6.2.4.tar.gz
 tar -xvf redis-6.2.4.tar.gz
-```
-
-进入redis目录：
-
-```sh
+# 进入redis目录
 cd redis-6.2.4
-```
-
-运行编译命令：
-
-```sh
+# 运行编译命令
 make && make install
 ```
 
-如果没有出错，应该就安装成功了。
-
-然后修改redis.conf文件中的一些配置：
-
-```properties
+```sh
+# 修改redis.conf文件中的一些配置
+vim redis.conf
 # 绑定地址，默认是127.0.0.1，会导致只能在本地访问。修改为0.0.0.0则可以在任意IP访问
 bind 0.0.0.0
 # 数据库数量，设置为1
 databases 1
 ```
 
-启动Redis：
-
 ```sh
+# 启动Redis
 redis-server redis.conf
-```
-
-停止redis服务：
-
-```sh
+# 停止redis服务
 redis-cli shutdown
 ```
 
 # 第二章 命令操作
 
-更多命令可以参考Redis中文网：`https://www.redis.net.cn/order/`。
+`redis`存储的是`key,value`格式的数据，其中`key`都是字符串，`value`有5种不同的数据结构：
 
-`redis`存储的是：`key,value`格式的数据，其中`key`都是字符串，`value`有5种不同的数据结构
+1. 字符串类型 string
+2. 哈希类型 hash：`map`格式  
+3. 列表类型 list：`linkedlist`格式。支持重复元素
+4. 集合类型 set：不允许重复元素
+5. 有序集合类型 sortedset：不允许重复元素，且元素有顺序
 
-`value`的数据结构如下：
+通用命令操作：
 
-1. **字符串类型 string**
-2. **哈希类型 hash**：`map`格式  
-3. **列表类型 list**：`linkedlist`格式。支持重复元素
-4. **集合类型 set**：不允许重复元素
-5. **有序集合类型 sortedset**：不允许重复元素，且元素有顺序
+| 命令          | 作用                                                         |
+| ------------- | ------------------------------------------------------------ |
+| keys pattern  | 查找所有符合给定模式pattern的key                             |
+| keys *        | 查询所有的键                                                 |
+| exists key    | 检查给定的key是否存在                                        |
+| type key      | 返回key所存储的值的类型                                      |
+| ttl key       | 返回给定key的剩余生存时间（TTL、time to live），以秒为单位   |
+| del key       | 该命令用于在key存在时删除key                                 |
+| clear         | 清屏                                                         |
+| select [数字] | 切换数据库 一共有16个数据库，当然也可以修改 启动的时候默认使用0号数据库 |
 
 ## 2.1 字符串类型 string
 
