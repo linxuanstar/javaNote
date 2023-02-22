@@ -64,7 +64,7 @@ Using CLASSPATH:       "E:\Tomcat\apache-tomcat-9.0.11\bin\bootstrap.jar;E:\Tomc
 
 一般会将Tomcat的默认端口设置为80，80端口号是http协议的默认端口号，这样，访问的时候直接输入localhost就可以了，不用输入端口号了。
 
-## 2.2 Tomcat部署项目
+## 1.2 Tomcat部署项目
 
 部署项目，因为Tomcat就是一个web服务器软件，所以需要有项目在Tomcat上面部署。使用Tomcat部署项目一共有三种方式：将项目放到`webapps`目录下面、配置`conf/server.xml`文件、在`conf/catalina/localhost`创建任意名称的XML文件。创建一个文件夹测试一下：
 
@@ -115,7 +115,7 @@ D:（D盘）
 
 打开浏览器，地址栏输入：http://localhost:8080/index/hello.html。建议使用这种方式来部署项目。
 
-## 2.4 项目介绍
+## 1.3 项目介绍
 
 项目有静态项目和动态项目。java动态项目的目录结构如下：
 
@@ -127,40 +127,82 @@ D:（D盘）
 		-- lib目录：放置依赖的jar包
 ```
 
-# 第三章 Servlet入门
+# 第二章 Servlet入门
 
-`Serverlet：server applet`
+Serverlet（server applet）：运行在服务器端的小程序。
 
-概念：运行在服务器端的小程序。Servlet就是一个接口，定义了Java类被浏览器访问到(tomcat识别)的规则。将来我们会自己定义一个类，实现Servlet接口，复写这些方法。
+Servlet就是一个接口，定义了Java类被浏览器访问到的规则。将来我们会自己定义一个类，实现Servlet接口，复写这些方法。
 
-## 3.1 快速入门
+## 2.1 快速入门
 
-1. 创建JavaEE项目
+```xml
+<!-- 导入Servletjar包 -->
+<dependency>
+    <groupId>javax.servlet</groupId>
+    <artifactId>javax.servlet-api</artifactId>
+    <version>3.1.0</version>
+    <!-- 依赖作用范围为provided，主代码和测试代码有用，打包的时候不会导包。避免和tomcat中冲突 -->
+    <scope>provided</scope>
+</dependency>
+```
 
-2. 定义一个类，实现`Servlet`接口
+```java
+// 自定义一个类实现servlet接口，并且实现它的方法
+public class Demo01Servlet implements Servlet{
 
-   ```java
-   public class Demo01Servlet implements Servlet{}
-   ```
+    // 初始化方法，只有在Servlet创建的时候调用
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        // TODO Auto-generated method stub
+    }
 
-3. 实现接口中的抽象方法
+    // 获取ServletConfig对象
+    @Override
+    public ServletConfig getServletConfig() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-4. 配置`Servlet`
+    // 提供服务方法 每一次Servlet被访问，都会执行
+    @Override
+    public void service(ServletRequest req,ServletResponse res)throws ServletException, IOException {
+        System.out.println("==================");
+    }
 
-   在`web.xml`文件中，`web-app`标签内部配置
+    // 获取Servlet的一些信息，版本，作者，等等
+    @Override
+    public String getServletInfo() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-   ```xml
-   <!-- 配置Servlet -->
-   <servlet>
-       <servlet-name>demo01</servlet-name>
-       <!--这个是全类名 反射有讲过-->
-       <servlet-class>cn.com.web.servlet.Demo01Servlet</servlet-class>
-   </servlet>
-   <servlet-mapping>
-       <servlet-name>demo01</servlet-name>
-       <url-pattern>/demo01</url-pattern>
-   </servlet-mapping>
-   ```
+    // 销毁方法 在服务器正常关闭的时候就会执行，只会执行一次
+    @Override
+    public void destroy() {
+        // TODO Auto-generated method stub   
+    }   
+}
+```
+
+```xml
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+    <display-name>Archetype Created Web Application</display-name>
+    <!-- web.xml内部配置Servlet -->
+    <servlet>
+        <servlet-name>demo01</servlet-name>
+        <!--这个是全类名 反射有讲过-->
+        <servlet-class>com.linxuan.web.Demo01Servlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>demo01</servlet-name>
+        <url-pattern>/demo01</url-pattern>
+    </servlet-mapping>
+</web-app>
+```
 
 执行原理如下：
 
@@ -170,202 +212,148 @@ D:（D盘）
 4. Tomcat会将字节码文件加载进内存，并且创建其对象。
 5. 调用方法。
 
-## 3.2 方法声明周期
+## 2.2 Servlet声明周期
 
-- 被创建：执行`init`方法，只执行一次。
-- 提供服务：执行`service`方法，执行多次。
-- 被销毁：执行`destroy`方法，只执行一次。
+Servlet声明周期如下：被创建 --> 提供服务 --> 被销毁。
 
-创建一个`Demo02Servlet`类：
+**被创建**
+
+执行`init`方法，只执行一次。默认情况下，Tomcat第一次被访问的时候，Servlet被创建。当然可以在web.xml中配置创建的时机。
+
+```xml
+<web-app>
+    <!-- web.xml内部配置Servlet -->
+    <servlet>
+        <!-- 第一次访问的时候，创建。默认值一般为-1，只要是负数，那么就是第一次访问的时候创建 -->
+        <load-on-startup>负数</load-on-startup>
+        <!-- 在服务器启动的时候，创建。设置值应该为0或者正整数，一般我们设置为0~10 -->
+        <load-on-satrtup>正数</load-on-satrtup>
+    </servlet>
+</web-app>
+```
+
+`Servlet`的`init`方法，只执行一次，说明一个Servlet在内存中只存在一个对象，Servlet是单例的。但是正因为此，如果多个用户同时访问，那么就可能存在线程安全问题。
+
+解决方法：尽量不要在Servlet中定义成员变量，应该定义局部变量（在方法内部定义）。即使迫不得已定义了成员变量，那么在方法中也不要对其修改任何值。这样每一次调用一个Servlet对象，成员变量都相同。
+
+**提供服务**
+
+执行`service`方法，执行多次。每次访问`Servlet`时候，`Service`都会被调用一次。
+
+**被销毁**
+
+执行`destroy`方法，只执行一次。`Servlet`被销毁执行。服务器关闭的时候，Servlet被销毁。只有服务器正常关闭的时候，才会执行`destroy`方法。`destroy`方法在`Servlet`被销毁之前执行，一般用于释放资源。
+
+## 2.3 Servlet3.0注解
+
+每当我们重新创建一个类的时候，都要重复的对该类进行配置。`Servlet3.0`的存在让我们可以不用创建`web.xml`，直接使用注解来进行配置。
 
 ```java
+// 使用注解代替了配置类，每当访问路径为/demo02的时候就会执行该Servlet
+@WebServlet("/demo02")
 public class Demo02Servlet implements Servlet {
-    /**
-     * 初始化方法，只有在Servlet创建的时候调用
-     * @param servletConfig
-     * @throws ServletException
-     */
     @Override
     public void init(ServletConfig servletConfig) throws ServletException {
-        System.out.println("init...");
     }
-	
-    /**
-    * 获取ServletConfig对象
-    * ServletConfig：Servlet的配置对象
-    * @return
-    */
+
     @Override
     public ServletConfig getServletConfig() {
         return null;
     }
 
-    /**
-     * 提供服务方法
-     * 每一次Servlet被访问，都会执行
-     * @param servletRequest
-     * @param servletResponse
-     * @throws ServletException
-     * @throws IOException
-     */
     @Override
-    public void service(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
-        System.out.println("service...");
+    public void service(ServletRequest req,ServletResponse resp)throws ServletException,IOException {
+        System.out.println("-------------");
     }
 
-    /**
-    * 获取Servlet的一些信息，版本，作者，等等
-    * @return
-    */
     @Override
     public String getServletInfo() {
         return null;
     }
 
-    /**
-     * 销毁方法
-     * 在服务器正常关闭的时候就会执行，只会执行一次
-     */
     @Override
     public void destroy() {
-        System.out.println("destroy...");
     }
 }
 ```
-
-声明周期详解：
-
-1. 被创建：执行`init`方法，只执行一次。
-
-   默认情况下，Tomcat第一次被访问的时候，Servlet被创建。当然，我们也可以配置执行Servlet的创建时机。可以在`web/WEB-INF/web.xml`的`<servlet>`标签下面配置。
-
-   ```xml
-   <!--第一次访问的时候，创建。默认值一般为-1，只要是负数，那么就是第一次访问的时候创建-->
-   <load-on-startup>负数</load-on-startup>
-   <!--在服务器启动的时候，创建。设置值应该为0或者正整数，一般我们设置为0~10-->
-   <load-on-satrtup>正数</load-on-satrtup>
-   ```
-
-   `Servlet`的`init`方法，只执行一次，**说明一个Servlet在内存中只存在一个对象，Servlet是单例的**。
-
-   但是，正因为此，如果多个用户同时访问，那么就可能存在线程安全问题。
-
-   解决方法：尽量不要在Servlet中定义成员变量，应该定义局部变量，在方法内部定义。即使迫不得已定义了成员变量，那么在方法中也不要对其修改任何值。这样每一次调用一个Servlet对象，成员变量都相同。
-
-2. 提供服务：执行`service`方法，执行多次。
-
-   每次访问`Servlet`时候，`Service`都会被调用一次。
-
-3. 被销毁：执行`destroy`方法，只执行一次。
-
-   `Servlet`被销毁执行。服务器关闭的时候，Servlet被销毁。只有服务器正常关闭的时候，才会执行`destroy`方法。`destroy`方法在`Servlet`被销毁之前执行，一般用于释放资源。
-
-## 3.3 Servlet3.0
-
-每当我们重新创建一个类的时候，都要重复的对该类进行配置。
-
-`Servlet3.0`的存在让我们可以不用创建`web.xml`，直接使用注解来进行配置。步骤如下：
-
-1. 创建一个JavaEE项目(模块)，选择Servlet的版本3.0以上，可以不创建`web.xml`。
-
-2. 定义一个类，实现Servlet接口。
-
-3. 覆盖重写方法
-
-4. 在类上面使用@WebServlet注解，进行配置。
-
-   ```java
-   @WebServlet("/demo01")
-   @WebServlet("资源路径")
-   ```
-
-5. 打开浏览器，将虚拟目录设置为项目名称。运行idea会自动跳转到虚拟目录，然后再输入demo01会进入创建的类，调用service方法。
-
-## 3.4 IDEA与Tomcat的相关配置
-
-* IDEA会为每一个Tomcat部署的项目单独建立一份配置文件
-
-  查看控制台的log，可以发现：
-
-  ```apl
-  Using CATALINA_BASE: 
-  C:\Users\林轩\AppData\Local\JetBrains\IntelliJIdea2021.2\tomcat\3e20fe4c-cdaf-436f-8e70-1d6bfe2452e7
-  ```
-
-* 工作空间项目和Tomcat部署的web项目
-
-  Tomcat真正访问的是“Tomcat部署的web项目”，“Tomcat部署的web项目”对应着“工作空间项目”的web目录下的所有资源
-
-  WEB-INF目录下面的资源不能被浏览器直接访问。
-
-* 断点调试：使用开始按钮旁边的“小虫子”启动debug。
-
-## 3.5 Servlet的体系结构
-
-`Servlet -- 接口` ——> `GenericServlet-- 抽象类` ——> `HttpServlet -- 抽象类`
-
-### 3.5.1 GenericServlet
-
-源码：
 
 ```java
-public abstract class GenericServlet implements Servlet, ServletConfig, Serializable {
-    private static final long serialVersionUID = 1L;
-    private transient ServletConfig config;
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface WebServlet {
 
-    public GenericServlet() {
-    }
+    /**
+     * The URL patterns of the servlet。这样定义名称是value，那么就不用写属性了
+     *
+     * @return the URL patterns of the servlet
+     */
+    String[] value() default {};
 
-    public void destroy() {
-    }
-
-    public String getInitParameter(String name) {
-        return this.getServletConfig().getInitParameter(name);
-    }
-
-    public Enumeration<String> getInitParameterNames() {
-        return this.getServletConfig().getInitParameterNames();
-    }
-
-    public ServletConfig getServletConfig() {
-        return this.config;
-    }
-
-    public ServletContext getServletContext() {
-        return this.getServletConfig().getServletContext();
-    }
-
-    public String getServletInfo() {
-        return "";
-    }
-
-    public void init(ServletConfig config) throws ServletException {
-        this.config = config;
-        this.init();
-    }
-
-    public void init() throws ServletException {
-    }
-
-    public void log(String message) {
-        this.getServletContext().log(this.getServletName() + ": " + message);
-    }
-
-    public void log(String message, Throwable t) {
-        this.getServletContext().log(this.getServletName() + ": " + message, t);
-    }
-
-    public abstract void service(ServletRequest var1, ServletResponse var2) throws ServletException, IOException;
-
-    public String getServletName() {
-        return this.config.getServletName();
-    }
+    /**
+     * The URL patterns of the servlet
+     *
+     * @return the URL patterns of the servlet
+     */
+    String[] urlPatterns() default {};
 }
 ```
 
-`GenericServlet`将`Servlet`接口中其他的方法做了默认空实现，只将`service()`方法作为抽象方法。
+`urlpartten`：`Servlet`访问路径。这是一种配置方式，通过注解也可以配置访问路径。通过阅读源码我们可看到在`WebServlet`注解中定义了`URLPatterns`，并且它的返回值也是一个数组。所以我们可以通过`WebServlet`注解定义多个访问路径。
 
-将来定义`Servlet`类的时候，可以继承`GenericServlet`，实现`service()`方法即可。
+```java
+// 定义了资源路径可以为a, b, c。我们可以通过他们三个中的任意一个访问该类。
+@WebServlet({"/a", "b", "c"})
+```
+
+路径定义规则：
+
+1. `/xxx`。例如：`@WebServlet("/demo03")`
+2. `/xxx/xxx`：多层路径，目录结构。例如：`@WebServlet("/demo03/d")`
+3. `/xxx/*`：第二个路径可以随便写。这种方式等级比较低，因为是通配符。
+4. `*.do`：可以任意定义后缀名称，可以不是do，可以为a，b。这种方式等级比较低，因为是通配符。另外前面也不要加上`/`。
+
+## 2.4 IDEA与Tomcat的配置
+
+前面说过Tomcat部署项目一共右三种方式：将项目放到webapps目录下面、配置conf/server.xml文件、在conf/catalina/localhost创建任意名称的XML文件。
+
+Idea采用的是第三种：在conf/catalina/localhost创建任意名称的XML文件。只不过IDEA并没有在原始的Tomcat的目录下创建xml文件，它会为每一个Tomcat部署的项目单独建立一份配置文件，配置文件里面配置xml文件。查看控制台的log，可以发现：
+
+```apl
+# catalina.base指向每个Tomcat目录私有信息的位置，就是conf、logs、temp、webapps和work的父目录
+Using CATALINA_BASE: C:\Users\林轩\AppData\Local\JetBrains\IntelliJIdea2022.3\tomcat\78f703fe-5891-4017-8725-bca0e72827d2
+```
+
+```apl
+78f703fe-5891-4017-8725-bca0e72827d2
+    |-- conf
+    |    |-- Catalina
+    |    |    |-- localhost
+    |    |         |-- ROOT.xml # 这里面配置了项目的访问路径，虚拟目录。
+    |    |-- 其他的配置文件
+    |-- logs
+    |-- work
+```
+
+如果控制台乱码，只需要在配置的tomcat服务器的VM options添加如下即可：
+
+```properties
+-Dfile.encoding=UTF-8
+```
+
+## 2.5 Servlet的体系结构
+
+Servlet体系结构如下：
+
+```apl
+Servlet(interface) # 接口
+    |-- GenericServlet(abstract class) # 实现类，实现了Servlet接口，同时也是抽象类
+         |-- HttpServlet(abstract class) # 继承类，继承了GenericServlet抽象类，同时也是抽象类
+```
+
+**GenericServlet**
+
+`GenericServlet`将`Servlet`接口中其他的方法做了默认空实现，只将`service()`方法作为抽象方法。将来定义`Servlet`类的时候，可以继承`GenericServlet`，实现`service()`方法即可。
 
 ```java
 @WebServlet("/demo02")
@@ -377,34 +365,11 @@ public class Demo02Servlet extends GenericServlet {
 }
 ```
 
-### 3.5.2 HttpServlet
+**HttpServlet**
 
-通过浏览器提交信息，有很多中协议，get,post等等。每一次我们都需要自行判断，那么`HttpServlet`抽象类里面就帮我们弄了。
+通过浏览器提交信息，有很多种协议（get、post）等等。每一次我们都需要自行判断，那么`HttpServlet`抽象类里面就帮我们弄好了这个判断的过程。`HttpServlet`是对`http`协议的一种封装，简化操作。里面有着很多关于`http`协议的方法。
 
-`HttpServlet`是对`http`协议的一种封装，简化操作。里面有着很多关于`http`协议的方法。
-
-例如，get和post提交的方法。
-
-在项目下面web文件夹下面创建一个HTML页面
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-    <!--action规定向何处提交表单 eclipse里面/不要加上-->
-    <form action="/demo03" method="get">
-        <input name="username"><br>
-        <input type="submit" value="提交">
-    </form>
-</body>
-</html>
-```
-
-再创建一个资源路径为`/dmeo03`的类，继承`HttpServlet`抽象类，并将表单提交后的数据传送到该类。
+创建一个资源路径为`/dmeo03`的类，继承`HttpServlet`抽象类
 
 ```java
 @WebServlet("/demo03")
@@ -421,46 +386,13 @@ public class Demo03Servlet extends HttpServlet {
 }
 ```
 
-那么，当使用get的方法提交表单，控制台会输出get...。使用post方法提交表单，控制台会输出post...。
+# 第三章 ServletContext对象
 
-## 3.6 Servlet的相关配置
+ServletContext是一个全局的储存信息的空间，服务器开始就存在，服务器关闭才释放。WEB容器在启动时，它会为每个Web应用程序都创建一个对应的ServletContext，它代表当前Web应用，并且它被所有客户端共享。
 
-`urlpartten`：`Servlet`访问路径。这是一种配置方式，通过注解也可以配置访问路径。
+由于一个WEB应用中的所有Servlet共享同一个ServletContext对象，因此Servlet对象之间可以通过ServletContext对象来实现通讯。ServletContext对象通常也被称之为context域对象。当web应用关闭、Tomcat关闭或者Web应用reload的时候，ServletContext对象会被销毁。
 
-* 一个`Servlet`可以定义多个访问路径。通过阅读源码我们可看到在`WebServlet`注解中定义了`URLPatterns`，并且它的返回值也是一个数组。所以我们可以通过`WebServlet`注解定义多个访问路径。
-
-  ```java
-  // WebServlet注解中定义了URLPatterns
-  String[] urlPatterns() default {};
-  
-  // 我们可以通过WebServlet注解定义多个访问路径
-  @WebServlet({"/a", "b", "c"})
-  // 定义了资源路径可以为a, b, c。我们可以通过他们三个中的任意一个访问该类。
-  ```
-
-* 路径定义规则：
-
-  1. `/xxx`。例如：`@WebServlet("/demo03")`
-  2. `/xxx/xxx`：多层路径，目录结构。例如：`@WebServlet("/demo03/d")`
-  3. `/xxx/*`：第二个路径可以随便写。这种方式等级比较低，因为是通配符。
-  4. `*.do`：可以任意定义后缀名称，可以不是do，可以为a，b。这种方式等级比较低，因为是通配符。另外前面也不要加上`/`。
-
-# 第四章 ServletContext对象
-
-`Servlet`对象：代表了整个Web应用，可以和程序的容器(服务器)来通信。
-
-功能：
-
-1. 获取`MIME`类型。
-2. 域对象：共享数据。
-3. 获取文件的真实(服务器)路径。
-
-## 4.1 获取ServletContext对象
-
-一共有两种方法来获取`ServletContext`对象：
-
-1. 通过`request`对象来获取
-2. 通过`HttpServlet`来获取。
+一共有两种方法来获取`ServletContext`对象：通过`request`对象来获取、通过`HttpServlet`来获取。
 
 ```java
 @WebServlet("/demo01ServletContext")
@@ -485,13 +417,9 @@ public class Demo01ServletContext extends HttpServlet {
 }
 ```
 
-## 4.2 获取MIME类型
+## 3.1 获取MIME类型
 
-<!--P731-->
-
-`MIME`类型：在互联网通信过程中定义的一种文件数据类型。格式如下：`大类型/小类型`。例如：`text/html`	`image/png`。
-
-我们可以在服务器软件的`conf`文件夹下面来查看，里面有一个名为`web.xml`的文件，里面配置了信息。
+`MIME`类型是在互联网通信过程中定义的一种文件数据类型。格式为大类型/小类型，例如`text/html`、`image/png`。Tomcat中conf目录下面的we.xml里面就配置了大量的这种类型信息。
 
 获取方法：`String getMimeType(String file)`
 
@@ -516,64 +444,17 @@ public class Demo02ServletContext extends HttpServlet {
 }
 ```
 
-## 4.3 域对象
+## 3.2 获取域对象
 
-<!--P732-->
+域对象：共享数据。
 
-域对象：共享数据
+| API                                     | 作用       |
+| --------------------------------------- | ---------- |
+| setAttribute(String name, Object value) | 设置域属性 |
+| getAttribute(String name)               | 获取域属性 |
+| removeAttribute(String name)            | 移除域属性 |
 
-* `setAttribute(String name, Object value)`
-* `getAttribute(String name)`
-* `removeAttribute(String name)`
-
-`ServletContext`对象范围：所有的用户所有的请求的数据。
-
-## 4.4 获取文件的真实路径
-
-<!--P733-->
-
-* `String getRealPath(String path)`：获取文件的真实路径。
-
-我们在项目里面分别创建三个TXT文档：1.在src目录下面创建a.txt。2.在web目录下面创建b.txt。3.创建WEB-INF文件夹，然后在该文件夹下面创建c.txt。
-
-我们的目的是获取文件的真实路径。当服务器运行的时候就会在控制台输出工作空间的目录，然后我们打开就可以看到了一个配置文件。这个配置文件指向了我们项目发布的地方，在这里我们可以找到真实路径。
-
-获取真实路径，之前我们都是用getClassloader，但是这种方法只能够获取a.txt，而b.txt和c.txt是无法获取的。所以我们只能用ServletContext对象的方法。
-
-* 虽然我们从IDEA上面看着，a.txt是在src文件夹下面的，但是我们的项目路径是没有src文件夹的。a.txt实际上是在WEB-INF/classes路径下面的。
-
-```java
-@WebServlet("/demo03ServletContext")
-public class Demo03ServletContext extends HttpServlet {
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // 获取ServletContext对象
-        ServletContext servletContext = this.getServletContext();
-
-        // 获取a.txt文档的真实路径
-        String aRealPath = servletContext.getRealPath("/WEB-INF/classes/a.txt");
-        // D:\Java\IdeaProjects\java_SEStrong\out\artifacts\day15_response_war_exploded\WEB-INF\classes\a.txt
-        System.out.println(aRealPath);
-
-        // 获取b.txt文档的真实路径
-        String bRealPath = servletContext.getRealPath("/b.txt");
-        // D:\Java\IdeaProjects\java_SEStrong\out\artifacts\day15_response_war_exploded\b.txt
-        System.out.println(bRealPath);
-
-        // 获取c.txt文档的真实路径
-        String cRealPath = servletContext.getRealPath("/WEB-INF/c.txt");
-        // D:\Java\IdeaProjects\java_SEStrong\out\artifacts\day15_response_war_exploded\WEB-INF\c.txt
-        System.out.println(cRealPath);
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        this.doGet(req, resp);
-    }
-}
-```
-
-## 4.5 文件下载
+## 3.3 文件下载
 
 需求如下：
 
@@ -650,39 +531,3 @@ public class Demo01DownLoad extends HttpServlet {
     }
 }
 ```
-
-**中文名称问题**
-
-从网上可以找到一个`DownLoadUtils`类
-
-```java
-import java.util.Base64;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-
-
-public class DownLoadUtils {
-
-    public static String getFileName(String agent, String filename) throws UnsupportedEncodingException {
-        if (agent.contains("MSIE")) {
-            // IE浏览器
-            filename = URLEncoder.encode(filename, "utf-8");
-            filename = filename.replace("+", " ");
-        } else if (agent.contains("Firefox")) {
-            // 火狐浏览器
-            //jdk8之后
-            Base64.Encoder base64Encoder = Base64.getEncoder();
-            filename = "=?utf-8?B?" + base64Encoder.encodeToString(filename.getBytes("utf-8")) + "?=";
-        } else {
-            // 其它浏览器
-            filename = URLEncoder.encode(filename, "utf-8");
-        }
-        return filename;
-    }
-}
-```
-
-中文乱码解决：
-
-1. 获取客户端使用的浏览器版本信息
-2. 根据不同的版本信息，设置`filename`的编码方式不同。通过`DownLoadUtils`类就可以了。 

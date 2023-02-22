@@ -1,9 +1,9 @@
-# 第一章 Request对象
-
 ![](..\图片\3-14【Req、Resp】\1.png)
 
 * `request`和`response`对象是由服务器创建的。我们只是来使用他们。Tomcat创建的。
 * `request`对象是来获取请求消息的，而`response`对象是来设置响应消息的
+
+# 第一章 Request对象
 
 request对象继承体系结构如下：
 
@@ -17,49 +17,29 @@ org.apache.catalina.connector.RequestFacade 类(Tomcat编写)
 
 ## 1.1 获取请求消息
 
-根据之前所学我们可以知道请求消息数据格式一共有四种：**请求行、请求头、请求空行、请求体**。而如果我们需要获取的话，我们不需要获取请求空行。只需要获取请求行、请求头和请求体就可以了。
+请求消息数据格式一共有四种：请求行、请求头、请求空行、请求体。接下来获取一下他们。
 
 ### 1.1.1 获取请求行数据
 
 请求行数据格式如下：
 
-```java
+```apl
 请求方式 请求URL 请求协议/版本
 GET /day14/demo01?name=zhangsan HTTP/1.1
-// GET：请求方式，有GET、POST等一共7种方式，我们常用的只有两种
-// /day14：虚拟目录
-// /demo01：Servlet路径。就是实现Servlet接口的类的配置的路径。
-// name=zhangsan：GET方式的请求参数。POST的请求参数在请求体里面。
-// /day14/demo01：请求URI
-// http://localhost/day14/demo01：请求URL
-// HTTP/1.1：请求协议及版本
 ```
 
-获取请求行数据重要的方法有两个：获取虚拟目录以及获取请求URI。
+常用方法如下：
 
-具体方法如下：
-
-* `String getMethod()`：获取请求方式 GET
-
-* `String getContextPath()`：**获取虚拟目录** /day14
-
-* `String getServletPath()`：获取Servlet路径 /demo01
-
-* `String getQueryString()`：获取get方式请求参数 name=zhangsan
-
-* `String getRequestURI()`：**获取请求URI** /day14/demo01
-
-* `StringBuffer getRequestURL()`：获取请求URL 
-
-  URL：统一资源定位符		相当于中华人民共和国
-
-  URI：统一资源标识符		相当于共和国
-
-  所以URI更大
-
-* `String getProtocol()`：获取协议及版本 HTTP/1.1
-
-* `String getRemoteAddr()`：获取客户及的IP地址
+| API                          | 作用                |
+| ---------------------------- | ------------------- |
+| String getMethod()           | 获取请求方式        |
+| String getContextPath()      | 获取虚拟目录        |
+| String getServletPath()      | 获取Servlet路径     |
+| String getQueryString()      | 获取get方式请求参数 |
+| String getRequestURI()       | 获取请求URI         |
+| StringBuffer getRequestURL() | 获取请求URL         |
+| String getProtocol()         | 获取协议及版本      |
+| String getRemoteAddr()       | 获取客户的IP地址    |
 
 ```apl
 GET								# 获取到的请求方式
@@ -72,88 +52,56 @@ HTTP/1.1						# 获取到的协议及版本
 0:0:0:0:0:0:0:1					 # 获取IP地址 IPv6
 ```
 
+> URI：统一资源标识符，相当于共和国。URL：统一资源定位符，相当于中华人民共和国。
+
 ### 1.1.2 获取请求头数据
 
-- `String getHeader(String name)`：通过请求头的名称获取请求头的值。
-- `Enumeration<String> getHeaderNames()`：获取所有的请求头名称。
+常用的请求头：User-Agent、Referer。
 
-`String getHeader(String name)`：通过请求头的名称获取请求头的值。
+* User-Agent：浏览器告诉服务器，访问服务器使用的浏览器款式。
+* Referer：告诉服务器，当前请求从何而来。
 
-请求头有两个：`User-Agent`、`Referer`
+常用方法：
 
-* `User-Agent`：
+| API                                  | 作用                           |
+| ------------------------------------ | ------------------------------ |
+| String getHeader(String name)        | 通过请求头的名称获取请求头的值 |
+| Enumeration<String> getHeaderNames() | 获取所有的请求头名称           |
 
-  ```java
-  @WebServlet("/Demo03Request")
-  public class Demo03Request extends HttpServlet {
-      @Override
-      protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-          // String getHeader(String name)：通过请求头的名称获取请求头的值。
-          // User-Agent：浏览器告诉服务器，访问服务器使用的浏览器款式。
-          // Referer：http://localhost/login.html 告诉服务器，当前请求从何而来。
-  
-          String header = req.getHeader("user-agent");
-          if (header.contains("Chrome")) {
-              System.out.println("谷歌浏览器");// 打印 谷歌浏览器
-          } else if (header.contains("Firefox")) {
-              System.out.println("火狐浏览器");
-          }
-  
-      }
-  
-      @Override
-      protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-  
-      }
-  }
-  ```
-
-* `Referer`：
-
-  ```java
-  @WebServlet("/Demo04Request")
-  public class Demo04Request extends HttpServlet {
-      @Override
-      protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-          // String getHeader(String name)：通过请求头的名称获取请求头的值。
-          // User-Agent：浏览器告诉服务器，访问服务器使用的浏览器款式。
-          // Referer：http://localhost/login.html 告诉服务器，当前请求从何而来。
-  
-          String refererValue = req.getHeader("referer");
-          // 假如是从地址栏进入的，那么就会打印NULL，因为这时候是直接访问的服务器，没有从任何地方来
-          System.out.println(refererValue);
-          // 可以通过超链接来进入，在web文件夹下面创建一个HTML页面，使用超链接。
-          // 打印 http://localhost/day14_ServletHttpRequest/login.html
-      }
-  
-      @Override
-      protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-  
-      }
-  }
-  ```
-
-  ```html
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-      <meta charset="UTF-8">
-      <title>Title</title>
-  </head>
-  <body>
-      <a href="/day14_ServletHttpRequest/Demo04Request">链接</a>
-  </body>
-  </html>
-  ```
-
-`Enumeration<String> getHeaderNames()`：获取所有的请求头名称。
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <!-- href的路径是虚拟路径加上Servlet资源路径，如果设置虚拟路径为/，那么就是/Demo03Request-->
+    <a href="/day14_ServletHttpRequest/Demo03Request">链接</a>
+</body>
+</html>
+```
 
 ```java
-@WebServlet("/Demo02Request")
-public class Demo02Request extends HttpServlet {
+@WebServlet("/Demo03Request")
+public class Demo03Request extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // 目的：获取请求头数据
+
+        // 通过请求头的名称获取请求头的值。
+        String header = req.getHeader("user-agent");
+        if (header.contains("Chrome")) {
+            System.out.println("谷歌浏览器");// 打印 谷歌浏览器
+        } else if (header.contains("Firefox")) {
+            System.out.println("火狐浏览器");
+        }
+
+        // 通过请求头的名称获取请求头的值。
+        String refererValue = req.getHeader("referer");
+        // 假如是从地址栏进入的，那么就会打印NULL，因为这时候是直接访问的服务器，没有从任何地方来
+        // 上面是从超链接来进入，这样就会打印http://localhost/day14_ServletHttpRequest/login.html
+        System.out.println(refererValue);
+
         // 获取所有的请求头名称，注意，只是名称，没有值
         Enumeration<String> headerNames = req.getHeaderNames();
         while (headerNames.hasMoreElements()) {
@@ -172,8 +120,11 @@ public class Demo02Request extends HttpServlet {
 }
 ```
 
-
 ### 1.1.3 获取请求体数据
+
+| API                | 作用           |
+| ------------------ | -------------- |
+| String getReader() | 获取请求体数据 |
 
 创建一个HTML表单，让用户输入数据，提交到`Demo05Request`类里面
 
@@ -185,6 +136,7 @@ public class Demo02Request extends HttpServlet {
     <title>Title</title>
 </head>
 <body>
+    <!-- action的路径是虚拟路径加上Servlet资源路径，如果设置虚拟路径为/，那么就是/Demo05Request-->
     <form action="/day14_ServletHttpRequest/Demo05Request" method="post">
         <input type="text" placeholder="请输入用户名" name="username"><br>
         <input type="text" placeholder="请输入密码" name="password"><br>
@@ -207,7 +159,7 @@ public class Demo05Request extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // 目的：获取请求体信息
+        // 获取请求体信息
         BufferedReader br = req.getReader();
         String line = null;
         while ((line = br.readLine()) != null) {
@@ -217,18 +169,16 @@ public class Demo05Request extends HttpServlet {
 }
 ```
 
-## 1.2 request功能
+## 1.2 获取请求参数
 
-接下来看一下Request的其他功能
+不论是get还是post请求方式都可以使用下列方法：
 
-### 1.2.1 获取请求参数
-
-不论是get还是post请求方式都可以使用下列方法。
-
-* `String getParameter(String name)`：根据参数名称获取参数值。
-* `String[] getParameterValues(String name)`：根据参数名称获取参数值的数组。
-* `Enumeration<String> getParameterNames()`：获取所有请求的参数名称。
-* `Map<String, String[]> getParameterMap()`：获取所有参数的map集合。
+| API                                      | 作用                         |
+| ---------------------------------------- | ---------------------------- |
+| String getParameter(String name)         | 根据参数名称获取参数值       |
+| String[] getParameterValues(String name) | 根据参数名称获取参数值的数组 |
+| Enumeration<String> getParameterNames()  | 获取所有请求的参数名称       |
+| Map<String, String[]> getParameterMap()  | 获取所有参数的map集合        |
 
 ```html
 <!DOCTYPE html>
@@ -238,6 +188,7 @@ public class Demo05Request extends HttpServlet {
     <title>Title</title>
 </head>
 <body>
+    <!-- action的路径是虚拟路径加上Servlet资源路径 -->
     <form action="/day14_ServletHttpRequest/Demo06Request" method="post">
         <input type="text" placeholder="请输入用户名" name="username"><br>
         <input type="text" placeholder="请输入密码" name="password"><br>
@@ -306,31 +257,24 @@ public class Demo06Request extends HttpServlet {
 }
 ```
 
-### 1.2.2 解决乱码问题
+## 1.3 解决乱码问题
 
 在`Tomcat8`中，如果使用的是`get`方式请求服务器，那么`Tomcat`就会自动将乱码问题解决。但是如果使用的是`post`请求方式来请求服务器，那么乱码问题依旧存在。
 
-解决方式如下：
+解决方式如下：在获取参数前，设置`request`的编码与前端页面的编码一致即可。他们都是使用的是流对象，所以需要设置流对象的编码`req.setCharacterEncoding("utf-8");`。
 
-* 在获取参数前，设置`request`的编码与前端页面的编码一致即可。
-* 这是因为他们都是使用的是流对象，所以需要设置流对象的编码。`req.setCharacterEncoding("utf-8");`
-
-### 1.2.3 请求转发
+## 1.4 请求转发
 
 req请求转发、resp响应重定向
 
 请求转发：一种在服务器内部的资源跳转方式。当浏览器地址栏输入URL之后会访问资源路径，但是该类定义的功能不能够太多，但我们又需要很多功能，所以我们可以让它转发给另一个类。
 
+特点：浏览器地址栏路径是不会发生任何变化的、只能转发到当前服务器内部资源当中，不能够转发互联网当中资源、转发仅仅只是一次请求。
+
 步骤如下：
 
 1. 通过`request`对象获取请求转发器对象：`RequestDispatcher getRequestDispatcher(String path)`
 2. 使用`RequestDispatcher`对象来进行转发：`forward(ServletRequest request, ServletResponse response)` 
-
-特点：
-
-- 浏览器地址栏路径是不会发生任何变化的。
-- 只能转发到当前服务器内部资源当中，不能够转发互联网当中资源。
-- 转发仅仅只是**一次请求**，不是两次，也不是三次。
 
 ```java
 @WebServlet("/Demo01Request")
@@ -339,13 +283,8 @@ public class Demo01Request extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         System.out.println("Demo01Request访问了");
-
-        // 不建议这么使用，只创建一次对象只转发一次。所以没必要创建一个对象 直接匿名就可以了，使用链式编程。
-        // RequestDispatcher requestDispatcher = req.getRequestDispatcher("/Demo02Request");
-        // requestDispatcher.forward(req, resp);
-
-        // Demo01Request访问了
-        // Demo02Request访问了
+        
+        // 转发至虚拟路径为/Demo02Request中
         req.getRequestDispatcher("/Demo02Request").forward(req, resp);
 
         // 控制台输出：Demo01Request访问了，但是浏览器404.无法转发。
@@ -374,17 +313,19 @@ public class Demo02Request extends HttpServlet {
 }
 ```
 
-### 1.2.4 共享数据域对象
+## 1.5 request域对象
 
-域对象：一个有着作用范围的对象，可以在范围内共享数据。
+域对象是一个有着作用范围的对象，可以在范围内共享数据。前面提到过ServletContext域对象，它的共享范围特别大，是整个web项目，对所有的客户端共享数据。request域对象共享范围小，一般用于请求转发的多个资源中共享数据。
 
-`request域`：代表一次请求的范围，一般用于请求转发的多个资源中共享数据
+request域：代表一次请求的范围，一般用于请求转发的多个资源中共享数据。
 
 方法如下：
 
-* `void setAttribute(String name, Object o)`：存储数据。
-* `Object getAttribute(String name)`：通过键获取值。
-* `void removeAttribute(String name)`：通过键移出键值对。
+| API                                      | 作用             |
+| ---------------------------------------- | ---------------- |
+| void setAttribute(String name, Object o) | 存储数据         |
+| Object getAttribute(String name)         | 通过键获取值     |
+| void removeAttribute(String name)        | 通过键移出键值对 |
 
 ```java
 @WebServlet("/Demo01Request")
@@ -421,18 +362,11 @@ public class Demo02Request extends HttpServlet {
         this.doGet(req, resp);
     }
 }
-
-/*
-控制台输出：
-    Demo01Request访问了
-    hello world
-    Demo02Request访问了
-*/
 ```
 
-### 1.2.5 获取ServletContext
+## 1.6 获取ServletContext
 
-`ServletContext getServletContext()`：获取`ServletContext`对象。
+前面提到过，可以通过`ServletContext getServletContext()`方法获取`ServletContext`对象。
 
 ```java
 @WebServlet("/Demo01Request")
@@ -453,292 +387,240 @@ public class Demo01Request extends HttpServlet {
 }
 ```
 
-## 1.5 用户登陆案例
-
-案例：用户登陆。需求如下：
-
-1. 编写`login.html`登陆页面		`username & password`两个输入框
-2. 使用`Druid`数据库连接池技术，操作`mysql`，`day14`数据库中`user`表
-3. 使用`JDBCTemplate`技术封装`JDBC`
-4. 登陆成功跳转到`SuccessServlet`    展示：登陆成功！用户名，欢迎您
-5. 登陆失败跳转到`FailServlet`     展示：登陆失败，用户名或者密码错误
-
-**分析**
+## 1.7 用户登陆案例
 
 ![](..\图片\3-14【Req、Resp】\2.png)
 
-**实现**
+```xml
+<dependencies>
+    <!-- Servletjar包 -->
+    <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>javax.servlet-api</artifactId>
+        <version>4.0.1</version>
+        <!-- 依赖作用范围为provided，主代码和测试代码有用，打包的时候不会导包。避免和tomcat中冲突 -->
+        <scope>provided</scope>
+    </dependency>
 
-1. 创建项目，导入`HTML`页面，导入`properties`配置文件，导入`jar`包，`add as libiary`。
+    <!-- 连接MySQL依赖环境 -->
+    <!-- MySQL驱动 -->
+    <dependency>
+        <groupId>mysql</groupId>
+        <artifactId>mysql-connector-java</artifactId>
+        <version>8.0.30</version>
+    </dependency>
+    <!-- Druid连接池技术，简化开发 -->
+    <dependency>
+        <groupId>com.alibaba</groupId>
+        <artifactId>druid</artifactId>
+        <version>1.1.16</version>
+    </dependency>
+    <!-- Spring整合JDBC，里面有JDBCTemplate简化开发-->
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-jdbc</artifactId>
+        <version>5.2.10.RELEASE</version>
+    </dependency>
 
-2. 打开数据库，创建`day14`数据库，创建user表，并设置一些数据进去。
+    <!-- 测试依赖环境 -->
+    <!-- Junti测试 -->
+    <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.8.2</version>
+        <scope>test</scope>
+    </dependency>
 
-   ```sql
-   -- 查询当前正在使用的数据库名称
-   SELECT DATABASE();
-   -- 创建day14数据库
-   CREATE DATABASE day14;
-   -- 进入，使用day14数据库
-   USE day14;
-   -- 查询所有数据库名称
-   SHOW DATABASES;
-   -- 创建表
-   CREATE TABLE USER(
-   	id INT PRIMARY KEY AUTO_INCREMENT,
-   	username VARCHAR(32) UNIQUE NOT NULL,
-   	PASSWORD VARCHAR(20) NOT NULL
-   );
-   -- 查询当前使用数据库的所有表
-   SHOW TABLES;
-   -- 查询USER表中内容
-   SELECT * FROM USER;
-   -- 插入信息
-   INSERT INTO USER (username, PASSWORD) VALUES ("lisi", "456");
-   ```
+    <!-- 其他依赖环境 -->
+    <!-- Lombok简化开发 -->
+    <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>1.18.24</version>
+        <!-- Lombok在编译期将带Lombok注解的Java文件正确编译为完整的Class文件，所以不用打包的时候包含 -->
+        <scope>provided</scope>
+    </dependency>
+</dependencies>
+```
 
-3. 前端页面代码：
+**JDBC连接数据库**
 
-   ```html
-   <!DOCTYPE html>
-   <html lang="en">
-   <head>
-       <meta charset="UTF-8">
-       <title>Title</title>
-   </head>
-   <body>
-       <!--action的路径是虚拟路径加上Servlet资源路径-->
-       <form action="/day14_ServletHttpRequest/LoginServlet" method="post">
-           用户名称：<input type="text" placeholder="请输入用户名" name="username"><br>
-           密码：<input type="password" placeholder="请输入密码" name="password"><br>
-           <input type="submit" value="提交">
-       </form>
-   </body>
-   </html>
-   ```
+```sql
+# 数据库操作
+# 如果不存在linxuan数据库那么就创建
+CREATE DATABASE IF NOT EXISTS linxuan CHARACTER SET utf8;
+# 使用linxuan数据库
+USE linxuan;
 
-4. 创建User类，来存放获取的数据
+# 如果这个表存在，那么就删除
+Drop TABLE IF EXISTS tb_user;
+# 如果不存在tb_user表那么就创建
+CREATE TABLE IF NOT EXISTS tb_user (
+	id INT PRIMARY KEY AUTO_INCREMENT,
+	username VARCHAR(32) UNIQUE NOT NULL,
+	PASSWORD VARCHAR(20) NOT NULL
+);
 
-   ```java
-   package cn.com.demo03.domain;
-   
-   public class User {
-       private int id;
-       private String username;
-       private String password;
-   
-   	// 省略get和set方法 toString方法
-   }
-   ```
-   
-5. 创建操作数据库中User表的类
+# 删除当前表，并创建一个新表 字段相同。用来清除当前表的所有数据
+TRUNCATE TABLE tb_user;
+# 插入信息
+INSERT INTO tb_user (username, PASSWORD) VALUES ("lisi", "456");
+```
 
-   ```java
-   package cn.com.demo03.dao;
-   
-   /**
-    * 操作数据库中User表的类
-    */
-   public class UserDao {
-   
-       // 声明JDBCTemplate对象共用
-       private JdbcTemplate template = new JdbcTemplate(JDBCUtils.getDataSource());
-   
-       /**
-        * 登陆方法
-        * @param loginUser 只有用户名称和密码
-        * @return user包含用户全部数据，没有查询到，返回null
-        */
-       public User login(User loginUser) {
-           try {
-               // 编写SQL
-               String sql = "select * from user where username = ? and password = ?";
-   
-               // 调用query方法
-               User user = template.queryForObject(sql,
-                       new BeanPropertyRowMapper<User>(User.class),
-                       loginUser.getUsername(), 
-                       loginUser.getPassword());
-               
-               return user;
-           } catch (DataAccessException e) {
-               // 通常会把异常弄到日志里面，但是我们并没有学习日志，就这样抛出就可以了
-               e.printStackTrace();
-               return null;
-           }
-       }
-   }
-   ```
-
-6. 创建`JDBC`工具类，使用`Druid`连接池技术
-
-   ```java
-   package cn.com.demo03.util;
-   
-   /**
-    *  JDBC工具类，使用Druid连接池技术
-    */
-   public class JDBCUtils {
-   
-       private static DataSource ds;
-   
-       static {
-   
-           try {
-               // 加载配置文件
-               Properties pro = new Properties();
-               // 使用ClassLoader加载配置文件，获取字节输入流
-               InputStream resourceAsStream = JDBCUtils.class.getClassLoader().getResourceAsStream("druid.properties");
-               pro.load(resourceAsStream);
-   
-               // 初始化连接池对象
-               ds = DruidDataSourceFactory.createDataSource(pro);
-           } catch (IOException e) {
-               e.printStackTrace();
-           } catch (Exception e) {
-               e.printStackTrace();
-           }
-       }
-   
-       /**
-        * 获取连接池对象
-        *
-        */
-       public static DataSource getDataSource() {
-           return ds;
-       }
-   
-       /**
-        * 获取连接Connection对象
-        */
-       public static Connection getConnection() throws SQLException {
-           return ds.getConnection();
-       }
-   }
-   
-   ```
-
-7. 单元测试
-
-   ```java
-   // 自己做的单元测试，看看对不对
-   package cn.com.demo03.test;
-   
-   public class UserDaoTest {
-   
-       @Test
-       public void testLogin() {
-           User loginuser = new User();
-           loginuser.setUsername("zhangsan");
-           loginuser.setPassword("12311");
-   
-           UserDao dao = new UserDao();
-           User user = dao.login(loginuser);
-   
-           System.out.println(user);
-       }
-   }
-   ```
-   
-8. `Servlet`类
-
-   ```java
-   package cn.com.demo03.servlet;
-   
-   @WebServlet("/LoginServlet")
-   public class LoginServlet extends HttpServlet {
-       @Override
-       protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-           // 设置编码
-           req.setCharacterEncoding("utf-8");
-           // 获取请求参数
-           String username = req.getParameter("username");
-           String password = req.getParameter("password");
-           // 封装user对象
-           User loginUser = new User();
-           loginUser.setUsername(username);
-           loginUser.setPassword(password);
-   
-           // 调用UserDao的login方法
-           UserDao dao = new UserDao();
-           User user = dao.login(loginUser);
-   
-           // 判断user
-           if (user == null) {
-               // 登陆失败
-               req.getRequestDispatcher("/failServlet").forward(req, resp);
-           } else {
-               // 登陆成功
-               // 存储数据
-               req.setAttribute("user", user);
-               // 转发
-               req.getRequestDispatcher("/successServlet").forward(req, resp);
-           }
-       }
-   
-       @Override
-       protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-           this.doGet(req, resp);
-       }
-   }
-   
-   ```
-
-9. 成功页面和失败页面编写
-
-   ```java
-   package cn.com.demo03.servlet;
-   
-   @WebServlet("/failServlet")
-   public class FailServlet extends HttpServlet {
-       @Override
-       protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-           // 给页面写一句话
-           // 设置编码
-           resp.setContentType("text/html;charset=utf-8");
-           // 输出
-           resp.getWriter().write("登陆失败，用户名称或者密码错误");
-       }
-   
-       @Override
-       protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-           this.doGet(req, resp);
-       }
-   }
-   ```
-
-   ```java
-   package cn.com.demo03.servlet;
-   
-   @WebServlet("/successServlet")
-   public class SuccessServlet extends HttpServlet {
-       @Override
-       protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-           // 获取request域中共享的user对象
-           User user = (User) req.getAttribute("user");
-   
-           if (user != null) {
-               // 给页面写一句话
-               // 设置编码
-               resp.setContentType("text/html;charset=utf-8");
-               // 输出
-               resp.getWriter().write("登陆成功!" + user.getUsername() + "欢迎您");
-           }
-       }
-   
-       @Override
-       protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-           this.doGet(req, resp);
-       }
-   }
-   ```
-
-
-## 1.6 Beanutils
+```properties
+# resources目录下面创建一个jdbc.properties文件，添加对应键值对
+# 这里面的键最好是这些，如果修改那么无法初始化连接池对象。和Spring里面的键不一样。
+# MySQL8驱动为com.mysql.cj.jdbc.Driver，之前的是com.mysql.jdbc.Driver
+driver = com.mysql.cj.jdbc.Driver
+url = jdbc:mysql://localhost:3306/linxuan?useSSL=false
+username = root
+password = root
+```
 
 ```java
-package cn.com.demo03.servlet;
+package com.linxuan.pojo;
 
-@WebServlet("/LoginServlet")
+@Data
+public class User {
+    // 根据《阿里巴巴开发Java手册》，实体类要设置类型为包装类。因为后端有可能返回NULL，这样可以接收。
+    private Integer id;
+    private String username;
+    private String password;
+
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
+    public User() {
+    }
+}
+```
+
+```java
+package com.linxuan.utils;
+
+// JDBC工具类
+public class JDBCUtils {
+
+    private static DataSource ds;
+
+    static {
+        try {
+            // 创建Properties对象
+            Properties pro = new Properties();
+            // 使用ClassLoader加载配置文件，获取字节输入流
+            ClassLoader classLoader = JDBCUtils.class.getClassLoader();
+            InputStream resourceAsStream = classLoader.getResourceAsStream("jdbc.properties");
+            // 加载配置文件
+            pro.load(resourceAsStream);
+            // 初始化连接池对象
+            ds = DruidDataSourceFactory.createDataSource(pro);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取连接池对象
+     * @return DataSource
+     */
+    public static DataSource getDataSource() {
+        return ds;
+    }
+
+    /**
+     * 获取连接Connection对象
+     * @return Connection
+     * @throws SQLException
+     */
+    public static Connection getConnection() throws SQLException {
+        return ds.getConnection();
+    }
+}
+```
+
+```java
+package com.linxuan.dao;
+
+public class UserDao {
+
+    // 声明JDBCTemplate对象共用
+    private JdbcTemplate template = new JdbcTemplate(JDBCUtils.getDataSource());
+
+    /**
+     * 登陆方法
+     * @param loginUser 只有用户名称和密码
+     * @return user包含用户全部数据，没有查询到，返回null
+     */
+    public User login(User loginUser) {
+        try {
+            // 编写SQL
+            String sql = "select * from tb_user where username = ? and password = ?";
+
+            // 调用query方法
+            User user = null;
+            try {
+                user = template.queryForObject(sql,
+                                               new BeanPropertyRowMapper<User>(User.class),
+                                               loginUser.getUsername(),
+                                               loginUser.getPassword());
+            } catch (DataAccessException e) {
+                // 假如返回的user是null，那么就会抛异常，所以这里将异常打印出来。
+                // 当然这在业务中是正常的。前端输入信息错误，后端查询为空，所以业务正常，也可以不做任何处理。
+                e.printStackTrace();
+            }
+
+            return user;
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+}
+```
+
+```java
+package com.linxuan.dao;
+
+// 编写测试类，测试dao能否连接数据库
+public class UserDaoTest {
+
+    @Test
+    public void testLogin() {
+        User loginuser = new User("lisi", "456");
+        User user = new UserDao().login(loginuser);
+        System.out.println(user);
+    }
+}
+```
+
+**前端页面**
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <!-- action的路径是虚拟路径加上Servlet资源路径，如果设置虚拟路径为/，那么就是/loginServlet-->
+    <form action="/day14_ServletHttpRequest/loginServlet" method="post">
+        用户名称：<input type="text" placeholder="请输入用户名" name="username"><br>
+        密码：<input type="password" placeholder="请输入密码" name="password"><br>
+        <input type="submit" value="提交">
+    </form>
+</body>
+</html>
+```
+
+**Servlet类**
+
+```java
+@WebServlet("/loginServlet")
 public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -748,13 +630,10 @@ public class LoginServlet extends HttpServlet {
         String username = req.getParameter("username");
         String password = req.getParameter("password");
         // 封装user对象
-        User loginUser = new User();
-        loginUser.setUsername(username);
-        loginUser.setPassword(password);
+        User loginUser = new User(username, password);
 
         // 调用UserDao的login方法
-        UserDao dao = new UserDao();
-        User user = dao.login(loginUser);
+        User user = new UserDao().login(loginUser);
 
         // 判断user
         if (user == null) {
@@ -776,7 +655,69 @@ public class LoginServlet extends HttpServlet {
 }
 ```
 
-获取请求参数，封装对象，如果有很多的话，会很麻烦。
+```java
+@WebServlet("/failServlet")
+public class FailServlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // 给页面写一句话
+        // 设置编码
+        resp.setContentType("text/html;charset=utf-8");
+        // 输出
+        resp.getWriter().write("登陆失败，用户名称或者密码错误");
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        this.doGet(req, resp);
+    }
+}
+```
+
+```java
+@WebServlet("/successServlet")
+public class SuccessServlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // 获取request域中共享的user对象
+        User user = (User) req.getAttribute("user");
+
+        if (user != null) {
+            // 给页面写一句话
+            // 设置编码
+            resp.setContentType("text/html;charset=utf-8");
+            // 输出
+            resp.getWriter().write("登陆成功!" + user.getUsername() + "欢迎您");
+        }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        this.doGet(req, resp);
+    }
+}
+```
+
+## 1.8 Beanutils
+
+BeanUtils是Apache Commons组件的成员之一，主要用于简化JavaBean封装数据的操作。 简化反射封装参数的步骤，给对象封装参数。
+
+BeanUtils的应用场景：
+
+1. 快速将一个JavaBean各个属性的值，赋值给具有相同结构的另一个JavaBean中。
+
+2. 快速收集表单中的所有数据到JavaBean中。
+
+```xml
+<!-- BeanUtils依赖 -->
+<dependency>
+    <groupId>commons-beanutils</groupId>
+    <artifactId>commons-beanutils</artifactId>
+    <version>1.9.4</version>
+</dependency>
+```
+
+例如下面获取请求参数，封装对象，如果有很多的话，会很麻烦。
 
 ```java
 // 获取请求参数
@@ -811,13 +752,15 @@ try {
 
 常用方法如下：
 
-* `setStatus(int sc)` ：设置状态码
-* `setHeader(String name, String value)`：设置响应头
-* `sendRedirect(String location)` ：简单的重定向，重定向很常见。一共有三个参数，而我们只需要修改一个参数，所以提供了这个方法。这是一种非常简单的重定向方法。
-* `PrintWriter getWriter()`：获取字符输出流
-* `ServletOutputStream getOutputStream()`：获取字节输出流。
+| API                                   | 作用           |
+| ------------------------------------- | -------------- |
+| setStatus(int sc)                     | 设置状态码     |
+| setHeader(String name, String value)  | 设置响应头     |
+| sendRedirect(String location)         | 重定向         |
+| PrintWriter getWriter()               | 获取字符输出流 |
+| ServletOutputStream getOutputStream() | 获取字节输出流 |
 
-相应重定向：
+响应状态码：
 
 | 状态码 | 类别                             | 原因                       |
 | ------ | -------------------------------- | -------------------------- |
@@ -831,19 +774,17 @@ try {
 
 重定向：资源跳转的方式
 
-![](..\图片\3-14【Req、Resp】\1重定向.png)
+![](..\图片\3-14【Req、Resp】\2-1重定向.png)
 
 ```java
 @WebServlet("/demo01Response")
 public class Demo01Request extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // 演示重定向
-        System.out.println("demo01....");
-/*        // 设置状态码
+        // 设置状态码
         resp.setStatus(302);
         // 设置响应头，设置地址和虚拟路径下面的资源文件。
-        resp.setHeader("location", "/day15/demo02Response");*/
+        resp.setHeader("location", "/day15/demo02Response");
 
         // 简单的重定向方法
         resp.sendRedirect("/day15/demo02Response");
@@ -870,11 +811,6 @@ public class Demo02Request extends HttpServlet {
         this.doGet(req, resp);
     }
 }
-/*
-会在控制台输出：
-    demo01...
-    demo02...
-*/
 ```
 
 ## 2.2 重定向特点
@@ -883,13 +819,13 @@ public class Demo02Request extends HttpServlet {
 
 - 地址栏路径不变
 - 转发只能访问当前服务器下面的资源
-- 转发是**一次**请求
+- 转发是一次请求
 
 重定向的特点与转发正好相反：`redirect`
 
 - 地址栏发生变化
 - 重定向可以访问其他站点(服务器)的资源
-- 重定向是**两次**请求
+- 重定向是两次请求
 
 ## 2.3 相对路径和绝对路径
 
@@ -927,6 +863,12 @@ public class Demo02Request extends HttpServlet {
 public class Demo03Response extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        // 告诉浏览器，服务器发送的消息体数据的编码。建议浏览器使用该编码解码。
+        // resp.setHeader("content-type", "text/html; charset = utf-8");
+        // 当然，上述也有简写的方法
+        resp.setContentType("text/html; charset=utf-8");
+
         // 获取字符输出流对象
         PrintWriter writer = resp.getWriter();
         // 输出数据
@@ -939,20 +881,6 @@ public class Demo03Response extends HttpServlet {
     }
 }
 ```
-
-但是要注意，由于服务器和浏览器的编码格式不同，所以会导致乱码问题，对此我们的解决方法如下：
-
-* 告诉浏览器，服务器发送的消息体数据的编码，建议浏览器使用该编码解码。但是，必须记住，**应该在获取字符输出流之前就要设置编码**。
-
-
-```java
-// 告诉浏览器，服务器发送的消息体数据的编码。建议浏览器使用该编码解码。
-// resp.setHeader("content-type", "text/html; charset = utf-8");
-// 当然，上述也有简写的方法
-resp.setContentType("text/html; charset = utf-8");
-```
-
-> 切记，UTF-8中间不能有空格
 
 ## 2.5 服务器输出字节数据到浏览器
 
@@ -978,85 +906,3 @@ public class Demo04Response extends HttpServlet {
     }
 }
 ```
-
-## 2.6 验证码案例
-
-```java
-@WebServlet("/demo05Response")
-public class Demo05Response extends HttpServlet {
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        int width = 100;
-        int height = 50;
-        
-        // 创建对象，在内存中弄一个图片，验证码图片对象
-        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-        // 美化图片
-        // 画笔对象
-        Graphics graphics = image.getGraphics();
-        graphics.setColor(Color.PINK);
-        graphics.fillRect(0, 0, width, height);
-        // 画边框
-        graphics.setColor(Color.BLUE);
-        graphics.drawRect(0, 0, width - 1, height - 1);
-
-        String str = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM0123456789";
-        // 生成随机角标
-        Random ran = new Random();
-        for (int i = 1; i <= 4; i++) {
-            int index = ran.nextInt(str.length());
-            // 获取字符
-            char ch = str.charAt(index);
-            // 写入验证码
-            graphics.drawString(ch + "", width / 5 * i, height / 2);
-        }
-        // 画干扰线
-        graphics.setColor(Color.GREEN);
-        // 随机生成坐标点
-        for (int i = 0; i < 10; i++) {
-            int x1 = ran.nextInt(width);
-            int x2 = ran.nextInt(width);
-
-            int y1 = ran.nextInt(height);
-            int y2 = ran.nextInt(height);
-            graphics.drawLine(x1, y1, x2, y2);
-        }
-
-        // 图片输出
-        ImageIO.write(image, "jpg", resp.getOutputStream());
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        this.doGet(req, resp);
-    }
-}
-```
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-
-    <script>
-        window.onload = function () {
-            // 获取图片对象
-            var img = document.getElementById("checkCode");
-            // 绑定单击事件
-            img.onclick = function () {
-                // 加一个时间戳，这样每一次请求的都不一样，不会加载浏览器缓存的图片
-                var date = new Date().getTime();
-                img.src = "/day15/demo05Response?" + date;
-            }
-        }
-    </script>
-</head>
-<body>
-    <img id="checkCode" src="/day15/demo05Response">
-    <a id="change" href="/day15/register.html">看不清，换一张？</a>
-</body>
-</html>
-```
-

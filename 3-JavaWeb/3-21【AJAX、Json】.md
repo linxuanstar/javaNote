@@ -1,56 +1,32 @@
 # 第一章 Ajax
 
-## 1.1 概述
+`AJAX` (Asynchronous JavaScript And XML)：异步的 JavaScript 和 XML。AJAX 作用有以下两方面：与服务器进行数据交换、异步交互。
 
-`AJAX` (Asynchronous JavaScript And XML)：异步的 JavaScript 和 XML。
+**与服务器进行数据交换**
 
-我们先来说概念中的 `JavaScript` 和 `XML`，`JavaScript` 表明该技术和前端相关；`XML` 是指以此进行数据交换。而这两个我们之前都学习过。
+通过AJAX可以给服务器发送请求，服务器将数据直接响应回给浏览器。我们先来看之前做功能的流程：`Servlet` 调用完业务逻辑层后将数据存储到域对象中，然后跳转到指定的 `jsp` 页面，在页面上使用 `EL表达式` 和 `JSTL` 标签库进行数据的展示。
 
-AJAX 作用有以下两方面：
+<img src="..\图片\3-22【AJAX、Json】\image-20210823235114367.png"/>
 
-1. **与服务器进行数据交换**：通过AJAX可以给服务器发送请求，服务器将数据直接响应回给浏览器。
+而我们学习了AJAX 后，就可以使用AJAX和服务器进行通信，以达到使用 HTML+AJAX来替换JSP页面了。浏览器发送请求servlet，servlet 调用完业务逻辑层后将数据直接响应回给浏览器页面，页面使用 HTML 来进行数据展示。
 
-   我们先来看之前做功能的流程，如下图：
+<img src="..\图片\3-22【AJAX、Json】\image-20210823235006847.png" />
 
-   <img src="..\图片\3-22【AJAX、Json】\image-20210823235114367.png"/>
+**异步交互**
 
-   如上图，`Servlet` 调用完业务逻辑层后将数据存储到域对象中，然后跳转到指定的 `jsp` 页面，在页面上使用 `EL表达式` 和 `JSTL` 标签库进行数据的展示。
+可以在不重新加载整个页面的情况下，与服务器交换数据并更新部分网页的技术，如：搜索联想、用户名是否可用校验，等等…
 
-   而我们学习了AJAX 后，就可以使用AJAX和服务器进行通信，以达到使用 HTML+AJAX来替换JSP页面了。
+## 1.1 异步和同步
 
-   如下图，浏览器发送请求servlet，servlet 调用完业务逻辑层后将数据直接响应回给浏览器页面，页面使用 HTML 来进行数据展示。
+同步发送请求过程如下：浏览器页面在发送请求给服务器，在服务器处理请求的过程中，浏览器页面不能做其他的操作。只能等到服务器响应结束后浏览器页面才能继续做其他的操作。
 
-   <img src="..\图片\3-22【AJAX、Json】\image-20210823235006847.png" />
+<img src="..\图片\3-22【AJAX、Json】\image-20210824001443897.png"/>
 
-2. **异步交互**：可以在不重新加载整个页面的情况下，与服务器交换数据并更新部分网页的技术，如：搜索联想、用户名是否可用校验，等等…
+异步发送请求过程如下：浏览器页面发送请求给服务器，服务器处理请求过程中，浏览器页面还可以做其他操作。
 
-   <img src="..\图片\3-22【AJAX、Json】\image-20210824000706401.png" style="zoom:80%;" />
-
-   上图所示的效果我们经常见到，在我们输入一些关键字（例如 `奥运`）后就会在下面联想出相关的内容，而联想出来的这部分数据肯定是存储在百度的服务器上，而我们并没有看出页面重新刷新，这就是 更新局部页面 的效果。再如下图：
-
-   <img src="..\图片\3-22【AJAX、Json】\image-20210824001015706.png" style="zoom:80%;" />
-
-   我们在用户名的输入框输入用户名，当输入框一失去焦点，如果用户名已经被占用就会在下方展示提示的信息；在这整个过程中也没有页面的刷新，只是在局部展示出了提示信息，这就是 更新局部页面 的效果。
-
-知道了局部刷新后，接下来我们再聊聊同步和异步:
-
-* 同步发送请求过程如下
-
-  浏览器页面在发送请求给服务器，在服务器处理请求的过程中，浏览器页面不能做其他的操作。只能等到服务器响应结束后才能，浏览器页面才能继续做其他的操作。
-
-  <img src="..\图片\3-22【AJAX、Json】\image-20210824001443897.png" alt="image-20210824001443897" style="zoom:80%;" />
-
-* 异步发送请求过程如下
-
-  浏览器页面发送请求给服务器，在服务器处理请求的过程中，浏览器页面还可以做其他的操作。
-
-  <img src="..\图片\3-22【AJAX、Json】\image-20210824001608916.png" alt="image-20210824001608916" style="zoom:80%;" />
+<img src="..\图片\3-22【AJAX、Json】\image-20210824001608916.png"/>
 
 ## 1.2  快速入门
-
-**服务端实现**
-
-在项目的创建 `com.linxuan.web.servlet` ，并在该包下创建名为  `AjaxServlet` 的servlet
 
 ```java
 @WebServlet("/ajaxServlet")
@@ -68,45 +44,8 @@ public class AjaxServlet extends HttpServlet {
 }
 ```
 
-**客户端实现**
-
-在 `webapp` 下创建名为 `01-ajax-demo1.html` 的页面，在该页面书写 `ajax` 代码
-
-* 创建核心对象，不同的浏览器创建的对象是不同的
-
-  ```js
-   var xhttp;
-  if (window.XMLHttpRequest) {
-      xhttp = new XMLHttpRequest();
-  } else {
-      // code for IE6, IE5
-      xhttp = new ActiveXObject("Microsoft.XMLHTTP");
-  }
-  ```
-
-* 发送请求
-
-  ```js
-  //建立连接
-  xhttp.open("GET", "http://localhost:8080/ajax-demo/ajaxServlet");
-  //发送请求
-  xhttp.send();
-  ```
-
-* 获取响应
-
-  ```js
-  xhttp.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-          // 通过 this.responseText 可以获取到服务端响应的数据
-          alert(this.responseText);
-      }
-  };
-  ```
-
-完整代码如下：
-
 ```html
+<!-- 前端页面实现如下，命名为index.html，在webapp目录下面创建 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -125,12 +64,13 @@ public class AjaxServlet extends HttpServlet {
         xhttp = new ActiveXObject("Microsoft.XMLHTTP");
     }
     //2. 发送请求
-    xhttp.open("GET", "http://localhost:8080/ajax-demo/ajaxServlet");
+    xhttp.open("GET", "http://localhost/ajaxServlet");
     xhttp.send();
 
     //3. 获取响应
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
+            // 通过 this.responseText 可以获取到服务端响应的数据
             alert(this.responseText);
         }
     };
@@ -383,7 +323,7 @@ public class AxiosServlet extends HttpServlet {
 
 * 引入 js 文件
 
-  ```js
+  ```html
   <script src="js/axios-0.18.0.js"></script>
   ```
 

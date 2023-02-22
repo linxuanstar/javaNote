@@ -52,7 +52,8 @@ OS name: "windows 10", version: "10.0", arch: "amd64", family: "windows"
     <!--镜像名称-->
     <name>Nexus aliyun</name>
     <!--镜像URL-->
-    <url>http://maven.aliyun.com/nexus/content/groups/public</url>
+    <!--<url>http://maven.aliyun.com/nexus/content/groups/public</url> 已经过时了-->
+    <url>https://maven.aliyun.com/repository/public</url>
 </mirror>
 ```
 
@@ -1064,6 +1065,16 @@ springmvc配置文件spring-mvc.xml不需要动
 | issueManagement         | 缺陷跟踪信息 | reporting            | 报告输出目录配置、报告插件配置等                           |
 
 ## 4.2 属性properties
+
+```xml
+<properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
+    <java.version>17</java.version>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+</properties>
+```
 
 在Maven中的属性分为：自定义属性（常用）、内置属性、Setting属性、Java系统属性、环境变量属性。
 

@@ -179,16 +179,16 @@ redis-cli shutdown
 
 通用命令操作：
 
-| 命令          | 作用                                                         |
-| ------------- | ------------------------------------------------------------ |
-| keys pattern  | 查找所有符合给定模式pattern的key                             |
-| keys *        | 查询所有的键                                                 |
-| exists key    | 检查给定的key是否存在                                        |
-| type key      | 返回key所存储的值的类型                                      |
-| ttl key       | 返回给定key的剩余生存时间（TTL、time to live），以秒为单位   |
-| del key       | 该命令用于在key存在时删除key                                 |
-| clear         | 清屏                                                         |
-| select [数字] | 切换数据库 一共有16个数据库，当然也可以修改 启动的时候默认使用0号数据库 |
+| 命令          | 作用                                                       |
+| ------------- | ---------------------------------------------------------- |
+| keys pattern  | 查找所有符合给定模式pattern的key                           |
+| keys *        | 查询所有的键                                               |
+| exists key    | 检查给定的key是否存在                                      |
+| type key      | 返回key所存储的值的类型                                    |
+| ttl key       | 返回给定key的剩余生存时间（TTL、time to live），以秒为单位 |
+| del key       | 该命令用于在key存在时删除key                               |
+| clear         | 清屏                                                       |
+| select [数字] | 切换数据库。一共有16个数据库，启动的时候默认使用0号数据库  |
 
 ## 2.1 字符串类型 string
 
@@ -201,86 +201,53 @@ Redis中字符串类型常用命令如下：
 | setex key seconds value | 设置指定key的值，并将key的过期时间设置为seconds秒 |
 | setnx key value         | 只有在key不存在的时候设置key的值                  |
 
-1. 存储： `set key value`
-	
-	```sqlite
-	127.0.0.1:6379> set username zhangsan
-	OK
-	```
-	
-2. 获取： `get key`
-	
-	```sqlite
-	127.0.0.1:6379> get username
-	"zhangsan"
-	```
-	
-3. 删除： `del key`
-	
-	```sqlite
-	127.0.0.1:6379> del age
-	(integer) 1
-	```
+```sql
+127.0.0.1:6379> set username zhangsan # 存储
+OK
+127.0.0.1:6379> get username # 获取
+"zhangsan"
+127.0.0.1:6379> del username # 删除
+(integer) 1
+```
 
 ## 2.2 哈希类型 hash
 
-Redis hash是一个String类型的field和value的映射表，hash特别适合用于存储对象。
+Redis hash是一个String类型的field和value的映射表，map格式。hash特别适合用于存储对象。
 
-![](..\图片\2-10【Redis单机缓存】\屏幕截图 2022-07-10 095756.png)
+![](..\图片\2-10【Redis单机缓存】\2-1.png)
 
 常用命令如下：
 
 | 命令                 | 作用                                    |
 | -------------------- | --------------------------------------- |
 | hset key field value | 将哈希表key中的字段filed的值设置为value |
-| hget key field       | 获取存储再哈希表中的指定字段的值        |
-| hdel key field       | 删除存储在哈希表中的指定字段            |
-| hkeys key            | 获取哈希表中的所有字段                  |
-| hvals key            | 获取哈希表中所有的值                    |
+| hget key field       | 获取存储在哈希表key中的指定字段的值     |
+| hdel key field       | 删除存储在哈希表key中的指定字段         |
+| hkeys key            | 获取哈希表key中的所有字段               |
+| hvals key            | 获取哈希表key中所有的值                 |
 | hgetall key          | 获取在哈希表中指定key的所有字段和值     |
 
-**哈希类型 hash**：map格式  
-
-1. 存储： `hset key field value`
-	
-	```sqlite
-	127.0.0.1:6379> hset myhash username lisi
-	(integer) 1
-	127.0.0.1:6379> hset myhash password 123
-	(integer) 1
-	```
-	
-2. 获取： 
-	* `hget key field`: 获取指定的field对应的值
-		
-		```
-		127.0.0.1:6379> hget myhash username
-		"lisi"
-		```
-		
-	* `hgetall key`：获取所有的`field`和`value`
-		
-		```sqlite
-		127.0.0.1:6379> hgetall myhash
-		
-		1) "username"
-		2) "lisi"
-		3) "password"
-		4) "123"
-		```
-	
-3. 删除： `hdel key field`
-	
-	```sqlite
-	127.0.0.1:6379> hdel myhash username
-	(integer) 1
-	```
+```sql
+127.0.0.1:6379> hset myhash username lisi # 向myhash哈希表存储username字段的值lisi
+(integer) 1
+127.0.0.1:6379> hset myhash password 123 # 向myhash哈希表存储password字段的值123
+(integer) 1
+127.0.0.1:6379> hget myhash username # 获取myhash哈希表中username字段的值
+"lisi"
+127.0.0.1:6379> hgetall myhash # 获取myhash哈希表中所有字段和值
+1) "username"
+2) "lisi"
+3) "password"
+4) "123"
+127.0.0.1:6379> hdel myhash username # 删除存储在myhash哈希表中username字段及值
+(integer) 1
+```
 
 ## 2.3 列表类型 list
 
 Redis列表是简单的字符串列表，按照插入顺序排序。
 
-![](..\图片\2-10【Redis单机缓存】\屏幕截图 2022-07-10 095558.png)
+![](..\图片\2-10【Redis单机缓存】\2-2.png)
 
 常用命令如下：
 
@@ -288,51 +255,37 @@ Redis列表是简单的字符串列表，按照插入顺序排序。
 | ------------------------- | ------------------------------------------------------------ |
 | lpush key value [value2]  | 将一个或者多个值插入到列表头部                               |
 | rpush key value [value2]  | 将一个或者多个值插入到列表尾部                               |
-| lrange key start end      | 获取列表指定范围内的元素                                     |
-| rpop key                  | 移除并获取列表最后一个元素                                   |
+| lrange key start end      | 获取列表指定范围内的元素。0表示第一个元素，-1表示最后一个元素。 |
+| lpop key                  | 删除列表最左边的元素，并将元素返回                           |
+| rpop key                  | 删除列表最右边的元素，并将元素返回                           |
 | llen key                  | 获取列表长度                                                 |
-| brpop key1 [key2] timeout | 移出并获取列表的最后一个元素，<br />如果列表没有元素会阻塞列表知到等待超时或者发现可弹出元素为止 |
+| brpop key1 [key2] timeout | 移出并获取列表最后一个元素。列表没有元素会阻塞直到超时或者发现可弹出元素 |
 
-可以添加一个元素到列表的头部（左边）或者尾部（右边）
-
-1. 添加：
-	
-	`lpush key value`: 将元素加入列表左边
-	
-	`rpush key value`：将元素加入列表右边
-	
-	```sqlite
-	127.0.0.1:6379> lpush myList a
-	(integer) 1
-	127.0.0.1:6379> lpush myList b
-	(integer) 2
-	127.0.0.1:6379> rpush myList c
-	(integer) 3
-	```
-	
-2. 获取：
-	
-	`lrange key start end` ：范围获取。返回列表中指定区间内的元素，区间以偏移量 START 和 END 指定。 其中 0 表示列表的第一个元素， 1 表示列表的第二个元素，以此类推。 你也可以使用负数下标，以 -1 表示列表的最后一个元素， -2 表示列表的倒数第二个元素，以此类推。
-	
-	```sqlite
-	127.0.0.1:6379> lrange myList 0 -1
-	
-	1) "b"
-	2) "a"
-	3) "c"
-	```
-	
-3. 删除：
-	
-	`lpop key`： 删除列表最左边的元素，并将元素返回
-	
-	`rpop key`： 删除列表最右边的元素，并将元素返回
+```sql
+127.0.0.1:6379> lpush mylist a # 插入列表头部
+(integer) 1
+127.0.0.1:6379> lpush mylist b # 插入列表头部
+(integer) 2
+127.0.0.1:6379> rpush mylist c # 插入列表尾部
+(integer) 3
+127.0.0.1:6379> llen mylist # 获取长度
+(integer) 3
+127.0.0.1:6379> lrange mylist 0 2 # 获取列表范围内元素
+1) "b"
+2) "a"
+3) "c"
+127.0.0.1:6379> lpop mylist # 删除列表最左边的元素，并将元素返回
+"b"
+127.0.0.1:6379> lrange mylist 0 -1
+1) "a"
+2) "c"
+```
 
 ## 2.4 集合类型 set
 
 Redis set是String类型的无序集合。集合成员是唯一的，这就意味着集合中不能够出现重复的数据。
 
-![](..\图片\2-10【Redis单机缓存】\屏幕截图 2022-07-10 094205.png)
+![](..\图片\2-10【Redis单机缓存】\2-3.png)
 
 常用命令如下：
 
@@ -346,541 +299,319 @@ Redis set是String类型的无序集合。集合成员是唯一的，这就意�
 | sunion key1 [key2]         | 返回所有给定集合的并集                   |
 | sdiff key1 [key2]          | 返回所有给定集合的差集 顺序不同 结果不同 |
 
-集合类型 `set` ： 不允许重复元素
-
-1. 存储：`sadd key value`
-	
-	存储重复元素会失败！
-	
-	```sqlite
-	127.0.0.1:6379> sadd myset a
-	(integer) 1
-	127.0.0.1:6379> sadd myset a
-	(integer) 0
-	```
-	
-2. 获取：`smembers key`：获取set集合中所有元素
-	
-	```sqlite
-	127.0.0.1:6379> smembers myset
-	1) "a"
-	```
-	
-3. 删除：`srem key value`：删除set集合中的某个元素。`sremove`
-	
-	```sqlite
-	127.0.0.1:6379> srem myset a
-	(integer) 1
-	```
+```sql
+127.0.0.1:6379> sadd myset a # 存储元素
+(integer) 1
+127.0.0.1:6379> sadd myset a # 存储重复元素会失败！
+(integer) 0
+127.0.0.1:6379> smembers myset # 获取set集合中所有元素
+1) "a"
+127.0.0.1:6379> srem myset a # 删除set集合中的某个元素
+(integer) 1
+```
 
 ## 2.5 有序集合类型 sortedset
 
 有序集合类型 `sortedset`：不允许重复元素，且元素有顺序，每个元素都会关联一个double类型的分数。redis正是通过分数来为集合中的成员进行从小到大的排序。
 
-![](..\图片\2-10【Redis单机缓存】\屏幕截图 2022-07-10 095018.png)
+![](..\图片\2-10【Redis单机缓存】\2-4.png)
 
 常用命令如下：
 
-| 命令                                     | 作用                                                       |
-| ---------------------------------------- | ---------------------------------------------------------- |
-| zadd key score1 member1 [score2 member2] | 向有序集合添加一个或者多个成员，或者更新已经存在成员的分数 |
-| zrange key start stop [withscores]       | 通过索引区间返回有序集合中指定区间内的成员                 |
-| zincrby key increment member             | 有序集合中对指定成员的分数加上增量increment                |
-| zrem key member [member...]              | 移除有序集合中的一个或者多个成员                           |
+| 命令                                     | 作用                                             |
+| ---------------------------------------- | ------------------------------------------------ |
+| zadd key score1 member1 [score2 member2] | 添加一个或者多个成员，或者更新已经存在成员的分数 |
+| zrange key start stop [withscores]       | 通过索引区间返回有序集合中指定区间内的成员       |
+| zincrby key increment member             | 有序集合中对指定成员的分数加上增量increment      |
+| zrem key member [member...]              | 移除有序集合中的一个或者多个成员                 |
 
-1. 存储：`zadd key score value`
-	
-	如果重复存储，那么后一次存储的分数，那么就会覆盖之前的分数
-	
-	```sqlite
-	127.0.0.1:6379> zadd mysort 60 zhangsan
-	(integer) 1
-	127.0.0.1:6379> zadd mysort 50 lisi
-	(integer) 1
-	127.0.0.1:6379> zadd mysort 80 wangwu
-	(integer) 1
-	```
-	
-2. 获取：`zrange key start end [withscores]`
-	
-	返回列表中指定区间内的元素，区间以偏移量 START 和 END 指定。 其中 0 表示列表的第一个元素， 1 表示列表的第二个元素，以此类推。 你也可以使用负数下标，以 -1 表示列表的最后一个元素， -2 表示列表的倒数第二个元素，以此类推。
-	
-	```sqlite
-	127.0.0.1:6379> zrange mysort 0 -1
-	
-	1) "lisi"
-	2) "zhangsan"
-	3) "wangwu"
-	
-	127.0.0.1:6379> zrange mysort 0 -1 withscores
-	
-	1) "zhangsan"
-	2) "60"
-	3) "wangwu"
-	4) "80"
-	5) "lisi"
-	6) "500"
-	```
-	
-3. 删除：`zrem key value`
-	
-	```sqlite
-	127.0.0.1:6379> zrem mysort lisi
-	(integer) 1
-	```
+```sql
+127.0.0.1:6379> zadd mysort 60 zhangsan # 存储
+(integer) 1
+127.0.0.1:6379> zadd mysort 50 lisi # 存储
+(integer) 1
+127.0.0.1:6379> zadd mysort 80 wangwu # 存储
+(integer) 1
+127.0.0.1:6379> zrange mysort 0 -1 # 返回指定区间内的成员
+1) "lisi"
+2) "zhangsan"
+3) "wangwu"
+127.0.0.1:6379> zrange mysort 0 -1 withscores # 返回指定区间内的成员及关联的分数
+1) "lisi"
+2) "50"
+3) "zhangsan"
+4) "60"
+5) "wangwu"
+6) "80"
+127.0.0.1:6379> zrem mysort lisi # 移除有序集合中的一个成员
+(integer) 1
+```
 
-## 2.6 通用命令
-
-通用命令如下：
-
-| 命令          | 作用                                                         |
-| ------------- | ------------------------------------------------------------ |
-| keys pattern  | 查找所有符合给定模式pattern的key                             |
-| keys *        | 查询所有的键                                                 |
-| exists key    | 检查给定的key是否存在                                        |
-| type key      | 返回key所存储的值的类型                                      |
-| ttl key       | 返回给定key的剩余生存时间（TTL、time to live），以秒为单位   |
-| del key       | 该命令用于在key存在时删除key                                 |
-| clear         | 清屏                                                         |
-| select [数字] | 切换数据库 一共有16个数据库，当然也可以修改 启动的时候默认使用0号数据库 |
-
-# 第三章 持久化操作
-
-`redis`是一个内存数据库，当`redis`服务器重启，获取电脑重启，数据会丢失，我们可以将`redis`内存中的数据持久化保存到硬盘的文件中。
-
-`redis`持久化机制有两种：`RDB`和`AOF`
-
-## 3.1 RDB
-
-`RDB`：默认方式，不需要进行配置，默认就使用这种机制
-
-在一定的间隔时间中，检测`key`的变化情况，然后持久化数据
-
-步骤如下：
-
-1. 编辑`redis.windwos.conf`文件
-	
-	源文件为：
-	
-	```sql
-	#	带#号的都是注释
-	#   after 900 sec (15 min) if at least 1 key changed
-	save 900 1
-	#   after 300 sec (5 min) if at least 10 keys changed
-	save 300 10
-	#   after 60 sec if at least 10000 keys changed
-	save 60 10000
-	```
-	
-	我们可以修改一下这个文件
-	
-	```sql
-	#	带#好的都是注释
-	#   after 900 sec (15 min) if at least 1 key changed
-	save 900 1
-	#   after 300 sec (5 min) if at least 10 keys changed
-	save 300 10
-	#   10秒内，修改键超过5次，自动持久化
-	save 10 5
-	```
-	
-2. 使用命令行的模式重新打开服务器，并指定配置文件名称：
-	
-	```apl
-	E:\redis\redis-2.8.9\redis-server.exe redis.windows.conf
-	```
-
-3. 这时我们多次修改键，那么就会创建一个`rdb`文件，持久化存储。当再次打开，就会读取里面文件。
-
-## 3.2 AOF
-
-`AOF`：日志记录的方式，可以记录每一条命令的操作。可以每一次命令操作后，持久化数据
-
-1. 编辑`redis.windwos.conf`文件
-
-   ```sql
-   # 最开始默认是关闭的，如果要开启，那么需要修改文件
-   appendonly no（关闭aof） --> appendonly yes （开启aof）
-   ```
-
-   ```sql
-   # 有三个取值
-   # appendfsync always ： 每一次操作都进行持久化
-   appendfsync everysec ： 每隔一秒进行一次持久化
-   # appendfsync no	 ： 不进行持久化
-   ```
-
-2. 使用命令行的模式重新打开服务器，并指定配置文件名称：
-
-   ```ABAP
-   E:\redis\redis-2.8.9\redis-server.exe redis.windows.conf
-   ```
-
-3. 这时我们多次修改键，那么就会创建一个`aof`文件，持久化存储。当再次打开，就会读取里面文件。
-
-# 第四章 Java客户端 Jedis
+# 第三章 Java客户端 Jedis
 
 Redis的Java客户端有很多，官方推荐的有三种：Jedis、Lettcue、Redisson。
 
-Spring对Redistribution客户端进行了整合，提供了Spring Data Redistribution，在Spring   Boot鲜蘑菇中还提供了对应的stater，就是spring-boot-stater-data-redis。  
+Spring对Redis客户端进行了整合，提供了Spring Data Redis，在Spring Boot中还提供了对应的stater，就是spring-boot-stater-data-redis。  
 
-`Jedis`： 一款java操作`redis`数据库的工具.
+```xml
+<dependencies>
+    <dependency>
+        <groupId>redis.clients</groupId>
+        <artifactId>jedis</artifactId>
+        <version>2.8.0</version>
+    </dependency>
+</dependencies>
+```
 
-使用步骤：
+```java
+public class Demo01RedisTest {
 
-1. 下载`jedis`的jar包，导入到项目里面 `commons-pool2-2.3.jar`和`jedis-2.7.0.jar`
+    @Test
+    public void test() {
+        // 获取连接，如果在参数设置为空 不传进去参数。那么会有默认值，默认值就是"localhost", 6379。
+        Jedis jedis = new Jedis("localhost", 6379);
+        // 操作
+        jedis.set("username", "zhangsan");
+        // 关闭连接
+        jedis.close();
+    }
+}
+```
 
-   我们后面使用的都是Maven，那么导入Maven坐标就可以了
+## 4.1 Jedis操作redis
 
-   ```xml
-   <dependencies>
-       <dependency>
-           <groupId>redis.clients</groupId>
-           <artifactId>jedis</artifactId>
-           <version>2.8.0</version>
-       </dependency>
-   </dependencies>
-   ```
+**字符串类型 string**
 
-2. 使用
+| 命令                    | 作用                                              |
+| ----------------------- | ------------------------------------------------- |
+| set key value           | 设置指定key的值                                   |
+| get key                 | 获取指定key的值                                   |
+| setex key seconds value | 设置指定key的值，并将key的过期时间设置为seconds秒 |
+| setnx key value         | 只有在key不存在的时候设置key的值                  |
 
-   ```java
-   public class Demo01Redis {
-   
-       /**
-        * 测试Jedis
-        * 这里使用的是单元测试，无需使用main方法
-        */
-       @Test
-       public void test() {
-           // 获取连接，如果在参数设置为空 不传进去参数。那么会有默认值，默认值就是`"localhost", 6379`。
-           Jedis jedis = new Jedis("localhost", 6379);
-           // 操作
-           jedis.set("username", "zhangsan");
-           // 关闭连接
-           jedis.close();
-       }
-   }
-   ```
+```java
+@Test
+public void test1() {
+    // 获取连接
+    Jedis jedis = new Jedis();
 
-## 4.1 Jedis操作redis数据结构
+    // 操作
+    jedis.set("username", "zhangsan");
+    System.out.println(jedis.get("username"));
+    // 设置过期时间。将键值对activecode，123键值对存入redis，10秒后自动删除
+    jedis.setex("activecode", 10, "123");
 
-1. 字符串类型
+    // 关闭连接
+    jedis.close();
+}
+```
 
-   * `SET key value` 设置指定 key 的值
+**哈希类型 hash**
 
-   - `GET key` 获取指定 key 的值。
+| 命令                 | 作用                                    |
+| -------------------- | --------------------------------------- |
+| hset key field value | 将哈希表key中的字段filed的值设置为value |
+| hget key field       | 获取存储在哈希表key中的指定字段的值     |
+| hdel key field       | 删除存储在哈希表key中的指定字段         |
+| hkeys key            | 获取哈希表key中的所有字段               |
+| hvals key            | 获取哈希表key中所有的值                 |
+| hgetall key          | 获取在哈希表中指定key的所有字段和值     |
 
-   - `SETEX key seconds value` 将值 value 关联到 key ，并将 key 的过期时间设为 seconds (以秒为单位)。
+```java
+@Test
+public void test02() {
+    // 获取连接
+    Jedis jedis = new Jedis();
+    // 存储哈希数据
+    jedis.hset("user", "name", "linxuan");
+    jedis.hset("user", "age", "19");
+    jedis.hset("user", "gender", "male");
+    // 获取数据
+    System.out.println(jedis.hget("user", "name"));
 
-   ```java
-       /**
-        * 创建一个单元测试
-        */
-       @Test
-       public void test1() {
-           // 获取连接
-           Jedis jedis = new Jedis();
-           // 操作
-           jedis.set("username", "zhangsan");
-           String username = jedis.get("username");
-           System.out.println(username);
-   
-           // 设置过期时间
-           // 将键值对activecode，123键值对存入redis，10秒后自动删除
-           jedis.setex("activecode", 10, "123");
-           // 关闭连接
-           jedis.close();
-       }
-   ```
+    // 获取hash的所有map中的数据
+    Map<String, String> user = jedis.hgetAll("user");
+    // 使用Lambda表达式遍历输出
+    user.forEach((key, value) -> System.out.println(key + " " + value));
 
-2. 哈希类型
+    // 关闭Jedis
+    jedis.close();
+}
+```
 
-   - `HSET key field value` 将哈希表 key 中的字段 field 的值设为 value 。
+**列表类型 list**
 
-   - `HGET key field` 获取存储在哈希表中指定字段的值
+```java
+@Test
+public void test03() {
+    // 获取连接
+    Jedis jedis = new Jedis();
 
-   - `HGETALL key` 获取在哈希表中指定 key 的所有字段和值
+    // list 存储
+    jedis.lpush("mylist", "a", "b", "c"); // 从左边存
+    jedis.rpush("mylist", "a", "b", "c"); // 从右边存
 
-   ```java
-   @Test
-   public void test02() {
-       // 获取连接
-       Jedis jedis = new Jedis();
-       // 存储哈希数据
-       jedis.hset("user", "name", "linxuan");
-       jedis.hset("user", "age", "19");
-       jedis.hset("user", "gender", "male");
-       // 获取数据
-       String name = jedis.hget("user", "name");
-       System.out.println(name);
-   
-       // 获取hash的所有map中的数据
-       Map<String, String> user = jedis.hgetAll("user");
-       // 获取Keyset
-       Set<String> keySet = user.keySet();
-       for (String key : keySet) {
-           String value = user.get(key);
-           System.out.print(key + ":" + value);
-           System.out.println();
-       }
-   
-       // 关闭Jedis
-       jedis.close();
-   }
-   
-   /*
-       linxuan
-       gender:male
-       name:linxuan
-       age:19
-   */
-   ```
+    // list 范围获取。[c, b, a, a, b, c]
+    List<String> mylist = jedis.lrange("mylist", 0, -1);
+    System.out.println(mylist);
 
-3. 列表类型
+    // list 左边弹出，结果为c
+    System.out.println(jedis.lpop("mylist"));
+    // list 右边弹出，结果为c
+    System.out.println(jedis.rpop("mylist"));
 
-   - `Redis Rpush` 命令用于将一个或多个值插入到列表的尾部(最右边)。
+    // 3. 关闭连接
+    jedis.close();
+}
+```
 
-   - `Redis Lpush` 命令将一个或多个值插入到列表头部。 如果 key 不存在，一个空列表会被创建并执行 LPUSH 操作。 当 key 存在但不是列表类型时，返回一个错误。
+**集合类型 set**
 
-   - `LPOP key` 移出并获取列表的第一个元素
+| 命令                       | 作用                                     |
+| -------------------------- | ---------------------------------------- |
+| sadd key member1 [member2] | 向集合添加一个或者多个成员               |
+| smembers key               | 返回集合中的所有成员                     |
+| scard                      | 获取集合的成员数                         |
+| srem key member1 [member2] | 移除集合中一个或者多个成员               |
+| sinter key1 [key2]         | 返回所有给定集合的交集                   |
+| sunion key1 [key2]         | 返回所有给定集合的并集                   |
+| sdiff key1 [key2]          | 返回所有给定集合的差集 顺序不同 结果不同 |
 
-   - `RPOP key` 移除并获取列表最后一个元素
+```java
+@Test
+public void test04() {
+    // 获取连接
+    Jedis jedis = new Jedis();
 
-   - `Redis Lrange` 返回列表中指定区间内的元素，区间以偏移量 START 和 END 指定。 其中 0 表示列表的第一个元素， 1 表示列表的第二个元素，以此类推。 你也可以使用负数下标，以 -1 表示列表的最后一个元素， -2 表示列表的倒数第二个元素，以此类推。
+    // set 存储
+    jedis.sadd("myset", "java", "php", "c++");
+    // set 获取
+    Set<String> myset = jedis.smembers("myset");
+    System.out.println(myset);
 
-   ```java
-       @Test
-       public void test03() {
-           //1. 获取连接
-           Jedis jedis = new Jedis();
-           //2. 操作
-           // list 存储
-           jedis.lpush("mylist","a","b","c");//从左边存
-           jedis.rpush("mylist","a","b","c");//从右边存
-   
-           // list 范围获取
-           List<String> mylist = jedis.lrange("mylist", 0, -1);
-           System.out.println(mylist);
-   
-           // list 弹出
-           String element1 = jedis.lpop("mylist");//c
-           System.out.println(element1);
-   
-           String element2 = jedis.rpop("mylist");//c
-           System.out.println(element2);
-   
-           // list 范围获取
-           List<String> mylist2 = jedis.lrange("mylist", 0, -1);
-           System.out.println(mylist2);
-   
-           //3. 关闭连接
-           jedis.close();
-       }
-   ```
+    // 3. 关闭连接
+    jedis.close();
+}
+```
 
-   ```html
-   <!--
-       [c, b, a, a, b, c]
-       c
-       c
-       [b, a, a, b]
-   -->
-   ```
+**有序集合类型 sortedset**
 
-4. 集合类型
+| 命令                                     | 作用                                             |
+| ---------------------------------------- | ------------------------------------------------ |
+| zadd key score1 member1 [score2 member2] | 添加一个或者多个成员，或者更新已经存在成员的分数 |
+| zrange key start stop [withscores]       | 通过索引区间返回有序集合中指定区间内的成员       |
+| zincrby key increment member             | 有序集合中对指定成员的分数加上增量increment      |
+| zrem key member [member...]              | 移除有序集合中的一个或者多个成员                 |
 
-   - `Redis Sadd` 命令将一个或多个成员元素加入到集合中，已经存在于集合的成员元素将被忽略。
+```java
+@Test
+public void test05() {
+    // 获取连接
+    Jedis jedis = new Jedis();
 
-   - `Redis Smembers` 命令返回集合中的所有的成员。 不存在的集合 key 被视为空集合。
+    // sortedset 存储
+    jedis.zadd("mysortedset", 3, "亚瑟");
+    jedis.zadd("mysortedset", 30, "后裔");
+    jedis.zadd("mysortedset", 55, "孙悟空");
+    // sortedset 获取
+    Set<String> mysortedset = jedis.zrange("mysortedset", 0, -1);
+    System.out.println(mysortedset);
 
-   ```java
-       @Test
-       public void test04() {
-           // 获取连接
-           Jedis jedis = new Jedis();
-           // 操作
-           // set 存储
-           jedis.sadd("myset","java","php","c++");
-   
-           // set 获取
-           Set<String> myset = jedis.smembers("myset");
-           System.out.println(myset);
-   
-           //3. 关闭连接
-           jedis.close();
-       }
-   ```
+    //3. 关闭连接
+    jedis.close();
+}
+```
 
-   ```html
-   <!--
-   	[c++, java, php]
-   -->
-   ```
-
-5. 有序集合类型
-
-   - `Redis Zadd` 命令用于将一个或多个成员元素及其分数值加入到有序集当中。
-
-   - `Redis Zrange` 返回有序集中，指定区间内的成员。其中成员的位置按分数值递增(从小到大)来排序。具有相同分数值的成员按字典序(`lexicographical order` )来排列。
-
-   ```java
-       @Test
-       public void test05() {
-           // 获取连接
-           Jedis jedis = new Jedis();
-           // 操作
-           // sortedset 存储
-           jedis.zadd("mysortedset",3,"亚瑟");
-           jedis.zadd("mysortedset",30,"后裔");
-           jedis.zadd("mysortedset",55,"孙悟空");
-   
-           // sortedset 获取
-           Set<String> mysortedset = jedis.zrange("mysortedset", 0, -1);
-   
-           System.out.println(mysortedset);
-   
-           //3. 关闭连接
-           jedis.close();
-       }
-   ```
-
-   ```html
-   <!--
-   	[亚瑟, 后裔, 孙悟空]
-   -->
-   ```
-
-## 4.2 JedisPool
-
-`jedis`连接池： `JedisPool`
-
-使用方式如下：
-
-1. 创建`JedisPool`连接池对象
-
-2. 调用方法 `getResource()`方法获取`Jedis`连接
+## 4.2 JedisPool连接池
 
   ```java
-      @Test
-      public void test06() {
-          //0.创建一个配置对象
-          JedisPoolConfig config = new JedisPoolConfig();
-          config.setMaxTotal(50);
-          config.setMaxIdle(10);
+  public static void main(String[] args) {
+      // 0.创建一个配置对象
+      JedisPoolConfig config = new JedisPoolConfig();
+      config.setMaxTotal(50);
+      config.setMaxIdle(10);
   
-          //1.创建Jedis连接池对象
-          JedisPool jedisPool = new JedisPool(config,"localhost",6379);
+      // 1.创建Jedis连接池对象
+      JedisPool jedisPool = new JedisPool(config, "localhost", 6379);
   
-          //2.获取连接
-          Jedis jedis = jedisPool.getResource();
-          //3. 使用
-          jedis.set("hehe","heihei");
+      // 2.获取连接
+      Jedis jedis = jedisPool.getResource();
+      // 3. 使用
+      jedis.set("hehe", "heihei");
   
-          //4. 关闭 归还到连接池中
-          jedis.close();
-      }
+      // 4. 关闭 归还到连接池中
+      jedis.close();
+  }
   ```
 
 配置对象的参数有很多，如下：
 
 ```sql
-#最大活动对象数     
+# 最大活动对象数     
 redis.pool.maxTotal=1000    
-#最大能够保持idel状态的对象数      
+# 最大能够保持idel状态的对象数      
 redis.pool.maxIdle=100  
-#最小能够保持idel状态的对象数   
+# 最小能够保持idel状态的对象数   
 redis.pool.minIdle=50    
-#当池内没有返回对象时，最大等待时间    
+# 当池内没有返回对象时，最大等待时间    
 redis.pool.maxWaitMillis=10000    
-#当调用borrow Object方法时，是否进行有效性检查    
+# 当调用borrow Object方法时，是否进行有效性检查    
 redis.pool.testOnBorrow=true    
-#当调用return Object方法时，是否进行有效性检查    
+# 当调用return Object方法时，是否进行有效性检查    
 redis.pool.testOnReturn=true  
-#“空闲链接”检测线程，检测的周期，毫秒数。如果为负值，表示不运行“检测线程”。默认为-1.  
+# “空闲链接”检测线程，检测的周期，毫秒数。如果为负值，表示不运行“检测线程”。默认为-1.  
 redis.pool.timeBetweenEvictionRunsMillis=30000  
-#向调用者输出“链接”对象时，是否检测它的空闲超时；  
+# 向调用者输出“链接”对象时，是否检测它的空闲超时；  
 redis.pool.testWhileIdle=true  
 # 对于“空闲链接”检测线程而言，每次检测的链接资源的个数。默认为3.  
 redis.pool.numTestsPerEvictionRun=50  
-#redis服务器的IP    
+# redis服务器的IP    
 redis.ip=xxxxxx  
-#redis服务器的Port    
+# redis服务器的Port    
 redis1.port=6379   
 ```
 
-## 4.3 Jedis_连接池工具类
+**Jedis连接池工具类**
 
-导入配置文件
-
-```ABAP
-host=127.0.0.1
-port=6379
-maxTotal=50
-maxIdle=10
+```properties
+# Jedis连接池配置文件，命名为jedis.properties，在resources目录下创建该文件
+host = 127.0.0.1
+port = 6379
+maxTotal = 50
+maxIdle = 10
 ```
 
-创建一个JedisPoolUtils类：
-
 ```java
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-
 public class JedisPoolUtils {
     private static JedisPool jedisPool;
 
     static {
         // 读取配置文件
-        InputStream is = JedisPoolUtils.class.getClassLoader().getResourceAsStream("jedis.properties");
+        InputStream is = JedisPoolUtils.class.getClassLoader()
+            .getResourceAsStream("jedis.properties");
 
-        //创建Properties对象
+        // 创建Properties对象
         Properties pro = new Properties();
-        //关联文件
+        // 关联文件
         try {
             pro.load(is);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //获取数据，设置到JedisPoolConfig中
+
+        // 获取数据，设置到JedisPoolConfig中
         JedisPoolConfig config = new JedisPoolConfig();
         config.setMaxTotal(Integer.parseInt(pro.getProperty("maxTotal")));
         config.setMaxIdle(Integer.parseInt(pro.getProperty("maxIdle")));
 
-        //初始化JedisPool
-        jedisPool = new JedisPool(config,pro.getProperty("host"),Integer.parseInt(pro.getProperty("port")));
+        // 初始化JedisPool
+        jedisPool = new JedisPool(config,
+                                  pro.getProperty("host"), 
+                                  Integer.parseInt(pro.getProperty("port")));
     }
 
-    /**
-     * 获取连接方法
-     */
     public static Jedis getJedis() {
         return jedisPool.getResource();
-    }
-}
-```
-
-单元测试运行
-
-```java
-import cn.com.utils.JedisPoolUtils;
-import org.junit.Test;
-import redis.clients.jedis.Jedis;
-
-public class Demo01Redis {
-    @Test
-    public void test(){
-        //通过连接池工具类获取
-        Jedis jedis = JedisPoolUtils.getJedis();
-        //使用
-        jedis.set("hello","world");
-
-        //关闭 归还到连接池中
-        jedis.close();
     }
 }
 ```
@@ -968,16 +699,6 @@ public interface ProvinceDao {
 实现`ProvinceDao`接口，里面定义方法内容
 
 ```java
-package cn.net.dao.impl;
-
-import cn.net.dao.ProvinceDao;
-import cn.net.domain.Province;
-import cn.net.util.JDBCUtils;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
-
-import java.util.List;
-
 public class ProvinceDaoImpl implements ProvinceDao {
     // 声明成员变量 jdbctemplement
     private JdbcTemplate template = new JdbcTemplate(JDBCUtils.getDataSource());
@@ -1040,21 +761,6 @@ public class ProvinceServiceImpl implements ProvinceService {
 创建`Servlet`层：
 
 ```java
-package cn.net.web.servlet;
-
-import cn.net.domain.Province;
-import cn.net.service.ProvinceService;
-import cn.net.service.impl.ProvinceServiceImpl;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.List;
-
 @WebServlet("/provinceServlet")
 public class ProvinceServlet extends HttpServlet {
     @Override
@@ -1129,12 +835,6 @@ public class ProvinceServlet extends HttpServlet {
 `ProvinceService`接口增加一个抽象方法：
 
 ```java
-package cn.net.service;
-
-import cn.net.domain.Province;
-
-import java.util.List;
-
 public interface ProvinceService {
     public List<Province> findAll();
 
@@ -1148,19 +848,6 @@ public interface ProvinceService {
 首先从`redis`中查询数据，如没有数据，那么查询数据库，最后将数据存入`redis`中。
 
 ```java
-package cn.net.service.impl;
-
-import cn.com.util.JedisPoolUtils;
-import cn.net.dao.ProvinceDao;
-import cn.net.dao.impl.ProvinceDaoImpl;
-import cn.net.domain.Province;
-import cn.net.service.ProvinceService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import redis.clients.jedis.Jedis;
-
-import java.util.List;
-
 public class ProvinceServiceImpl implements ProvinceService {
 
     // 声明Dao
@@ -1205,21 +892,6 @@ public class ProvinceServiceImpl implements ProvinceService {
 `servlet`修改如下：
 
 ```java
-package cn.net.web.servlet;
-
-import cn.net.domain.Province;
-import cn.net.service.ProvinceService;
-import cn.net.service.impl.ProvinceServiceImpl;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.List;
-
 @WebServlet("/provinceServlet")
 public class ProvinceServlet extends HttpServlet {
     @Override

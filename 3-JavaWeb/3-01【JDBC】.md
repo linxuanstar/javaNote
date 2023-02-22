@@ -1002,7 +1002,7 @@ public class Demo02Druid {
 }
 ```
 
-# 第四章 Spring JDBC
+# 第四章 JDBCTemplate
 
 `Spring`框架对`JDBC`的简单封装。提供了一个`JDBCTemplate`对象简化`JDBC`的开发
 
@@ -1010,9 +1010,7 @@ public class Demo02Druid {
 
 1. 导入jar包
 
-2. 创建`JdbcTemplate`对象。依赖于数据源`DataSource`
-
-   `JdbcTemplate template = new JdbcTemplate(ds);`
+2. 创建`JdbcTemplate`对象。依赖于数据源`DataSource`。`JdbcTemplate template = new JdbcTemplate(ds);`
 
 3. 调用`JdbcTemplate`的方法来完成CRUD的操作
 

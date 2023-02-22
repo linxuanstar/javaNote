@@ -5,16 +5,86 @@
 * 存储能力问题——搭建分片集群，利用插槽机制实现动态扩容
 * 故障恢复问题——利用Redis哨兵，实现健康检测和自动恢复
 
+# 第三章 持久化操作
+
+`redis`是一个内存数据库，当`redis`服务器重启，获取电脑重启，数据会丢失，我们可以将`redis`内存中的数据持久化保存到硬盘的文件中。
+
+`redis`持久化机制有两种：`RDB`和`AOF`
+
+## 3.1 RDB
+
+`RDB`：默认方式，不需要进行配置，默认就使用这种机制
+
+在一定的间隔时间中，检测`key`的变化情况，然后持久化数据
+
+步骤如下：
+
+1. 编辑`redis.windwos.conf`文件
+
+   源文件为：
+
+   ```sql
+   #	带#号的都是注释
+   #   after 900 sec (15 min) if at least 1 key changed
+   save 900 1
+   #   after 300 sec (5 min) if at least 10 keys changed
+   save 300 10
+   #   after 60 sec if at least 10000 keys changed
+   save 60 10000
+   ```
+
+   我们可以修改一下这个文件
+
+   ```sql
+   #	带#好的都是注释
+   #   after 900 sec (15 min) if at least 1 key changed
+   save 900 1
+   #   after 300 sec (5 min) if at least 10 keys changed
+   save 300 10
+   #   10秒内，修改键超过5次，自动持久化
+   save 10 5
+   ```
+
+2. 使用命令行的模式重新打开服务器，并指定配置文件名称：
+
+   ```apl
+   E:\redis\redis-2.8.9\redis-server.exe redis.windows.conf
+   ```
+
+3. 这时我们多次修改键，那么就会创建一个`rdb`文件，持久化存储。当再次打开，就会读取里面文件。
+
+## 3.2 AOF
+
+`AOF`：日志记录的方式，可以记录每一条命令的操作。可以每一次命令操作后，持久化数据
+
+1. 编辑`redis.windwos.conf`文件
+
+   ```sql
+   # 最开始默认是关闭的，如果要开启，那么需要修改文件
+   appendonly no（关闭aof） --> appendonly yes （开启aof）
+   ```
+
+   ```sql
+   # 有三个取值
+   # appendfsync always ： 每一次操作都进行持久化
+   appendfsync everysec ： 每隔一秒进行一次持久化
+   # appendfsync no	 ： 不进行持久化
+   ```
+
+2. 使用命令行的模式重新打开服务器，并指定配置文件名称：
+
+   ```ABAP
+   E:\redis\redis-2.8.9\redis-server.exe redis.windows.conf
+   ```
+
+3. 这时我们多次修改键，那么就会创建一个`aof`文件，持久化存储。当再次打开，就会读取里面文件。
+
 # 第一章 Redis持久化
 
 Redis有两种持久化方案：
 
 - RDB持久化
 - AOF持久化
-
-## 1.1 Redis安装
-
-也可以配置环境变量，可以看看Redis另一篇笔记。
 
 ## 1.1 RDB持久化
 
