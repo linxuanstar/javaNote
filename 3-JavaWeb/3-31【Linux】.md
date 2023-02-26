@@ -26,7 +26,7 @@ Linux号称“万物皆文件”，意味着针对Linux的操作，大多数是�
 | /proc       | 虚拟文件系统目录，是系统内存的映射。可直接访问这个目录来获取系统信息。 |
 | /lost+found | 这个目录平时是空的，系统非正常关机而留下“无家可归”的文件（windows下叫什么`.chk`）就在这里 |
 
-几乎主流的文件系统都是从/根目录开始的，Linux也不例外，而windows文件系统会以盘符来区分不同文件系统；
+几乎主流的文件系统都是从`/`根目录开始的，Linux也不例外，而windows文件系统会以盘符来区分不同文件系统；
 
 目录树中节点分为两个种类：目录（directory）、文件（file）。从根目录开始，路径具有唯一性；只有在目录下才可以继续创建下一级目录，换句话说目录树到文件终止蔓延。
 
@@ -163,7 +163,7 @@ Linux命令格式如下：`command [-options] [parameter]`
 | mv old_dir new_dir | 重命名/移动目录                                              |
 | mv a.txt ../       | 将`a.txt`文件移动到上一层目录中                              |
 | mv a.txt b.txt     | 将`a.txt`文件重命名为`b.txt`                                 |
-| mv lin/ xuan/      | 如果xuan目录不存在，那么将lin目录更名为xuan<br />如果xuan目录村子啊，那么将lin目录移动到xuan目录中 |
+| mv lin/ xuan/      | xuan目录不存在，那么将lin目录更名为xuan。存在，那么将lin目录移动到xuan目录中 |
 
 **复制文件和目录**
 
@@ -540,33 +540,26 @@ Centos7的防火墙操作
 
 # 第五章 软件安装与项目部署
 
+一般大型软件或者是一些服务程序安装到 /opt 目录下，普通软件一般安装到 usr/local 目录下。这里我们统一放到opt目录下面了。
+
 ```sh
-# /export/目录下面创建这三个文件夹 用于存放 数据 软件 安装包
-[root@node1 ~]# ls /export/
+# /opt/目录下面创建这三个文件夹 用于存放 数据 软件 安装包
+[root@node1 ~]# ls /opt/
 data  server  software
 ```
 
 ## 5.1 软件安装
 
-一般我们下载的软件都会放在/usr/local里面
+Linux上的软件安装有以下几种常见方式
 
-Linux上的软件安装有以下几种常见方式介绍
+1. 二进制发布包：软件已经针对具体平台编译打包发布，只要解压，修改配置即可
 
-1. 二进制发布包
+2. RPM包：软件已经按照redhat的包管理工具规范RPM进行打包发布，需要获取到相应的软件RPM发布包，然后用RPM命令进行安装
 
-   软件已经针对具体平台编译打包发布，只要解压，修改配置即可
+3. Yum在线安装：软件已经以RPM规范打包，但发布在了网络上的一些服务器上，可用yum在线安装服务器上的rpm软件，并且会自动解决软件安装过程中的库依赖问题
 
-2. RPM包
+4. 源码编译安装：软件以源码工程的形式发布，需要获取到源码工程后用相应开发工具进行编译打包部署。
 
-   软件已经按照redhat的包管理工具规范RPM进行打包发布，需要获取到相应的软件RPM发布包，然后用RPM命令进行安装
-
-3. Yum在线安装
-
-   软件已经以RPM规范打包，但发布在了网络上的一些服务器上，可用yum在线安装服务器上的rpm软件，并且会自动解决软件安装过程中的库依赖问题
-
-4. 源码编译安装
-
-   软件以源码工程的形式发布，需要获取到源码工程后用相应开发工具进行编译打包部署。
 
 上传与下载工具介绍
 
@@ -823,6 +816,95 @@ data  server  software
    rm -rf /etc/my.cnf 
    rm -rf /var/log/mysqld.log
    ```
+
+### 5.1.4 安装Redis
+
+**Linux中操作redis-3.0.4**
+
+在Linux中操作和Windows一样，首先启动服务器端然后再启动客户端即可。
+
+```sh
+# 启动服务器端。启动之后页面就会霸屏了
+[root@node1 src]# ./redis-server
+# 启动客户端。服务端启动之后页面就会霸屏了，所以重新克隆一个页面启动客户端
+[root@node1 src]# ./redis-cli
+```
+
+配置环境变量：
+
+```sh
+# 配置环境变量
+vim /etc/profile
+# 文件添加下面内容
+export REDIS_HOME=/usr/local/redis/redis-3.0.4
+export PATH=$PATH:$REDIS_HOME/src
+# 刷新配置
+source /etc/profile
+```
+
+修改Redis霸屏操作：
+
+```sh
+# 修改Redis霸屏操作
+[root@node1 src]# vim redis.conf
+# 进入vim编辑器，使用搜索命令/dae，光标定位daemonize no，修改为yes
+# 重新加载配置文件
+[root@node1 /usr/local/redis/redis-3.0.4]# src/redis-server ./redis.conf
+```
+
+设置密码
+
+```sh
+# 设置密码
+[root@node1 src]# vim redis.conf
+# 进入vim编辑器，使用搜索命令/pass，光标定位# requirepass foobared。注释取消，将foobared换成密码即可。
+# 重新加载配置文件
+[root@node1 /usr/local/redis/redis-3.0.4/src]# ./redis-server ./redis.conf
+# 使用密码启动客户端。如果不使用密码登录进去，是无法使用命令的，可以使用auth 密码使用命令。
+[root@node1 /usr/local/redis/redis-3.0.4/src]# redis-cli -h localhost -p 6379 -a 密码
+```
+
+远程连接Redis
+
+```sh
+# 修改Redis配置文件IP地址访问
+[root@node1 src]# vim redis.conf
+# 将bind 127.0.0.1注释起来。绑定地址，默认是127.0.0.1，会导致只能在本地访问。修改为0.0.0.0可以在任意IP访问
+
+# windows客户端操作：打开PowerShell窗口
+.\redis-cli.exe -h 192.168.66.130 -p 6379
+```
+
+**Linux中操作redis-6.2.4**
+
+```sh
+# 安装Redis所需要的依赖
+yum install -y gcc tcl
+# 解压缩redis-6.2.4.tar.gz
+tar -xvf redis-6.2.4.tar.gz
+# 进入redis目录
+cd redis-6.2.4
+# 运行编译命令
+make && make install
+```
+
+```sh
+# 修改redis.conf文件中的一些配置
+vim redis.conf
+# 绑定地址，默认是127.0.0.1，会导致只能在本地访问。修改为0.0.0.0则可以在任意IP访问
+bind 0.0.0.0
+# 数据库数量，设置为1
+databases 1
+```
+
+```sh
+# 启动Redis服务端
+redis-server redis.conf
+# 启动redis客户端
+redis-cli
+# 停止redis服务，就是使用的redis-cli shutdown
+redis-cli shutdown
+```
 
 ## 5.2 项目部署
 

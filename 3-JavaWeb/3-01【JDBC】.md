@@ -914,8 +914,8 @@ public class DruidUtils {
         try {
             // 加载配置文件
             Properties pro = new Properties();
-           pro.load(Demo01Druid.class.getClassLoader().getResourceAsStream("druid.properties"));
-            
+            pro.load(Demo01Druid.class.getClassLoader().getResourceAsStream("druid.properties"));
+
             // 获取database
             ds = DruidDataSourceFactory.createDataSource(pro);
         } catch (IOException e) {

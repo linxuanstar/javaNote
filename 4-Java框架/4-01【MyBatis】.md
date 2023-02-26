@@ -563,15 +563,6 @@ Map<String, Object> getAllUserToMap();
 </configuration>
 ```
 
-**environment**
-
-| 标签               | 作用                           | 属性    | 作用和取值                    |
-| ------------------ | ------------------------------ | ------- | ----------------------------- |
-| environments       | 设置多个连接数据库的环境       | default | 设置默认使用的环境的id        |
-| environment        | 设置具体的连接数据库的环境信息 | id      | 设置环境的唯一标识            |
-| transactionManager | 设置事务管理方式               | type    | type="JDBC\|MANAGED"          |
-| dataSource         | 设置数据源                     | type    | type="POOLED\|UNPOOLED\|JNDI" |
-
 **properties**
 
 创建`jdbc.properties`文件：
@@ -588,7 +579,7 @@ jdbc.password=root
 
 ```xml
 <!--引入properties文件，此时就可以${属性名}的方式访问属性值-->
-<properties resource="jdbc.properties"></properties>
+<properties resource="jdbc.properties"/>
 ```
 
 访问属性值：
@@ -605,6 +596,30 @@ jdbc.password=root
     <property name="password" value="${jdbc.password}"/>
 </dataSource>
 ```
+
+**settings**
+
+```xml
+<!--设置Mybatis全局配置-->
+<settings>
+    <!-- 开启驼峰命名 -->
+    <setting name="mapUnderscoreToCamelCase" value="true"/>
+    <!--开启延迟加载-->
+    <setting name="lazyLoadingEnabled" value="true"/>
+    <!-- 打印sql日志，也可以将Value设置为LOG4J，然后搞一个Log4J的配置文件，上面已经弄过了 -->
+    <setting name="logImpl" value="STDOUT_LOGGING" />
+</settings>
+</settings>
+```
+
+**environment**
+
+| 标签               | 作用                           | 属性    | 作用和取值                    |
+| ------------------ | ------------------------------ | ------- | ----------------------------- |
+| environments       | 设置多个连接数据库的环境       | default | 设置默认使用的环境的id        |
+| environment        | 设置具体的连接数据库的环境信息 | id      | 设置环境的唯一标识            |
+| transactionManager | 设置事务管理方式               | type    | type="JDBC\|MANAGED"          |
+| dataSource         | 设置数据源                     | type    | type="POOLED\|UNPOOLED\|JNDI" |
 
 **typeAliases**
 

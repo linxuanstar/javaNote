@@ -1,44 +1,18 @@
 # 第一章 VUE
 
-Vue 是一套前端框架，免除原生JavaScript中的DOM操作，简化书写。
+Vue 是一套前端框架，免除原生JavaScript中的DOM操作，简化书写。Vue基于`MVVM(Model-View-ViewModel)`思想，实现数据的双向绑定，将编程的关注点放在数据上。
 
-我们之前也学习过后端的框架 `Mybatis` ，`Mybatis` 是用来简化 `jdbc` 代码编写的；而 `VUE` 是前端的框架，是用来简化 `JavaScript` 代码编写的。之前我们做了一个综合性的案例，里面进行了大量的DOM操作，如下
+而要了解 `MVVM` 思想，必须先聊聊 `MVC` 思想：
 
-```javascript
-// 获取表单数据
-let brandName = document.getElementById("brandName").value;
-// 设置数据
-formData.brandName = brandName;
+* M（Model）：模型持有所有的数据、状态和程序逻辑。模型接受视图数据的请求，并返回最终的处理结果。实际开发中，通常用封装数据的JavaBean和封装业务的JavaBean来实现模型层。
+* V（View）：视图。负责界面的显示，以及与用户的交互功能，例如表单、网页等。
+* C（Controller）：控制器。获取用户的输入、调用模型、将数据交给视图进行展示。可以理解为一个分发器，用来决定对于视图发来的请求，需要用哪一个模型来处理，以及处理完后需要跳回到哪一个视图。即用来连接视图和模型。
 
-// 获取表单数据
-let companyName = document.getElementById("companyName").value;
-// 设置数据
-formData.companyName = companyName;
+对于JavaScript而言，C 就是 js 代码，M就是数据，而 V 是页面上展示的内容。MVC思想是没法进行双向绑定的。
 
-// 获取表单数据
-let ordered = document.getElementById("ordered").value;
-// 设置数据
-formData.ordered = ordered;
+双向绑定是指当数据模型数据发生变化时，页面展示的会随之发生变化。例如表单数据发生变化，绑定的模型数据也随之发生变化。接下来我们聊聊 `MVVM` 思想，如下图是三个组件图解：
 
-// 获取表单数据
-let description = document.getElementById("description").value;
-// 设置数据
-formData.description = description;
-```
-
-学习了 `VUE` 后，这部分代码我们就不需要再写了。那么 `VUE` 是如何简化 DOM 书写呢？基于`MVVM(Model-View-ViewModel)`思想，实现数据的双向绑定，将编程的关注点放在数据上。
-
-之前我们是将关注点放在了 DOM 操作上；而要了解 `MVVM` 思想，必须先聊聊 `MVC` 思想，如下图就是 `MVC` 思想图解
-
-<img src="..\图片\3-10【VUE、Element】/1-1.png"/>
-
-对于JavaScript而言，C 就是咱们 js 代码，M 就是数据，而 V 是页面上展示的内容。如下图是我们之前写的代码：
-
-<img src="..\图片\3-10【VUE、Element】/1-2.png" style="zoom:70%;" />
-
-`MVC` 思想是没法进行双向绑定的。双向绑定是指当数据模型数据发生变化时，页面展示的会随之发生变化，而如果表单数据发生变化，绑定的模型数据也随之发生变化。接下来我们聊聊 `MVVM` 思想，如下图是三个组件图解：
-
-<img src="..\图片\3-10【VUE、Element】/1-3.png"/>
+![](..\图片\3-10【VUE、Element】\2-1.png)
 
 图中的 `Model` 就是我们的数据，`View` 是视图，也就是页面标签，用户可以通过浏览器看到的内容；`Model` 和 `View` 是通过 `ViewModel` 对象进行双向绑定的，而 `ViewModel` 对象是 `Vue` 提供的。
 

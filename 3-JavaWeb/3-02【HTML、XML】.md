@@ -209,58 +209,36 @@ HTML5中为了提高程序的可读性能，提供了一些标签。
 
 ## 2.6 超链接
 
-1. 
-
-2.  
-
-3.  
-
-4.  
-
-5.  
-
-6.  div和span：
-
-   * div：每一个div占满一行。块级标签。
-   * span：文本信息在一行展示。行内标签，也叫内联标签。
-
-7. 语义化标签：
+## 2.7 表格
 
 
-   就是提供了一些特有的标签，没有任何的效果，可以与css相联系，然后使用。
 
-8. 表格标签：
+表格标签：
 
-   * table，tr，th，td。
-   * table：定义表格
-     * width：宽度
-     * border：边框
-     * cellpading：定义内容和单元格之间的距离，如果设置为0，那么久没有距离，离得很近。
-     * cellspacing：定义单元格之间距离，设置为0，那么单元格之间的线重合，就会合为一条。
-     * bgcolor：背景色
-     * align：对齐方式
-   * tr：定义行
-     * bgcolor：背景色
-     * align：对齐方式
-   * th：定义表头单元格
-   * td：定义单元格
-     * colspan：跨列
-     * rowspan：跨行
-     * row：一行
-   * caption：表格标题
-   * thead：表格的头部分
-   * tbody：表格的体部分
-   * tfoot：表格的脚部分
+* table，tr，th，td。
+* table：定义表格
+  * width：宽度
+  * border：边框
+  * cellpading：定义内容和单元格之间的距离，如果设置为0，那么久没有距离，离得很近。
+  * cellspacing：定义单元格之间距离，设置为0，那么单元格之间的线重合，就会合为一条。
+  * bgcolor：背景色
+  * align：对齐方式
+* tr：定义行
+  * bgcolor：背景色
+  * align：对齐方式
+* th：定义表头单元格
+* td：定义单元格
+  * colspan：跨列
+  * rowspan：跨行
+  * row：一行
+* caption：表格标题
+* thead：表格的头部分
+* tbody：表格的体部分
+* tfoot：表格的脚部分
 
-# 第三章 HTML标签
+## 2.8 表单
 
-## 3.1 表单标签
-
-<!--P588-->
-
-概念：用于采集用户输入的数据的。用于和服务器进行交互。
-
-`form`：用于定义表单。可以定义一个范围，范围代表采集用户数据的范围。
+概念：用于采集用户输入的数据的。用于和服务器进行交互。`form`：用于定义表单。可以定义一个范围，范围代表采集用户数据的范围。
 
 有两种属性：
 
@@ -277,17 +255,13 @@ HTML5中为了提高程序的可读性能，提供了一些标签。
       3. 安全。
   * 表单项中的数据要想要被提交：必须指定name的属性。
 
-## 3.2 表单项标签
-
-<!--P589-->
-
-### label
+**label**
 
 指定输入项的文字描述信息，包裹住框前面的文字。
 
 label的for属性一般会和input的id属性值想对应。如果对应，点击label标签包裹的文字，则光标聚集到框里面。
 
-### input
+**input**
 
 可以通过type属性值，改变元素展示的样式
 
@@ -304,18 +278,9 @@ label的for属性一般会和input的id属性值想对应。如果对应，点�
 * value属性：
   * 值可以是任意东西，提交的时候会提交值
 
+# 第三章 XML快速入门
 
-
-
-
-# 第一章 XML快速入门
-
-XML：Extensible Markup Language 可扩展标记语言。可扩展：标签都是自定义的。
-
-XML功能：存储数据
-
-1. 配置文件
-2. 在网络中传输
+XML（Extensible Markup Language）： 可扩展（标签都是自定义的）标记语言。XML功能是存储数据，可以作为配置文件，也可以在网络中传输。
 
 XML与HTML的区别
 
@@ -323,51 +288,7 @@ XML与HTML的区别
 2. XML的语法严格，HTML语法松散。
 3. XML是存储数据的，HTML是展示数据的。
 
-## 1.1 快速入门
-
-```xml
-<?xml version = "1.0"?>
-<users>
-	<user id = "1">
-		<name>zhangsan</name>
-		<age>23</age>
-		<gender>male</gender>
-	</user>
-	
-	<user id = "2">	
-		<name>lisi</name>
-		<age>24</age>
-		<gender>male</gender>
-	</user>
-</users>
-```
-
-XML基本语法如下：
-
-1. xml文档后缀名称为：`.xml`
-2. xml第一行必须定义为文档声明，不能是空格或者换行
-3. xml文档中有且仅有一个根标签
-4. 属性值必须使用引号(单引号，双引号都可以)引起来
-5. 标签必须正确关闭，`<user></user>`或者`<br/>`
-6. xml标签名称区分大小写
-
-## 1.2 XML组成部分
-
-```xml
-<?xml version = "1.0" encoding = "gbk" standalone = "yes"?>
-```
-
-属性列表
-
-* version：版本号，必须的属性
-* encoding：编码方式。告知解析引擎当前文档使用的字符集，默认值为ISO-8859-1
-* standalone：是否独立    yes：不依赖其他文件     no：依赖其他文件
-
-结合CSS指令：
-
-```xml
-<?xml-stylesheet type = "text/css" href = "a.css"?>
-```
+## 3.1 快速入门
 
 标签是自定义的，规则如下：
 
@@ -376,155 +297,278 @@ XML基本语法如下：
 * 名称不能以字母XML开始
 * 名称不能包含空格
 
-属性：id值唯一
+```xml
+<!-- xml文档后缀为.xml，另外第一行必须为文档声明，不饿能是空格、换行、注释。所以该注释也不能在第一行出现 -->
+<?xml version="1.0"?>
+<!-- xml文档中有且仅有一个根标签 -->
+<users>
+    <!-- 属性值必须使用引号(单引号，双引号都可以)引起来 -->
+    <user id="1">
+        <name>zhangsan</name>
+        <!-- 严格区分大小写 -->
+        <Name>zhangsan111</Name>
+        <age>23</age>
+        <gender>male</gender>
+        <!-- 自闭和标签 -->
+        <falg value="true"/>
+    </user>
+
+    <user id="2">	
+        <name>lisi</name>
+        <!-- 严格区分大小写 -->
+        <Name>lisi111</Name>
+        <age>24</age>
+        <gender>male</gender>
+        <!-- 自闭和标签 -->
+        <falg value="false"/>
+    </user>
+</users>
+```
+
+```xml
+<!-- mybatis-config.xml文件 -->
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!--设置连接数据库的环境-->
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <!-- MySQL8驱动为com.mysql.cj.jdbc.Driver，之前的是com.mysql.jdbc.Driver -->
+                <property name="driver" value="com.mysql.cj.jdbc.Driver"/>
+                <!--打开MySql，创建一个数据库MyBatis-->
+                <property name="url" value="jdbc:mysql://localhost:3306/MyBatis"/>
+                <property name="username" value="root"/>
+                <property name="password" value="root"/>
+            </dataSource>
+        </environment>
+    </environments>
+</configuration>
+```
+
+```xml
+<!-- UserDao.xml -->
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.linxuan.mybatis.mapper.UserMapper">
+    <!--int insertUser();-->
+    <insert id="insertUser">
+        insert into tb_user values(null,'张三','123',23,'男', '12345@qq.com')
+    </insert>
+</mapper>
+```
+
+```xml
+<!-- applicationContext.xml文件 -->
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- bean标签表示配置bean，id属性表示给bean起名字(ID唯一)，class属性表示给bean定义类型	-->
+    <bean id="bookDao" class="com.linxuan.dao.impl.BookDaoImpl"/>
+    <bean id="bookService" class="com.linxuan.service.impl.BookServiceImpl">
+        <!-- 配置service与dao的关系 -->
+        <!-- property配置当前bean的属性，name表示配置哪一个具体的属性，ref表示参照哪一个bean注入 -->
+        <property name="bookDao" ref="bookDao"/>
+    </bean>
+</beans>
+```
+
+## 3.2 XML组成部分
+
+```xml
+<?xml version="1.0" encoding="gbk" standalone="yes"?>
+```
+
+属性列表
+
+* version：版本号，必须的属性。
+* encoding：编码方式。告知解析引擎当前文档使用的字符集，默认值为ISO-8859-1。
+* standalone：是否独立。 yes代表不依赖其他文件，no代表依赖其他文件。
+
+结合CSS指令：
+
+```xml
+<?xml-stylesheet type="text/css" href="a.css"?>
+```
 
 CDATA区：在该区域中的数据会被原样展示。格式：`<![CDATA[ 数据 ]]>`
 
-## 1.3 约束
+## 3.3 约束XML文档
 
-约束：规定XML文档的书写规则。约束文档都是框架编写者编写的，是我们程序员使用的。
+约束是规定XML文档的书写规则。约束文档都是框架编写者编写的，是我们程序员使用的。框架编写者编写一个框架后，不知道我们的XML都会定义什么标签，所以他需要限制我们定义标签的能力，所以编写了XML约束文档。
 
-框架编写者编写一个框架后，不知道我们的XML都会定义什么标签，所以他需要限制我们定义标签的能力，所以编写了XML约束文档。
+约束文档一共有两种：DTD 一种简单的约束技术、Schema 一种复杂的约束技术。
 
-约束文档一共有两种：
-
-1. DTD：一种简单的约束技术
-2. Schema：一种复杂的约束技术。
-
-### 1.3.1 DTD
+### 3.3.1 DTD
 
 `demo.dtd`基本内容如下：
 
 ```xml-dtd
 <!-- 
-	Element 元素的意思来定义标签
-	ATTLIST 来定义属性
-	这些和正则表达式一样 *代表出现0次或者多次 +代表出现一次或者多次 ?代表出现0次或者一次
-		如果没有加，那么就代表只能出现一次
-	#PCDATA 字符串
-	#REQUIRED 必须出现
+Element 元素的意思来定义标签
+ATTLIST 来定义属性
+这些和正则表达式一样 *代表出现0次或者多次 +代表出现一次或者多次 ?代表出现0次或者一次
+
+#PCDATA 字符串
+#REQUIRED 必须出现
 -->
-<!ELEMENT students (student*)>		<!--声明了一个标签，标签名称为students，students标签里面放student子标签 *代表0次或者多次-->
-<!ELEMENT student (name, age, sex)>	<!--声明了一个student标签，里面能出现name, age, sex标签，并且顺序不能够出错 只能够出现一次-->
+<!--声明了一个标签，名称为students，该标签里面放student子标签 *代表0次或者多次-->
+<!-- *代表出现0次或者多次 +代表出现一次或者多次 ?代表出现0次或者一次。如果没有加，那么就代表只能出现一次-->
+<!ELEMENT students (student*)>
+<!--声明了一个student标签，里面能出现name, age, sex标签，并且顺序不能够出错 只能够出现一次-->
+<!ELEMENT student (name, age, sex)>	
+<!-- name标签内容为字符串 -->
 <!ELEMENT name (#PCDATA)>
 <!ELEMENT age (#PCDATA)>
 <!ELEMENT sex (#PCDATA)>
-<!ATTLIST student number ID #REQUIRED>	<!--声明student标签有属性，属性名字为number，属性类型为ID，ID表示唯一，也就是该属性唯一-->
+<!-- 声明student标签有属性，属性名字为number，属性类型为ID，ID表示唯一，也就是该属性唯一 -->
+<!-- 格式为：<!ATTLIST 元素名称 [属性名 属性类型 [约束] [缺省值]]+> -->
+<!ATTLIST student number ID #REQUIRED>	
 ```
 
 得到了DTD约束文档，那么我们就需要按照约束文档来定义XML配置文件，而第一步我们首先需要将DTD约束文档给导入到XML文档中，这样XML配置文件才知道有什么样的规则。
 
-而DTD文档导入又有多种情况：
+而DTD文档导入又有多种情况：内部dtd、外部dtd。
 
-* 内部dtd：将约束规则定义在XML文档中。
+**内部dtd**
 
-  ```xml
-  <?xml version="1.0" encoding="utf-8" ?>
-  <!--<!DOCTYPE students SYSTEM "demo.dtd">-->
-  <!DOCTYPE students [
-  		<!ELEMENT students (student*)>
-  		<!ELEMENT student (name, age, sex)>
-  		<!ELEMENT name (#PCDATA)>
-  		<!ELEMENT age (#PCDATA)>
-  		<!ELEMENT sex (#PCDATA)>
-  		<!ATTLIST student number ID #REQUIRED>
-  		]>
-  ```
-
-  将约束规则写到`[]`里面。`students`代表的是根标签名称。`!DOCTYPE`是必写的。
-
-* 外部dtd：将约束的规则定义在外部的dtd文件中。
-
-  而这种情况又分为两类：
-
-  1. 本地dtd：dtd文档在电脑上面。这种情况在XML文件写入下面代码即可：
-
-     ```xml
-     <!DOCTYPE 根标签名称 SYSTEM "dtd文件位置">
-     <!--<!DOCTYPE students SYSTEM "demo.dtd">-->
-     ```
-
-  2. 网络dtd：dtd文档在互联网上面存储。这种情况在XML文件写入下面代码即可：
-
-     ```
-     <!DOCTYPE 根标签名称 PUBLIC "dtd文件名称" "dtd文件的位置URL">
-     ```
-
-     ```jsp
-     <!--这是一个jsp文档里面的-->
-     <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-     ```
-
-### 1.3.2 Schema
-
-`Schema`，即`XML Schema`，`XSD (XML Schema Definition)`是W3C于2001年5月发布的推荐标准，指出如何形式描述`XML`文档的元素。`XSD`是许多`XML Schema` 语言中的一支。`XSD`是首先分离于`XML`本身的`schema`语言，故获取W3C的推荐地位。
-
-像所有`XML Schema` 语言一样，`XSD`用来描述一组规则──一个XML文件必须遵守这些规则，才能根据该`schema`合法（Valid）。`Schema`约束文档的后缀名称为：`xsd`。
-
-`demo.xsd`基本内容如下：
+内部dtd：将约束规则定义在XML文档中。
 
 ```xml
-<!--
-	Element 		元素的意思来定义标签
-	complexType 	 组合类型
-	simpleType		简单类型
-	type			定义属性
-	sequence 		按照顺序出现
-	minOccurs 		最小出现
-	maxOccurs 		最大出现
-	unbounded		不限
-	attribute		属性
-	required		必须
-	enumeration		枚举
-	minInclusive	最小值
-	maxInclusive	最大值
-	pattern			组成格式
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE students [
+		<!ELEMENT students (student*)>
+		<!ELEMENT student (name, age, sex)>
+		<!ELEMENT name (#PCDATA)>
+		<!ELEMENT age (#PCDATA)>
+		<!ELEMENT sex (#PCDATA)>
+		<!ATTLIST student number ID #REQUIRED>
+		]>
+```
 
--->
+将约束规则写到`[]`里面。`students`代表的是根标签名称。`!DOCTYPE`是必写的。
 
-<?xml version = "1.0"?>
-<xsd:schema xmlns = "http://www.itcast.cn/xml"
-		xmlns:xsd = "http://www.w3.org/2001/XMLSchema"
-		targetNamespace = "http://www.itcast.cn/xml" elementFormDefault = "qualified">
-    
-	<xsd:element name = "students" type = "studentsType"/>	<!--自定义标签，定义类型，因为是自定义的类型，下面需要-->
-	<xsd:complexType name = "studentsType">
-		<xsd:sequence>
-			<xsd:element name = "student" type = "studentType" minOccurs = "0" maxOccurs = "unbounded"/>
-		</xsd:sequence>
-	</xsd:complexType>
-	<xsd:complexType name = "studentType">
-		<xsd:sequence>
-			<xsd:element name = "name" type = "xsd:string"/>
-			<xsd:element name = "age" type = "ageType"/>
-			<xsd:element name = "sex" type = "sexType"/>
-		</xsd:sequence>
-		<xsd:attribute name = "number" type = "numberType" use = "required"/>
-	</xsd:complexType>
-	<xsd:simpleType name = "sexType">
-		<xsd:restriction base = "xsd:string">
-			<xsd:enumeration value = "male"/>
-			<xsd:enumeration value = "female"/>
-		</xsd:restriction>
-	</xsd:simpleType>
-	<xsd:simpleType name = "ageType">
-		<xsd:restriction base = "xsd:integer">
-			<xsd:minInclusive value = "0"/>
-			<xsd:maxInclusive value = "256"/>
-		</xsd:restriction>
-	</xsd:simpleType>
-	<xsd:simpleType name = "numberType">
-		<xsd:restriction base = "xsd:string">
-             <!--student标签number的值需要是heima+任意四位数字-->
-			<xsd:pattern value = "heima_\d{4}"/>
-		</xsd:restriction>
-	</xsd:simpleType>
+**外部dtd**
+
+外部dtd：将约束的规则定义在外部的dtd文件中。
+
+而这种情况又分为两类：
+
+1. 本地dtd：dtd文档在电脑上面。这种情况在XML文件写入下面代码即可：
+
+   ```xml
+   <!DOCTYPE 根标签名称 SYSTEM "dtd文件位置">
+   <!--<!DOCTYPE students SYSTEM "demo.dtd">-->
+   ```
+
+2. 网络dtd：dtd文档在互联网上面存储。这种情况在XML文件写入下面代码即可：
+
+   ```
+   <!DOCTYPE 根标签名称 PUBLIC "dtd文件名称" "dtd文件的位置URL">
+   ```
+
+   ```jsp
+   <!--这是一个jsp文档里面的-->
+   <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+   ```
+
+### 3.3.2 XML Schema
+
+XSD (XML Schema Definition)是W3C于2001年5月发布的推荐标准，指出如何形式描述`XML`文档的元素。`XSD`是许多XML Schema 语言中的一支。
+
+像所有XML Schema 语言一样，`XSD`用来描述一组规则──一个XML文件必须遵守这些规则，才能根据该`schema`合法。XML Schema以XML语言为基础，也可以说XML Schema自身就是XML的一种应用。`Schema`约束文档的后缀名称为：`xsd`。
+
+```xml
+<!-- student.xsd文件 -->
+<?xml version="1.0"?>
+<!-- 第一行xmlns:xsd：文件中用的元素和数据类型来自该命名空间。同时规定这些元素和数据类型应该使用前缀 xsd: -->
+<!-- 第二行：显示在这个xsd文件中定义的标签来自哪一个命名空间，一般命名规则为：http://公司域名/xsd文件名 -->
+<!-- 第三行：默认的命名规则，一般和targetNamespace相同。 -->
+<!-- 第四行：任何 XML 实例文档所使用的且在此 schema 中声明过的元素必须被命名空间限定。 -->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://www.springframework.org/schema/beans" 
+            xmlns="http://www.springframework.org/schema/beans"
+            elementFormDefault="qualified">
+
+    <!-- 自定义标签，名称为students，类型为studentsType -->
+    <xsd:element name="students" type="studentsType"/>
+    <!-- complexType定义studentsType类型-->
+    <xsd:complexType name="studentsType">
+        <!-- sequence：规定标签中子元素的顺序。 -->
+        <xsd:sequence>
+            <!-- 按顺序出现student标签，类型为studentType，最少一次，最多不限量 -->
+            <xsd:element name="student" type="studentType" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <!-- 定义studentType类型 -->
+    <xsd:complexType name="studentType">
+        <!-- sequence：规定标签中子元素的顺序。 -->
+        <xsd:sequence>
+            <!-- name标签，类型为String类型 -->
+            <xsd:element name="name" type="xsd:string"/>
+            <xsd:element name="age" type="ageType"/>
+            <xsd:element name="sex" type="sexType"/>
+        </xsd:sequence>
+        <!-- 规定具有number属性，类型为numberType， -->
+        <xsd:attribute name="number" type="numberType" use="required"/>
+    </xsd:complexType>
+    <!-- 定义一个简单的类型，名称为sexType -->
+    <xsd:simpleType name="sexType">
+        <!-- restriction：定义一个约束条件。基本的数据类型为String -->
+        <xsd:restriction base="xsd:string">
+            <!-- 枚举类型，值为male和female -->
+            <xsd:enumeration value="male"/>
+            <xsd:enumeration value="female"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <!-- 规定age标签中数据类型为integer，最小值为0，最大值为256 -->
+    <xsd:simpleType name="ageType">
+        <xsd:restriction base="xsd:integer">
+            <xsd:minInclusive value="0"/>
+            <xsd:maxInclusive value="256"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="numberType">
+        <xsd:restriction base="xsd:string">
+            <!-- student标签number的值需要是linxuan+任意四位数字。使用的是正则表达式-->
+            <xsd:pattern value="linxuan_\d{4}"/>
+        </xsd:restriction>
+    </xsd:simpleType>
 </xsd:schema>
 ```
 
-## 1.4 解析
+```xml
+<?xml version="1.0"?>
+<!-- 第一行xmlns：规定默认命名空间的声明。该文档中使用的元素被声明于该命名空间，和xsd中配置的xmln相对应。 -->
+<!-- 第二行：表示遵守w3的xml schema规范，xml解析器解析xml文件时，就明白按照什么规范解析了。 -->
+<!-- 第三、四行：由URI引用对（可以多个）组成，空白符分隔。分别为命名空间和xsd文件位置。 -->
+<students xmlns="http://www.linxuan.com/xml"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.linxuan.com/xml student.xsd">
 
-解析：操作XML文档，将文档当中的数据读取到内存中。
+    <student number="linxuan_0001">
+        <name>linxuan</name>
+        <age>11</age>
+        <sex>male</sex>
+    </student>
+    <student number="linxuan_0002">
+        <name>chenmuyang</name>
+        <age>12</age>
+        <sex>male</sex>
+    </student>
+</students>
+```
+
+## 3.4 解析XML文档
+
+解析XML文档：操作XML文档，将文档当中的数据读取到内存中。
 
 操作XML文档有两种方式：
 
@@ -533,16 +577,8 @@ CDATA区：在该区域中的数据会被原样展示。格式：`<![CDATA[ 数�
 
 解析XML文档也有两种方式：
 
-1. DOM：将标记语言文档一次性加载进内存，在内存中形成一颗DOM数。
-   * 优点：操作方便，可以对文档进行CRUD的所有操作
-   * 缺点：占内存
-   * 通常由于电脑端。
-2. SAX：逐行读取，基于事件驱动
-   * 优点：不占内存
-   * 缺点：只能读取，不能增删改
-   * 用于手机端，因为手机内存小。
-
-### 1.4.1 解析器Jsoup
+1. DOM：将标记语言文档一次性加载进内存，在内存中形成一颗DOM树。这种方式操作方便，可以对文档进行CRUD的所有操作。但是占内存，通常由于电脑端。
+2. SAX：逐行读取，基于事件驱动。不占内存，但是只能读取，不能增删改。通常用于手机端，因为手机内存小。
 
 XML常见的解析器：
 
@@ -551,27 +587,40 @@ XML常见的解析器：
 3. Jsoup：jsoup 是一款Java 的HTML解析器，可直接解析某个URL地址、HTML文本内容。它提供了一套非常省力的API，可通过DOM，CSS以及类似于jQuery的操作方法来取出和操作数据。 
 4. PULL：Android操作系统内置的解析器，sax方式。
 
-接下来讲述一下Jsoup：
+### 3.4.1 解析器Jsoup
 
-- `Demo01Jsoup.class` 获取字节码文件
-- `Demo01Jsoup.class.getClassLoader()` 获取类加载器
-- `Demo01Jsoup.class.getClassLoader().getResource("demo.xml")` 找到资源文件，返回路径
-- `Demo01Jsoup.class.getClassLoader().getResource("demo.xml").getPath` 路径的字符串表示形式
+Jsoup：jsoup 是一款Java 的HTML解析器，可直接解析某个URL地址、HTML文本内容。它提供了一套非常省力的API，可通过DOM，CSS以及类似于jQuery的操作方法来取出和操作数据。 
+
+Jsoup：工具类，可以解析HTML或者XML文档，返回Document。对于这个工具类，我们只需要学习parse方法：解析HMTL文档或者XML文档，返回Document。
+
+```java
+public static Document parse(File file, @Nullable String charsetName) throws IOException {
+    return DataUtil.load(file, charsetName, file.getAbsolutePath());
+}
+```
+
+* `parse(File file, @Nullable String charsetName)`：解析XML指定字符串格式。
+
+* `parse(String html)`：解析XML或者HTML字符串。
+
+* `parse(URL url, int timeoutMillis)`：通过网络路径获取指定的HTML或者XML的文档对象`timeoutMillis`：超时时间
+
+```xml
+<dependency>
+    <groupId>org.jsoup</groupId>
+    <artifactId>jsoup</artifactId>
+    <version>1.15.4</version>
+</dependency>
+```
 
 代码如下：
 
 ```java
-public class Demo01Jsoup {
+public class Demo01 {
     public static void main(String[] args) throws IOException {
-        /*
-            Jsoup 解析器
-            Demo01Jsoup.class 获取字节码文件
-            Demo01Jsoup.class.getClassLoader() 获取类加载器
-            Demo01Jsoup.class.getClassLoader().getResource("demo.xml") 找到资源文件，返回路径
-            Demo01Jsoup.class.getClassLoader().getResource("demo.xml").getPath 路径的字符串表示形式
-         */
-        // 获取demo.xml文档路径
-        String path = Demo01Jsoup.class.getClassLoader().getResource("demo.xml").getPath();
+        // 获取字节码文件，获取类加载器，获取资源文件路径，返回资源路径的字符串表示形式
+        // 如果是Maven工程xml文件放到resources目录下面，这样会将编译后的该文件放到classes目录下面方便读取。
+        String path = Demo01.class.getClassLoader().getResource("student.xml").getPath();
         // 解析XML文档，加载文档进内存，获取dom树。根据XML文档来获取Document对象
         Document document = Jsoup.parse(new File(path), "utf-8");
         // 现在已经获取dom树了，可以对XML进行CRUD了。
@@ -588,179 +637,99 @@ public class Demo01Jsoup {
 }
 ```
 
-Jsoup：工具类，可以解析HTML或者XML文档，返回Document
-
-对于这个工具类，我们只需要学习parse方法。parse方法作用：解析HMTL文档或者XML文档，返回Document。
-
-```java
-public static Document parse(File file, @Nullable String charsetName) throws IOException {
-    return DataUtil.load(file, charsetName, file.getAbsolutePath());
-}
-```
-
-* `parse(File file, @Nullable String charsetName)`：解析XML指定字符串格式。
-
-* `parse(String html)`：解析XML或者HTML字符串。
-
-* `parse(URL url, int timeoutMillis)`：通过网络路径获取指定的HTML或者XML的文档对象`timeoutMillis`：超时时间
-
-### 1.4.3 Document
+### 3.4.3 Document
 
 Document：文档对象。代表内存中的dom树。
 
 * `getElementById(String id)`：根据id属性值获取。
-
 * `getElementsByTag(String tagName)`：根据标签名称获取元素对象集合。
-
-  ```java
-  public class Demo01Jsoup {
-      public static void main(String[] args) throws IOException {
-          // 获取demo.xml文档路径
-          String path = Demo01Jsoup.class.getClassLoader().getResource("demo.xml").getPath();
-          // 解析XML文档，加载文档进内存，获取dom树。根据XML文档来获取Document对象
-          Document document = Jsoup.parse(new File(path), "utf-8");
-          // 现在已经获取dom树了，可以对XML进行CRUD了。
-          // 获取元素对象了，获取所有的student对象
-          Elements elements = document.getElementsByTag("user");
-          System.out.println(elements);
-      }
-  }
-  ```
-
 * `getElementsByAttribute(String key)`：根据属性名称获取元素对象集合。
-
 * `getElementsByAttributeValue(String key, String value)`：根据对应的属性名称和属性值获取元素对象集合。
 
-
-### 1.4.4 Element
-
-Elements：元素Element对象的集合。可以当做`ArrayList<Element>`来使用。Element：元素对象
-
-获取元素对象
-
-- `getElementById(String id)`：根据id属性值获取。
-
-- `getElementsByTag(String tagName)`：根据标签名称获取元素对象集合。
-
-- `getElementsByAttribute(String key)`：根据属性名称获取元素对象集合。
-
-- `getElementsByAttributeValue(String key, String value)`：根据对应的属性名称和属性值获取元素对象集合。
-
-  ```java
-  public class Demo02Jsoup {
-      public static void main(String[] args) throws IOException {
-          // 获取dom树
-          String path = Demo02Jsoup.class.getClassLoader().getResource("demo.xml").getPath();
-          Document document = Jsoup.parse(new File(path), "utf-8");
-  
-          // 通过Document对象获取name标签，获取所有的name标签，可以获取两个
-          Elements elements = document.getElementsByTag("name");
-          System.out.println(elements.size());
-          // 通过Element对象获取子标签对象
-          Element elementStudent = document.getElementsByTag("user").get(0);
-          Elements elementName = elementStudent.getElementsByTag("name");
-          System.out.println(elementName.size());
-      }
-  }
-  ```
-
-获取属性值
-
-* `String attr(String key)`：根据属性名称获取属性值
-
-  ```java
-  public class Demo02Jsoup {
-      public static void main(String[] args) throws IOException {
-          // 获取dom树
-          String path = Demo02Jsoup.class.getClassLoader().getResource("demo.xml").getPath();
-          Document document = Jsoup.parse(new File(path), "utf-8");
-  
-          // 通过Document对象获取name标签，获取第一个user标签
-          Element elementUser = document.getElementsByTag("user").get(0);
-          String id = elementUser.attr("id");
-          System.out.println(id);
-      }
-  }
-  ```
-
-获取文本内容
-
-* `String text()`：获取文本内容
-
-* `String html()`：获取标签体的所有内容，包括子标签的字符串内容
-
-  ```java
-  public class Demo02Jsoup {
-      public static void main(String[] args) throws IOException {
-          // 获取dom树
-          String path = Demo02Jsoup.class.getClassLoader().getResource("demo.xml").getPath();
-          Document document = Jsoup.parse(new File(path), "utf-8");
-  
-          // 通过Document对象获取name标签，获取第一个name标签
-          Element elementName = document.getElementsByTag("name").get(0);
-          // 将标签内部的"文本"以字符串打印出来
-          String text = elementName.text();
-          // 将标签内部的"标签以及文本"以字符串打印出来
-          String html = elementName.html();
-          System.out.println(text);
-          System.out.println(html);
-      }
-  }
-  ```
-
-### 1.4.5 Node
-
-Node：节点对象
-
-Document和Element的父类。
-
-### 1.4.6 快捷查询方式
-
-一共有两种：selector选择器、XPath。
-
-**selector**
-
 ```java
-public class Demo02Jsoup {
+public class Demo01Jsoup {
     public static void main(String[] args) throws IOException {
-        // 获取dom树
-        String path = Demo02Jsoup.class.getClassLoader().getResource("demo.xml").getPath();
-        Document document = Jsoup.parse(new File(path), "utf-8");
-
-        Elements elements = document.select("name");
+        // 获取demo.xml文档路径
+        String path=Demo01Jsoup.class.getClassLoader().getResource("demo.xml").getPath();
+        // 解析XML文档，加载文档进内存，获取dom树。根据XML文档来获取Document对象
+        Document document=Jsoup.parse(new File(path), "utf-8");
+        // 现在已经获取dom树了，可以对XML进行CRUD了。
+        // 获取元素对象了，获取所有的student对象
+        Elements elements=document.getElementsByTag("user");
         System.out.println(elements);
     }
 }
 ```
 
-有文档可以查看，查询规则到底是什么。
 
-文档路径：`file:///E:/Jsoup/jsoup/jsoup-1.11.2-javadoc/overview-summary.html`，在`org.jsoup.nodes`包下面的`Element`类下面。找到`select`方法，点击`select`跳转到详情页面。点击查看更多`Selector`，就可以看到了。
+### 3.4.4 Element
 
-**XPath**
+Elements：元素Element对象的集合。可以当做`ArrayList<Element>`来使用。Element：元素对象
 
-XPath即为XML路径语言（XML Path Language），它是一种用来确定XML文档中某部分位置的语言。
+**获取元素对象**
 
-Xpath是一个独立的东西，所以需要导包，在`E:\Jsoup\jsoup`里面，`JsoupXpath-0.3.2.jar`文件。
+- `Document.getElementById(String id)`：根据id属性值获取。
+- `Document.getElementsByTag(String tagName)`：根据标签名称获取元素对象集合。
+- `Document.getElementsByAttribute(String key)`：根据属性名称获取元素对象集合。
+- `Document.getElementsByAttributeValue(String key, String value)`：根据对应的属性名称和属性值获取元素对象集合。
 
 ```java
-public class Demo03Jsoup {
-    public static void main(String[] args) throws IOException, XpathSyntaxErrorException {
+public class Demo02Jsoup {
+    public static void main(String[] args) throws IOException {
         // 获取dom树
-        String path = Demo03Jsoup.class.getClassLoader().getResource("demo.xml").getPath();
-        Document document = Jsoup.parse(new File(path), "utf-8");
+        String path=Demo02Jsoup.class.getClassLoader().getResource("demo.xml").getPath();
+        Document document=Jsoup.parse(new File(path), "utf-8");
 
-        // 创建document对象，创建JXDocument对象
-        JXDocument jxDocument = new JXDocument(document);
-        // 结合XPath语法进行查询
-        // 查询所有的user标签
-        List<JXNode> jxNodes = jxDocument.selN("//user");
-        for (JXNode jxNode : jxNodes) {
-            System.out.println(jxNode);
-        }
+        // 通过Document对象获取name标签，获取所有的name标签，可以获取两个
+        Elements elements=document.getElementsByTag("name");
+        System.out.println(elements.size());
+        // 通过Element对象获取子标签对象
+        Element elementStudent=document.getElementsByTag("user").get(0);
+        Elements elementName=elementStudent.getElementsByTag("name");
+        System.out.println(elementName.size());
     }
 }
 ```
 
-`//user`这是特殊的规则，选取什么然后在里面输入什么就可以了。
+**获取属性值**
 
+* `String attr(String key)`：根据属性名称获取属性值
+
+```java
+public class Demo02Jsoup {
+    public static void main(String[] args) throws IOException {
+        // 获取dom树
+        String path=Demo02Jsoup.class.getClassLoader().getResource("demo.xml").getPath();
+        Document document=Jsoup.parse(new File(path), "utf-8");
+
+        // 通过Document对象获取name标签，获取第一个user标签
+        Element elementUser=document.getElementsByTag("user").get(0);
+        String id=elementUser.attr("id");
+        System.out.println(id);
+    }
+}
+```
+
+**获取文本内容**
+
+* `String text()`：获取文本内容
+* `String html()`：获取标签体的所有内容，包括子标签的字符串内容
+
+```java
+public class Demo02Jsoup {
+    public static void main(String[] args) throws IOException {
+        // 获取dom树
+        String path=Demo02Jsoup.class.getClassLoader().getResource("demo.xml").getPath();
+        Document document=Jsoup.parse(new File(path), "utf-8");
+
+        // 通过Document对象获取name标签，获取第一个name标签
+        Element elementName=document.getElementsByTag("name").get(0);
+        // 将标签内部的"文本"以字符串打印出来
+        String text=elementName.text();
+        // 将标签内部的"标签以及文本"以字符串打印出来
+        String html=elementName.html();
+        System.out.println(text);
+        System.out.println(html);
+    }
+}
+```

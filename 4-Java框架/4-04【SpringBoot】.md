@@ -977,6 +977,8 @@ dependencies {
 CREATE DATABASE IF NOT EXISTS linxuan CHARACTER SET utf8;
 # 使用linxuan数据库
 USE linxuan;
+# 如果存在该表那么就删除
+DROP TABLE IF EXISTS tb_book;
 # 如果不存在tb_book表那么就创建
 CREATE TABLE IF NOT EXISTS tb_book(
     id int primary key auto_increment,
@@ -1111,6 +1113,8 @@ public class BookDaoTest {
 CREATE DATABASE IF NOT EXISTS linxuan CHARACTER SET utf8;
 # 使用linxuan数据库
 USE linxuan;
+# 如果存在该表那么就删除
+DROP TABLE IF EXISTS tb_book;
 # 如果不存在tb_book表那么就创建
 CREATE TABLE IF NOT EXISTS tb_book(
     id int primary key auto_increment,
