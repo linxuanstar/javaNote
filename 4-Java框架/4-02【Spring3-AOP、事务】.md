@@ -106,7 +106,6 @@ public class MyAdvice {
     @Pointcut("execution(void com.linxuan.dao.BookDao.update())")
     private void pt(){}
     
-    
     // 制作切面，切面就是用来描述通知和切入点之间的关系。@Before代表该通知会在切入点方法执行之前执行
     @Before("pt()")
     // 定义通知method，通知就是将共性功能抽取出来后形成的方法，方法名没有要求
@@ -1852,7 +1851,7 @@ public class JdbcConfig {
         return ds;
     }
 
-    //配置事务管理器，mybatis使用的是jdbc事务
+    // 配置事务管理器，mybatis使用的是jdbc事务
     @Bean
     public PlatformTransactionManager transactionManager(DataSource dataSource) {
         DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();

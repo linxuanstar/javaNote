@@ -171,6 +171,8 @@ redis-cli shutdown
 
 # 第二章 命令操作
 
+<!-- string、hash、list、set、sortedset -->
+
 `redis`存储的是`key,value`格式的数据，其中`key`都是字符串，`value`有5种不同的数据结构：
 
 1. 字符串类型 string

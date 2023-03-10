@@ -299,7 +299,7 @@ public class Demo02 {
 
 上面的代码没有任何问题，但是只需要修改一下x的值，那么就有问题了：`x`报错了。
 
-![](..\图片\1-13【Lambda、Stream流】\7-1Lambda特性.png)
+<img src="..\图片\1-13【Lambda、Stream流】\7-1Lambda特性.png" />
 
 # 第二章 函数式接口【jdk1.8】
 
@@ -1621,7 +1621,7 @@ public class Demo03Stream {
 
 当需要对多个元素进行操作的时候，考虑到性能及便利性，我们应该首先拼好一个模型步骤方案，然后按照方案去执行它。
 
-![](..\图片\1-13【Lambda、Stream流】\1.png)
+<img src="..\图片\1-13【Lambda、Stream流】\1.png" />
 
 这张图展示了过滤、映射、跳过、计数等多步操作，这是一种集合元素的处理方案，而方案就是一种“函数模型”。图中每一个方框都是一个“流”，调用指定的方法，可以从一个流模型转换为另一个流模型。而最右侧的数字3是最终结果。
 
@@ -1686,7 +1686,7 @@ public class Demo01GetStream {
 
 ## 1.4 常用流方法
 
-![](..\图片\1-13【Lambda、Stream流】\2.png)
+<img src="..\图片\1-13【Lambda、Stream流】\2.png" />
 
 流类型很丰富，这里介绍一些常用的API。这些方法可以分为两种：
 
@@ -1728,7 +1728,7 @@ Stream<T> filter (Predicate<? super T> predicate);
 
 该接口接收一个`Predicate`函数式接口参数（可以是一个Lambda或者方法引用）作为筛选条件。
 
-![](..\图片\1-13【Lambda、Stream流】\3.png)
+<img src="..\图片\1-13【Lambda、Stream流】\3.png" />
 
 此前学过`java.util.stream.Predicate`函数式接口，其中唯一的抽象方法为：`boolean test(T t);`
 
@@ -1761,7 +1761,7 @@ Stream流属于管道流，只能被消费，使用一次。第一个Stream流�
 
 该接口需要一个Function函数式接口参数，可以将当前流中的T类型数据转换成为另一种R类型的流。
 
-![](..\图片\1-13【Lambda、Stream流】\4.png)
+<img src="..\图片\1-13【Lambda、Stream流】\4.png" />
 
 此前我们已经学习过`java.util.stream.Function`函数式接口，其中唯一的抽象方法为：`R apply(T t);`。这可以将一种T类型转换成为R类型，而这种转换的动作，就成为“映射”。
 
@@ -1822,7 +1822,7 @@ Stream<T> limit(long maxSize);
 
 参数是一个long型，如果集合当前长度大于参数则进行截取；否则不进行操作。基本使用：
 
-![](..\图片\1-13【Lambda、Stream流】\5.png)
+<img src="..\图片\1-13【Lambda、Stream流】\5.png" />
 
 ```java
 public class Demo06Stream_limit {
@@ -1848,7 +1848,7 @@ Stream<T> skip(long n);
 
 如果流的当前长度大于n，则跳过前n个；否则将会得到一个长度为0的空流。基本使用如下：
 
-![](..\图片\1-13【Lambda、Stream流】\6.png)
+<img src="..\图片\1-13【Lambda、Stream流】\6.png" />
 
 ```java
 public class Demo07Stream_skip {
@@ -1889,118 +1889,3 @@ public class Demo08Stream_concat {
 }
 ```
 
-# 第五章 并行流和串行流
-
-前面提到过，JDK1.8提供了StreamAPI，而Stream又分为两种
-
-- 并行流
-- 顺序流
-
-## 5.1 并行流和串行流
-
-并行流就是把一个内容分成多个数据块，并用不同的线程分别处理每个数据块中的流。JDK8中将并行进行了优化，我们可以很容易的对数据进行并行操作。
-
-Stream Api可以声明式的通过parallel()与sequential()在并行流和串行流(又被称作“顺序流”)之间进行切换。
-
-默认的Stream就是串行流，但其是一个单线程的执行任务
-
-## 5.2 Fork/Join框架
-
-**注意，由于Fork/Join会充分发挥CPU多核性能，因此电脑不好的朋友不要轻易运行上述代码，或者在测试时把计算的数据量调低。我的笔记本CPU型号i5-6300HQ ，直接死机了。**
-
-Fork/Join框架就是在必要的情况下，将一个大任务拆分(fork)成若干个子任务(拆到不可再拆为止)，再将一个个子任务就是并行运算，最终将值进行join汇总。
-
-并行流底层的实现就是Fork/Join框架， 使用并行流其实就是调用StreamAPI的parallel方法。
-
-![](D:\Java\笔记\图片\Java版本\并行流与串行流.png)
-
-传统的线程池虽然也能把任务进行拆分成若干子任务，借助不同线程来执行任务，但有一个问题：一旦某个子任务由于某些原因无法继续执行，那么负责执行该任务的线程将进入阻塞状态，影响了分配给该线程的其他后续任务的执行。
-
-在Fork/Join框架中情况则大不相同。如果线程A被某个子任务阻塞，A不会进入阻塞状态，而是会主动寻找尚未被执行的其它子任务(可以从自己的后续任务队列中找，也可以从其它线程的任务队列中偷)。这种模式被称作“工作窃取”模式(Working Stealing)，当执行新的任务时，线程利用Fork/join框架可以将任务拆分成更小的任务，并将小任务分配/加入到线程队列中，如果自己空闲，就会从一个随机线程的任务队列中偷一个尚未被执行的任务来运行。
-
-其实早在jdk1.7中已经有Fork/Join的实现了，下面来看看在JDK1.7中如何使用:
-
-```java
-/**
- * jdk1.7中使用Fork/Join框架
- *
- * 需要定义:
- * 1. 如何拆分
- * 2. 拆到什么程度为止
- */
-public class ForkJoinCalculate extends RecursiveTask<Long> {
-    private static final long serialVersionUID = 1212853982210556381L;
- 
-    private long start;
-    private long end;
-    //拆分的阈值，任务的最小单位是100000，拆到这个程度就不用再拆了
-    private static final long THRESHOLD = 100000;
- 
-    public ForkJoinCalculate(long start, long end){
-        this.start = start;
-        this.end = end;
-    }
- 
-    @Override
-    protected Long compute() {
-        long length = start - end;
-        if(length <= THRESHOLD){ //进行求和
-            long sum  = 0;
-            for(long i = start; i <= end; i++){
-                sum += i;
-            }
-            return sum;
-        }else{ //进行拆分
-            long middle = (start + end) / 2;
- 
-            ForkJoinCalculate left = new ForkJoinCalculate(start, middle);
-            left.fork(); //拆分子任务，并将任务压入线程队列
- 
-            ForkJoinCalculate right = new ForkJoinCalculate(middle + 1, end);
-            right.fork();
- 
-            //结果汇总
-            return left.join() + right.join();
-        }
-    }
-}
-```
-
-```java
-/**
- * 使用Fork/join求和
- */
-@org.junit.Test
-public void test2(){
-	Instant start = Instant.now();
- 
-	//需要ForkJoin线程池的支持
-	ForkJoinPool pool = new ForkJoinPool();
-	ForkJoinCalculate fork = new ForkJoinCalculate(0, 1000000000L);
-	Long sum = pool.invoke(fork);
-	System.out.println(sum);
- 
-	Instant end = Instant.now();
- 
-	System.out.println(Duration.between(start, end).toMillis());
-}
-```
-
-jdk1.8的写法如下：
-
-```java
-/**
- * 使用jdk1.8求和
- */
-public void test3(){
-	Instant start = Instant.now();
- 
-	Long sum = LongStream.rangeClosed(0, 1000000000L)
-			.parallel()
-			.reduce(0, Long::sum);
- 
-	Instant end = Instant.now();
- 
-	System.out.println(Duration.between(start, end).toMillis());
-}
-```

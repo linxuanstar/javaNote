@@ -450,6 +450,25 @@ Sentinel基于心跳机制监测服务状态，每隔1秒向集群的每个实�
 | s2   | 192.168.66.136 | 27002 |
 | s3   | 192.168.66.136 | 27003 |
 
+**前提**
+
+哨兵是用来监控redis的，所以需要将redis-server启动，三个都启动。启动命令：
+
+```sh
+# 第1个
+redis-server /usr/local/redis/7001/redis.conf
+# 第2个
+redis-server /usr/local/redis/7002/redis.conf
+# 第3个
+redis-server /usr/local/redis/7003/redis.conf
+```
+
+如果要一键停止，可以运行下面命令：
+
+```sh
+printf '%s\n' 7001 7002 7003 | xargs -I{} -t redis-cli -p {} shutdown
+```
+
 **准备实例和配置**
 
 要在同一台虚拟机开启3个实例，必须准备三份不同的配置文件和目录，配置文件所在目录也就是工作目录。我们创建三个文件夹，名字分别叫s1、s2、s3：
@@ -499,26 +518,79 @@ sed -i -e 's/27001/27003/g' -e 's/s1/s3/g' s3/sentinel.conf
 
 ```sh
 # 第1个
-Redis-sentinel s1/sentinel.conf
+redis-sentinel s1/sentinel.conf
 # 第2个
-Redis-sentinel s2/sentinel.conf
+redis-sentinel s2/sentinel.conf
 # 第3个
-Redis-sentinel s3/sentinel.conf
+redis-sentinel s3/sentinel.conf
+# 这里不能够一键启动三个哨兵服务，除非设置取消霸屏操作，否则打印下面语句就会直接开启一个哨兵实例，无法打开其他的哨兵实例。
+printf '%s\n' s1 s2 s3 | xargs -I{} -t redis-sentinel {}\/sentinel.conf
+```
+
+**关闭**
+
+```sh
+[root@node1 redis]# redis-cli -p 27001 shutdown
+[root@node1 redis]# redis-cli -p 27002 shutdown
+[root@node1 redis]# redis-cli -p 27003 shutdown
+```
+
+```sh
+# 一键关闭三个哨兵服务
+printf '%s\n' 27001 27002 27003 | xargs -I{} -t redis-cli -p {} shutdown
 ```
 
 **测试**
 
-尝试让master节点7001宕机，查看sentinel日志：
+尝试让master节点7001宕机，
 
-<img src="..\图片\2-10【Redis分布式缓存】/image-20210701222857997.png"/>
+```sh
+[root@node1 redis]# redis-cli -p 7001 shutdown
+[root@node1 redis]# ps -ef | grep redis
+root       1649      1  0 09:52 ?        00:00:01 redis-server 0.0.0.0:7002
+root       1660      1  0 09:52 ?        00:00:01 redis-server 0.0.0.0:7003
+root       1677   1587  0 09:53 pts/1    00:00:01 redis-sentinel *:27001 [sentinel]
+root       1759   1682  0 09:54 pts/2    00:00:01 redis-sentinel *:27002 [sentinel]
+root       1764   1720  0 09:54 pts/3    00:00:01 redis-sentinel *:27003 [sentinel]
+root       1790   1398  0 09:57 pts/0    00:00:00 grep --color=auto redis
+```
 
-查看7003的日志：
+查看sentinel日志：
 
-![image-20210701223025709](..\图片\2-10【Redis分布式缓存】/image-20210701223025709.png)
+```sh
+# sdown：主观认为端口为7001的节点已经下线
+1764:X  * +sdown master mymaster 192.168.88.151 7001
+# odown，客观认为端口为7001节点下面，因为quorum 3/2 已经达标，实锤了，就是下线了。
+1764:X  * +odown master mymaster 192.168.88.151 7001 #quorum 2/2
+# 尝试去等待一会端口为7001的节点
+1764:X  * +try-failover master mymaster 192.168.88.151 7001
+# Sentinel内部选举一个领导者（vote-for-leader投票选举一个领导者）去进行故障切换
+1764:X  * +vote-for-leader 8b0a65b211539d7a7bb224597630cdc0cdc8b5c4 1
 
-查看7002的日志：
+# 准备挑选一个slave节点作为新的master节点
+1764:X  * +failover-state-select-slave master mymaster 192.168.88.151 7001
+# 挑选了7003这个节点作为master节点
+1764:X  * +selected-slave slave  192.168.88.151 7003 @ mymaster 192.168.88.151 7001
 
-![image-20210701223131264](..\图片\2-10【Redis分布式缓存】/image-20210701223131264.png)
+# 7003节点执行slave none，成为新的master
+1764:X  * +failover-state-send-slaveof-noone slave 192.168.88.151 7003 @ mymaster 192.168.88.151 7001
+# 7003节点等待提升，在这期间让其他的slave节点执行slave of 192.168.88.151 7003。
+1764:X  * +failover-state-wait-promotion slave 192.168.88.151 7003 @ mymaster 192.168.88.151 7001
+# 7003节点正式提升为master
+1764:X  * +promoted-slave slave 192.168.88.151 7003 @ mymaster 192.168.88.151 7001
+
+# 修改下线的7001节点的配置文件，将其标记为7003节点的slave
+1764:X  * +failover-state-reconf-slaves master mymaster 192.168.88.151 7001
+# 修改7002节点的配置文件，将其标记为7003节点的slave
+1764:X  * +slave-reconf-sent slave 192.168.88.151 7002 @ mymaster 192.168.88.151 7001
+1764:X  * +slave-reconf-inprog slave 192.168.88.151 7002 @ mymaster 192.168.88.151 7001
+1764:X  * +slave-reconf-done slave 192.168.88.151 7002 @ mymaster 192.168.88.151 7001
+
+# 事件处理完毕
+1764:X  * +failover-end master mymaster 192.168.88.151 7001
+# 主从节点切换完成，7003节点变为主节点，7001节点变为从节点
+1764:X  * +switch-master mymaster 192.168.88.151 7001 192.168.88.151 7003
+```
 
 ## 3.3 RedisTemplate
 
@@ -535,8 +607,8 @@ Redis-sentinel s3/sentinel.conf
 
 ```yaml
 spring:
-  # 在配置文件application.yml中指定Redis的sentinel相关信息
-  Redis:
+  # 在配置文件application.yml中指定Redis的sentinel相关信息，不需要配置redis和jedis的其他信息。直接复制即可
+  redis:
     sentinel:
       master: mymaster
       nodes:

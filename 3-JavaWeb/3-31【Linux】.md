@@ -835,7 +835,7 @@ data  server  software
 ```sh
 # 配置环境变量
 vim /etc/profile
-# 文件添加下面内容
+# 文件添加下面内容 
 export REDIS_HOME=/usr/local/redis/redis-3.0.4
 export PATH=$PATH:$REDIS_HOME/src
 # 刷新配置
