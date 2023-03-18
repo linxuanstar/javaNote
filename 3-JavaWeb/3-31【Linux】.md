@@ -657,7 +657,7 @@ data  server  software
    如果当前系统中已经安装有MySql数据库，安装将会失败。Centos7自带mariadb，与MySql数据库冲突。
 
    ```apl
-   rpm -qa						   # 查询当前系统中安装的所有软件
+   rpm -qa 					   # 查询当前系统中安装的所有软件
    rpm -qa | grep mysql			# 查询当前系统中安装的名称带有mysql的软件
    rpm -qa | grep mariadb			# 查询当前系统中安装的名称带有mariadb的软件
    ```
@@ -714,7 +714,7 @@ data  server  software
    
    #查看生成的临时root密码
    cat  /var/log/mysqld.log
-   
+   xWoHJtz-<3gS
    2022-11-12T09:10:39.165263Z 1 [Note] A temporary password is generated for root@localhost: wrljqkrty2%Y
    ```
 
@@ -730,11 +730,11 @@ data  server  software
    yum install libncurses* -y
    ```
 
-8. 修改root密码 授权远程访问 设置开机自启动。这里Centos8的设置为root123
+8. 修改root密码 授权远程访问 设置开机自启动。这里Centos8的设置为root
 
    ```sh
    [root@node2 ~]# mysql -u root -p
-   Enter password:     #这里输入在日志中生成的临时密码
+   Enter password:     # 这里输入在日志中生成的临时密码
    Welcome to the MySQL monitor.  Commands end with ; or \g.
    Your MySQL connection id is 3
    Server version: 5.7.29
@@ -751,13 +751,14 @@ data  server  software
    
    
    #更新root密码  设置为root123
-   mysql> alter user user() identified by "root123";
+   mysql> alter user user() identified by "root";
    Query OK, 0 rows affected (0.00 sec)
    
    
    #授权
    mysql> use mysql;
-   mysql> GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root123' WITH GRANT OPTION;
+   # 这句话的意思，允许任何IP地址(上面的%就是这个意思)的电脑来访问这个MySQL Server
+   mysql> GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;
    
    # 权限刷新
    mysql> FLUSH PRIVILEGES;
