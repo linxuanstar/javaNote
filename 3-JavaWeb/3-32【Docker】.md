@@ -488,7 +488,14 @@ docker run的命令中通过 `-v` 参数挂载文件或目录到容器中：
 
 Dockerfile就是一个文本文件，其中包含一个个的指令(Instruction)，用指令来说明要执行什么操作来构建镜像。每一个指令都会形成一层Layer。
 
-![image-20210731180321133](..\图片\3-32【Docker】/image-20210731180321133.png)
+| 指令       | 说明                                     | 示例                        |
+| ---------- | ---------------------------------------- | --------------------------- |
+| FROM       | 指定基础镜像                             | FROM centos:6               |
+| ENV        | 设置环境变量，可在后面指令使用           | ENV key value               |
+| COPY       | 拷贝本地文件到镜像的指定目录             | COPY ./mysql-5.7rpm /tmp    |
+| RUN        | 执行Linux中shell命令，一般是安装过程命令 | RUN yum install gcc         |
+| EXPOSE     | 指定容器运行时监听端口，给镜像使用者看   | EXPOSE 8080                 |
+| ENTRYPOINT | 镜像中应用的启动命令，容器运行时调用     | ENTRYPOINT java -jar xx.jar |
 
 Dockerfile的第一行必须是FROM，从一个基础镜像来构建。更新详细语法说明，请参考官网文档： https://docs.docker.com/engine/reference/builder。
 
