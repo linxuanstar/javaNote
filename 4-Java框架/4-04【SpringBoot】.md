@@ -1260,7 +1260,7 @@ public class BookServiceImpl implements BookService {
 ```
 
 ```java
-// 等于@Controller + ResponseBody。设置当前控制器类为RESTful风格。该类交由Spring管理，所有方法返回值作为响应体，无需解析。
+// 等于@Controller+ResponseBody。设置类为RESTful风格，交由Spring管理，所有方法返回值作为响应体，无需解析。
 @RestController
 @RequestMapping("/books")
 public class BookController {
@@ -1322,7 +1322,26 @@ public class BookServiceTest {
 
 ## 4.4 访问页面
 
-在 `SpringBoot` 程序中是没有 `webapp` 目录的，静态资源需要放在 `resources` 下的 `static` 下。
+在 `SpringBoot` 程序中是没有 `webapp` 目录的，静态资源需要放在 `resources` 下的 `static` 下。如果不放在这些下面那么就会导致无法访问页面，这时候只能使用静态资源映射来放行这些资源文件。
+
+Spring boot默认对`/**`的访问是可以直接访问类路径下的四个静态资源目录下的文件：
+
+- classpath:/resources/META-INF/resources
+- classpath:/resources/resources
+- classpath:/resources/static
+- classpath:/resources/public
+
+具体解决方案在SprigMVC里面已经介绍了，使用配置类`WebMvcConfig`继承`WebMvcConfigurationSupport`覆盖重写`addResourceHandlers`方法即可。
+
+```java
+@Configuration
+public class WebMvcConfig extends WebMvcConfigurationSupport {
+    @Override
+    protected void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/page/**").addResourceLocations("classpath:/a/");
+    }
+}
+```
 
 ## 4.4 RestTemplate
 

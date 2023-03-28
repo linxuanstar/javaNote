@@ -1377,78 +1377,190 @@ DOM的思想就是每个节点都是对象，是对象我们就可以通过一�
 
 ### 3.2.2 DOM事件
 
+时间监听机制概念：某些组件被执行了某些操作后，触发某些代码的执行。
+
+- 事件：某些操作。例如：单击、双击、键盘按下了、鼠标移动等。
+
+- 事件源：组件。例如：按钮、文本输入框等。
+
+- 监听器：代码。
+
+- 注册监听：将事件、事件源和监听器结合在一起。事件源上面发生某个事件，则触发执行某个监听器打码。
+
+JS中绑定事件一共有两种方法：直接在html标签上面绑定、通过JavaScript获取元素对象绑定`元素.on事件名=函数`。
+
 ```html
+<img id="light" src="img/light.gif">
+<script>
+    // 创建方法
+    function fun() {
+        alert("点击了");
+    }
 
-<head>
-    <title>My Document</title>
-    <style>
-        table {
-            border: 1px solid;
-            margin: auto;
-            width: 500px;
+    // 获取light对象
+    var light = document.getElementById("light");
+    // 绑定事件
+    light.onclick = fun;
+</script>
+```
+
+DOM 1级：1998年DOM1级规范称为W3C的推荐标准。DOM1级为基本文档结构及查询提供了接口， DOM1级的目标主要是映射文档的结构。IE、Firefox、Safari、Chrome和Opera都非常完善地实现了DOM。
+
+DOM 2级：定义了addEventListener和removeEventListener用来绑定和解绑事件。方法有三个参数：事件名（不需要写on）、事件回调函数、false/ true（事件冒泡 / 事件捕获时执行回调函数）。
+
+DOM 3级：DOM3级事件在DOM2级事件的基础上添加了更多的事件类型。
+
+- UI事件：当用户与页面上的元素交互时触发，如：load、scroll
+
+- 焦点事件：当元素获得或失去焦点时触发，如：blur、focus
+
+- 鼠标事件：当用户通过鼠标在页面执行操作时触发如：dbclick、mouseup
+
+- 滚轮事件：当使用鼠标滚轮或类似设备时触发，如：mousewheel
+
+- 文本事件：当在文档中输入文本时触发，如：textInput
+
+- 键盘事件：当用户通过键盘在页面上执行操作时触发，如：keydown、keypress
+
+- 合成事件，当为IME（输入法编辑器）输入字符时触发，如：compositionstart
+
+- 变动事件，当底层DOM结构发生变化时触发，如：DOMsubtreeModified
+
+```html
+<table>
+    <caption>学生信息表</caption>
+    <tr>
+        <th><input type = "checkbox" name = "cb" id = "cb1"></th>
+        <th>编号</th>
+        <th>姓名</th>
+        <th>性别</th>
+        <th>操作</th>
+    </tr>
+
+    <tr>
+        <td><input type = "checkbox" name = "cb"></td>
+        <td>1</td>
+        <td>令狐冲</td>
+        <td>男</td>
+        <td><a href = "javascript: void(0);">删除</a></td>
+    </tr>
+
+    <tr>
+        <td><input type = "checkbox" name = "cb"></td>
+        <td>2</td>
+        <td>任我行</td>
+        <td>男</td>
+        <td><a href = "javascript: void(0);">删除</a></td>
+    </tr>
+
+    <tr>
+        <td><input type = "checkbox" name = "cb"></td>
+        <td>3</td>
+        <td>岳不群</td>
+        <td>？</td>
+        <td><a href = "javascript: void(0);">删除</a></td>
+    </tr>
+</table>
+<div>
+    <input type = "button" id = "selectAll" value = "全选">
+    <input type = "button" id = "unSelectAll" value = "全不选">
+    <input type = "button" id = "selectRev" value = "反选">
+</div>
+```
+
+```html
+<style>
+    body {
+        background-color: azure;
+    }
+
+    table {
+        border: 1px solid;
+        margin: auto;
+        width: 500px;
+    }
+
+    td, th {
+        text-align: center;
+        border: 1px solid;
+    }
+
+    div {
+        margin-top: 10px;
+        text-align: center;
+    }
+
+    .over {
+        background-color: pink;
+    }
+
+    .out {
+        background-color: out;
+    }
+
+</style>
+```
+
+```js
+// 页面加载完成之后绑定事件
+window.onload = function() {
+    // 给全选按钮绑定单击事件
+    document.getElementById("selectAll").onclick = function() {
+        // 全选
+        // 获取所有的checkbox
+        var cbs = document.getElementsByName("cb");
+        // 遍历
+        for (var i = 0; i < cbs.length; i++) {
+            // 设置每一个cb的状态为选中
+            cbs[i].checked = true;
+        }
+    }
+
+    document.getElementById("unSelectAll").onclick = function() {
+        // 全不选
+        // 获取所有的checkbox
+        var cbs = document.getElementsByName("cb");
+        // 遍历
+        for (var i = 0; i < cbs.length; i++) {
+            // 设置每一个cb的状态为不选中
+            cbs[i].checked = false;
+        }
+    }
+
+
+    document.getElementById("selectRev").onclick = function() {
+        // 反选
+        // 获取所有的checkbox
+        var cbs = document.getElementsByName("cb");
+        // 遍历
+        for (var i = 0; i < cbs.length; i++) {
+
+            cbs[i].checked = !cbs[i].checked;
+        }
+    }
+
+    document.getElementById("cb1").onclick = function() {
+        // 第一个cb点击
+        // 获取所有的checkbox
+        var cbs = document.getElementsByName("cb");
+        // 遍历
+        for (var i = 1; i < cbs.length; i++) {
+            cbs[i].checked = this.checked;
+
+        }
+    }
+
+    var trs = document.getElementsByTagName("tr");
+    for (var i = 0; i < trs.length; i++) {
+        // 移到元素上面
+        trs[i].onmouseover = function() {
+            this.className = "over";
         }
 
-        td,
-        th {
-            text-align: center;
-            border: 1px solid;
+        // 移出元素
+        trs[i].onmouseout = function() {
+            this.className = "out"
         }
-
-        div {
-            text-align: center;
-            margin: 50px;
-        }
-    </style>
-</head>
-
-<body>
-    <div>
-        <input id="id" type="text" placeholder="请输入编号">
-        <input id="name" type="text" placeholder="请输入姓名">
-        <input id="gender" type="text" placeholder="请输入性别">
-        <input id="btn_add" type="button" value="添加">
-    </div>
-    <table>
-        <caption>学生信息表</caption>
-        <tr>
-            <th>编号</th>
-            <th>姓名</th>
-            <th>性别</th>
-            <th>操作</th>
-        </tr>
-    </table>
-
-    <script>
-        // 使用innerHTML方法来操作
-        // 点击添加按钮，方法实现
-        document.getElementById("btn_add").onclick = function () {
-
-            // 获取用户输入的内容
-            var id = document.getElementById("id").value;
-            var name = document.getElementById("name").value;
-            var gender = document.getElementById("gender").value;
-
-            // 获取table
-            var table = document.getElementsByTagName("table")[0];
-
-            // 追加一行
-            table.innerHTML += "<tr>" +
-                "<td>" + id + "</td>" +
-                "<td>" + name + "</td>" +
-                "<td>" + gender + "</td>" +
-                "<td><a href = 'javascript: void(0)' onclick = 'delTr(this)'>删除</a></td>" +
-                "</tr>";
-        }
-
-        // 使用a标签onclick属性，设置为delTr(this)参数，this返回当前对象。
-        // 删除操作
-        function delTr(obj) {
-            // 根据返回的this对象，找到table对象和tr对象。
-            var table = obj.parentNode.parentNode.parentNode;
-            var tr = obj.parentNode.parentNode;·	
-
-            table.removeChild(tr);
-        }
-    </script>
-</body>
+    }
+}
 ```

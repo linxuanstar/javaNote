@@ -1017,7 +1017,7 @@ springmvc配置文件spring-mvc.xml不需要动
     <groupId>com.linxuan</groupId>
     <artifactId>ssm_controller</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <!--设置父项目pom.xml位置路径-->
+    <!-- 设置父项目pom.xml位置路径，如果是<relativePath/>那么代表从仓库里面找 -->
     <relativePath>../ssm/pom.xml</relativePath>
 </parent>
 ```

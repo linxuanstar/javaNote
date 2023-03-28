@@ -28,7 +28,7 @@ MP的特性：
 | -------- | ------------------------------------------------------------ |
 | 类型     | 属性注解，实体类属性上方定义。                               |
 | 作用     | 设置当前属性对应的数据库表中的字段关系                       |
-| 相关属性 | value(默认)：设置表与该属性对应的字段名称<br />exist：设置属性在数据库表字段中是否存在，默认为true，此属性不能与value合并使用<br />select：设置属性是否参与查询，此属性与select()映射配置不冲突 |
+| 相关属性 | value(默认)：设置表与该属性对应的字段名称<br />exist：设置属性在数据库表字段中是否存在，默认为true，此属性不能与value合并使用<br />select：设置属性是否参与查询，此属性与select()映射配置不冲突<br />fill：字段填充标记，值FieldFill枚举类为字段填充策略。 |
 
 | 名称 | @TableName                                          |
 | ---- | --------------------------------------------------- |
@@ -258,7 +258,7 @@ mysql> select * from tb_user;
 |                   1 | Tom     | tom        |   3 | 18866668888 |
 |                   2 | Jerry   | jerry      |   4 | 16688886666 |
 |                   3 | linxuan | linxuan666 |  21 | 123456789   |
-| 1625117541103857666 | 张三    | 123        |  32 | 123456      | # 主键不是4，问题在与主键ID生成策略
+| 1625117541103857666 | 张三    | 123        |  32 | 123456      | # 主键不是4，问题在于主键ID生成策略
 +---------------------+---------+------------+-----+-------------+
 4 rows in set (0.00 sec)
 ```
@@ -329,7 +329,135 @@ void testGetAll() {
 }
 ```
 
-## 1.4 分页功能
+## 1.4 MP Mapper层内置方法
+
+**添加数据**
+
+`int insert(T entity);`：添加一条新数据。
+
+**删除数据**
+
+- `int deleteById(Serializable id);`：根据主键 ID 删除
+- `int deleteByMap(@Param(Constants.COLUMN_MAP) Map<String, Object> columnMap);`：根据 map 定义字段的条件删除
+- `int delete(@Param(Constants.WRAPPER) Wrapper<T> wrapper);`：根据实体类定义的 条件删除对象
+- `int deleteBatchIds(@Param(Constants.COLLECTION) Collection<? extends Serializable> idList);`：进行批量删除。
+
+**修改数据**
+
+- `int updateById(@Param(Constants.ENTITY) T entity);`：根据 ID 修改实体对象。
+- `int update(@Param(Constants.ENTITY) T entity, @Param(Constants.WRAPPER) Wrapper<T> updateWrapper);`根据 updateWrapper 条件修改实体对象
+
+**查询数据**
+
+- `T selectById(Serializable id);`：根据 主键 ID 查询数据
+- `List<T> selectBatchIds(@Param(Constants.COLLECTION) Collection<? extends Serializable> idList);`：进行批量查询
+- `List<T> selectByMap(@Param(Constants.COLUMN_MAP) Map<String, Object> columnMap);`：根据表字段条件查询
+- `T selectOne(@Param(Constants.WRAPPER) Wrapper<T> queryWrapper);`：根据实体类封装对象 查询一条记录
+- `Integer selectCount(@Param(Constants.WRAPPER) Wrapper<T> queryWrapper);`：查询记录的总条数
+- `List<T> selectList(@Param(Constants.WRAPPER) Wrapper<T> queryWrapper);`：查询所有记录（返回 entity 集合）
+- `List<Map<String, Object>> selectMaps(@Param(Constants.WRAPPER) Wrapper<T> queryWrapper);`：查询所有记录（返回 map 集合）
+- `List<Object> selectObjs(@Param(Constants.WRAPPER) Wrapper<T> queryWrapper);`：查询所有记录（但只保存第一个字段的值）
+- `<E extends IPage<T>> E selectPage(E page, @Param(Constants.WRAPPER) Wrapper<T> queryWrapper);`：查询所有记录（返回 entity 集合），分页
+- `<E extends IPage<Map<String, Object>>> E selectMapsPage(E page, @Param(Constants.WRAPPER) Wrapper<T> queryWrapper);`：查询所有记录（返回 map 集合），分页
+
+## 1.5 MP Service层内置方法
+
+```java
+【添加数据：（增）】
+    default boolean save(T entity); // 调用 BaseMapper 的 insert 方法，用于添加一条数据。
+    boolean saveBatch(Collection<T> entityList, int batchSize); // 批量插入数据
+注：
+    entityList 表示实体对象集合 
+    batchSize 表示一次批量插入的数据量，默认为 1000
+```
+
+```java
+【添加或修改数据：（增或改）】
+    // id 若存在，则修改， id 不存在则新增数据
+    boolean saveOrUpdate(T entity);
+    // 先根据条件尝试更新，然后再执行 saveOrUpdate 操作
+    default boolean saveOrUpdate(T entity, Wrapper<T> updateWrapper); 
+    // 批量插入并修改数据 
+    boolean saveOrUpdateBatch(Collection<T> entityList, int batchSize); 
+```
+
+```java
+【删除数据：（删）】
+    // 调用 BaseMapper 的 deleteById 方法，根据 id 删除数据。
+    default boolean removeById(Serializable id); 
+    // 调用 BaseMapper 的 deleteByMap 方法，根据 map 定义字段的条件删除
+    default boolean removeByMap(Map<String, Object> columnMap); 
+    // 调用 BaseMapper 的 delete 方法，根据实体类定义的 条件删除对象。
+    default boolean remove(Wrapper<T> queryWrapper); 
+    // 用 BaseMapper 的 deleteBatchIds 方法, 进行批量删除。
+    default boolean removeByIds(Collection<? extends Serializable> idList); 
+```
+
+```java
+【修改数据：（改）】
+    // 调用 BaseMapper 的 updateById 方法，根据 ID 选择修改。
+    default boolean updateById(T entity); 
+    // 调用 BaseMapper 的 update 方法，根据 updateWrapper 条件修改实体对象。
+    default boolean update(T entity, Wrapper<T> updateWrapper); 
+    // 批量更新数据
+    boolean updateBatchById(Collection<T> entityList, int batchSize); 
+```
+
+```java
+【查找数据：（查）】
+    // 调用 BaseMapper 的 selectById 方法，根据 主键 ID 返回数据。
+    default T getById(Serializable id); 
+    // 返回一条记录（实体类保存）。
+    default T getOne(Wrapper<T> queryWrapper); 
+    // 返回一条记录（map 保存）。
+    Map<String, Object> getMap(Wrapper<T> queryWrapper); 
+
+    // 调用 BaseMapper 的 selectBatchIds 方法，批量查询数据。
+    default List<T> listByIds(Collection<? extends Serializable> idList); 
+    // 调用 BaseMapper 的 selectByMap 方法，根据表字段条件查询
+    default List<T> listByMap(Map<String, Object> columnMap); 
+
+    // 返回所有数据。
+    default List<T> list(); 
+    // 调用 BaseMapper 的 selectList 方法，查询所有记录（返回 entity 集合）。
+    default List<T> list(Wrapper<T> queryWrapper); 
+    // 调用 BaseMapper 的 selectMaps 方法，查询所有记录（返回 map 集合）。
+    default List<Map<String, Object>> listMaps(Wrapper<T> queryWrapper); 
+    // 返回全部记录，但只返回第一个字段的值。
+    default List<Object> listObjs(); 
+
+    // 根据条件返回 记录数。
+    default int count(Wrapper<T> queryWrapper); 
+
+    // 调用 BaseMapper 的 selectPage 方法，分页查询
+    default <E extends IPage<T>> E page(E page, Wrapper<T> queryWrapper); 
+    // 调用 BaseMapper 的 selectMapsPage 方法，分页查询
+    default <E extends IPage<Map<String, Object>>> E pageMaps(E page, Wrapper<T> queryWrapper); 
+注：
+    get 用于返回一条记录。
+    list 用于返回多条记录。
+    count 用于返回记录总数。
+    page 用于分页查询。
+```
+
+```java
+【链式调用：】
+    default QueryChainWrapper<T> query(); // 普通链式查询
+    default LambdaQueryChainWrapper<T> lambdaQuery(); // 支持 Lambda 表达式的修改
+    default UpdateChainWrapper<T> update(); // 普通链式修改
+    default LambdaUpdateChainWrapper<T> lambdaUpdate(); // 支持 Lambda 表达式的修改
+注：
+    query 表示查询
+    update 表示修改
+    Lambda 表示内部支持 Lambda 写法。
+形如：
+    query().eq("column", value).one();
+    lambdaQuery().eq(Entity::getId, value).list();
+    update().eq("column", value).remove();
+    lambdaUpdate().eq(Entity::getId, value).update(entity);
+```
+
+## 1.6 分页功能
 
 分页查询使用的方法是：`IPage<T> selectPage(IPage<T> page, Wrapper<T> queryWrapper);`
 
@@ -379,9 +507,9 @@ public class MybatisPlusConfig {
     // 设置分页拦截器
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor(){
-        //1 创建MybatisPlusInterceptor拦截器对象
+        // 1 创建MybatisPlusInterceptor拦截器对象
         MybatisPlusInterceptor mpInterceptor=new MybatisPlusInterceptor();
-        //2 添加分页拦截器
+        // 2 添加分页拦截器
         mpInterceptor.addInnerInterceptor(new PaginationInnerInterceptor());
         return mpInterceptor;
     }
@@ -398,7 +526,7 @@ mybatis-plus:
 
 打开日志后，就可以在控制台打印出对应的SQL语句，开启日志功能性能就会受到影响，调试完后记得关闭。
 
-## 1.5 取消打印日志
+## 1.7 取消打印日志
 
 测试的时候，控制台打印的日志比较多，速度有点慢而且不利于查看运行结果，所以接下来我们把这个日志处理下:
 
@@ -589,7 +717,7 @@ class Mybatisplus02DqlApplicationTests {
 
 如果用户只输入一个数据，那么就需要做第二个框的null值判定，否则会出现查询100<=age<=null，这样肯定不会查询成功的。
 
-那么这个时候问题来了，用户输入了两个age数据，要求查询中间的age。但是后端的实体类中目前只有一个age书香，那么后端如何接收呢？我们可以使用两个简单数据类型，也可以使用一个模型类：
+那么这个时候问题来了，用户输入了两个age数据，要求查询中间的age。但是后端的实体类中目前只有一个age属性，那么后端如何接收呢？我们可以使用两个简单数据类型，也可以使用一个模型类：
 
 1. 方案一：添加属性age2，这种做法可以但是会影响到原模型类的属性内容
    
@@ -646,7 +774,7 @@ class ApplicationTests {
 
 上面的写法可以完成条件为非空的判断，但是问题很明显，如果条件多的话，每个条件都需要判断，代码量就比较大。
 
-MP给我们提供了简化方式：`public Children lt(boolean condition, R column, Object val)`：如果第一个参数判断为真，那么才会加入后面的条件。condition为boolean类型，返回true，则添加条件，返回false则不添加条件。
+MP给我们提供了简化方式：`public Children lt(boolean condition, R column, Object val)`：如果第一个参数condition判断为真，那么才会加入后面的条件。
 
 ```java
 @SpringBootTest
@@ -804,11 +932,11 @@ class Mybatisplus02DqlApplicationTests {
 
 **模糊查询**
 
-| 方法        | 作用                |
-| ----------- | ------------------- |
-| like()      | 前后加百分号,如 %J% |
-| likeLeft()  | 前面加百分号,如 %J  |
-| likeRight() | 后面加百分号,如 J%  |
+| 方法        | 作用                 |
+| ----------- | -------------------- |
+| like()      | 前后加百分号，如 %J% |
+| likeLeft()  | 前面加百分号，如 %J  |
+| likeRight() | 后面加百分号，如 J%  |
 
 ```java
 @SpringBootTest
@@ -817,7 +945,7 @@ class ApplicationTests {
     @Autowired
     private UserDao userDao;
 
-    // 查询表中name属性的值以J开头的用户信息,使用like进行模糊查询
+    // 查询表中name属性的值以J开头的用户信息，使用like进行模糊查询
     @Test
     void testGetAll(){
         LambdaQueryWrapper<User> lqw = new LambdaQueryWrapper<User>();
@@ -847,10 +975,12 @@ class Mybatisplus02DqlApplicationTests {
     @Test
     void testGetAll(){
         LambdaQueryWrapper<User> lwq = new LambdaQueryWrapper<>();
-        /** public Children orderBy(boolean condition, boolean isAsc, R... columns)
-         * condition ：条件，返回boolean，当condition为true，进行排序，如果为false，则不排序
-         * isAsc:是否为升序，true为升序，false为降序
-         * columns：需要操作的列
+        
+        /**
+         * public Children orderBy(boolean condition, boolean isAsc, R... columns)
+         *  condition ：条件，返回boolean，当condition为true，进行排序，如果为false，则不排序
+         *  isAsc:是否为升序，true为升序，false为降序
+         *  columns：需要操作的列
          */
         lwq.orderBy(true, false, User::getId);
 

@@ -609,7 +609,6 @@ jdbc.password=root
     <!-- 打印sql日志，也可以将Value设置为LOG4J，然后搞一个Log4J的配置文件，上面已经弄过了 -->
     <setting name="logImpl" value="STDOUT_LOGGING" />
 </settings>
-</settings>
 ```
 
 **environment**
@@ -1612,7 +1611,7 @@ where和if一般结合使用：
 
 **trim动态SQL标签**
 
-trim用于去掉或添加标签中的内容 。常用属性如下：
+trim用于去掉或添加标签中的内容。常用属性如下：
 
 | 属性            | 作用                                   |
 | --------------- | -------------------------------------- |
