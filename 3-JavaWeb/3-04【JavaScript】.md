@@ -282,7 +282,7 @@ let声明的循环变量：在整个循环过程中每次循环都相当于触�
 </script>
 ```
 
-![](..\图片\3-04【JavaScript】\1-1.png)
+<img src="..\图片\3-04【JavaScript】\1-1.png" />
 
 ## 1.4 操作符
 
@@ -1206,7 +1206,7 @@ HTML DOM 定义了所有 HTML 元素的对象和属性，以及访问它们的�
 
 HTML 文档中的所有内容都是节点：整个文档是一个文档节点、每个 HTML 元素是元素节点、HTML 元素内的文本是文本节点、每个 HTML 属性是属性节点、注释是注释节点。
 
-![](..\图片\3-04【JavaScript】\2-1.png)
+<img src="..\图片\3-04【JavaScript】\2-1.png" />
 
 属性节点实际上是附属于元素的，所以不被看做是元素的子节点，因为并没有被当做是DOM的一部分。在属性节点上调用parentNode，previousSibling和nextSibling都返回null。
 

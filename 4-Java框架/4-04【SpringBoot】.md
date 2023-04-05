@@ -199,7 +199,7 @@ public class BookController {
 | **Spring/SpringMVC配置类** | 手工制作 | 无         |
 | **控制器**                 | 手工制作 | 手工制作   |
 
-## 1.3 程序启动
+## 1.2 程序启动
 
 创建的每一个 `SpringBoot` 程序时都包含一个类似于下面的类，我们将这个类称作引导类。`SpringBoot` 的引导类是项目的入口，运行 `main` 方法就可以启动项目。
 
@@ -1425,3 +1425,37 @@ public void queryWeather() {
     System.out.println(body);
 }
 ```
+
+# 第五章 其他知识
+
+## 5.1 web三大组件
+
+servelt、filter、listener是web三大组件。在SpringBoot项目中使用它们时，可以直接使用注解来定义，然后在SpringBoot项目入口类上面配置`ServletComponentScan`注解即可。
+
+```java
+@WebFilter(filterName = "LoginCheckFilter",urlPatterns = "/*")
+@Slf4j
+public class LoginCheckFilter implements Filter {
+    @Override
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        HttpServletRequest request=(HttpServletRequest) servletRequest;
+        HttpServletResponse response=(HttpServletResponse) servletResponse;
+        log.info("拦截到请求：{}",request.getRequestURI());
+        filterChain.doFilter(request,response);
+    }
+}
+```
+
+```java
+@Slf4j
+@SpringBootApplication
+// Servlet、Filter、Listener可以直接通过@WebServlet、@WebFilter、@WebListener注解自动注册，无需其他代码。
+@ServletComponentScan
+public class ReggieApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(ReggieApplication.class,args);
+        log.info("项目启动成功！！！");
+    }
+}
+```
+

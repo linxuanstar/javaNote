@@ -1,6 +1,6 @@
-# 第一章 Nginx
+![](..\图片\3-33【Nginx】\1.png)
 
-![](D:\Java\笔记\图片\3-33【Nginx】\1.png)
+# 第一章 Nginx
 
 ## 1.1 Nginx基础
 
@@ -366,7 +366,7 @@ number
 function
 ```
 
-## 3.2 变量和循环
+## 2.2 变量和循环
 
 **变量**
 
@@ -433,7 +433,7 @@ for key, value in pairs(map) do
 end
 ```
 
-## 3.3 流程控制
+## 2.3 流程控制
 
 类似Java的条件控制，例如if、else语法：
 
@@ -454,7 +454,7 @@ end
 | or     | 逻辑或操作符。A为true，则返回A，否则返回B。                  | (A or B) 为 true      |
 | not    | 逻辑非操作符。与逻辑运算结果相反，如果条件为true，逻辑非为false | not (A and B) 为 true |
 
-## 3.4 函数
+## 2.4 函数
 
 Lua中的条件控制和函数声明与Java类似。定义函数的语法：
 

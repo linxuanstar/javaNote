@@ -569,6 +569,8 @@ public class Demo01Filter implements Filter {
 
 ## 3.1 web.xml配置
 
+如果不配置`@WebFilter`注解，那么就需要来使用web.xml进行配置了。
+
 ```xml
 <!-- 在Web文件夹下面创建WEB-INF文件夹，然后在里面创建Web.xml配置文件，配置如下内容。 -->
 <?xml version="1.0" encoding="UTF-8"?>

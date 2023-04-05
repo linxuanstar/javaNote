@@ -60,7 +60,7 @@ public class Demo02Cookie extends HttpServlet {
 
 实现原理：基于响应头`set-Cookie`和请求头`Cookie`实现的。
 
-![](..\图片\3-17【Cokkie、Session】\1Cookie会话技术.png)
+<img src="..\图片\3-17【Cokkie、Session】\1Cookie会话技术.png" />
 
 ## 1.2 Cookie细节
 
@@ -176,7 +176,7 @@ public class Demo01CookieTest extends HttpServlet {
 public class Demo01Session extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // 获取Session对象
+        // 获取Session对象，这里获取Session对象使用的是HttpServletRequest类的对象获取的
         HttpSession session = req.getSession();
         // 调用Session对象方法，设置Session
         session.setAttribute("msg", "Hello world");
@@ -213,7 +213,7 @@ public class Demo02Session extends HttpServlet {
 
 `Session`的原理是基于`Cookie`的。
 
-![](..\图片\3-17【Cokkie、Session】\3Session.png)
+<img src="..\图片\3-17【Cokkie、Session】\3Session.png" />
 
 ## 2.2 Session细节
 

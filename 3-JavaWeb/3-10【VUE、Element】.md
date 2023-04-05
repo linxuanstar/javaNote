@@ -12,7 +12,7 @@ Vue 是一套前端框架，免除原生JavaScript中的DOM操作，简化书写
 
 双向绑定是指当数据模型数据发生变化时，页面展示的会随之发生变化。例如表单数据发生变化，绑定的模型数据也随之发生变化。接下来我们聊聊 `MVVM` 思想，如下图是三个组件图解：
 
-![](..\图片\3-10【VUE、Element】\1-1.png)
+<img src="..\图片\3-10【VUE、Element】\1-1.png" />
 
 图中的 `Model` 就是我们的数据，`View` 是视图，也就是页面标签，用户可以通过浏览器看到的内容；`Model` 和 `View` 是通过 `ViewModel` 对象进行双向绑定的，而 `ViewModel` 对象是 `Vue` 提供的。
 
@@ -94,7 +94,7 @@ Vue 使用起来是比较简单的，总共分为如下三步：
 
 通过浏览器打开该页面可以看到如下页面
 
-![](D:\Java\笔记\图片\3-10【VUE、Element】\2-1结果.png)
+<img src="..\图片\3-10【VUE、Element】\2-1结果.png" />
 
 当我们在输入框中输入内容，而输入框后面随之实时的展示我们输入的内容，这就是双向绑定的效果。
 
@@ -113,7 +113,7 @@ Vue 使用起来是比较简单的，总共分为如下三步：
 | v-show    | 根据条件展示某元素，区别在于切换的是display属性的值 |
 | v-for     | 列表渲染，遍历容器的元素或者对象的属性              |
 
-### 1.2.1 v-bind & v-model
+### 2.2.1 v-bind & v-model
 
 | **指令** | **作用**                                       |
 | -------- | ---------------------------------------------- |
@@ -173,9 +173,9 @@ Vue 使用起来是比较简单的，总共分为如下三步：
 
 通过浏览器打开上面页面，并且使用检查查看超链接的路径，该路径会根据输入框输入的路径变化而变化，这是因为超链接和输入框绑定的是同一个模型数据。
 
-![](D:\Java\笔记\图片\3-10【VUE、Element】\2-2.png)
+<img src="..\图片\3-10【VUE、Element】\2-2.png" />
 
-###  1.2.2 v-on 指令
+###  2.2.2 v-on 指令
 
 | 指令 | 作用                                   |
 | ---- | -------------------------------------- |
@@ -241,7 +241,7 @@ new Vue({
 </html>
 ```
 
-### 1.2.3 条件判断指令
+### 2.2.3 条件判断指令
 
 | 指令      | 作用                                                         |
 | --------- | ------------------------------------------------------------ |
@@ -320,7 +320,7 @@ new Vue({
 <input v-model="count">
 ```
 
-### 1.2.4 v-for 指令
+### 2.2.4 v-for 指令
 
 | **指令** | **作用**                                                     |
 | -------- | ------------------------------------------------------------ |
@@ -381,7 +381,7 @@ new Vue({
 </html>
 ```
 
-## 1.4  生命周期 
+## 2.3 生命周期 
 
 生命周期的八个阶段：每触发一个生命周期事件，会自动执行一个生命周期方法，这些生命周期方法也被称为钩子方法。
 
@@ -396,311 +396,17 @@ new Vue({
 | beforeDestroy | 销毁前   |
 | destroyed     | 销毁后   |
 
-下图是 Vue 官网提供的从创建 Vue 到效果 Vue 对象的整个过程及各个阶段对应的钩子函数
+我们只关注 `mounted` 就行了。`mounted`：挂载完成，Vue初始化成功，HTML页面渲染成功。而以后我们会在该方法中发送异步请求，加载数据。
 
-<img src="..\图片\3-10【VUE、Element】/1-11.png" alt="image-20210831160335496" style="zoom:80%;" />
+# 第三章 Element
 
-看到上面的图，大家无需过多的关注这张图。这些钩子方法我们只关注 `mounted` 就行了。
+Element：是饿了么公司前端开发团队提供的一套基于 Vue 的网站组件库，用于快速构建网页。Element 提供了很多组件（组成网页的部件）供我们使用。例如 超链接、按钮、图片、表格等等~
 
-`mounted`：挂载完成，Vue初始化成功，HTML页面渲染成功。而以后我们会在该方法中发送异步请求，加载数据。
+我们学习 Element 其实就是学习怎么从官网拷贝组件到我们自己的页面并进行修改，[官网](https://element.eleme.cn/#/zh-CN)
 
-## 1.5  案例
+## 3.1  快速入门
 
-### 1.5.1  需求
-
-使用 Vue 简化我们在前一天ajax学完后做的品牌列表数据查询和添加功能
-
-<img src="..\图片\3-10【VUE、Element】/image-20210831161040800.png" alt="image-20210831161040800" style="zoom:80%;" />
-
-此案例只是使用 Vue 对前端代码进行优化，后端代码无需修改。
-
-### 1.5.2  查询所有功能
-
-<img src="..\图片\3-10【VUE、Element】/image-20210831161346678.png" alt="image-20210831161346678" style="zoom:80%;" />
-
-1. **在 brand.html 页面引入 vue 的js文件**
-
-   ```html
-   <script src="js/vue.js"></script>
-   ```
-
-2. **创建 Vue 对象**
-
-   * 在 Vue 对象中定义模型数据
-   * 在钩子函数中发送异步请求，并将响应的数据赋值给数据模型
-
-   ```js
-   new Vue({
-       el: "#app",
-       data(){
-           return{
-               brands:[]
-           }
-       },
-       mounted(){
-           // 页面加载完成后，发送异步请求，查询数据
-           var _this = this;
-           axios({
-               method:"get",
-               url:"http://localhost:8080/brand-demo/selectAllServlet"
-           }).then(function (resp) {
-               _this.brands = resp.data;
-           })
-       }
-   })
-   ```
-
-3. **修改视图**
-
-   * 定义 `<div id="app"></div>` ，指定该 `div` 标签受 Vue 管理
-
-   * 将 `body` 标签中所有的内容拷贝作为上面 `div` 标签中
-
-   * 删除表格的多余数据行，只留下一个
-
-   * 在表格中的数据行上使用 `v-for` 指令遍历
-
-     ```html
-     <tr v-for="(brand,i) in brands" align="center">
-         <td>{{i + 1}}</td>
-         <td>{{brand.brandName}}</td>
-         <td>{{brand.companyName}}</td>
-         <td>{{brand.ordered}}</td>
-         <td>{{brand.description}}</td>
-         <td>{{brand.statusStr}}</td>
-         <td><a href="#">修改</a> <a href="#">删除</a></td>
-     </tr>
-     ```
-
-**整体页面代码如下：**
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<div id="app">
-    <a href="addBrand.html"><input type="button" value="新增"></a><br>
-    <hr>
-    <table id="brandTable" border="1" cellspacing="0" width="100%">
-        <tr>
-            <th>序号</th>
-            <th>品牌名称</th>
-            <th>企业名称</th>
-            <th>排序</th>
-            <th>品牌介绍</th>
-            <th>状态</th>
-            <th>操作</th>
-        </tr>
-        <!--
-            使用v-for遍历tr
-        -->
-        <tr v-for="(brand,i) in brands" align="center">
-            <td>{{i + 1}}</td>
-            <td>{{brand.brandName}}</td>
-            <td>{{brand.companyName}}</td>
-            <td>{{brand.ordered}}</td>
-            <td>{{brand.description}}</td>
-            <td>{{brand.statusStr}}</td>
-            <td><a href="#">修改</a> <a href="#">删除</a></td>
-        </tr>
-    </table>
-</div>
-<script src="js/axios-0.18.0.js"></script>
-<script src="js/vue.js"></script>
-
-<script>
-    new Vue({
-        el: "#app",
-        data(){
-            return{
-                brands:[]
-            }
-        },
-        mounted(){
-            // 页面加载完成后，发送异步请求，查询数据
-            var _this = this;
-            axios({
-                method:"get",
-                url:"http://localhost:8080/brand-demo/selectAllServlet"
-            }).then(function (resp) {
-                _this.brands = resp.data;
-            })
-        }
-    })
-</script>
-</body>
-</html>
-```
-
-### 1.5.3  添加功能
-
-页面操作效果如下：
-
-<img src="..\图片\3-10【VUE、Element】/image-20210831163001830.png" alt="image-20210831163001830" style="zoom:80%;" />
-
-整体流程如下
-
-<img src="..\图片\3-10【VUE、Element】/image-20210831163035298.png" alt="image-20210831163035298" style="zoom:70%;" />
-
-> ==注意：前端代码的关键点在于使用 `v-model` 指令给标签项绑定模型数据，利用双向绑定特性，在发送异步请求时提交数据。==
-
-1. **在 addBrand.html 页面引入 vue 的js文件**
-
-   ```html
-   <script src="js/vue.js"></script>
-   ```
-
-2. **创建 Vue 对象**
-
-   * 在 Vue 对象中定义模型数据 `brand` 
-   * 定义一个 `submitForm()` 函数，用于给 `提交` 按钮提供绑定的函数
-   * 在 `submitForm()` 函数中发送 ajax 请求，并将模型数据 `brand` 作为参数进行传递
-
-   ```js
-   new Vue({
-       el: "#app",
-       data(){
-           return {
-               brand:{}
-           }
-       },
-       methods:{
-           submitForm(){
-               // 发送ajax请求，添加
-               var _this = this;
-               axios({
-                   method:"post",
-                   url:"http://localhost:8080/brand-demo/addServlet",
-                   data:_this.brand
-               }).then(function (resp) {
-                   // 判断响应数据是否为 success
-                   if(resp.data == "success"){
-                       location.href = "http://localhost:8080/brand-demo/brand.html";
-                   }
-               })
-   
-           }
-       }
-   })
-   ```
-
-3. **修改视图**
-
-   * 定义 `<div id="app"></div>` ，指定该 `div` 标签受 Vue 管理
-
-   * 将 `body` 标签中所有的内容拷贝作为上面 `div` 标签中
-
-   * 给每一个表单项标签绑定模型数据。最后这些数据要被封装到 `brand` 对象中
-
-     ```html
-     <div id="app">
-         <h3>添加品牌</h3>
-         <form action="" method="post">
-             品牌名称：<input id="brandName" v-model="brand.brandName" name="brandName"><br>
-             企业名称：<input id="companyName" v-model="brand.companyName" name="companyName"><br>
-             排序：<input id="ordered" v-model="brand.ordered" name="ordered"><br>
-             描述信息：<textarea rows="5" cols="20" id="description" v-model="brand.description" name="description"></textarea><br>
-             状态：
-             <input type="radio" name="status" v-model="brand.status" value="0">禁用
-             <input type="radio" name="status" v-model="brand.status" value="1">启用<br>
-     
-             <input type="button" id="btn" @click="submitForm" value="提交">
-         </form>
-     </div>
-     ```
-
-**整体页面代码如下：**
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <title>添加品牌</title>
-</head>
-<body>
-<div id="app">
-    <h3>添加品牌</h3>
-    <form action="" method="post">
-        品牌名称：<input id="brandName" v-model="brand.brandName" name="brandName"><br>
-        企业名称：<input id="companyName" v-model="brand.companyName" name="companyName"><br>
-        排序：<input id="ordered" v-model="brand.ordered" name="ordered"><br>
-        描述信息：<textarea rows="5" cols="20" id="description" v-model="brand.description" name="description"></textarea><br>
-        状态：
-        <input type="radio" name="status" v-model="brand.status" value="0">禁用
-        <input type="radio" name="status" v-model="brand.status" value="1">启用<br>
-
-        <input type="button" id="btn" @click="submitForm" value="提交">
-    </form>
-</div>
-<script src="js/axios-0.18.0.js"></script>
-<script src="js/vue.js"></script>
-<script>
-    new Vue({
-        el: "#app",
-        data(){
-            return {
-                brand:{}
-            }
-        },
-        methods:{
-            submitForm(){
-                // 发送ajax请求，添加
-                var _this = this;
-                axios({
-                    method:"post",
-                    url:"http://localhost:8080/brand-demo/addServlet",
-                    data:_this.brand
-                }).then(function (resp) {
-                    // 判断响应数据是否为 success
-                    if(resp.data == "success"){
-                        location.href = "http://localhost:8080/brand-demo/brand.html";
-                    }
-                })
-            }
-        }
-    })
-</script>
-</body>
-</html>
-```
-
-通过上面的优化，前端代码确实简化了不少。但是页面依旧是不怎么好看，那么接下来我们学习 Element，它可以美化页面。
-
-# 第二章 Element
-
-Element：是饿了么公司前端开发团队提供的一套基于 Vue 的网站组件库，用于快速构建网页。
-
-Element 提供了很多组件（组成网页的部件）供我们使用。例如 超链接、按钮、图片、表格等等~
-
-如下图左边的是我们编写页面看到的按钮，上图右边的是 Element 提供的页面效果，效果一目了然。
-
-<img src="..\图片\3-10【VUE、Element】/image-20210831170943892.png" alt="image-20210831170943892" style="zoom:80%;" />
-
-我们学习 Element 其实就是学习怎么从官网拷贝组件到我们自己的页面并进行修改，官网网址是
-
-```
-https://element.eleme.cn/#/zh-CN
-```
-
-进入官网能看到如下页面
-
-![image-20210831171456559](..\图片\3-10【VUE、Element】/image-20210831171456559.png)
-
-接下来直接点击 `组件` ，页面如下
-
-![image-20210831171552844](..\图片\3-10【VUE、Element】/image-20210831171552844.png)
-
-## 2.1  快速入门
-
-1. 将资源 `04-资料\02-element` 下的 `element-ui` 文件夹直接拷贝到项目的 `webapp` 下。目录结构如下
-
-   <img src="..\图片\3-10【VUE、Element】/image-20210831171856768.png" alt="image-20210831171856768" style="zoom:80%;" />
+1. 将 `element-ui` 文件夹直接拷贝到项目的 `webapp` 下。
 
 2. 创建页面，并在页面引入Element 的css、js文件 和 Vue.js
 
@@ -710,9 +416,7 @@ https://element.eleme.cn/#/zh-CN
    <link rel="stylesheet" href="element-ui/lib/theme-chalk/index.css">
    ```
 
-3. .创建Vue核心对象
-
-   Element 是基于 Vue 的，所以使用Element时必须要创建 Vue 对象
+3. 创建Vue核心对象。Element 是基于 Vue 的，所以使用Element时必须要创建 Vue 对象
 
    ```html
    <script>
@@ -722,13 +426,10 @@ https://element.eleme.cn/#/zh-CN
    </script>
    ```
 
-4. 官网复制Element组件代码
+4. 官网复制Element组件代码。在左菜单栏找到 `Button 按钮` ，然后找到自己喜欢的按钮样式，点击 `显示代码` ，在下面就会展示出对应的代码，将这些代码拷贝到我们自己的页面即可。
 
-   <img src="..\图片\3-10【VUE、Element】/image-20210831180730287.png" alt="image-20210831180730287" style="zoom:70%;" />
 
-   在左菜单栏找到 `Button 按钮` ，然后找到自己喜欢的按钮样式，点击 `显示代码` ，在下面就会展示出对应的代码，将这些代码拷贝到我们自己的页面即可。
-
-**整体页面代码如下：**
+整体页面代码如下：
 
 ```html
 <!DOCTYPE html>
@@ -791,18 +492,15 @@ https://element.eleme.cn/#/zh-CN
 </html>
 ```
 
-## 2.2  Element 布局
+## 3.2  Element 布局
 
-Element 提供了两种布局方式，分别是：
+Element 提供了两种布局方式，分别是：Layout布局、Container 布局容器。
 
-* Layout 布局
-* Container 布局容器
-
-### 2.2.1  Layout 局部
+### 3.2.1  Layout 局部
 
 通过基础的 24 分栏，迅速简便地创建布局。也就是默认将一行分为 24 栏，根据页面要求给每一列设置所占的栏数。
 
-<img src="..\图片\3-10【VUE、Element】/image-20210831182349672.png" alt="image-20210831182349672" style="zoom:70%;" />
+<img src="..\图片\3-10【VUE、Element】/3-1.png" />
 
 在左菜单栏找到 `Layout 布局` ，然后找到自己喜欢的按钮样式，点击 `显示代码` ，在下面就会展示出对应的代码，显示出的代码中有样式，有html标签。将样式拷贝我们自己页面的 `head` 标签内，将html标签拷贝到  `<div id="app"></div>` 标签内。
 
@@ -901,13 +599,13 @@ Element 提供了两种布局方式，分别是：
 </el-row>
 ```
 
-### 2.2.2  Container 布局容器
+### 3.2.2  Container 布局容器
 
 用于布局的容器组件，方便快速搭建页面的基本结构。如下图就是布局容器效果。
 
 如下图是官网提供的 Container 布局容器实例：
 
-<img src="..\图片\3-10【VUE、Element】/image-20210831183433892.png" alt="image-20210831183433892" style="zoom:70%;" />
+<img src="..\图片\3-10【VUE、Element】/3-2.png" />
 
 该效果代码中包含了样式、页面标签、模型数据。将里面的样式 `<style>` 拷贝到我们自己页面的 `head` 标签中；将html标签拷贝到 `<div id="app"></div>` 标签中，再将数据模型拷贝到 `vue` 对象的 `data()` 中。
 
@@ -1018,399 +716,6 @@ Element 提供了两种布局方式，分别是：
             };
             return {
                 tableData: Array(20).fill(item)
-            }
-        }
-    })
-</script>
-</body>
-</html>
-```
-
-## 2.3  案例
-
-其他的组件我们通过完成一个页面来学习。
-
-我们要完成如下页面效果
-
-<img src="..\图片\3-10【VUE、Element】/image-20210831185223141.png" alt="image-20210831185223141" style="zoom:80%;" />
-
-要完成该页面，我们需要先对这个页面进行分析，看页面由哪儿几部分组成，然后到官网进行拷贝并修改。页面总共有如下组成部分
-
-![image-20210831185505106](..\图片\3-10【VUE、Element】/image-20210831185505106.png)
-
-还有一个是当我们点击 `新增` 按钮，会在页面正中间弹出一个对话框，如下
-
-<img src="..\图片\3-10【VUE、Element】/image-20210831185612905.png" alt="image-20210831185612905" style="zoom:60%;" />
-
-### 2.3.1  准备基本页面
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<div id="app">
-	
-</div>
-
-<script src="js/vue.js"></script>
-<script src="element-ui/lib/index.js"></script>
-<link rel="stylesheet" href="element-ui/lib/theme-chalk/index.css">
-
-<script>
-    new Vue({
-        el: "#app"
-    })
-</script>
-</body>
-</html>
-```
-
-### 2.3.2  完成表格展示
-
-使用 Element 整体的思路就是 ==拷贝 + 修改==。
-
-#### 2.3.2.1  拷贝
-
-![image-20210831185937618](..\图片\3-10【VUE、Element】/image-20210831185937618.png)
-
-在左菜单栏找到 `Table 表格`并点击，右边主体就会定位到表格这一块，找到我们需要的表格效果（如上图），点击 `显示代码` 就可以看到这个表格的代码了。
-
-将html标签拷贝到 `<div id="app"></div>` 中，如下：
-
-<img src="..\图片\3-10【VUE、Element】/image-20210831190328825.png" alt="image-20210831190328825" style="zoom:80%;" />
-
-将css样式拷贝到我们页面的 `head` 标签中，如下
-
-<img src="..\图片\3-10【VUE、Element】/image-20210831190419248.png" alt="image-20210831190419248" style="zoom:80%;" />
-
-将方法和模型数据拷贝到 Vue 对象指定的位置
-
-<img src="..\图片\3-10【VUE、Element】/image-20210831190534720.png" alt="image-20210831190534720" style="zoom:80%;" />
-
-拷贝完成后通过浏览器打开可以看到表格的效果
-
-![image-20210831191234876](..\图片\3-10【VUE、Element】/image-20210831191234876.png)
-
-表格效果出来了，但是显示的表头和数据并不是我们想要的，所以接下来就需要对页面代码进行修改了。
-
-#### 2.3.2.2  修改
-
-1. **修改表头和数据**
-
-   下面是对表格代码进行分析的图解。根据下图说明修改自己的列数和列名
-
-   <img src="..\图片\3-10【VUE、Element】/image-20210831192032118.png" alt="image-20210831192032118" style="zoom:70%;" />
-
-   修改完页面后，还需要对绑定的模型数据进行修改，下图是对模型数据进行分析的图解
-
-   <img src="..\图片\3-10【VUE、Element】/image-20210831192429806.png" alt="image-20210831192429806" style="zoom:70%;" />
-
-2. **给表格添加操作列**
-
-   从之前的表格拷贝一列出来并对其进行修改。按钮是从官网的 `Button 按钮` 组件中拷贝并修改的
-
-   <img src="..\图片\3-10【VUE、Element】/image-20210831192809304.png" alt="image-20210831192809304" style="zoom:70%;" />
-
-3. **给表格添加复选框列和标号列**
-
-   给表格添加复选框和标号列，效果如下
-
-   ![image-20210831193216143](..\图片\3-10【VUE、Element】/image-20210831193216143.png)
-
-   此效果也是从 Element 官网进行拷贝，先找到对应的表格效果，然后将其对应代码拷贝到我们的代码中，如下是复选框列官网效果图和代码
-
-   ![image-20210831193601788](..\图片\3-10【VUE、Element】/image-20210831193601788.png)
-
-   这里需要注意在 `<el-table>` 标签上有一个事件 `@selection-change="handleSelectionChange"` ，这里绑定的函数也需要从官网拷贝到我们自己的页面代码中，函数代码如下：
-
-   ![image-20210831194013986](..\图片\3-10【VUE、Element】/image-20210831194013986.png)
-
-   从该函数中又发现还需要一个模型数据 `multipleSelection ` ，所以还需要定义出该模型数据
-
-标号列也用同样的方式进行拷贝并修改。
-
-### 2.3.3  完成搜索表单展示
-
-在 Element 官网找到横排的表单效果，然后拷贝代码并进行修改
-
-![image-20210831194300357](..\图片\3-10【VUE、Element】/image-20210831194300357.png)
-
-点击上面的 `显示代码` 后，就会展示出对应的代码，下面是对这部分代码进行分析的图解
-
-![image-20210831194835721](..\图片\3-10【VUE、Element】/image-20210831194835721.png)
-
-然后根据我们要的效果修改代码。
-
-### 2.3.4  完成批量删除和新增按钮展示
-
-从 Element 官网找具有着色效果的按钮，并将代码拷贝到我们自己的页面上
-
-<img src="..\图片\3-10【VUE、Element】/image-20210831214602954.png" alt="image-20210831214602954" style="zoom:70%;" />
-
-
-
-### 2.3.5  完成对话框展示
-
-在 Element 官网找对话框，如下：
-
-<img src="..\图片\3-10【VUE、Element】/image-20210831214818516.png" alt="image-20210831214818516" style="zoom:70%;" />
-
-下面对官网提供的代码进行分析
-
-<img src="..\图片\3-10【VUE、Element】/image-20210831215609729.png" alt="image-20210831215609729" style="zoom:80%;" />
-
-上图分析出来的模型数据需要在 Vue 对象中进行定义。
-
-### 2.3.6  完成分页条展示
-
-在 Element 官网找到 `Pagination 分页` ，在页面主体部分找到我们需要的效果，如下
-
-<img src="..\图片\3-10【VUE、Element】/image-20210831220034775.png" alt="image-20210831220034775" style="zoom:70%;" />
-
-点击 `显示代码` ，找到 `完整功能` 对应的代码，接下来对该代码进行分析
-
-<img src="..\图片\3-10【VUE、Element】/image-20210831220446390.png" alt="image-20210831220446390" style="zoom:80%;" />
-
-上面代码属性说明：
-
-* `page-size` ：每页显示的条目数
-
-* `page-sizes` ： 每页显示个数选择器的选项设置。
-
-  `:page-sizes="[100,200,300,400]"`  对应的页面效果如下：
-
-  <img src="..\图片\3-10【VUE、Element】/image-20210831220820557.png" alt="image-20210831220820557" style="zoom:70%;" />
-
-* `currentPage` ：当前页码。我们点击那个页码，此属性值就是几。
-* `total` ：总记录数。用来设置总的数据条目数，该属性设置后， Element 会自动计算出需分多少页并给我们展示对应的页码。
-
-事件说明：
-
-* `size-change` ：pageSize 改变时会触发。也就是当我们改变了每页显示的条目数后，该事件会触发。
-* `current-change` ：currentPage 改变时会触发。也就是当我们点击了其他的页码后，该事件会触发。
-
-### 2.3.7  完整页面代码
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <style>
-        .el-table .warning-row {
-            background: oldlace;
-        }
-        .el-table .success-row {
-            background: #f0f9eb;
-        }
-    </style>
-</head>
-<body>
-<div id="app">
-    <!--搜索表单-->
-    <el-form :inline="true" :model="brand" class="demo-form-inline">
-        <el-form-item label="当前状态">
-            <el-select v-model="brand.status" placeholder="当前状态">
-                <el-option label="启用" value="1"></el-option>
-                <el-option label="禁用" value="0"></el-option>
-            </el-select>
-        </el-form-item>
-
-        <el-form-item label="企业名称">
-            <el-input v-model="brand.companyName" placeholder="企业名称"></el-input>
-        </el-form-item>
-
-        <el-form-item label="品牌名称">
-            <el-input v-model="brand.brandName" placeholder="品牌名称"></el-input>
-        </el-form-item>
-
-        <el-form-item>
-            <el-button type="primary" @click="onSubmit">查询</el-button>
-        </el-form-item>
-    </el-form>
-
-    <!--按钮-->
-    <el-row>
-        <el-button type="danger" plain>批量删除</el-button>
-        <el-button type="primary" plain @click="dialogVisible = true">新增</el-button>
-    </el-row>
-    
-    <!--添加数据对话框表单-->
-    <el-dialog
-            title="编辑品牌"
-            :visible.sync="dialogVisible"
-            width="30%">
-        <el-form ref="form" :model="brand" label-width="80px">
-            <el-form-item label="品牌名称">
-                <el-input v-model="brand.brandName"></el-input>
-            </el-form-item>
-
-            <el-form-item label="企业名称">
-                <el-input v-model="brand.companyName"></el-input>
-            </el-form-item>
-
-            <el-form-item label="排序">
-                <el-input v-model="brand.ordered"></el-input>
-            </el-form-item>
-
-            <el-form-item label="备注">
-                <el-input type="textarea" v-model="brand.description"></el-input>
-            </el-form-item>
-
-            <el-form-item label="状态">
-                <el-switch v-model="brand.status"
-                           active-value="1"
-                           inactive-value="0"
-                ></el-switch>
-            </el-form-item>
-            <el-form-item>
-                <el-button type="primary" @click="addBrand">提交</el-button>
-                <el-button @click="dialogVisible = false">取消</el-button>
-            </el-form-item>
-        </el-form>
-    </el-dialog>
-
-    <!--表格-->
-    <template>
-        <el-table
-                :data="tableData"
-                style="width: 100%"
-                :row-class-name="tableRowClassName"
-                @selection-change="handleSelectionChange">
-            <el-table-column
-                    type="selection"
-                    width="55">
-            </el-table-column>
-            <el-table-column
-                    type="index"
-                    width="50">
-            </el-table-column>
-            <el-table-column
-                    prop="brandName"
-                    label="品牌名称"
-                    align="center">
-            </el-table-column>
-            <el-table-column
-                    prop="companyName"
-                    label="企业名称"
-                    align="center">
-            </el-table-column>
-            <el-table-column
-                    prop="ordered"
-                    align="center"
-                    label="排序">
-            </el-table-column>
-            <el-table-column
-                    prop="status"
-                    align="center"
-                    label="当前状态">
-            </el-table-column>
-            <el-table-column
-                    align="center"
-                    label="操作">
-                <el-row>
-                    <el-button type="primary">修改</el-button>
-                    <el-button type="danger">删除</el-button>
-                </el-row>
-            </el-table-column>
-
-        </el-table>
-    </template>
-
-    <!--分页工具条-->
-    <el-pagination
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page="currentPage"
-            :page-sizes="[5, 10, 15, 20]"
-            :page-size="5"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="400">
-    </el-pagination>
-
-</div>
-<script src="js/vue.js"></script>
-<script src="element-ui/lib/index.js"></script>
-<link rel="stylesheet" href="element-ui/lib/theme-chalk/index.css">
-<script>
-    new Vue({
-        el: "#app",
-        methods: {
-            tableRowClassName({row, rowIndex}) {
-                if (rowIndex === 1) {
-                    return 'warning-row';
-                } else if (rowIndex === 3) {
-                    return 'success-row';
-                }
-                return '';
-            },
-            // 复选框选中后执行的方法
-            handleSelectionChange(val) {
-                this.multipleSelection = val;
-
-                console.log(this.multipleSelection)
-            },
-            // 查询方法
-            onSubmit() {
-                console.log(this.brand);
-            },
-            // 添加数据
-            addBrand(){
-                console.log(this.brand);
-            },
-            //分页
-            handleSizeChange(val) {
-                console.log(`每页 ${val} 条`);
-            },
-            handleCurrentChange(val) {
-                console.log(`当前页: ${val}`);
-            }
-        },
-        data() {
-            return {
-                // 当前页码
-                currentPage: 4,
-                // 添加数据对话框是否展示的标记
-                dialogVisible: false,
-
-                // 品牌模型数据
-                brand: {
-                    status: '',
-                    brandName: '',
-                    companyName: '',
-                    id:"",
-                    ordered:"",
-                    description:""
-                },
-                // 复选框选中数据集合
-                multipleSelection: [],
-                // 表格数据
-                tableData: [{
-                    brandName: '华为',
-                    companyName: '华为科技有限公司',
-                    ordered: '100',
-                    status: "1"
-                }, {
-                    brandName: '华为',
-                    companyName: '华为科技有限公司',
-                    ordered: '100',
-                    status: "1"
-                }, {
-                    brandName: '华为',
-                    companyName: '华为科技有限公司',
-                    ordered: '100',
-                    status: "1"
-                }, {
-                    brandName: '华为',
-                    companyName: '华为科技有限公司',
-                    ordered: '100',
-                    status: "1"
-                }]
             }
         }
     })

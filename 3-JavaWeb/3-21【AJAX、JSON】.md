@@ -6,7 +6,7 @@
 
 通过AJAX可以给服务器发送请求，服务器将数据直接响应回给浏览器。我们先来看之前做功能的流程：`Servlet` 调用完业务逻辑层后将数据存储到域对象中，然后跳转到指定的 `jsp` 页面，在页面上使用 `EL表达式` 和 `JSTL` 标签库进行数据的展示。
 
-<img src="..\图片\3-22【AJAX、JSON】\1-1.png"/>
+<img src="..\图片\3-22【AJAX、JSON】\1-1.png" />
 
 而我们学习了AJAX 后，就可以使用AJAX和服务器进行通信，以达到使用 HTML+AJAX来替换JSP页面了。浏览器发送请求servlet，servlet 调用完业务逻辑层后将数据直接响应回给浏览器页面，页面使用 HTML 来进行数据展示。
 
@@ -20,11 +20,11 @@
 
 同步发送请求过程如下：浏览器页面在发送请求给服务器，在服务器处理请求的过程中，浏览器页面不能做其他的操作。只能等到服务器响应结束后浏览器页面才能继续做其他的操作。
 
-<img src="..\图片\3-22【AJAX、JSON】\1-3.png"/>
+<img src="..\图片\3-22【AJAX、JSON】\1-3.png" />
 
 异步发送请求过程如下：浏览器页面发送请求给服务器，服务器处理请求过程中，浏览器页面还可以做其他操作。
 
-<img src="..\图片\3-22【AJAX、JSON】\1-4.png"/>
+<img src="..\图片\3-22【AJAX、JSON】\1-4.png" />
 
 ## 1.2  快速入门
 
@@ -81,7 +81,7 @@ public class AjaxServlet extends HttpServlet {
 
 浏览器地址栏输入：http://localhost/html/index.html，在html加载的时候会发送ajax请求。可以通过开发者模式查看发送的 AJAX 请求。在浏览器上按 `F12` 快捷键
 
-![](..\图片\3-22【AJAX、JSON】\1-5.png)
+<img src="..\图片\3-22【AJAX、JSON】\1-5.png" />
 
 ## 1.3 axios
 
@@ -331,7 +331,7 @@ public static void main(String[] args) {
 
 使用Axios + JSON 完成品牌列表数据查询和添加。
 
-<img src="..\图片\3-22【AJAX、JSON】\3-1.png"/>
+<img src="..\图片\3-22【AJAX、JSON】\3-1.png" />
 
 ## 3.1 基础环境准备
 
@@ -386,7 +386,7 @@ public static void main(String[] args) {
     <dependency>
         <groupId>com.alibaba</groupId>
         <artifactId>fastjson</artifactId>
-        <version>1.2.67_noneautotype2</version>
+        <version>2.0.25</version>
     </dependency>
 
     <!-- 日志 -->
@@ -450,7 +450,7 @@ jdbc.password=root
 ```
 
 ```xml
-<!-- log4j的配置文件，这样可以在控制台输出SQL语句 -->
+<!-- log4j的配置文件log4j.xml，这样可以在控制台输出SQL语句，这句注释不要放在第一行-->
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 <!-- xmlns:log4j="http://jakarta.apache.org/log4j/"会爆红，不过没得关系 -->
@@ -478,6 +478,8 @@ jdbc.password=root
 package com.linxuan.pojo;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Brand{
     Integer id;
     String brandName;
@@ -489,6 +491,51 @@ public class Brand{
 ```
 
 ## 3.2 MyBatis环境准备
+
+```xml
+<!-- mybatis-config.xml -->
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!--引入properties文件，此时就可以${属性名}的方式访问属性值-->
+    <properties resource="jdbc.properties"/>
+
+    <!--设置Mybatis全局配置-->
+    <settings>
+        <!-- 开启驼峰命名 -->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+    </settings>
+
+    <typeAliases>
+        <!--以包为单位，设置改包下所有的类型都拥有默认的别名，即类名且不区分大小写-->
+        <package name="com.linxuan.pojo"/>
+    </typeAliases>
+
+    <!--设置连接数据库的环境-->
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <!--设置驱动类的全类名-->
+                <property name="driver" value="${jdbc.driver}"/>
+                <!--设置连接数据库的连接地址-->
+                <property name="url" value="${jdbc.url}"/>
+                <!--设置连接数据库的用户名-->
+                <property name="username" value="${jdbc.username}"/>
+                <!--设置连接数据库的密码-->
+                <property name="password" value="${jdbc.password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <!--引入映射文件-->
+    <mappers>
+        <package name="com.linxuan.dao"/>
+    </mappers>
+</configuration>
+```
 
 ```java
 package com.linxuan.dao;
@@ -510,6 +557,27 @@ public interface BrandDao {
 }
 ```
 
+```xml
+<!-- 在resources目录下面com/linxuan/dao目录下面的BrandDao.xml配置文件-->
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.linxuan.dao.BrandDao">
+
+    <!-- List<Brand> getAll(); -->
+    <select id="getAll" resultType="brand">
+        SELECT * FROM tb_brand;
+    </select>
+
+    <!-- int save(Brand brand); -->
+    <insert id="save">
+        insert into tb_brand value (null, #{brandName}, #{companyName}, #{ordered}, #{description}, #{status});
+    </insert>
+
+</mapper>
+```
+
 ```java
 package com.linxuan.utils;
 
@@ -517,7 +585,7 @@ public class SqlSessionFactoryUtils {
     private static SqlSessionFactory sqlSessionFactory;
 
     static {
-        //静态代码块会随着类的加载而自动执行，且只执行一次
+        // 静态代码块会随着类的加载而自动执行，且只执行一次
         try {
             String resource = "mybatis-config.xml";
             InputStream inputStream = Resources.getResourceAsStream(resource);
@@ -567,77 +635,13 @@ public class BrandService {
 }
 ```
 
-```xml
-<!-- 在resources目录下面com/linxuan/dao目录下面的BrandDao.xml配置文件-->
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.linxuan.dao.BrandDao">
-
-    <!-- List<Brand> getAll(); -->
-    <select id="getAll" resultType="brand">
-        SELECT * FROM tb_brand;
-    </select>
-
-    <!-- int save(Brand brand); -->
-    <insert id="save">
-        insert into tb_brand value (null, #{brandName}, #{companyName}, #{ordered}, #{description}, #{status});
-    </insert>
-
-</mapper>
-```
-
-```xml
-<!-- mybatis-config.xml -->
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE configuration
-        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-config.dtd">
-<configuration>
-    <!--引入properties文件，此时就可以${属性名}的方式访问属性值-->
-    <properties resource="jdbc.properties"/>
-
-    <!--设置Mybatis全局配置-->
-    <settings>
-        <!-- 开启驼峰命名 -->
-        <setting name="mapUnderscoreToCamelCase" value="true"/>
-    </settings>
-
-    <typeAliases>
-        <!--以包为单位，设置改包下所有的类型都拥有默认的别名，即类名且不区分大小写-->
-        <package name="com.linxuan.pojo"/>
-    </typeAliases>
-
-    <!--设置连接数据库的环境-->
-    <environments default="development">
-        <environment id="development">
-            <transactionManager type="JDBC"/>
-            <dataSource type="POOLED">
-                <!--设置驱动类的全类名-->
-                <property name="driver" value="${jdbc.driver}"/>
-                <!--设置连接数据库的连接地址-->
-                <property name="url" value="${jdbc.url}"/>
-                <!--设置连接数据库的用户名-->
-                <property name="username" value="${jdbc.username}"/>
-                <!--设置连接数据库的密码-->
-                <property name="password" value="${jdbc.password}"/>
-            </dataSource>
-        </environment>
-    </environments>
-
-    <!--引入映射文件-->
-    <mappers>
-        <package name="com.linxuan.dao"/>
-    </mappers>
-</configuration>
-```
-
 ```java
 package com.linxuan.service;
 
 // 测试类，在Test目录下面创建
 public class BrandServiceTest {
+
+    BrandService brandService = new BrandService();
 
     // 测试Service里面的方法是否成功
     @Test
@@ -647,7 +651,7 @@ public class BrandServiceTest {
 
     @Test
     public void testSave() {
-        Brand brand = new Brand(null, "三只松鼠111", "三只松鼠", 111, "三只松鼠", 0);
+        Brand brand = new Brand(null, "三只松鼠111", "三只松鼠", 111L, "三只松鼠", 0);
         int ret = brandService.save(brand);
         System.out.println(ret);
     }
@@ -656,31 +660,8 @@ public class BrandServiceTest {
 
 ## 3.3 查询所有
 
-```java
-@WebServlet("/selectAll")
-public class SelectAllServlet extends HttpServlet {
-    private BrandService brandService = new BrandService();
-
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // 设置返回编码
-        resp.setContentType("text/json;charset=utf-8");
-        // 调用service类里面的getAll方法
-        List<Brand> brands = brandService.getAll();
-        // 打印控制台看看有没有执行
-        // System.out.println(JSON.toJSONString(brands));
-        // 将方法返回值转换为JSON格式返回前端
-        resp.getWriter().write(JSON.toJSONString(brands));
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        this.doGet(req, resp);
-    }
-}
-```
-
 ```html
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -698,7 +679,7 @@ public class SelectAllServlet extends HttpServlet {
     //1. 当页面加载完成后，发送ajax请求
     window.onload = function () {
         //2. 发送ajax请求
-        axios.get("http://localhost/selectAll").then(function (resp) {
+        axios.get("/selectAll").then(function (resp) {
             //获取数据
             let brands = resp.data;
             let tableData = " <tr>\n" +
@@ -735,7 +716,99 @@ public class SelectAllServlet extends HttpServlet {
 </html>
 ```
 
+```java
+@WebServlet("/selectAll")
+public class SelectAllServlet extends HttpServlet {
+    private BrandService brandService = new BrandService();
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // 设置返回编码
+        resp.setContentType("text/json;charset=utf-8");
+        // 调用service类里面的getAll方法
+        List<Brand> brands = brandService.getAll();
+        // 打印控制台看看有没有执行
+        // System.out.println(JSON.toJSONString(brands));
+        // 将方法返回值转换为JSON格式返回前端
+        resp.getWriter().write(JSON.toJSONString(brands));
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        this.doGet(req, resp);
+    }
+}
+```
+
 ## 3.4 添加功能
+
+```html
+<!-- addBrand.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>添加品牌</title>
+</head>
+<body>
+<h3>添加品牌</h3>
+<form action="" method="post">
+    品牌名称：<input id="brandName" name="brandName" /><br>
+    企业名称：<input id="companyName" name="companyName" /><br>
+    排序：<input id="ordered" name="ordered" /><br>
+    描述信息：<textarea rows="5" cols="20" id="description" name="description"></textarea><br>
+    状态：
+    <input type="radio" name="status" value="0">禁用
+    <input type="radio" name="status" value="1">启用<br>
+
+    <input type="button" id="btn" value="提交">
+</form>
+
+<!-- 引入axios.js文件 -->
+<script src="js/axios-0.18.0.js"></script>
+<script>
+    // 给按钮绑定单击事件
+    document.getElementById("btn").onclick = function () {
+        // 将表单数据转为json
+        var formData = {
+            brandName: "",
+            companyName: "",
+            ordered: "",
+            description: "",
+            status: "",
+        };
+        // 获取表单数据
+        let brandName = document.getElementById("brandName").value;
+        let companyName = document.getElementById("companyName").value;
+        let ordered = document.getElementById("ordered").value;
+        let description = document.getElementById("description").value;
+        // 这个不需要获取值，获取到的是两个对象，然后遍历
+        let status = document.getElementsByName("status");
+
+        // 设置数据
+        formData.brandName = brandName;
+        formData.companyName = companyName;
+        formData.ordered = ordered;
+        formData.description = description;
+        // 因为有两个status，所以需要都获取到，然后遍历看看哪一个被选中了，最后赋值
+        for (let i = 0; i < status.length; i++) {
+            if (status[i].checked) {
+                formData.status = status[i].value;
+            }
+        }
+
+        // 发送ajax请求
+        axios.post("/save", formData).then(function (resp) {
+            // 判断响应数据是否为 success
+            if (resp.data == "success") {
+                location.href = "http://localhost/brand.html";
+            }
+        })
+    }
+</script>
+</body>
+</html>
+```
 
 ```java
 @WebServlet("/save")
@@ -767,70 +840,228 @@ public class AddServlet extends HttpServlet {
 }
 ```
 
+## 3.5 Vue优化查询所有
+
+Vue声明周期/钩子函数如下：
+
+| 状态          | 阶段周期 |
+| ------------- | -------- |
+| beforeCreate  | 创建前   |
+| created       | 创建后   |
+| beforeMount   | 载入前   |
+| mounted       | 挂载完成 |
+| beforeUpdate  | 更新前   |
+| updated       | 更新后   |
+| beforeDestroy | 销毁前   |
+| destroyed     | 销毁后   |
+
+`mounted`：挂载完成，Vue初始化成功，HTML页面渲染成功。而以后我们会在该方法中发送异步请求，加载数据。
+
+我们的目的是页面加载完成之后发送异步请求`/select`给后端，后端查询数据然后返回给前端，最后遍历集合数据展示表格即可。使用Vue优化的话，函数可以放在`mounted`钩子函数里面，遍历可以使用`v-for`标签。
+
 ```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>添加品牌</title>
+    <title>Title</title>
 </head>
 <body>
-<h3>添加品牌</h3>
-<form action="" method="post">
-    品牌名称：<input id="brandName" name="brandName" /><br>
-    企业名称：<input id="companyName" name="companyName" /><br>
-    排序：<input id="ordered" name="ordered" /><br>
-    描述信息：<textarea rows="5" cols="20" id="description" name="description"></textarea><br>
-    状态：
-    <input type="radio" name="status" value="0">禁用
-    <input type="radio" name="status" value="1">启用<br>
-
-    <input type="button" id="btn" value="提交">
-</form>
-
-<!-- 引入axios.js文件 -->
+<div id="app">
+    <a href="addBrand.html"><input type="button" value="新增"></a><br>
+    <hr>
+    <table id="brandTable" border="1" cellspacing="0" width="100%">
+        <tr>
+            <th>序号</th>
+            <th>品牌名称</th>
+            <th>企业名称</th>
+            <th>排序</th>
+            <th>品牌介绍</th>
+            <th>状态</th>
+            <th>操作</th>
+        </tr>
+        <!--
+            使用v-for遍历tr
+        -->
+        <tr v-for="(brand, i) in brands" align="center">
+            <td>{{i + 1}}</td>
+            <td>{{brand.brandName}}</td>
+            <td>{{brand.companyName}}</td>
+            <td>{{brand.ordered}}</td>
+            <td>{{brand.description}}</td>
+            <td>{{brand.statusStr}}</td>
+            <td><a href="#">修改</a> <a href="#">删除</a></td>
+        </tr>
+    </table>
+</div>
 <script src="js/axios-0.18.0.js"></script>
+<script src="js/vue.js"></script>
+
 <script>
-    //1. 给按钮绑定单击事件
-    document.getElementById("btn").onclick = function () {
-        // 将表单数据转为json
-        var formData = {
-            brandName: "",
-            companyName: "",
-            ordered: "",
-            description: "",
-            status: "",
-        };
-        // 获取表单数据
-        let brandName = document.getElementById("brandName").value;
-        let companyName = document.getElementById("companyName").value;
-        let ordered = document.getElementById("ordered").value;
-        let description = document.getElementById("description").value;
-        // 这个不需要获取值，获取到的是两个对象，然后遍历
-        let status = document.getElementsByName("status");
-
-        // 设置数据
-        formData.brandName = brandName;
-        formData.companyName = companyName;
-        formData.ordered = ordered;
-        formData.description = description;
-        // 因为有两个status，所以需要都获取到，然后遍历看看哪一个被选中了，最后赋值
-        for (let i = 0; i < status.length; i++) {
-            if (status[i].checked) {
-                //
-                formData.status = status[i].value;
+    new Vue({
+        el: "#app",
+        // 在 Vue 对象中定义模型数据
+        data() {
+            return {
+                brands: []
             }
+        },
+        // 在钩子函数中发送异步请求，并将响应的数据赋值给数据模型
+        mounted() {
+            // 页面加载完成后，发送异步请求，查询数据
+            var _this = this;
+
+            // 这个可以省略成下面的
+            axios({
+                method: "get",
+                url: "/selectAll"
+            }).then(function (resp) {
+                _this.brands = resp.data;
+            })
+
+            // 等同于下面的
+            // axios.get("/selectAllServlet").then(function (resp) {
+            //     _this.brands = resp.data;
+            // })
         }
-
-        // 2. 发送ajax请求
-        axios.post("http://localhost/save", formData).then(function (resp) {
-            // 判断响应数据是否为 success
-            if (resp.data == "success") {
-                location.href = "http://localhost/brand.html";
-            }
-        })
-    }
+    })
 </script>
 </body>
 </html>
 ```
+
+## 3.6 Vue优化添加功能
+
+<img src="..\图片\3-22【AJAX、JSON】\3-1.png" />
+
+点击新增后跳转到一个新增的页面，新增完成之后点击提交按钮，发送ajax请求，携带JSON数据传送给后台。后台获取数据，添加至数据库并返回结果。前端获取后端返回的数据，判断是否添加成功，成功则跳转列表页面。
+
+使用Vue优化的话，可以给这些框绑定一个模型数据，利用双向绑定特性，在发送异步请求时提交数据。
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>添加品牌</title>
+    </head>
+    <body>
+        <div id="app">
+            <h3>添加品牌</h3>
+            <form action="" method="post">
+                品牌名称：<input id="brandName" v-model="brand.brandName" name="brandName"><br>
+                企业名称：<input id="companyName" v-model="brand.companyName" name="companyName"><br>
+                排序：<input id="ordered" v-model="brand.ordered" name="ordered"><br>
+                描述信息：<textarea rows="5" cols="20" id="description" v-model="brand.description" name="description"></textarea><br>
+                状态：
+                <input type="radio" name="status" v-model="brand.status" value="0">禁用
+                <input type="radio" name="status" v-model="brand.status" value="1">启用<br>
+
+                <input type="button" id="btn" @click="submitForm" value="提交">
+            </form>
+        </div>
+        <script src="js/axios-0.18.0.js"></script>
+        <script src="js/vue.js"></script>
+        <script>
+            new Vue({
+                el: "#app",
+                data(){
+                    return {
+                        brand:{}
+                    }
+                },
+                methods:{
+                    submitForm(){
+                        // 发送ajax请求，添加
+                        var _this = this;
+                        axios({
+                            method:"post",
+                            url:"/addServlet",
+                            data:_this.brand
+                        }).then(function (resp) {
+                            // 判断响应数据是否为 success
+                            if(resp.data == "success"){
+                                location.href = "/brand.html";
+                            }
+                        })
+                    }
+                }
+            })
+        </script>
+    </body>
+</html>
+```
+
+
+
+1. **在 addBrand.html 页面引入 vue 的js文件**
+
+   ```html
+   <script src="js/vue.js"></script>
+   ```
+
+2. **创建 Vue 对象**
+
+   * 在 Vue 对象中定义模型数据 `brand` 
+   * 定义一个 `submitForm()` 函数，用于给 `提交` 按钮提供绑定的函数
+   * 在 `submitForm()` 函数中发送 ajax 请求，并将模型数据 `brand` 作为参数进行传递
+
+   ```js
+   new Vue({
+       el: "#app",
+       data(){
+           return {
+               brand:{}
+           }
+       },
+       methods:{
+           submitForm(){
+               // 发送ajax请求，添加
+               var _this = this;
+               axios({
+                   method:"post",
+                   url:"http://localhost:8080/brand-demo/addServlet",
+                   data:_this.brand
+               }).then(function (resp) {
+                   // 判断响应数据是否为 success
+                   if(resp.data == "success"){
+                       location.href = "http://localhost:8080/brand-demo/brand.html";
+                   }
+               })
+   
+           }
+       }
+   })
+   ```
+
+3. **修改视图**
+
+   * 定义 `<div id="app"></div>` ，指定该 `div` 标签受 Vue 管理
+
+   * 将 `body` 标签中所有的内容拷贝作为上面 `div` 标签中
+
+   * 给每一个表单项标签绑定模型数据。最后这些数据要被封装到 `brand` 对象中
+
+     ```html
+     <div id="app">
+         <h3>添加品牌</h3>
+         <form action="" method="post">
+             品牌名称：<input id="brandName" v-model="brand.brandName" name="brandName"><br>
+             企业名称：<input id="companyName" v-model="brand.companyName" name="companyName"><br>
+             排序：<input id="ordered" v-model="brand.ordered" name="ordered"><br>
+             描述信息：<textarea rows="5" cols="20" id="description" v-model="brand.description" name="description"></textarea><br>
+             状态：
+             <input type="radio" name="status" v-model="brand.status" value="0">禁用
+             <input type="radio" name="status" v-model="brand.status" value="1">启用<br>
+     
+             <input type="button" id="btn" @click="submitForm" value="提交">
+         </form>
+     </div>
+     ```
+
+**整体页面代码如下：**
+
+```html
+
+```
+

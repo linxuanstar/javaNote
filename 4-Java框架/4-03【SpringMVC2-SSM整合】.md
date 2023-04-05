@@ -1094,7 +1094,7 @@ public Result getById(@PathVariable Integer id) {
 
 ![1630658821746](../图片/4-03【SpringMVC】/2-5.png)
 
-# 第五章 拦截器
+# 第五章 拦截器Interceptor
 
 讲解拦截器的概念之前，我们先看一张图:
 
@@ -1282,20 +1282,20 @@ public Result getById(@PathVariable Integer id) {
    // 定义拦截器类，实现HandlerInterceptor接口
    // 注意当前类必须受Spring容器控制
    public class ProjectInterceptor implements HandlerInterceptor {
-       //原始方法调用前执行的内容
+       // 原始方法调用前执行的内容
        @Override
        public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
            System.out.println("preHandle...");
            return true;
        }
    
-       //原始方法调用后执行的内容
+       // 原始方法调用后执行的内容
        @Override
        public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
            System.out.println("postHandle...");
        }
    
-       //原始方法调用完成后执行的内容
+       // 原始方法调用完成后执行的内容
        @Override
        public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
            System.out.println("afterCompletion...");
@@ -1392,7 +1392,7 @@ public Result getById(@PathVariable Integer id) {
   
       @Override
       public void addInterceptors(InterceptorRegistry registry) {
-          //配置多拦截器
+          // 配置多拦截器
           registry.addInterceptor(projectInterceptor).addPathPatterns("/books", "/books/*");
       }
   }
