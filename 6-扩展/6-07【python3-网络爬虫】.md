@@ -94,7 +94,7 @@ from lxml import etree
 resp = requests.get('https://baidu.com')
 resp.encoding = chardet.detect(resp.content)['encoding']
 
-dom = etree.HTML(resp.text)  # 接受字符串
+dom = etree.HTML(resp.text)  # 接收字符串
 print(dom.xpath('/html/head/title')) # 打印地址 [<Element title at 0x241cdf84dc0>]
 print(dom.xpath('/html/head/title/text()'))  # 取出来值 ['百度一下，你就知道']
 ```
@@ -278,4 +278,66 @@ chrome开发者工具各面板功能如下。
 当数据转成dataframe后，再根据业务需求将dataframe写入磁盘，常用的形式有csv文件、数据库文件或json文件。
 
 将数据存储为JSON文件的过程为一个编码过程，编码过程常用dump函数, 将Python对象转换为JSON对象，并通过fp文件流将JSON对象写入文件内。
+
+# 第四章 案例
+
+## 4.1 爬取淘宝
+
+```python
+url = "https://uland.taobao.com/sem/tbsearch?refpid=mm_26632258_3504122_32538762&keyword=%E5%8C%85%E5%8C%85&clk1=8770d7f6cdda9fb3a62239ab2331e522&upsId=8770d7f6cdda9fb3a62239ab2331e522&spm=a2e0b.20350158.31919782.1&pid=mm_26632258_3504122_32538762&union_lens=recoveryid%3A201_33.61.131.248_14791355_1680917201800%3Bprepvid%3A201_33.61.131.248_14791355_1680917201800&pnum="
+
+
+# 获取响应数据
+def get_html(url):
+    browser = webdriver.Chrome()
+    browser.get(url)
+    response = browser.page_source
+    browser.close()
+    return response
+
+
+# 将响应数据转为DOM树将需要的数据进行解析
+def parser(resp):
+    # 转为DOM树
+    dom = etree.HTML(resp)
+    # 将所有需要的数据放到li_list列表里面
+    li_list = dom.xpath('//*[@id="mx_5"]/ul/li')
+    # 设置结果为package_info列表
+    package_info = []
+    # 循环列表变成字典放到package_info列表里面
+    for li in li_list:
+        # 获取商品名称栏
+        title = li.xpath('./a/div[1]/span/text()')[0]
+        # 获取价格栏
+        price = li.xpath('./a/div[2]/span[2]/text()')[0]
+        # 获取店铺栏
+        shop = li.xpath('./a/div[3]/div/text()')[0]
+        # 获取月销栏
+        sales = li.xpath('./a/div[4]/div[2]/text()')[0].split(" ")[1]
+        # 以字典的格式向package_info列表里面添加
+        package_info.append({'商品名称': title, '价格': price, '店铺': sales, '销量': sales})
+    return package_info
+
+
+# 存储数据
+def save_info_csv(package_info):
+    # 直接转为DataFrame格式，不需要添加索引
+    df = pd.DataFrame(package_info)
+    # 以追加的方式，不需要索引：mode='a', index=False
+    df.to_excel('./package1.xlsx', index=False)
+
+
+if __name__ == '__main__':
+    resp = ""
+    for i in range(1, 3):
+        # 获取链接
+        url += "i"
+        # 获取响应结果
+        resp += get_html(url)
+    # 列表里面存储字典获取数据
+    package_info = parser(resp)
+    # 存储至CSV文件
+    save_info_csv(package_info)
+
+```
 

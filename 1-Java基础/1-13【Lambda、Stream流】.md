@@ -1889,3 +1889,13 @@ public class Demo08Stream_concat {
 }
 ```
 
+### 4.4.8 收集--collect
+
+collect是Stream流的一个**终止方法**，会使用传入的收集器（入参）对结果执行相关的操作，这个收集器必须是Collector接口的某个具体实现类。
+
+常用：
+
+```java
+.collect(Collectors.toList())
+```
+

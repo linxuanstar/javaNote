@@ -389,7 +389,7 @@ JavaScript允许对任意数据类型作比较，但特别要注意相等于算�
 
   ```js
   // false。如果是==那么会转类型再比较，结果就是true。但是===不会转类型，所以返回false
-  null === undefined      
+  null === undefined
   ```
 
 注意： NaN与其他的值都不想等，包括他自己，唯一能判断NaN的方法是通过`isNaN()`函数：`isNaN(NaN);`
