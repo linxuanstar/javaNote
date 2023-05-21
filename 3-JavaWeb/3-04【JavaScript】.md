@@ -1286,7 +1286,7 @@ innerHTML：获取元素节点的内容。尽管innerHTML只对元素节点有�
 
 DOM的思想就是每个节点都是对象，是对象我们就可以通过一些方法获取它或者改变它的属性等。可以通过多种方法来查找DOM元素：
 
-1. 使用`getElementById()`和`getElementByTagName()`和getElementsByClassName()方法
+1. 使用`getElementById()`和`getElementByTagName()`和`getElementsByClassName()`方法
 
 2. 通过一个元素节点的`parentNode`、`childNodes`、`children`、`firstChild`和`lastChild`和`previousSibling`和`nextSibling`。
 

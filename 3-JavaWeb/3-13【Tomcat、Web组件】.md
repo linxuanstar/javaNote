@@ -62,7 +62,7 @@ Using CLASSPATH:       "E:\Tomcat\apache-tomcat-9.0.11\bin\bootstrap.jar;E:\Tomc
    ```
    
 
-一般会将Tomcat的默认端口设置为80，80端口号是http协议的默认端口号，这样，访问的时候直接输入localhost就可以了，不用输入端口号了。
+一般会将Tomcat的默认端口设置为80(server.xml里面修改)，80端口号是http协议的默认端口号，这样，访问的时候直接输入localhost就可以了，不用输入端口号了。
 
 ## 1.2 Tomcat部署项目
 

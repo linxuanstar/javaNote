@@ -625,13 +625,13 @@ spring.profiles.active=pro
  `SpringBoot` 提供了在运行 `jar` 时设置开启指定的环境的方式，如下
 
 ```shell
-java –jar springboot.jar –-spring.profiles.active=test
+java -jar springboot.jar --spring.profiles.active=pro
 ```
 
 这种方式能修改临时端口号：
 
 ```shell
-java –jar springboot.jar –-server.port=88
+java -jar springboot.jar --server.port=88
 ```
 
 当然也可以同时设置多个配置，比如即指定启用哪个环境配置，又临时指定端口，如下

@@ -514,7 +514,7 @@ SHOW GRANTS FOR "zhangsan"@"localhost";
 ```sql
 -- 授予权限
 GRANT 权限列表 ON 数据库名称.表名 TO "用户名"@"主机名称";
-GRANT SELECT, DELETE, UPDATE ON day3.account TO "zhangsan"@"localhost";
+GRANT SELECT, DELETE, UPDATE, INSERT ON day3.account TO "zhangsan"@"localhost";
 -- 授予全部权限
 GRANT ALL ON *.* TO "zhangsan"@"localhost";       
 ```

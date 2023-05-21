@@ -96,6 +96,7 @@
 CREATE DATABASE IF NOT EXISTS linxuan CHARACTER SET utf8;
 # 使用linxuan数据库
 USE linxuan;
+DROP TABLE IF EXISTS tb_book;
 # 如果不存在tb_book表那么就创建
 CREATE TABLE IF NOT EXISTS tb_book(
     id int primary key auto_increment,
@@ -178,13 +179,21 @@ public class MyBatisConfig {
     // 定义bean，SqlSessionFactoryBean，用于产生SqlSessionFactory对象
     // 这里的dataSource会自动装配进去，我们不用管
     @Bean
-    public SqlSessionFactoryBean sqlSessionFactory(DataSource dataSource) {
-        SqlSessionFactoryBean ssfb = new SqlSessionFactoryBean();
+    public SqlSessionFactoryBean sqlSessionFactory(DataSource dataSource) throws Exception {
+        SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
         // 设置模型类的别名扫描，这个等于<typeAliases><package name="com.linxuan.domain"></typeAliases>
-        ssfb.setTypeAliasesPackage("com.linxuan.domain");
-        // 设置数据源
-        ssfb.setDataSource(dataSource);
-        return ssfb;
+        sqlSessionFactoryBean.setTypeAliasesPackage("com.linxuan.domain");
+        // 设置数据源 这个要在前面配置 否则会报错
+        sqlSessionFactoryBean.setDataSource(dataSource);
+
+
+        Configuration configuration = sqlSessionFactoryBean.getObject().getConfiguration();
+        // 设置配置中的日志 采用标准输出 可以采用 Log4jImpl.class
+        configuration.setLogImpl(StdOutImpl.class);
+        // 开启驼峰命名
+        configuration.setMapUnderscoreToCamelCase(true);
+        sqlSessionFactoryBean.setConfiguration(configuration);
+        return sqlSessionFactoryBean;
     }
 
     // 定义bean，返回MapperScannerConfigurer对象
@@ -350,7 +359,14 @@ applicationContext.xml
     <!-- mybatis和spring完美整合，不需要mybatis的配置映射文件 -->
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/>
-        <property name="typeAliasesPackage" value="com.linxuan.domain"/>
+        <property name="typeAliasesPackage" value="com.linxuan.entity"/>
+        <!-- 配置配置类 -->
+        <property name="configuration" ref="settings"/>
+    </bean>
+
+    <!-- mybatis配置驼峰形式的设置类 -->
+    <bean id="settings" class="org.apache.ibatis.session.Configuration">
+        <property name="mapUnderscoreToCamelCase" value="true"/>
     </bean>
 
     <!-- DAO接口所在包名，Spring会自动查找其下的类 -->

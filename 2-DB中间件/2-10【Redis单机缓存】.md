@@ -171,7 +171,7 @@ redis-cli shutdown
 
 # 第二章 命令操作
 
-<!-- string、hash、list、set、sortedset -->
+<!-- string、hash、list、set、sortedset/zset -->
 
 `redis`存储的是`key,value`格式的数据，其中`key`都是字符串，`value`有5种不同的数据结构：
 
@@ -1180,10 +1180,14 @@ spring:
     jedis:
       # Redis连接池配置
       pool:
-        max-active: 8 # 最大连接数量
-        max-wait: 1ms # 连接池最大阻塞等待时间
-        max-idle: 4 # 连接池中的最大空闲连接
-        min-idle: 0 # 连接池中的最小空闲连接
+        # 最大连接数量
+        max-active: 8 
+        # 连接池最大阻塞等待时间
+        max-wait: 1ms 
+        # 连接池中的最大空闲连接
+        max-idle: 4 
+        # 连接池中的最小空闲连接
+        min-idle: 0 
 ```
 
 ```java
@@ -1247,41 +1251,120 @@ public void testString() {
 }
 ```
 
+操作String类型数据：
+
+| 方法                                        | 作用                                                  |
+| ------------------------------------------- | ----------------------------------------------------- |
+| redisTemplate.opsForValue()                 | 获取到RedisOperations，这样可以操作String类型数据了   |
+| RedisOperations.get(key)                    | 获取                                                  |
+| RedisOperations.set(key, value)             | 设置值                                                |
+| RedisOperations.set(key, value, time, unit) | 设置值存储，有时间限制，第三四个参数是时间，单位      |
+| RedisOperations.setIfAbsent(key, value)     | 如果Redis中没有key，那么存储并返回true，否则返回false |
+
 操作Hash类型数据：
 
-* `redisTemplate.opsForHash()`：获取到HashOperations
-* `HashOperations.put()`：存储
-* `HashOperations.get()`：获取
-* `HashOperations.keys()`：获取hash结构中的所有字段
-* `HashOperations.values()`：获取hash结构中的所有值
+| 方法                       | 作用                                             |
+| -------------------------- | ------------------------------------------------ |
+| redisTemplate.opsForHash() | 获取到HashOperations，这样可以操作Hash类型数据了 |
+| HashOperations.put()       | 存储                                             |
+| HashOperations.get()       | 获取                                             |
+| HashOperations.keys()      | 获取hash结构中的所有字段                         |
+| HashOperations.values()    | 获取hash结构中的所有值                           |
 
 操作List类型数据：
 
-* `redisTemplate.opsForList()`：获取到ListOperations
-* `ListOperations.leftPush()`：头部左侧存储一个值
-* `ListOperations.leftPushAll()`：存储多个值
-* `ListOperations.range()`：根据范围取值
-* `ListOperations.rightPop()`：从末尾取值并移除队列
-* `ListOperations.size()`：获得列表长度
+| 方法                         | 作用                                             |
+| ---------------------------- | ------------------------------------------------ |
+| redisTemplate.opsForList()   | 获取到ListOperations，这样可以操作List类型数据了 |
+| ListOperations.leftPush()    | 头部左侧存储一个值                               |
+| ListOperations.leftPushAll() | 存储多个值                                       |
+| ListOperations.range()       | 根据范围取值                                     |
+| ListOperations.rightPop()    | 从末尾取值并移除队列                             |
+| ListOperations.size()        | 获得列表长度                                     |
 
 操作Set类型的数据：
 
-* `redisTemplate.opsForSet()`：获取到SetOperations
-* `SetOperations.add()`：存储，可以存储多个值，但是不能够存储重复的值，无序的
-* `SetOperations.members()`：取值
-* `SetOperations.remove()`：删除成员 
+| 方法                      | 作用                                                 |
+| ------------------------- | ---------------------------------------------------- |
+| redisTemplate.opsForSet() | 获取到SetOperations，这样可以操作Set类型的数据       |
+| SetOperations.add()       | 存储，可以存储多个值，但是不能够存储重复的值，无序的 |
+| SetOperations.members()   | 取值                                                 |
+| SetOperations.remove()    | 删除成员                                             |
 
 操作ZSet类型的数据：
 
-* `redisTemplate.opsForZSet()`：获取到ZSetOperations
-* `ZSetOperations.add()`：存储值
-* `ZSetOperations.range()`：取值
-* `ZSetOperations.incrementScore()`：修改分数
-* `ZSetOperations.remove()`：删除成员
+| 方法                            | 作用                 |
+| ------------------------------- | -------------------- |
+| redisTemplate.opsForZSet()      | 获取到ZSetOperations |
+| ZSetOperations.add()            | 存储值               |
+| ZSetOperations.range()          | 取值                 |
+| ZSetOperations.incrementScore() | 修改分数             |
+| ZSetOperations.remove()         | 删除成员             |
 
 通用操作：
 
-* `redisTemplate.keys("*")`：获取Redis中所有的key
-* `redisTemplate.hasKey()`：判断某个key是否存在，字符串类型
-* `redisTemplate.delete()`：删除指定key
-* `redisTemplate.type()`：获取指定key对应的value的数据类型
+| 方法                    | 作用                             |
+| ----------------------- | -------------------------------- |
+| redisTemplate.keys("*") | 获取Redis中所有的key             |
+| redisTemplate.hasKey()  | 判断某个key是否存在，字符串类型  |
+| redisTemplate.delete()  | 删除指定key                      |
+| redisTemplate.type()    | 获取指定key对应的value的数据类型 |
+
+## 4.3 RedisTemplate
+
+**`RedisTemplate`中的几个角色：**
+
+1. `RedisSerializer`：由于与Redis服务器的通信一定是使用字节数组完成的，所以`RedisSerializer`是将Java对象编码解码的组件
+2. `RedisOperations`：封装了一些Redis操作
+3. `XXXOperations`：封装了指定类型或功能的数据的操作，如`ZSetOperations`
+
+### 4.3.1 常见属性
+
+RedisTemplate的成员属性中有如下和序列化器相关的属性：
+
+```java
+// 是否启用默认序列化器
+private boolean enableDefaultSerializer = true;
+// 默认序列化器
+private @Nullable RedisSerializer<?> defaultSerializer;
+ 
+// 键的序列化器
+@SuppressWarnings("rawtypes") private @Nullable RedisSerializer keySerializer = null;
+// 值序列化器
+@SuppressWarnings("rawtypes") private @Nullable RedisSerializer valueSerializer = null;
+// hash键序列化器
+@SuppressWarnings("rawtypes") private @Nullable RedisSerializer hashKeySerializer = null;
+// hash值序列化器
+@SuppressWarnings("rawtypes") private @Nullable RedisSerializer hashValueSerializer = null;
+// 字符串序列化器，使用StringRedisSerializer
+private RedisSerializer<String> stringSerializer = RedisSerializer.string();
+```
+
+我们可以对RedisTemplate进行设置，在不同的情况下使用不同的序列化器，如在hash值的序列化上使用Jdk序列化器，而在普通的值上使用字符串序列化器。
+
+`RedisTemplate`继承了`InitailizingBean`，所以，在Bean的初始化阶段结束后，它的`afterPropertiesSet`方法被调用。这里面要求了所有的（除了那个`stringSerializer`之外）操作都将使用Jdk自带的序列化和反序列化来对对象进行编解码，这要求你传入到Redis中的对象必须实现了`Serializable`接口。
+
+这也就是用假设我们存储普通字符串类型，那么也会使用JDK序列化机制，也就是会出现一些莫名奇妙的前缀，所以需要更改为String序列化器`StringRedisSerializer`。
+
+### 4.3.2 RedisSerializer
+
+`RedisSerializer`提供了两个方法，一个用于序列化，一个用于反序列化。并且，它提供了一个泛型T，代表该序列化器处理的类型。
+
+```java
+public interface RedisSerializer<T> {
+	@Nullable
+	byte[] serialize(@Nullable T t) throws SerializationException;
+    
+	@Nullable
+	T deserialize(@Nullable byte[] bytes) throws SerializationException;
+}
+```
+
+它的常用实现类有下面这些：
+
+| 实现类                          | 作用                              |
+| ------------------------------- | --------------------------------- |
+| JdkSerializationRedisSerializer | JDK序列化机制，默认采用的就是这种 |
+| StringRedisSerializer           | 字符串序列化机制                  |
+| Jackson2JsonRedisSerializer     | 将对象转为JSON存储                |
+

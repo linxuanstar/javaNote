@@ -1,45 +1,94 @@
 ![](..\图片\3-33【Nginx】\1.png)
 
-# 第一章 Nginx
+# 第一章 Nginx 基础
 
-## 1.1 Nginx基础
+[Nginx](https://nginx.org/) 是一款高性能的 http 服务器/反向代理服务器及电子邮件（IMAP/POP3）代理服务器。由俄罗斯的程序设计师伊戈尔·西索夫（Igor Sysoev）所开发，官方测试 nginx 能够支支撑 5 万并发链接，并且 cpu、内存等资源消耗却非常低，运行非常稳定。
 
-Nginx 是一款高性能的 http 服务器/反向代理服务器及电子邮件（IMAP/POP3）代理服务器。由俄罗斯的程序设计师伊戈尔·西索夫（Igor Sysoev）所开发，官方测试 nginx 能够支支撑 5 万并发链接，并且 cpu、内存等资源消耗却非常低，运行非常稳定。
-
-**Nginx** **应用场景：**
+Nginx 应用场景：
 
 1. http 服务器。Nginx 是一个 http 服务可以独立提供 http 服务。可以做网页静态服务器。
 2. 虚拟主机。可以实现在一台服务器虚拟出多个网站。例如个人网站使用的虚拟主机。
 3. 反向代理，负载均衡。当网站的访问量达到一定程度后，单台服务器不能满足用户的请求时，需要用多台服务器集群可以使用 nginx 做反向代理。并且多台服务器可以平均分担负载，不会因为某台服务器负载高宕机而某台服务器闲置的情况。 
 
-## 1.2 Nginx在Linux下的安装
+```sh
+# 下载前进行操作，同样也是卸载操作，如果需要卸载也可以怎么做
+# 如果有nginx在运行中查找出来，使用kill -9 端口号 将进程干掉
+[root@linxuanVM software]# ps -ef | grep nginx
+# 查看所有与Nginx有关的文件夹
+[root@linxuanVM software]# find / -name nginx
+# 删除与Nginx有关的文件夹
+[root@linxuanVM software]# rm -rf file 文件夹
 
-这里我有两台Centos的虚拟机，在克隆的机子上面搞的。将之前的Nginx删除了，安装了新的：
+# 安装编译所需依赖包
+[root@linxuanVM software]# yum -y install gcc pcre-devel zlib-devel openssl openssl-devel
+# 下载wget可以从网络上下载包
+[root@linxuanVM software]# yum install wget
+# 使用wget获取nginx，如果遇到下面情况，那么需要将其删除然后重新下载
+[root@linxuanVM software]# wget https://nginx.org/download/nginx-1.16.1.tar.gz
+-bash: wget: command not found
+[root@linxuanVM software]# yum remove wget
+[root@linxuanVM software]# yum -y install wget
 
-卸载：
+# 解压
+[root@linxuanVM software]# tar -zxvf nginx-1.16.1.tar.gz -C ../server/
+# 进入解压目录
+[root@linxuanVM software]# cd ../server/nginx-1.16.1/
+# 软件安装地址，一会编译之后就会安装的地址
+[root@linxuanVM software]# ./configure --prefix=/opt/server/nginx
+# 编译及安装
+[root@linxuanVM software]# make && make install
+# 软件就安装好了
+[root@linxuanVM server]# ll nginx
+total 16
+drwxr-xr-x 2 root root 4096 May  7 20:39 conf
+drwxr-xr-x 2 root root 4096 May  7 20:39 html
+drwxr-xr-x 2 root root 4096 May  7 20:39 logs
+drwxr-xr-x 2 root root 4096 May  7 20:39 sbin
+```
 
-1. 查找Nginx进程 `ps -ef | grep nginx`，如果有启动的进程（3~4行），关闭：`./nginx -s stop` 停止Nginx服务（在sbin目录使用）。
-2. 查看所有与Nginx有关的文件夹 `find / -name nginx`。
-3. 删除与Nginx有关的文件夹 `rm -rf file /usr/local/nginx*`。
-4. 卸载Nginx相关的依赖 `yum remove nginx`。
+可以通过修改profile文件配置环境变量，在任意目录下可以直接使用nginx命令
 
-安装：
+```sh
+# 使用VIM打开profile配置文件
+vim etc/profile
+# 在文件最下面一行添加如下代码
+PATH=/usr/local/nginx/sbin:$JAVA_HOME/bin:$PATH
+# 使配置文件生效
+source /etc/profile
+```
 
-1. 安装依赖包`yum -y install gcc pcre-devel zlib-devel openssl openssl-devel`
-2. 下载Nginx安装包`wget https://nginx.org/download/nginx-1.16.1.tar.gz`(需要先`yum install wget`)
-3. 解压`tar -zxvf nginx-1.16.1.tar.gz`
-4. `cd nginx-1.16.1`
-5. `./configure --prefix=/usr/local/nginx`  然后再  `make && make install`
-6. 就可以发现在usr/local/nginx下面多了四个文件夹了。这就安装成功了
+## 1.1 Nginx 目录结构
 
-重点目录/文件:
+安装完Nginx后，我们先来熟悉一下Nginx的目录结构，如下图：
 
-- `conf/nginx.conf`：nginx配置文件
-- `html`：存放静态文件(html、css、Js等)
-- `logs`：日志目录，存放日志文件
-- `sbin/nginx`：二进制文件，用于启动、停止Nginx服务
+```apl
+[root@linxuanVM nginx]# tree
+.
+├── conf # 配置文件
+│   ├── fastcgi.conf
+│   ├── fastcgi.conf.default
+│   ├── fastcgi_params
+│   ├── fastcgi_params.default
+│   ├── koi-utf
+│   ├── koi-win
+│   ├── mime.types
+│   ├── mime.types.default
+│   ├── nginx.conf # nginx配置文件
+│   ├── nginx.conf.default
+│   ├── scgi_params
+│   ├── scgi_params.default
+│   ├── uwsgi_params
+│   ├── uwsgi_params.default
+│   └── win-utf
+├── html # 存放静态文件(html、css、Js等)
+│   ├── 50x.html
+│   └── index.html
+├── logs # 日志目录，存放日志文件
+└── sbin # 二进制文件，用于启动、停止Nginx服务
+    └── nginx
+```
 
-常用命令如下：
+## 1.2 Nginx 常用命令
 
 | 命令                 | 作用                                                    |
 | -------------------- | ------------------------------------------------------- |
@@ -50,82 +99,101 @@ Nginx 是一款高性能的 http 服务器/反向代理服务器及电子邮件�
 | ps -ef \| grep nginx | 查看Nginx进程                                           |
 | ./nginx -s reload    | 重启服务 重新加载配置文件（在sbin目录使用）             |
 
-如果已经启动服务，我们想要访问那么只需要在物理机浏览器上面输入虚拟机的IP地址即可，因为Nginx的端口号默认是80。防火墙的话我们已经关闭了，浏览器访问的是/nginx/html/index.html页面。
-
-## 1.3 配置环境变量
-
-配置变量：可以通过修改profile文件配置环境变量，在`/`目录下可以直接使用nginx命令
-
-```bash
-vim /etc/profile
-
-# 修改为下面的内容
-PATH=/usr/local/nginx/sbin:$JAVA_HOME/bin:$PATH
-
-# 修改之后记得要使配置文件生效
-source /etc/profile
+```sh
+# 查看版本
+[root@linxuanVM sbin]# ./nginx -v
+nginx version: nginx/1.16.1
+# 查看配置文件是否有错误
+[root@linxuanVM sbin]# ./nginx -t
+nginx: the configuration file /opt/server/nginx/conf/nginx.conf syntax is ok
+nginx: configuration file /opt/server/nginx/conf/nginx.conf test is successful
+# 启动nginx
+[root@linxuanVM sbin]# ./nginx
+# 停止nginx
+[root@linxuanVM sbin]# ./nginx -s stop
 ```
 
-这样以后我们再使用Nginx的时候不用去/nginx/sbin目录了，在任何位置使用命令都可以操作了。
+如果已经启动服务，我们想要访问那么只需要在物理机浏览器上面输入服务器的IP地址即可，因为Nginx的端口号默认是80。防火墙的话我们已经关闭了，浏览器访问的是/nginx/html/index.html页面。
 
-- 重启Nginx：`nginx -s reload`
-- 停止Nginx：`nginx -s stop`
-- 启动Nginx：`nginx`
+## 1.3 nginx.conf 介绍
 
-## 1.4 Nginx配置文件结构
+Nginx配置文件（conf/nginx.conf）整体分为三部分：全局块、events块、http块。
 
-Nginx配置文件(conf/nginx.conf)整体分为三部分:
+* 全局块：和Nginx运行相关的全局配置
+* events块：和网络连接相关的配置
+* http块：代理、缓存、日志记录、虚拟主机配置。这里面又分为了http全局块以及Server块，Server块又分为了Server全局块以及Location块。http块中可以配置多个Server块，每个Server块中可以配置多个location块。
 
-- 全局块
-  和Nginx运行相关的全局配置
+```sh
+[root@linxuanVM conf]# cat nginx.conf
 
-- events块
-  和网络连接相关的配置
+# 全局块，和Nginx运行相关的配置。
+# 该命令为进程数目，可以修改一下，设置进程数目为2，但是这里就不设置了
+worker_processes  1;
 
-- http块
+# events块，和网络连接相关的配置
+events {
+    worker_connections  1024;
+}
 
-  代理、缓存、日志记录、虚拟主机配置
+# http块，代理、缓存、日志记录、虚拟主机配置。又分为了http全局块以及Server块。
+http {
+    # http全局块
+    include       mime.types;
+    default_type  application/octet-stream;
+    sendfile        on;
+    keepalive_timeout  65;
+    
+    # server块，http块中可以配置多个Server块
+    server {
+        # server全局块
+        listen       80;
+        server_name  localhost;
+        
+        # location块，每个Server块中可以配置多个location块
+        location / {
+            root   html;
+            index  index.html index.htm;
+        }
 
-  - http全局块
-  - Server块
-    - Server全局块
-    - location块
-
-**注意**:http块中可以配置多个Server块，每个Server块中可以配置多个location块。
-
-![](..\图片\3-33【Nginx】\1-1.png)
-
-## 1.5 Nginx静态网站部署
-
-Nginx可以作为静态web服务器来部署静态资源。静态资源指在服务端真实存在并且能够直接展示的一些文件，比如常见的html页面、css文件、js文件、图片、视频等资源。
-
-相对于Tomcat，Nginx处理静态资源的能力更加高效，所以在生产环境下，一般都会将静态资源部署到Nginx中。
-
-将静态资源部署到Nginx非常简单，只需要将文件复制到Nginx安装目录下的html目录中即可。
-
-```bash
-server {
-  listen 80;                #监听端口
-  server_name localhost;    #服务器名称
-  location/{                #匹配客户端请求url
-    root html;              #指定静态资源根目录
-    index index.html;       #指定默认首页
+        error_page   500 502 503 504  /50x.html;
+        # location块，每个Server块中可以配置多个location块
+        location = /50x.html {
+            root   html;
+        }
+    }
 }
 ```
 
-## 1.6 反向代理
+## 1.4 Nginx 具体应用
 
-**正向代理**
+Nginx 具体应用如下：部署静态资源、反向代理、负载均衡。
 
-是一个位于客户端和原始服务器(origin server)之间的服务器，为了从原始服务器取得内容，客户端向代理发送一个请求并指定目标(原始服务器)，然后代理向原始服务器转交请求并将获得的内容返回给客户端。
+### 1.4.1 部署静态资源
 
-正向代理的典型用途是为在防火墙内的局域网客户端提供访问Internet的途径。
+Nginx可以作为静态web服务器来部署静态资源。静态资源指在服务端真实存在并且能够直接展示的一些文件，比如常见的html页面、css文件、js文件、图片、视频等资源。
 
-正向代理一般是在客户端设置代理服务器，通过代理服务器转发请求，最终访问到目标服务器。
+相对于Tomcat，Nginx处理静态资源的能力更加高效，所以在生产环境下，一般都会将静态资源部署到Nginx中。将静态资源部署到Nginx非常简单，只需要将文件复制到Nginx安装目录下的html目录中即可。
+
+```apl
+# 这个server块原本就有，所以这里我们不用动
+server {
+  listen 80;                # 监听端口
+  server_name localhost;    # 服务器名称
+  location / {              # 匹配客户端请求url
+    root html;              # 指定静态资源根目录
+    index index.html;       # 指定默认首页
+}
+```
+
+### 1.4.2 反向代理
+
+先来说一下正向代理。所谓正向代理就是是一个位于客户端和原始服务器(origin server)之间的服务器，为了从原始服务器取得内容，客户端向代理发送一个请求并指定目标(原始服务器)，然后代理向原始服务器转交请求并将获得的内容返回给客户端。
+
+正向代理一般是在客户端设置代理服务器，通过代理服务器转发请求，最终访问到目标服务器。正向代理的典型用途是为在防火墙内的局域网客户端提供访问Internet的途径。
 
 ![](..\图片\3-33【Nginx】\1-2.png)
 
-**什么是反向代理**
+------
 
 反向代理服务器位于用户与目标服务器之间，但是对于用户而言，反向代理服务器就相当于目标服务器，即用户直接访问反向代理服务器就可以获得目标服务器的资源，反向代理服务器负责将请求转发给目标服务器。
 
@@ -133,71 +201,55 @@ server {
 
 ![](..\图片\3-33【Nginx】\1-3.png)
 
-**配置反向代理**
+```apl
+# 配置反向代理
+server {
+  listen       82;
+  server_name  localhost;
 
-这里我们就不操作了。
+  location / {
+    # 反向代理配置
+    proxy_pass http://192.168.188.101:8080; 
+  } 
+}
+```
 
-1. 在克隆的上面传送hello工程并启动。打开浏览器：`http://192.168.66.136:8080/hello`，相应没有问题
-
-2. 配置代理服务器
-
-   ```bash
-   server {
-     listen 82;
-     server_name localhost;
-   
-     location / {
-             proxy_pass http://192.168.66.136:8080; #反向代理配置
-     } 
-   }
-   ```
-
-3. 浏览器输入：`http://192.168.66.130:82/hello`，然后就会代理给另一台服务器 没有任何问题
-
-## 1.7 负载均衡
+### 1.4.3 负载均衡
 
 早期的网站流量和业务功能都比较简单，单台服务器就可以满足基本需求，但是随着互联网的发展，业务流量越来越大并且业务逻辑也越来越复杂，单台服务器的性能及单点故障问题就凸显出来了，因此需要多台服务器组成应用集群，进行性能的水平扩展以及避免单点故障出现。
 
-- 应用集群：将同一应用部署到多台机器上，组成应用集群，接收负载均衡器分发的请求，进行业务处理并返回响应数据
-- 负载均衡器：将用户请求根据对应的负载均衡算法分发到应用集群中的一台服务器进行处理
+我们可以使用负载均衡器将用户请求根据对应的负载均衡算法分发到应用集群中的一台服务器进行处理。
 
-![](..\图片\3-33【Nginx】\1-4.png)
+| 负载均衡算法名称 |       说明       |
+| :--------------: | :--------------: |
+|       轮询       |     默认方式     |
+|      weight      |     权重方式     |
+|     IP_hash      |  根据IP分配方式  |
+|    least_conn    | 依据最少连接方式 |
+|     url_hash     | 依据url连接方式  |
+|       fair       | 依据相应时间方式 |
 
-**配置负载均衡**:
-
-修改ngnix.conf
-
-```bash
-upstream targetserver{    #upstream指令可以定义一组服务器
-  server 192.168.188.101:8080;    # server 192.168.188.101:8080 weight=2; 使用权重方式
+```apl
+# upstream 指令可以定义一组服务器
+upstream targetserver{    
+  server 192.168.188.101:8080;
   server 192.168.188.101:8081;
 }
 
 server {
   listen  8080;
-  server_name     localhost;
+  server_name  localhost;
   location / {
-          proxy_pass http://targetserver;
+    proxy_pass http://targetserver;
   }
 }
 ```
-
-**负载均衡策略**
-
-| 名称       | 说明             |
-| ---------- | ---------------- |
-| 轮询       | 默认方式         |
-| weight     | 权重方式         |
-| IP_hash    | 根据IP分配方式   |
-| least_conn | 依据最少连接方式 |
-| url_hash   | 依据url连接方式  |
-| fair       | 依据相应时间方式 |
 
 ## 1.5 配置虚拟主机
 
 虚拟主机，也叫“网站空间”，就是把一台运行在互联网上的物理服务器划分成多个“虚拟”服务器。虚拟主机技术极大的促进了网络技术的应用和普及。同时虚拟主机的租用服务也成了网络时代的一种新型经济形式。
 
-### 端口绑定
+### 1.5.1 端口绑定
 
 1. 上传静态网站：
 
@@ -243,7 +295,7 @@ server {
    地址栏输入`http://IP/:82` 可以看到注册页面
 
 
-### 域名绑定
+### 1.5.2 域名绑定
 
 **什么是域名**
 
@@ -474,3 +526,4 @@ function printArr(arr)
     end
 end
 ```
+

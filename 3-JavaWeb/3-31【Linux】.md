@@ -38,7 +38,7 @@ Linux与其他操作系统相比 ，具有开放源码、没有版权、技术�
 
 服务器Linux和工作站Linux最好成套，例如都采用红帽系，或都采用SUSE系，或都采用Debian系。这样可以让开发环境和部署环境相对一致，拥有相同的工具栈，开发效率高，部署成本低。
 
-Linux发行版一共分为三大体系：Debian系、Suse/Slackware系、Redhat/Fedora系。
+Linux发行版一共分为三大体系：Debian系、Redhat/Fedora系、Suse/Slackware系。
 
 <img src="..\图片\3-31【Linux】\1-1Linux发行体系.png" />
 
@@ -50,6 +50,14 @@ Debian系有：Debian（服务器）、Ubuntu（桌面）、Linux Mint（桌面�
 * Ubuntu是一个以桌面应用为主的Linux操作系统，基于Debian，与Debian的不同在于它每6个月会发布一个新版本。Ubuntu的目标在于为一般用户提供一个最新的、同时又相当稳定的主要由自由软件构建而成的操作系统。
 * Linux Mint 由Linux Mint Team团队于2006年开始发行，是一份基于Debian和Ubuntu的Linux发行版。它诞生的目的是为家庭用户和企业提供一个免费的，易用的，舒适而优雅的桌面操作系统。
 
+**Redhat/Fedora系**
+
+Redhat/Fedora系有：Red Hat Enterprise Linux（付费服务器）、CentOS（免费服务器）、Fedora。
+
+- Red Hat Enterprise Linux 简称RHEL，是红帽公司提供的付费服务器发行版，配套红帽公司的付费支持服务。取代Red Hat Linux在商业应用的领域。
+- CentOS是RHEL的开源版，由红帽社区根据RHEL采用的软件包编译而来，免费。
+- Fedora 是一款由全球社区爱好者构建的面向日常应用的快速、稳定、强大的操作系统。 它由一个强大的社群开发，这个社群的成员以自己的不懈努力，提供并维护自由、开放源码的软件和开放的标准。Fedora 项目由 Fedora 基金会管理和控制，得到了 Red Hat 的支持。
+
 **Suse/Slackware系**
 
 Suse/Slackware系有：SUSE（服务器）、openSUSE（工作站、桌面）、SLES（SUSE Linux Enterprise Server，企业服务器操作系统）。
@@ -57,14 +65,6 @@ Suse/Slackware系有：SUSE（服务器）、openSUSE（工作站、桌面）、
 * SUSE是基于Slackware二次开发的一款欧洲的企业用发行版，主要用于商业桌面、服务器。SUSE比红帽更为高端，适合大型企业使用。
 * openSUSE是由SUSE发展而来，旨在推进linux的广泛使用，主要用于桌面环境，用户界面非常华丽，而且性能良好。
 * SLES是企业服务器操作系统，是唯一与微软系统兼容的Linux操作系统。
-
-**Redhat/Fedora系**
-
-Redhat/Fedora系有：Red Hat Enterprise Linux（付费服务器）、CentOS（免费服务器）、Fedora。
-
-- Red Hat Enterprise Linux简称RHEL，是红帽公司提供的付费服务器发行版，配套红帽公司的付费支持服务。取代Red Hat Linux在商业应用的领域。
-- CentOS是RHEL的开源版，由红帽社区根据RHEL采用的软件包编译而来，免费。
-- Fedora 是一款由全球社区爱好者构建的面向日常应用的快速、稳定、强大的操作系统。 它由一个强大的社群开发，这个社群的成员以自己的不懈努力，提供并维护自由、开放源码的软件和开放的标准。Fedora 项目由 Fedora 基金会管理和控制，得到了 Red Hat 的支持。
 
 **其他发行版本**
 
@@ -384,7 +384,7 @@ Shut down the system.
 | cat file1        | 查看文件内容。`cat`用于显示文件的内容                        |
 | cat -n file1     | 查看内容并标示行数                                           |
 | tac file1        | 从最后⼀行开始反看⽂件内容                                   |
-| more file1       | `more`用于要显示的内容会超过一个画面长度的情况。<br />按空格键显示下一个画面。回车显示下一行内容。按 `q` 键退出查看，`ctrl+c`也可以结束查看，`b (back)`返回上一页。 |
+| more file1       | `more`用于要显示的内容会超过一个画面长度的情况。<br />空格显示下一页、回车显示下一行、 `q` 退出查看、`ctrl+c`也可结束查看，`b`返回上一页。 |
 | less file1       | `less`用法和`more`类似，不同的是`less`可以通过`PgUp`、`PgDn`键来控制。 |
 | head file1       | 查看文件前十行信息                                           |
 | head -2 file1    | `PgUp` 和 `PgDn` 进行上下翻页。查看⽂件前两⾏。              |
@@ -738,30 +738,18 @@ Linux上的软件安装有以下几种常见方式
 
 2. RPM包：软件已经按照redhat的包管理工具规范RPM进行打包发布，需要获取到相应的软件RPM发布包，然后用RPM命令进行安装
 
-3. Yum在线安装：软件已经以RPM规范打包，但发布在了网络上的一些服务器上，可用yum在线安装服务器上的rpm软件，并且会自动解决软件安装过程中的库依赖问题
+3. Yum在线安装：Yum(全称为Yellow dog Updater, Modified)是一个在Fedora和RedHat以及CentoS中的Shell前端软件包管理器。基于RPM包管理，能够从指定的服务器自动下载RPM包并且安装，可以自动处理依赖关系，并且一次安装所有依赖的软件包，无须繁琐地一次次下载、安装。
 
 4. 源码编译安装：软件以源码工程的形式发布，需要获取到源码工程后用相应开发工具进行编译打包部署。
 
 
-上传与下载工具介绍
+文件上传与下载工具介绍
 
 1. `FileZilla`， 我们已经下载了。
 
-2. `lrzsz`
+2. `lrzsz`，我们可以使用yum安装方式安装 `yum install lrzsz`。可以在crt中设置上传与下载目录 在命令行输入`rz`就可以上传文件了。
 
-   我们可以使用yum安装方式安装 yum install lrzsz
-
-   注意：必须有网络
-
-   可以在crt中设置上传与下载目录 在命令行输入`rz`就可以上传文件了
-
-3. `sftp`
-
-   使用alt + p 组合键打开sftp窗口
-
-   使用put 命令上传
-
-   使用get命令下载
+3. `sftp`，使用alt + p 组合键打开sftp窗口、使用put 命令上传、使用get命令下载。
 
 ```sh
 # /export/目录下面创建这三个文件夹 用于存放 数据 软件 安装包
