@@ -260,17 +260,27 @@ MyBatis和其它持久化层技术对比：
    <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
    <!-- xmlns:log4j="http://jakarta.apache.org/log4j/"会爆红，不过没得关系 -->
    <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+       <!-- appender设置日志信息的去向 这里是ConsoleAppender控制台 -->
        <appender name="STDOUT" class="org.apache.log4j.ConsoleAppender">
+           <!-- 日志输出编码 -->
            <param name="Encoding" value="UTF-8" />
+           <!-- 日志输出格式 -->
            <layout class="org.apache.log4j.PatternLayout">
                <param name="ConversionPattern" value="%-5p %d{MM-dd HH:mm:ss,SSS} %m (%F:%L) \n" />
            </layout>
        </appender>
+       <!-- 日志级别：ERROR、WARN、INFO、DEBUG -->
+       <!-- sql输出级别为debug级别 -->
        <logger name="java.sql">
            <level value="debug" />
        </logger>
+       <!-- mybatis输出级别为info级别 -->
        <logger name="org.apache.ibatis">
            <level value="info" />
+       </logger>
+       <!-- Spring输出级别为info级别 -->
+       <logger name="org.springframework">
+           <level value="info"/>
        </logger>
        <root>
            <level value="debug" />
@@ -278,7 +288,7 @@ MyBatis和其它持久化层技术对比：
        </root>
    </log4j:configuration>
    ```
-
+   
    > 日志的级别：FATAL(致命)>ERROR(错误)>WARN(警告)>INFO(信息)>DEBUG(调试) 从左到右打印的内容越来越详细
    >
 

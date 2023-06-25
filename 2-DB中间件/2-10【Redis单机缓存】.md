@@ -249,7 +249,7 @@ Redis hash是一个String类型的field和value的映射表，map格式。hash�
 
 ## 2.3 列表类型 list
 
-Redis列表是简单的字符串列表，按照插入顺序排序。
+Redis 列表是简单的字符串列表，按照插入顺序排序。
 
 <img src="..\图片\2-10【Redis单机缓存】\2-2.png" />
 
@@ -1167,7 +1167,7 @@ dependencies {
 ```
 
 ```yaml
-# SpringBoot3.0的配置信息如下，2.0的配置在上方
+# SpringBoot3.0的配置信息如下
 spring:
   application:
     name: springbootredis
@@ -1191,16 +1191,25 @@ spring:
 ```
 
 ```java
+/**
+ * 创建Redis配置类，设置一下键与哈希键的序列化器
+ *  我们目的是使用RedisTemplate存储与获取的时候让其键与哈希键序列化时使用String，从而不得不设置序列化器
+ *  可以直接使用StringRedisTemplate来进行存储与获取，不使用RedisTemplate，它已经帮我们设置好String序列化器
+ */
 @Configuration
 public class RedisConfig extends CachingConfigurationSelector {
 
-    // 第三方Bean对象RedisTemplate交由Spring管理，可以不设置默认已经管理了，但是这里要设置一下序列化器
+    /**
+     * 第三方Bean对象RedisTemplate交由Spring管理，可以不设置默认已经管理了，但是这里要设置一下序列化器
+     * 如果存储字符串类型的，不需要序列化。但如果存储Bean对象或者集合类型的数据，就必须要序列化
+     */
     @Bean
     public RedisTemplate<Object, Object> redisTemplate(RedisConnectionFactory factory) {
 
         RedisTemplate<Object, Object> redisTemplate = new RedisTemplate<>();
 
         // 默认的Key序列化器为：JdkSerializationRedisSerializer
+        // 因为默认都是JDK序列化器，但是这样向redis里面存储会添加一些前缀，所以需要设置为String序列化器
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
 
@@ -1368,3 +1377,30 @@ public interface RedisSerializer<T> {
 | StringRedisSerializer           | 字符串序列化机制                  |
 | Jackson2JsonRedisSerializer     | 将对象转为JSON存储                |
 
+# 第五章 Redis内存管理
+
+## 5.1 Redis 内存回收
+
+Redis的内存回收机制主要体现在以下两个方面：
+
+- 过期删除策略：删除到达过期时间的键对象。
+- 内存淘汰策略：内存使用达到`maxmemory`上限时触发内存溢出控制策略。
+
+Redis 自带了给缓存数据设置过期时间的功能
+
+```sh
+127.0.0.1:6379> expire key 60 # 数据在 60s 后过期
+(integer) 1
+127.0.0.1:6379> setex key 60 value # 数据在 60s 后过期 (setex:[set] + [ex]pire)
+OK
+127.0.0.1:6379> ttl key # 查看数据还有多久过期
+(integer) 56
+```
+
+Redis 中除了字符串类型有自己独有设置过期时间的命令 `setex` 外，其他方法都需要依靠 `expire` 命令来设置过期时间 。另外， `persist` 命令可以移除一个键的过期时间。
+
+### 5.1.1 过期删除策略
+
+
+
+### 5.1.2 内存淘汰策略

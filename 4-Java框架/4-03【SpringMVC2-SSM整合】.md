@@ -333,14 +333,14 @@ applicationContext.xml
        xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="
-            http://www.springframework.org/schema/beans
-            http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
-            http://www.springframework.org/schema/context
-            http://www.springframework.org/schema/context/spring-context-4.0.xsd
-            http://www.springframework.org/schema/tx
-            http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
-            http://www.springframework.org/schema/aop
-            http://www.springframework.org/schema/aop/spring-aop-4.0.xsd">
+                           http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context-4.0.xsd
+                           http://www.springframework.org/schema/tx
+                           http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+                           http://www.springframework.org/schema/aop
+                           http://www.springframework.org/schema/aop/spring-aop-4.0.xsd">
 
     <!-- 配置IOC注解解析器，等于@ComponentScan("com.linxuan.service") -->
     <context:component-scan base-package="com.linxuan.service"/>
@@ -412,6 +412,14 @@ springmvc.xml
 
     <!--包扫描 等同于@ComponentScan-->
     <context:component-scan base-package="com.linxuan.controller"/>
+
+    <!-- 静态资源配置方案 -->
+    <!-- 
+        添加标签后，会定义一个DefaultServletHttpRequestHandler对象，
+        该对象对进入DispatcherServlet的URL惊醒过滤筛查，如果发现是静态资源请求
+        那么转交给Tomcat的默认的DefaultServlet处理，如果不是静态资源请求，那么继续有SpringMVC处理
+    -->
+    <mvc:default-servlet-handler/>
 </beans>
 ```
 
@@ -419,7 +427,7 @@ springmvc.xml
 
 这里没有做，以后遇到再说
 
-## 1.3 功能模块开发
+## 1.4 功能模块开发
 
 ```java
 package com.linxuan.domain;
@@ -575,7 +583,7 @@ public class BookController {
 }
 ```
 
-## 1.4 Junit/PostMan测试
+## 1.5 Junit/PostMan测试
 
 **Junit单元测试**
 
@@ -733,7 +741,7 @@ public class Result {
 
     public Result() {
     }
-	//构造方法是方便对象的创建
+	// 构造方法是方便对象的创建
     public Result(Integer code, Object data) {
         this.data = data;
         this.code = code;

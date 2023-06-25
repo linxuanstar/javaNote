@@ -1,8 +1,6 @@
 # 第一章 AOP基础
 
-AOP(Aspect Oriented Programming)：在不惊动原始设计的基础上为其进行功能增强。和代理模式功能类似。
-
-OOP是一种编程思想，那么AOP也是一种编程思想，它们两个是不同的编程范式（指导程序员如何编写程序）：
+AOP(Aspect Oriented Programming)：在不惊动原始设计的基础上为其进行功能增强。和代理模式功能类似。OOP是一种编程思想，那么AOP也是一种编程思想，它们两个是不同的编程范式（指导程序员如何编写程序）：
 
 * `AOP(Aspect Oriented Programming)`：面向切面编程。
 * `OOP(Object Oriented Programming)`：面向对象编程。
@@ -68,7 +66,7 @@ public static void main(String[] args) {
 
 ## 1.1 AOP操作及概念
 
-执行save方法会打印`系统时间`和`book dao save ...`，而执行update方法只会打印`book dao update ...`。可以使用SpringAOP的方式在不改变`delete`方法的前提下让其具有打印系统时间的功能。
+要求执行`save`方法会打印`系统时间`和`book dao save ...`，而执行update方法只会打印`book dao update ...`。可以使用SpringAOP的方式在不改变`save`方法的前提下让其具有打印系统时间的功能。
 
 ```xml
 <!-- 导入依赖 -->

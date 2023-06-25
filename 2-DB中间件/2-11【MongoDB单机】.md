@@ -1,185 +1,421 @@
-## 1. MongoDB 相关概念
+# 第一章 MongoDB基础
 
-### 1.1 业务场景
+传统的关系型数据库在数据操作的“三高”需求以及对应的 Web 2.0 网站需求面前，会有”力不从心”的感觉。三高需求：高并发、高性能、高可用。
 
-传统的关系型数据库 (比如 MySQL), 在数据操作的”三高”需求以及对应的 Web 2.0 网站需求面前, 会有”力不从心”的感觉
+- High Performance：对数据库的高并发读写的要求
+- High Storage：对海量数据的高效率存储和访问的需求
+- High Scalability && High Available：对数据的高扩展性和高可用性的需求
 
-所谓的三高需求:
+而 [MongoDB](https://www.mongodb.com/) 可以应对这些三高需求，具体的应用场景如下：
 
-**高并发, 高性能, 高可用**, 简称三高
+- 社交场景。使用 MongoDB 存储存储用户信息，以及用户发表的朋友圈信息，通过地理位置索引实现附近的人，地点等功能。
+- 游戏场景。使用 MongoDB 存储游戏用户信息，用户的装备，积分等直接以内嵌文档的形式存储，方便查询，高效率存储和访问。
+- 物流场景。使用 MongoDB 存储订单信息，订单状态在运送过程中会不断更新，以 MongoDB 内嵌数组的形式来存储，一次查询就能将订单所有的变更读取出来。
+- 物联网场景。使用 MongoDB 存储所有接入的智能设备信息，以及设备汇报的日志信息，并对这些信息进行多维度的分析。
+- 视频直播。使用 MongoDB 存储用户信息，点赞互动信息等。
 
-- High Performance: 对数据库的高并发读写的要求
-- High Storage: 对海量数据的高效率存储和访问的需求
-- High Scalability && High Available: 对数据的高扩展性和高可用性的需求
+上述的应用场景中，数据操作方面的共同特点为数据量大、读写操作频繁、价值密度低因此对事务要求不高。对于这样的场景，我们可以使用MongoDB来实现数据的存储。
 
-**而 MongoDB 可以应对三高需求**
+## 1.1 MongoDB 简介
 
-具体的应用场景:
+MongoDB是一个开源、高性能、无模式的文档型数据库，当初的设计就是用于简化开发和方便扩展，是NoSQL数据库产品中的一种。是最像关系型数据库（MySQL）的非关系型数据库。 
 
-- 社交场景, 使用 MongoDB 存储存储用户信息, 以及用户发表的朋友圈信息, 通过地理位置索引实现附近的人, 地点等功能.
-- 游戏场景, 使用 MongoDB 存储游戏用户信息, 用户的装备, 积分等直接以内嵌文档的形式存储, 方便查询, 高效率存储和访问.
-- 物流场景, 使用 MongoDB 存储订单信息, 订单状态在运送过程中会不断更新, 以 MongoDB 内嵌数组的形式来存储, 一次查询就能将订单所有的变更读取出来.
-- 物联网场景, 使用 MongoDB 存储所有接入的智能设备信息, 以及设备汇报的日志信息, 并对这些信息进行多维度的分析.
-- 视频直播, 使用 MongoDB 存储用户信息, 点赞互动信息等.
+| SQL术语/概念 | MongoDB术语/概念 |                  解释/说明                  |
+| :----------: | :--------------: | :-----------------------------------------: |
+|   database   |     database     |                   数据库                    |
+|    table     |    collection    | 数据库表/集合，类似于数组, 在集合中存放文档 |
+|     row      |     document     |   数据记录行/文档，文档型数据库的最小单位   |
+|    column    |      field       |                 数据字段/域                 |
+|    index     |      index       |                    索引                     |
+| table joins  |                  |            表连接，MongoDB不支持            |
+|              |     嵌入文档     |     MongoDB通过嵌入式文档来代替多表连接     |
+| primary key  |   primary key    |    主键，MongoDB自动将_id字段设置为主键     |
 
-这些应用场景中, 数据操作方面的共同点有:
+MongoDB 的最小存储单位是 document 文档对象，它对应于关系型数据库的行。数据在MongoDB中以 BSON 文档的格式存储在磁盘上面。BSON 支持的数据结构非常松散，既可以存储比较复杂的数据类型，又相当的灵活。它具有轻量型、可遍历性、高效性三个特点，可以有效描述非结构化数据和结构化数据。这种格式的优点是灵活性高，但是它的缺点是空间利用率不是很理性。
 
-1. 数据量大
-2. 写入操作频繁
-3. 价值较低的数据, 对**事务性**要求不高
+BSON（Binary Serialized Document Format）是一种类 JSON 的一种二进制形式的存储格式，简称Binary JSON。BSON 和 JSON 一样，支持内嵌的文档对象和数组对象，但是 BSON 有 JSON 没有的一些数据类型，如 Date 和BinData类型。
 
-对于这样的数据, 更适合用 MongoDB 来实现数据存储
+| 数据类型      | 描述                                                      | 举例                              |
+| ------------- | --------------------------------------------------------- | --------------------------------- |
+| 字符串        | UTF-8 字符串都可表示为字符串类型的数据                    | {"x" : "foobar"}                  |
+| 对象id        | 对象 id 是文档的12字节的唯一 ID                           | {"x" : ObjectId() }               |
+| 布尔值        | 真或者假，true、false                                     | {"x" : true}+                     |
+| 数组          | 值的集合或者列表可以表示成为数组                          | {"x" : ["a", "b", "c"]}           |
+| 32位整数      | 类型不可用，JS 仅支持64位浮点数，所以32位整数会被转换     | 默认转为64位浮点数                |
+| 64位整数      | 不支持该类型。shell会使用一个特殊的内嵌文档来显示64位整数 | 默认转为64位浮点数                |
+| 64位浮点数    | shell中的数字就是这一种类型                               | {"x" : 3.14159, "y": 3}           |
+| null          | 表示空值或者未定义的对象                                  | {"x" : null}                      |
+| undefined     | 文档中也可以使用未定义的类型                              | {"x" : undefined}                 |
+| 符号          | shell 不支持。自动转换成字符串                            |                                   |
+| 正则表达式    | 采用JS的正则表达式语法                                    | {"x" : /foobar/i}                 |
+| 代码          | 文档中可以包含JS代码                                      | {"x" : function() {/* ..... */ }} |
+| 二进制数据    | 二进制数据可以由任意字节的串组成，不过shell无法使用       |                                   |
+| 最大值/最小值 | BSON 包括一个特殊类型，表示可能的最值。shell没有改类型    |                                   |
 
-那么我们**什么时候选择 MongoDB 呢?**
+> shell 默认使用64位浮点型数值。对于整型值，可以使用 NumberInt 4字节符号整数或者 NumberLong 8字节符号整数，例如`{"x" : NumberInt("3")}`
 
-除了架构选型上, 除了上述三个特点之外, 还要考虑下面这些问题:
+## 1.2 单机环境部署
 
-- 应用不需要事务及复杂 JOIN 支持
-- 新应用, 需求会变, 数据模型无法确定, 想快速迭代开发
-- 应用需要 2000 - 3000 以上的读写QPS（更高也可以）
-- 应用需要 TB 甚至 PB 级别数据存储
-- 应用发展迅速, 需要能快速水平扩展
-- 应用要求存储的数据不丢失
-- 应用需要 `99.999%` 高可用
-- 应用需要大量的地理位置查询, 文本查询
+MongoDB的版本命名规范为：x.y.z； 
 
-如果上述有1个符合, 可以考虑 MongoDB, 2个及以上的符合, 选择 MongoDB 绝不会后悔.
+* y为奇数时表示当前版本为开发版，如：1.5.2、4.1.13； 
+* y为偶数时表示当前版本为稳定版，如：1.6.3、4.0.10；
+*  z是修正版本号，数字越大越好。
 
-> 如果用MySQL呢?
->
-> 相对MySQL, 可以以更低的成本解决问题（包括学习, 开发, 运维等成本）
+**Windows 部署**
 
-### 1.2 MongoDB 简介
+1. 从[官网](https://www.mongodb.com/download-center#community)下载预编译的二进制包，这里下载4.0.12版本的ZIP包。
+2. 将压缩包解压到一个目录中。 在解压目录中，手动建立一个目录用于存放数据文件。4.0.12之后的某些版本已经不需要手动创建目录来存放数据文件了，下载之后就会自动创建 data 目录。
 
-> MongoDB是一个开源, 高性能, 无模式的文档型数据库, 当初的设计就是用于简化开发和方便扩展, 是NoSQL数据库产品中的一种.是最 像关系型数据库（MySQL）的非关系型数据库. 它支持的数据结构非常松散, 是一种类似于 JSON 的 格式叫BSON, 所以它既可以存储比较复杂的数据类型, 又相当的灵活. MongoDB中的记录是一个文档, 它是一个由字段和值对（ﬁeld:value）组成的数据结构.MongoDB文档类似于JSON对象, 即一个文档认 为就是一个对象.字段的数据类型是字符型, 它的值除了使用基本的一些类型外, 还可以包括其他文档, 普通数组和文档数组.
+```sh
+E:\MongoDB\bin>mongod --version
+db version v6.0.5
+Build Info: {
+    "version": "6.0.5",
+    "gitVersion": "c9a99c120371d4d4c52cbb15dac34a36ce8d3b1d",
+    "modules": [],
+    "allocator": "tcmalloc",
+    "environment": {
+        "distmod": "windows",
+        "distarch": "x86_64",
+        "target_arch": "x86_64"
+    }
+}
+```
 
-**“最像关系型数据库的 NoSQL 数据库”**. MongoDB 中的记录是一个文档, 是一个 key-value pair. 字段的数据类型是字符型, 值除了使用基本的一些类型以外, 还包括其它文档, 普通数组以及文档数组
+**Linux 部署（未测试，老师教程上面就是这样的）**
 
-![img](https://raw.githubusercontent.com/Zhenye-Na/img-hosting-picgo/master/img/maxresdefault.jpg)
+在Linux中部署一个单机的MongoDB，作为生产环境下使用。 步骤如下：
 
-![img](https://raw.githubusercontent.com/Zhenye-Na/img-hosting-picgo/master/img/image-20200505220556737.png)
+1. 先到官网下载压缩包 mongod-linux-x86_64-4.0.10.tgz 。
 
-MongoDB 数据模型是面向文档的, 所谓文档就是一种类似于 JSON 的结构, 简单理解 MongoDB 这个数据库中存在的是各种各样的 JSON（BSON）
+2. 上传压缩包到Linux中，解压到当前目录
 
-- 数据库 (database)
-  - 数据库是一个仓库, 存储集合 (collection)
-- 集合 (collection)
-  - 类似于数组, 在集合中存放文档
-- 文档 (document)
-  - 文档型数据库的最小单位, 通常情况, 我们存储和操作的内容都是文档
+   ```sh
+   tar -xvf mongodb-linux-x86_64-4.0.10.tgz
+   ```
 
-在 MongoDB 中, 数据库和集合都不需要手动创建, 当我们创建文档时, 如果文档所在的集合或者数据库不存在, **则会自动创建数据库或者集合**
+3. 移动解压后的文件夹到指定的目录中
 
-### 数据库 (databases) 管理语法
+   ```sh
+   mv mongodb-linux-x86_64-4.0.10 /usr/local/mongodb
+   ```
 
-| 操作                                            | 语法                             |
-| ----------------------------------------------- | -------------------------------- |
-| 查看所有数据库                                  | `show dbs;` 或 `show databases;` |
-| 查看当前数据库                                  | `db;`                            |
-| 切换到某数据库 (**若数据库不存在则创建数据库**) | `use <db_name>;`                 |
-| 删除当前数据库                                  | `db.dropDatabase();`             |
+4. 新建几个目录，分别用来存储数据和日志
 
-### 集合 (collection) 管理语法
+   ```sh
+   # 数据存储目录
+   mkdir -p /mongodb/single/data/db
+   # 日志存储目录
+   mkdir -p /mongodb/single/log
+   ```
 
-| 操作         | 语法                                        |
-| ------------ | ------------------------------------------- |
-| 查看所有集合 | `show collections;`                         |
-| 创建集合     | `db.createCollection("<collection_name>");` |
-| 删除集合     | `db.<collection_name>.drop()`               |
+5. 新建并修改配置文件 配置文件的内容如下：
 
-### 1.3. 数据模型
+   ```sh
+   vi /mongodb/single/mongod.conf
+   ```
 
-![img](https://raw.githubusercontent.com/Zhenye-Na/img-hosting-picgo/master/img/image-20200505220650827.png)
+   ```yml
+   systemLog:
+       #MongoDB发送所有日志输出的目标指定为文件
+       # #The path of the log file to which mongod or mongos should send all diagnostic logging information
+       destination: file
+       #mongod或mongos应向其发送所有诊断日志记录信息的日志文件的路径
+       path: "/mongodb/single/log/mongod.log"
+       #当mongos或mongod实例重新启动时，mongos或mongod会将新条目附加到现有日志文件的末尾。
+       logAppend: true
+   storage:
+       #mongod实例存储其数据的目录。storage.dbPath设置仅适用于mongod。
+       ##The directory where the mongod instance stores its data.Default Value is "/data/db".
+       dbPath: "/mongodb/single/data/db"
+       journal:
+           #启用或禁用持久性日志以确保数据文件保持有效和可恢复。
+           enabled: true
+   processManagement:
+       #启用在后台运行mongos或mongod进程的守护进程模式。
+       fork: true
+   net:
+       #服务实例绑定的IP，默认是localhost
+       bindIp: localhost,192.168.0.2
+       #bindIp
+       #绑定的端口，默认是27017
+       port: 27017
+   ```
 
-### 1.4 MongoDB 的特点
+6. 启动MongoDB服务 
 
-#### 1.4.1 高性能
+   ```sh
+   [root@bobohost single]# /usr/local/mongodb/bin/mongod -f /mongodb/single/mongod.conf
+   about to fork child process, waiting until server is ready for connections.
+   forked process: 90384
+   child process started successfully, parent exiting
+   ```
 
-MongoDB 提供高性能的数据持久化
+   注意： 如果启动后不是 successfully ，则是启动失败了。原因基本上就是配置文件有问题。 通过进程来查看服务是否启动了： 
 
-- 嵌入式数据模型的支持减少了数据库系统上的 I/O 活动
-- 索引支持更快的查询, 并且可以包含来自嵌入式文档和数组的键 (文本索引解决搜索的需求, TTL 索引解决历史数据自动过期的需求, 地理位置索引可以用于构件各种 O2O 应用)
-- mmapv1, wiredtiger, mongorocks (rocksdb) in-memory 等多引擎支持满足各种场景需求
-- Gridfs 解决文件存储需求
+   ```sh
+   [root@bobohost single]# ps -ef |grep mongod
+   root 90384 1 0 8月26 ? 00:02:13 /usr/local/mongdb/bin/mongod -f /mongodb/single/mongod.conf
+   ```
 
-#### 1.4.2 高可用
+7. 分别使用mongo命令和compass工具来连接测试。 提示：如果远程连接不上，需要配置防火墙放行，或直接关闭linux防火墙 
 
-MongoDB 的复制工具称作**副本集** (replica set) 可以提供自动故障转移和数据冗余
+8. 停止关闭服务 停止服务的方式有两种：快速关闭和标准关闭，下面依次说明：
 
-#### 1.4.3 高扩展
+   1. 快速关闭方法（快速，简单，数据可能会出错） 目标：通过系统的kill命令直接杀死进程：
 
-水平扩展是其核心功能一部分
+      ```sh
+      # 通过进程编号关闭节点
+      kill -2 54410
+      ```
 
-分片将数据分布在一组集群的机器上 (海量数据存储, 服务能力水平扩展)
+       杀完要检查一下，避免有的没有杀掉。 
 
-MongoDB 支持基于**片键**创建数据区域, 在一个平衡的集群当中, MongoDB 将一个区域所覆盖的读写**只定向**到该区域的那些片
+   2. 通过mongo客户端中的shutdownServer命令来关闭服务
 
-#### 1.4.4 其他
+      ```sh
+      # 客户端登录服务，注意，这里通过localhost登录，如果需要远程登录，必须先登录认证才行。
+      mongo --port 27017
+      # 切换到admin库
+      use admin
+      # 关闭服务
+      db.shutdownServer()
+      ```
 
-MongoDB支持丰富的查询语言, 支持读和写操作(CRUD), 比如数据聚合, 文本搜索和地理空间查询等. 无模式（动态模式）, 灵活的文档模型
+如果一旦是因为数据损坏，则需要进行如下操作（了解）：
 
-## 2. 基本常用命令
+```sh
+# 删除lock文件
+rm -f /mongodb/single/data/db/*.lock
+# 修复数据
+/usr/local/mongdb/bin/mongod --repair --dbpath=/mongodb/single/data/db
+```
 
-### 2.1 数据库操作
+## 1.3 启动与卸载
+
+### 1.3.1 启动服务
+
+在data目录下面创建db文件夹，然后在 bin 目录中打开命令行提示符，输入如下命令：
+
+```sh
+# 启动MongoDB服务，并且数据存储在E:\MongoDB\data\db目录下面
+mongod --dbpath E:\MongoDB\data\db
+```
+
+我们在启动信息中可以看到，mongoDB的默认端口是27017，如果我们想改变默认的启动端口，可以通过`--port`来指定端口。
+
+### 1.3.2 连接服务
+
+这里我用的是 6.0.5 版本，在 6.0 版本已经将其进行了较大的更新。删除了MongDB-Shell，所以需要我们自己进行下载，我下载的是1.8.2版本的，它更名为了`mongosh.exe`，所以运行的命令也从`mongo`更改为了`mongosh`。
+
+```sh
+# 启动mongosh连接MongoDB
+E:\MongoDB\bin>mongosh
+Current Mongosh Log ID: 6494099b52870cbac6495efe
+Connecting to:          mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.8.2
+Using MongoDB:          6.0.5
+Using Mongosh:          1.8.2
+# 查看所有数据库
+test> show databases
+admin    40.00 KiB
+config   60.00 KiB
+local    80.00 KiB
+yapi    468.00 KiB
+# 退出shell窗口 
+test> exit
+
+# 查看mongosh帮助手册
+E:\MongoDB\bin>mongosh --help
+
+  $ mongosh [options] [db address] [file names (ending in .js or .mongodb)]
+
+  Options:
+
+    -h, --help                                 Show this usage information
+    -f, --file [arg]                           Load the specified mongosh script
+```
+
+> MongoDB javascript shell是一个基于 javascript 的解释器，故是支持 JS 程序的。
+
+### 1.3.3 关闭服务
+
+```sh
+# 客户端登录服务
+mongo --port 27017
+# 切换到admin库
+use admin
+# 关闭服务
+db.shutdownServer()
+```
+
+# 第二章 常用命令
+
+在 MongoDB 中，数据库和集合都不需要手动创建，当我们创建文档时，如果文档所在的集合或者数据库不存在，则会自动创建数据库或者集合。
+
+接下来将一个存放文章评论的数据存放到 MongoDB 中，数据库名称为 articledb，数据结构如下：
+
+| 字段名称       | 字段含义       | 字段类型         | 备注                      |
+| -------------- | -------------- | ---------------- | ------------------------- |
+| _id            | ID             | ObjectId或String | Mongo的主键的字段         |
+| articleid      | 文章ID         | String           |                           |
+| content        | 评论内容       | String           |                           |
+| userid         | 评论人ID       | String           |                           |
+| nickname       | 评论人昵称     | String           |                           |
+| createdatetime | 评论的日期时间 | Date             |                           |
+| likenum        | 点赞数         | Int32            |                           |
+| replynum       | 回复数         | Int32            |                           |
+| state          | 状态           | String           | 0：不可见；1：可见；      |
+| parentid       | 上级ID         | String           | 如果为0表示文章的顶级评论 |
+
+## 2.1 数据库操作
 
 默认保留的数据库
 
-- **admin**: 从权限角度考虑, 这是 `root` 数据库, 如果将一个用户添加到这个数据库, 这个用户自动继承所有数据库的权限, 一些特定的服务器端命令也只能从这个数据库运行, 比如列出所有的数据库或者关闭服务器
-- **local**: 数据永远不会被复制, 可以用来存储限于本地的单台服务器的集合 (部署集群, 分片等)
-- **config**: Mongo 用于分片设置时, `config` 数据库在内部使用, 用来保存分片的相关信息
+- admin：从权限角度考虑，这是 `root` 数据库，如果将一个用户添加到这个数据库，这个用户自动继承所有数据库的权限，一些特定的服务器端命令也只能从这个数据库运行，比如列出所有的数据库或者关闭服务器
+- local：数据永远不会被复制，可以用来存储限于本地的单台服务器的集合（部署集群，分片等）
+- config：Mongo 用于分片设置时，`config` 数据库在内部使用，用来保存分片的相关信息
 
-> ```
-> $ show dbs
-> 
-> 
-> $ use articledb
-> 
-> $ show dbs
-> ```
->
-> 当使用 `use articledb` 的时候. `articledb` 其实存放在内存之中, 当 `articledb` 中存在一个 collection 之后, mongo 才会将这个数据库持久化到硬盘之中.
+|                     操作                     |               语法               |
+| :------------------------------------------: | :------------------------------: |
+|                查看所有数据库                | `show dbs;` 或 `show databases;` |
+|                查看当前数据库                |              `db;`               |
+| 切换到某数据库（若数据库不存在则创建数据库） |         `use <db_name>;`         |
+|                删除当前数据库                |       `db.dropDatabase();`       |
 
-### 2.2 文档基本 CRUD
-
-> 官方文档: https://docs.mongodb.com/manual/crud/
-
-#### 2.2.1 创建 Create
-
-> Create or insert operations add new [documents](https://docs.mongodb.com/manual/core/document/#bson-document-format) to a [collection](https://docs.mongodb.com/manual/core/databases-and-collections/#collections). If the collection does **not** currently exist, insert operations will create the collection automatically.
-
-- 使用 `db.<collection_name>.insertOne()` 向集合中添加*一个文档*, 参数一个 json 格式的文档
-- 使用 `db.<collection_name>.insertMany()` 向集合中添加*多个文档*, 参数为 json 文档数组
-
-![img](https://docs.mongodb.com/manual/_images/crud-annotated-mongodb-insertOne.bakedsvg.svg)
-
+```sh
+# mongoShell
+E:\MongoDB\bin>mongosh
+# 查看所有数据库，默认会直接进入test数据库，如果没有选择数据库，集合将存放在 test 数据库中
+test> show dbs;
+admin    40.00 KiB
+config   72.00 KiB
+local    80.00 KiB
+# 创建并切换数据库
+test> use articledb
+switched to db articledb
+# 查看所有数据库并没有显示articledb，这是因为创建数据库之后会在内存中创建，并没有保存至磁盘中
+# 数据库只有在内容插入后才会创建! 就是说，创建数据库后要再插入一个集合，数据库才会真正创建
+articledb> show dbs;
+admin    40.00 KiB
+config   96.00 KiB
+local    80.00 KiB
+# 查看当前正在使用的数据库
+articledb> db
+articledb
+# 删除当前使用的数据库，主要用来删除已经持久化的数据库
+articledb> db.dropDatabase();
+{ ok: 1, dropped: 'articledb' }
 ```
-db.collection.insert({
-  <document or array of documents>,
-  writeConcern: <document>,
-  ordered: <boolean>
+
+## 2.2 集合操作
+
+集合类似关系型数据库中的表。可以显示的创建，也可以隐式的创建。显示创建就是调用命令来创建一个集合，隐式创建是插入文档的时候自动创建集合。
+
+集合的命名规范： 
+
+* 集合名不能是空字符串""。
+* 集合名不能含有`\0`字符（空字符)，这个字符表示集合名的结尾。
+* 集合名不能`system.`开头，这是为系统集合保留的前缀。
+* 用户创建的集合名字不能含有保留字符。有些驱动程序的确支持在集合名里面包含，这是因为某些系统生成的集合中包含该字符。除非你要访问这种系统创建的集合，否则千万不要在名字里出现$。
+
+|     操作     |                    语法                     |
+| :----------: | :-----------------------------------------: |
+| 查看所有集合 |    `show collections;`或者`show tables;`    |
+|   创建集合   | `db.createCollection("<collection_name>");` |
+|   删除集合   |        `db.<collection_name>.drop()`        |
+
+```sh
+# 查看当前使用的数据库
+articledb> db
+articledb
+# 创建集合
+articledb> db.createCollection("mycollection");
+{ ok: 1 }
+# 查看所有集合
+articledb> show collections
+mycollection
+# 查看所有集合
+articledb> show tables;
+mycollection
+# 删除mycollection集合。如果成功删除选定集合，则 drop() 方法返回 true，否则返回 false。
+articledb> db.mycollection.drop()
+true
+```
+
+## 2.3 文档操作
+
+文档（document）的数据结构和 JSON 基本一样，所有存储在集合中的数据都是 BSON 格式。文档基础操作[CRUD](https://docs.mongodb.com/manual/crud/)：Create、Retrieve、Update、Delete。
+
+### 2.3.1 文档的添加
+
+可以向集合中添加一个文档或者多个文档。
+
+* 使用 `db.<collection_name>.insert()` 向集合中添加一个文档，参数一个 json 格式的文档。
+* 使用 `db.<collection_name>.insertMany()` 向集合中添加多个文档，参数为 json 文档数组。
+
+注意事项：
+
+1. 文档中的键/值对是有序的。
+2. 文档中的值不仅可以是在双引号里面的字符串，还可以是其他几种数据类型（甚至可以是整个嵌入的文档)。
+3. MongoDB区分类型和大小写。
+4. MongoDB的文档不能有重复的键。
+5. 文档的键是字符串。除了少数例外情况，键可以使用任意UTF-8字符。
+
+文档键命名规范：键不能含有`\0` (空字符)，该字符用来表示键的结尾。`.`和`$`有特别的意义，只有在特定环境下才能使用。 以下划线`_`开头的键是保留的，并非严格要求。
+
+当我们向集合中插入`document`文档时，如果没有给文档指定`_id`属性，那么数据库会为文档自动添加`_id`field，并且值类型是`ObjectId(blablabla)`，就是文档的唯一标识，类似于关系型数据库里的 `primary key`。
+
+**添加单个文档**
+
+使用 insert()、save()、insertOne()方法向集合中插入文档，语法如下：
+
+```js
+// <collection_name>为插入的集合，如果该集合不存在会隐式创建该集合
+db.<collection_name>.insert({
+    <document or array of documents>,
+    writeConcern: <document>,
+    ordered: <boolean>
 })
+```
+
+| 参数         | 类型              | 介绍                                                         |
+| ------------ | ----------------- | ------------------------------------------------------------ |
+| document     | document or array | 要插入到集合中的文档或文档数组。（json格式）                 |
+| writeConcern | document          | Optional. A document expressing the write concern. Omit to use the default write concern. See Write Concern.Do not explicitly set the write concern for the operation if run in a transaction. To use write concern with transactions, see Transactions and Write Concern. |
+| ordered      | boolean           | 可选。如果为真，则按顺序插入数组中的文档，如果其中一个文档出现错误，MongoDB将返回而不处理数组中的其余文档。如果为假，则执行无序插入，如果其中一个文档出现错误，则继续处理数组中的主文档。在版本2.6+中默认为true |
+
+```sh
+# 向comment集合中添加数据，如果没有该集合，那么隐士创建集合
+test> db.comment.insert({"articleid":"100000","content":"今天天气真好，阳光明媚","userid":"1001","nickname":"Rose","createdatetime":new Date(),"likenum":NumberInt(10),"state":null})
+# 插入文档之后打印的结果
+DeprecationWarning: Collection.insert() is deprecated. Use insertOne, insertMany, or bulkWrite.
+{
+  acknowledged: true,
+  insertedIds: { '0': ObjectId("649568ab4325c10f27845873") }
+}
+```
 
 
+
+```js
 // 向集合中添加一个文档
-db.collection.insertOne(
-   { item: "canvas", qty: 100, tags: ["cotton"], size: { h: 28, w: 35.5, uom: "cm" } }
+db.mycollection.insertOne(
+    { item: "canvas", qty: 100, tags: ["cotton"], size: { h: 28, w: 35.5, uom: "cm" } }
 )
 // 向集合中添加多个文档
-db.collection.insertMany([
-   { item: "journal", qty: 25, tags: ["blank", "red"], size: { h: 14, w: 21, uom: "cm" } },
-   { item: "mat", qty: 85, tags: ["gray"], size: { h: 27.9, w: 35.5, uom: "cm" } },
-   { item: "mousepad", qty: 25, tags: ["gel", "blue"], size: { h: 19, w: 22.85, uom: "cm" } }
+db.mycollection.insertMany([
+    { item: "journal", qty: 25, tags: ["blank", "red"], size: { h: 14, w: 21, uom: "cm" } },
+    { item: "mat", qty: 85, tags: ["gray"], size: { h: 27.9, w: 35.5, uom: "cm" } },
+    { item: "mousepad", qty: 25, tags: ["gel", "blue"], size: { h: 19, w: 22.85, uom: "cm" } }
 ])
 ```
 
-注：当我们向 `collection` 中插入 `document` 文档时, 如果没有给文档指定 `_id` 属性, 那么数据库会为文档自动添加 `_id` field, 并且值类型是 `ObjectId(blablabla)`, 就是文档的唯一标识, 类似于 relational database 里的 `primary key`
 
-> - mongo 中的数字, 默认情况下是 double 类型, 如果要存整型, 必须使用函数 `NumberInt(整型数字)`, 否则取出来就有问题了
-> - 插入当前日期可以使用 `new Date()`
 
 如果某条数据插入失败, 将会终止插入, 但已经插入成功的数据**不会回滚掉**. 因为批量插入由于数据较多容易出现失败, 因此, 可以使用 `try catch` 进行异常捕捉处理, 测试的时候可以不处理.如：
 
-```
+```js
 try {
   db.comment.insertMany([
     {"_id":"1","articleid":"100001","content":"我们不应该把清晨浪费在手机上, 健康很重要, 一杯温水幸福你我 他.","userid":"1002","nickname":"相忘于江湖","createdatetime":new Date("2019-0805T22:08:15.522Z"),"likenum":NumberInt(1000),"state":"1"},
@@ -195,22 +431,20 @@ try {
 }
 ```
 
-#### 2.2.2 查询 Read
+### 2.3.2 查询 Read
 
 - 使用 `db.<collection_name>.find()` 方法对集合进行查询, 接受一个 json 格式的查询条件. 返回的是一个**数组**
 - `db.<collection_name>.findOne()` 查询集合中符合条件的第一个文档, 返回的是一个**对象**
 
-![img](https://raw.githubusercontent.com/Zhenye-Na/img-hosting-picgo/master/img/crud-annotated-mongodb-find.bakedsvg.png)
-
 可以使用 `$in` 操作符表示*范围查询*
 
-```
+```js
 db.inventory.find( { status: { $in: [ "A", "D" ] } } )
 ```
 
 多个查询条件用逗号分隔, 表示 `AND` 的关系
 
-```
+```js
 db.inventory.find( { status: "A", qty: { $lt: 30 } } )
 ```
 
@@ -222,7 +456,7 @@ SELECT * FROM inventory WHERE status = "A" AND qty < 30
 
 使用 `$or` 操作符表示后边数组中的条件是OR的关系
 
-```
+```js
 db.inventory.find( { $or: [ { status: "A" }, { qty: { $lt: 30 } } ] } )
 ```
 
@@ -234,7 +468,7 @@ SELECT * FROM inventory WHERE status = "A" OR qty < 30
 
 联合使用 `AND` 和 `OR` 的查询语句
 
-```
+```js
 db.inventory.find( {
      status: "A",
      $or: [ { qty: { $lt: 30 } }, { item: /^p/ } ]
@@ -243,13 +477,13 @@ db.inventory.find( {
 
 在 terminal 中查看结果可能不是很方便, 所以我们可以用 `pretty()` 来帮助阅读
 
-```
+```js
 db.inventory.find().pretty()
 ```
 
 匹配内容
 
-```
+```js
 db.posts.find({
   comments: {
     $elemMatch: {
@@ -264,7 +498,7 @@ db.<collection_name>.find({ content : /once/ })
 
 创建索引
 
-```
+```js
 db.posts.createIndex({
   { title : 'text' }
 })
@@ -279,7 +513,7 @@ db.posts.find({
 }).pretty()
 ```
 
-#### 2.2.3 更新 Update
+### 2.3.3 更新 Update
 
 - 使用 `db.<collection_name>.updateOne(<filter>, <update>, <options>)` 方法修改一个匹配 `<filter>` 条件的文档
 - 使用 `db.<collection_name>.updateMany(<filter>, <update>, <options>)` 方法修改所有匹配 `<filter>` 条件的文档
@@ -294,7 +528,7 @@ db.posts.find({
 
 其中最常用的修改操作符即为`$set`和`$unset`,分别表示**赋值**和**取消赋值**.
 
-```
+```js
 db.inventory.updateOne(
     { item: "paper" },
     {
@@ -317,7 +551,7 @@ db.inventory.updateMany(
 
 `db.<collection_name>.replaceOne()` 方法替换除 `_id` 属性外的**所有属性**, 其`<update>`参数应为一个**全新的文档**.
 
-```
+```js
 db.inventory.replaceOne(
     { item: "paper" },
     { item: "paper", instock: [ { warehouse: "A", qty: 60 }, { warehouse: "B", qty: 40 } ] }
@@ -326,7 +560,7 @@ db.inventory.replaceOne(
 
 **批量修改**
 
-```
+```js
 // 默认会修改第一条
 db.document.update({ userid: "30", { $set {username: "guest"} } })
 
@@ -338,11 +572,11 @@ db.document.update( { userid: "30", { $set {username: "guest"} } }, {multi: true
 
 如果我们想实现对某列值在原有值的基础上进行增加或减少, 可以使用 `$inc` 运算符来实现
 
-```
+```js
 db.document.update({ _id: "3", {$inc: {likeNum: NumberInt(1)}} })
 ```
 
-##### 修改操作符
+### 修改操作符
 
 | Name                                                         | Description                                                  |
 | :----------------------------------------------------------- | :----------------------------------------------------------- |
@@ -356,14 +590,14 @@ db.document.update({ _id: "3", {$inc: {likeNum: NumberInt(1)}} })
 | [`$setOnInsert`](https://docs.mongodb.com/manual/reference/operator/update/setOnInsert/#up._S_setOnInsert) | Sets the value of a field if an update results in an insert of a document. Has no effect on update operations that modify existing documents. |
 | [`$unset`](https://docs.mongodb.com/manual/reference/operator/update/unset/#up._S_unset) | Removes the specified field from a document.                 |
 
-#### 2.2.4 删除 Delete
+### 2.3.4 删除 Delete
 
 - 使用 `db.collection.deleteMany()` 方法删除所有匹配的文档.
 - 使用 `db.collection.deleteOne()` 方法删除单个匹配的文档.
 - `db.collection.drop()`
 - `db.dropDatabase()`
 
-```
+```js
 db.inventory.deleteMany( { qty : { $lt : 50 } } )
 ```
 
@@ -371,7 +605,7 @@ db.inventory.deleteMany( { qty : { $lt : 50 } } )
 >
 > 一般数据库中的数据都不会真正意义上的删除, 会添加一个字段, 用来表示这个数据是否被删除
 
-### 2.3 文档排序和投影 (sort & projection)
+## 2.4 文档排序和投影 (sort & projection)
 
 #### 2.3.1 排序 Sort
 

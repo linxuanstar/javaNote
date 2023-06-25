@@ -120,7 +120,7 @@ yum remove docker \
                   docker-ce
 ```
 
-首先需要大家虚拟机联网，安装yum工具
+首先需要虚拟机联网，安装yum工具
 
 ```sh
 yum install -y yum-utils \
@@ -135,7 +135,9 @@ yum install -y yum-utils \
 yum-config-manager \
     --add-repo \
     https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
-    
+
+# sed以流的方式编辑文本 -i直接修改读取的文件内容 s取代，搭配正则表达式进行取代 g全部替换
+# 替换/etc/yum.repos.d/docker-ce.repo文件中download.docker.com为mirrors.aliyun.com/docker-ce
 sed -i 's/download.docker.com/mirrors.aliyun.com\/docker-ce/g' /etc/yum.repos.d/docker-ce.repo
 
 yum makecache fast
@@ -147,7 +149,7 @@ yum makecache fast
 yum install -y docker-ce
 ```
 
-docker-ce为社区免费版本。稍等片刻，docker即可安装成功。安装成功之后关闭防火墙，Docker应用需要用到各种端口，逐一去修改防火墙设置非常麻烦。我的Centos7的防火墙一直是关闭的。基本命令如下：
+docker-ce为社区免费版本。稍等片刻，docker即可安装成功。安装成功之后关闭防火墙，Docker应用需要用到各种端口，逐一去修改防火墙设置非常麻烦。我们的Centos7的防火墙一直是关闭的。基本命令如下：
 
 | 命令                        | 作用               |
 | --------------------------- | ------------------ |
@@ -294,6 +296,7 @@ docker run --name mn -p 80:80 -d nginx
    容器内没有vi命令，无法直接修改，我们用下面的命令来修改：
 
    ```sh
+   # -i直接修改读取的文件内容 -e直接在命令列模式上进行sed的动作编辑
    sed -i -e 's#Welcome to nginx#林炫你好#g' -e 's#<head>#<head><meta charset="utf-8">#g' index.html
    ```
 
@@ -335,11 +338,9 @@ docker run --name mn -p 80:80 -d nginx
 * 数据不可复用：在容器内的修改对外是不可见的。所有修改对新创建的容器时不可复用的。
 * 升级维护困难：数据在容器中，如果要升级容器必须要删除旧容器，那么所有的数据也都会删除了。
 
-要解决这个问题，必须将数据与容器解耦，这就要用到数据卷了。
+要解决这个问题，必须将数据与容器解耦，这就要用到数据卷了。数据卷（volume）是一个虚拟目录，指向宿主机文件系统中的某个目录。
 
-数据卷（volume）是一个虚拟目录，指向宿主机文件系统中的某个目录。
-
-![image-20210731173541846](..\图片\3-32【Docker】/image-20210731173541846.png)
+![](..\图片\3-32【Docker】/image-20210731173541846.png)
 
 一旦完成数据卷挂载，对容器的一切操作都会作用在数据卷对应的宿主机目录了。这样，我们操作宿主机的`/var/lib/docker/volumes/html`目录，就等于操作容器内的`/usr/share/nginx/html`目录了
 
@@ -480,13 +481,9 @@ docker run的命令中通过 `-v` 参数挂载文件或目录到容器中：
 
 ## 3.2 Dockerfile语法
 
-构建自定义的镜像时，并不需要一个个文件去拷贝，打包。
+构建自定义的镜像时，并不需要一个个文件去拷贝，打包。我们只需要告诉Docker，我们的镜像的组成，需要哪些BaseImage、需要拷贝什么文件、需要安装什么依赖、启动脚本是什么，将来Docker会帮助我们构建镜像。而描述上述信息的文件就是Dockerfile文件。
 
-我们只需要告诉Docker，我们的镜像的组成，需要哪些BaseImage、需要拷贝什么文件、需要安装什么依赖、启动脚本是什么，将来Docker会帮助我们构建镜像。
-
-而描述上述信息的文件就是Dockerfile文件。
-
-Dockerfile就是一个文本文件，其中包含一个个的指令(Instruction)，用指令来说明要执行什么操作来构建镜像。每一个指令都会形成一层Layer。
+Dockerfile 就是一个文本文件，其中包含一个个的指令 Instruction ，用指令来说明要执行什么操作来构建镜像。每一个指令都会形成一层Layer。
 
 | 指令       | 说明                                     | 示例                        |
 | ---------- | ---------------------------------------- | --------------------------- |
@@ -558,15 +555,15 @@ Dockerfile的第一行必须是FROM，从一个基础镜像来构建。更新详
 
 虽然我们可以基于Ubuntu基础镜像添加自己需要的安装包来构建镜像，但是却比较麻烦。所以大多数情况下，我们都可以在一些安装了部分软件的基础镜像上做改造。例如，构建java项目的镜像，可以在已经准备了JDK的基础镜像基础上构建。
 
-需求：基于java:8-alpine镜像，将一个Java项目构建为镜像
+需求：基于 java:8-alpine 镜像，将一个 Java 项目构建为镜像
 
 实现思路如下：
 
-1. 新建一个空的目录，然后在目录中新建一个文件，命名为Dockerfile
+1. 新建一个空的目录，然后在目录中新建一个文件，命名为 Dockerfile
 
-2. 拷贝课前资料提供的docker-demo.jar到这个目录中
+2. 拷贝课前资料提供的 docker-demo.jar 到这个目录中
 
-3. 编写Dockerfile文件：
+3. 编写 Dockerfile 文件：
 
    ```dockerfile
    # 基于java:8-alpine作为基础镜像
@@ -585,9 +582,7 @@ Dockerfile的第一行必须是FROM，从一个基础镜像来构建。更新详
 
 # 第四章 Docker-Compose
 
-Docker Compose可以基于Compose文件帮我们快速的部署分布式应用，而无需手动一个个创建和运行容器！
-
-Compose文件是一个文本文件，通过指令定义集群中的每个容器如何运行。格式如下：
+Docker Compose可以基于Compose文件帮我们快速的部署分布式应用，而无需手动一个个创建和运行容器！Compose文件是一个文本文件，通过指令定义集群中的每个容器如何运行。格式如下：
 
 ```yml
 version: "3.8"
@@ -649,7 +644,7 @@ echo "199.232.68.133 raw.githubusercontent.com" >> /etc/hosts
 
 ## 4.2 部署微服务集群
 
-需求：将之前学习的cloud-demo微服务集群利用DockerCompose部署
+需求：将之前学习的cloud-demo微服务集群利用 DockerCompose 部署
 
 实现思路：
 
@@ -819,7 +814,7 @@ echo "199.232.68.133 raw.githubusercontent.com" >> /etc/hosts
    }
    ```
 
-   也就是添加了一个`,`和"insecure-registries`":["http://192.168.66.136:8080"]`，加上自己的IP地址
+   也就是添加了一个`,`和`"insecure-registries":["http://192.168.66.136:8080"]`，加上自己的IP地址
 
 2. 重新加载并重启
 
