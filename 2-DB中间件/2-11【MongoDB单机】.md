@@ -253,20 +253,20 @@ db.shutdownServer()
 
 在 MongoDB 中，数据库和集合都不需要手动创建，当我们创建文档时，如果文档所在的集合或者数据库不存在，则会自动创建数据库或者集合。
 
-接下来将一个存放文章评论的数据存放到 MongoDB 中，数据库名称为 articledb，数据结构如下：
+将一个存放文章评论的数据存放到 MongoDB 中，数据库名称为 articledb，集合名称为 comment，数据结构如下：
 
-| 字段名称       | 字段含义       | 字段类型         | 备注                      |
-| -------------- | -------------- | ---------------- | ------------------------- |
-| _id            | ID             | ObjectId或String | Mongo的主键的字段         |
-| articleid      | 文章ID         | String           |                           |
-| content        | 评论内容       | String           |                           |
-| userid         | 评论人ID       | String           |                           |
-| nickname       | 评论人昵称     | String           |                           |
-| createdatetime | 评论的日期时间 | Date             |                           |
-| likenum        | 点赞数         | Int32            |                           |
-| replynum       | 回复数         | Int32            |                           |
-| state          | 状态           | String           | 0：不可见；1：可见；      |
-| parentid       | 上级ID         | String           | 如果为0表示文章的顶级评论 |
+| 字段名称       | 字段含义       | 字段类型           | 备注                      |
+| -------------- | -------------- | ------------------ | ------------------------- |
+| _id            | ID             | ObjectId 或 String | Mongo的主键的字段         |
+| articleid      | 文章ID         | String             |                           |
+| content        | 评论内容       | String             |                           |
+| userid         | 评论人ID       | String             |                           |
+| nickname       | 评论人昵称     | String             |                           |
+| createdatetime | 评论的日期时间 | Date               |                           |
+| likenum        | 点赞数         | Int32              |                           |
+| replynum       | 回复数         | Int32              |                           |
+| state          | 状态           | String             | 0：不可见；1：可见；      |
+| parentid       | 上级ID         | String             | 如果为0表示文章的顶级评论 |
 
 ## 2.1 数据库操作
 
@@ -356,7 +356,7 @@ true
 
 注意事项：
 
-1. 文档中的键/值对是有序的。
+1. 文档中的键值对是有序的。
 2. 文档中的值不仅可以是在双引号里面的字符串，还可以是其他几种数据类型（甚至可以是整个嵌入的文档)。
 3. MongoDB区分类型和大小写。
 4. MongoDB的文档不能有重复的键。
@@ -364,11 +364,11 @@ true
 
 文档键命名规范：键不能含有`\0` (空字符)，该字符用来表示键的结尾。`.`和`$`有特别的意义，只有在特定环境下才能使用。 以下划线`_`开头的键是保留的，并非严格要求。
 
-当我们向集合中插入`document`文档时，如果没有给文档指定`_id`属性，那么数据库会为文档自动添加`_id`field，并且值类型是`ObjectId(blablabla)`，就是文档的唯一标识，类似于关系型数据库里的 `primary key`。
+当我们向集合中插入`document`文档时，如果没有给文档指定`_id`属性，那么数据库会为文档自动添加`_id`field，并且值类型是`ObjectId(blablabla)`，就是文档的唯一标识，类似于关系型数据库里的 `primary key`。插入时如果指定了`_id`，则主键就是该值。
 
 **添加单个文档**
 
-使用 insert()、save()、insertOne()方法向集合中插入文档，语法如下：
+使用 `insert()`、`save()`、`insertOne()`方法向集合中插入文档，语法如下：
 
 ```js
 // <collection_name>为插入的集合，如果该集合不存在会隐式创建该集合
@@ -385,10 +385,18 @@ db.<collection_name>.insert({
 | writeConcern | document          | Optional. A document expressing the write concern. Omit to use the default write concern. See Write Concern.Do not explicitly set the write concern for the operation if run in a transaction. To use write concern with transactions, see Transactions and Write Concern. |
 | ordered      | boolean           | 可选。如果为真，则按顺序插入数组中的文档，如果其中一个文档出现错误，MongoDB将返回而不处理数组中的其余文档。如果为假，则执行无序插入，如果其中一个文档出现错误，则继续处理数组中的主文档。在版本2.6+中默认为true |
 
-```sh
-# 向comment集合中添加数据，如果没有该集合，那么隐士创建集合
-test> db.comment.insert({"articleid":"100000","content":"今天天气真好，阳光明媚","userid":"1001","nickname":"Rose","createdatetime":new Date(),"likenum":NumberInt(10),"state":null})
-# 插入文档之后打印的结果
+```js
+// 向comment集合中添加数据，如果没有该集合，那么隐士创建集合
+test> db.comment.insert({
+    "articleid":"100000",
+    "content":"今天天气真好，阳光明媚",
+    "userid":"1001",
+    "nickname":"Rose",
+    "createdatetime":new Date(),
+    "likenum":NumberInt(10),
+    "state":null
+})
+// 插入文档之后打印的结果
 DeprecationWarning: Collection.insert() is deprecated. Use insertOne, insertMany, or bulkWrite.
 {
   acknowledged: true,
@@ -396,47 +404,112 @@ DeprecationWarning: Collection.insert() is deprecated. Use insertOne, insertMany
 }
 ```
 
+**添加多个文档**
 
+使用 `db.<collection_name>.insertMany()` 向集合中添加多个文档，参数为 json 文档数组。
 
 ```js
-// 向集合中添加一个文档
-db.mycollection.insertOne(
-    { item: "canvas", qty: 100, tags: ["cotton"], size: { h: 28, w: 35.5, uom: "cm" } }
-)
 // 向集合中添加多个文档
-db.mycollection.insertMany([
-    { item: "journal", qty: 25, tags: ["blank", "red"], size: { h: 14, w: 21, uom: "cm" } },
-    { item: "mat", qty: 85, tags: ["gray"], size: { h: 27.9, w: 35.5, uom: "cm" } },
-    { item: "mousepad", qty: 25, tags: ["gel", "blue"], size: { h: 19, w: 22.85, uom: "cm" } }
+db.comment.insertMany([
+        {"_id":"1","articleid":"100001","content":"我们不应该把清晨浪费在手机上, 健康很重要, 一杯温水幸福你我 他.","userid":"1002","nickname":"相忘于江湖","createdatetime":new Date("2019-0805T22:08:15.522Z"),"likenum":NumberInt(1000),"state":"1"},
+        {"_id":"2","articleid":"100001","content":"我夏天空腹喝凉开水, 冬天喝温开水","userid":"1005","nickname":"伊人憔 悴","createdatetime":new Date("2019-08-05T23:58:51.485Z"),"likenum":NumberInt(888),"state":"1"}
 ])
 ```
 
-
-
-如果某条数据插入失败, 将会终止插入, 但已经插入成功的数据**不会回滚掉**. 因为批量插入由于数据较多容易出现失败, 因此, 可以使用 `try catch` 进行异常捕捉处理, 测试的时候可以不处理.如：
+如果某条数据插入失败，将会终止插入，但已经插入成功的数据不会回滚掉。因为批量插入由于数据较多容易出现失败，因此可以使用 `try catch` 进行异常捕捉处理，测试的时候可以不处理。如：
 
 ```js
 try {
-  db.comment.insertMany([
-    {"_id":"1","articleid":"100001","content":"我们不应该把清晨浪费在手机上, 健康很重要, 一杯温水幸福你我 他.","userid":"1002","nickname":"相忘于江湖","createdatetime":new Date("2019-0805T22:08:15.522Z"),"likenum":NumberInt(1000),"state":"1"},
-    {"_id":"2","articleid":"100001","content":"我夏天空腹喝凉开水, 冬天喝温开水","userid":"1005","nickname":"伊人憔 悴","createdatetime":new Date("2019-08-05T23:58:51.485Z"),"likenum":NumberInt(888),"state":"1"},
-    {"_id":"3","articleid":"100001","content":"我一直喝凉开水, 冬天夏天都喝.","userid":"1004","nickname":"杰克船 长","createdatetime":new Date("2019-08-06T01:05:06.321Z"),"likenum":NumberInt(666),"state":"1"},
-    {"_id":"4","articleid":"100001","content":"专家说不能空腹吃饭, 影响健康.","userid":"1003","nickname":"凯 撒","createdatetime":new Date("2019-08-06T08:18:35.288Z"),"likenum":NumberInt(2000),"state":"1"},
-    {"_id":"5","articleid":"100001","content":"研究表明, 刚烧开的水千万不能喝, 因为烫 嘴.","userid":"1003","nickname":"凯撒","createdatetime":new Date("2019-0806T11:01:02.521Z"),"likenum":NumberInt(3000),"state":"1"}
-
-]);
-
+    db.comment.insertMany([
+        {"_id":"1","articleid":"100001","content":"我们不应该把清晨浪费在手机上, 健康很重要, 一杯温水幸福你我 他.","userid":"1002","nickname":"相忘于江湖","createdatetime":new Date("2019-0805T22:08:15.522Z"),"likenum":NumberInt(1000),"state":"1"},
+        {"_id":"2","articleid":"100001","content":"我夏天空腹喝凉开水, 冬天喝温开水","userid":"1005","nickname":"伊人憔 悴","createdatetime":new Date("2019-08-05T23:58:51.485Z"),"likenum":NumberInt(888),"state":"1"},
+        {"_id":"3","articleid":"100001","content":"我一直喝凉开水, 冬天夏天都喝.","userid":"1004","nickname":"杰克船 长","createdatetime":new Date("2019-08-06T01:05:06.321Z"),"likenum":NumberInt(666),"state":"1"},
+        {"_id":"4","articleid":"100001","content":"专家说不能空腹吃饭, 影响健康.","userid":"1003","nickname":"凯 撒","createdatetime":new Date("2019-08-06T08:18:35.288Z"),"likenum":NumberInt(2000),"state":"1"},
+        {"_id":"5","articleid":"100001","content":"研究表明, 刚烧开的水千万不能喝, 因为烫 嘴.","userid":"1003","nickname":"凯撒","createdatetime":new Date("2019-0806T11:01:02.521Z"),"likenum":NumberInt(3000),"state":"1"}
+    ]);
 } catch (e) {
-  print (e);
+    print (e);
 }
 ```
 
-### 2.3.2 查询 Read
+### 2.3.2 文档的查询
 
-- 使用 `db.<collection_name>.find()` 方法对集合进行查询, 接受一个 json 格式的查询条件. 返回的是一个**数组**
-- `db.<collection_name>.findOne()` 查询集合中符合条件的第一个文档, 返回的是一个**对象**
+```js
+// 查询数据的语法格式
+db.collection.find(<query>, [projection])
+```
 
-可以使用 `$in` 操作符表示*范围查询*
+| 参数       | 类型     | 描述                                                       |
+| ---------- | -------- | ---------------------------------------------------------- |
+| query      | document | 可选。使用查询运算符指定选择筛选器。                       |
+| projection | document | 可选。指定要在与查询筛选器匹配的文档中返回的字段（投影）。 |
+
+**查询所有**
+
+- 使用 `db.<collection_name>.find()` 方法对集合进行查询，接受一个 json 格式的查询条件，返回一个数组。
+- 使用`db.<collection_name>.findOne()` 查询集合中符合条件的第一个文档，返回的是一个对象。
+
+```js
+// 查询该集合所有文档
+test> db.comment.find()
+[
+  {
+    _id: ObjectId("649568ab4325c10f27845873"),
+    articleid: '100000',
+    content: '今天天气真好，阳光明媚',
+    userid: '1001',
+    nickname: 'Rose',
+    createdatetime: ISODate("2023-06-23T09:40:59.430Z"),
+    likenum: 10,
+    state: null
+  }
+]
+// 查询该集合中第一个符合该条件的文档
+test> db.comment.findOne({articleid: "100000"})
+{
+  _id: ObjectId("649568ab4325c10f27845873"),
+  articleid: '100000',
+  content: '今天天气真好，阳光明媚',
+  userid: '1001',
+  nickname: 'Rose',
+  createdatetime: ISODate("2023-06-23T09:40:59.430Z"),
+  likenum: 10,
+  state: null
+}
+```
+
+**投影查询**
+
+如果要查询结果返回部分字段，则需要使用投影查询（不显示所有字段，只显示指定的字段）。默认会返回`_id`字段，当然也可以将其强制屏蔽掉。
+
+```js
+// 投影查询，默认会返回_id字段
+test> db.comment.find({articleid: "100001"}, {userid: 1, content: 1})
+[
+  { _id: '1', content: '我们不应该把清晨浪费在手机上, 健康很重要, 一杯温水幸福你我 他.', userid: '1002' },
+  { _id: '2', content: '我夏天空腹喝凉开水, 冬天喝温开水', userid: '1005' },
+  { _id: '3', content: '我一直喝凉开水, 冬天夏天都喝.', userid: '1004' },
+  { _id: '4', content: '专家说不能空腹吃饭, 影响健康.', userid: '1003' },
+  { _id: '5', content: '研究表明, 刚烧开的水千万不能喝, 因为烫 嘴.', userid: '1003' }
+]
+// 将_id字段强制屏蔽掉，不让其返回
+test> db.comment.find({articleid: "100001"}, {userid: 1, content: 1, _id: 0})
+[
+  { content: '我们不应该把清晨浪费在手机上, 健康很重要, 一杯温水幸福你我 他.', userid: '1002' },
+  { content: '我夏天空腹喝凉开水, 冬天喝温开水', userid: '1005' },
+  { content: '我一直喝凉开水, 冬天夏天都喝.', userid: '1004' },
+  { content: '专家说不能空腹吃饭, 影响健康.', userid: '1003' },
+  { content: '研究表明, 刚烧开的水千万不能喝, 因为烫 嘴.', userid: '1003' }
+]
+```
+
+
+
+
+
+
+
+可以使用 `$in` 操作符表示范围查询
 
 ```js
 db.inventory.find( { status: { $in: [ "A", "D" ] } } )
@@ -513,248 +586,360 @@ db.posts.find({
 }).pretty()
 ```
 
-### 2.3.3 更新 Update
+### 2.3.3 文档的更新
 
-- 使用 `db.<collection_name>.updateOne(<filter>, <update>, <options>)` 方法修改一个匹配 `<filter>` 条件的文档
-- 使用 `db.<collection_name>.updateMany(<filter>, <update>, <options>)` 方法修改所有匹配 `<filter>` 条件的文档
-- 使用 `db.<collection_name>.replaceOne(<filter>, <update>, <options>)` 方法**替换**一个匹配 `<filter>` 条件的文档
-- `db.<collection_name>.update(查询对象, 新对象)` 默认情况下会使用新对象替换旧对象
+-  `db.<collection_name>.updateOne(<filter>, <update>, <options>)` 方法修改一个匹配 `<filter>` 条件的文档
+-  `db.<collection_name>.updateMany(<filter>, <update>, <options>)` 方法修改所有匹配 `<filter>` 条件的文档
+-  `db.<collection_name>.replaceOne(<filter>, <update>, <options>)` 方法替换一个匹配 `<filter>` 条件的文档
+- `db.<collection_name>.update(查询对象, 新对象)` 默认情况下会使用新对象替换旧对象，其中 `<filter>` 参数与查询方法中的条件参数用法一致。
 
-其中 `<filter>` 参数与查询方法中的条件参数用法一致.
-
-如果需要修改指定的属性, 而不是替换需要用“修改操作符”来进行修改
-
-- `$set` 修改文档中的制定属性
-
-其中最常用的修改操作符即为`$set`和`$unset`,分别表示**赋值**和**取消赋值**.
+| 操作符                                                       | 介绍                                                         |
+| :----------------------------------------------------------- | :----------------------------------------------------------- |
+| [`$currentDate`](https://docs.mongodb.com/manual/reference/operator/update/currentDate/#up._S_currentDate) | 将字段的值设置为当前日期，可以是date或Timestamp              |
+| [`$inc`](https://docs.mongodb.com/manual/reference/operator/update/inc/#up._S_inc) | 将字段的值按指定的量递增                                     |
+| [`$min`](https://docs.mongodb.com/manual/reference/operator/update/min/#up._S_min) | 仅在指定值小于现有字段值时更新字段                           |
+| [`$max`](https://docs.mongodb.com/manual/reference/operator/update/max/#up._S_max) | 仅在指定值大于现有字段值时更新字段.                          |
+| [`$mul`](https://docs.mongodb.com/manual/reference/operator/update/mul/#up._S_mul) | 将字段的值乘以指定的量                                       |
+| [`$rename`](https://docs.mongodb.com/manual/reference/operator/update/rename/#up._S_rename) | 重命名字段                                                   |
+| [`$set`](https://docs.mongodb.com/manual/reference/operator/update/set/#up._S_set) | 设置文档中字段的值                                           |
+| [`$setOnInsert`](https://docs.mongodb.com/manual/reference/operator/update/setOnInsert/#up._S_setOnInsert) | 如果更新导致插入文档，则设置字段的值。对修改现有文档的更新操作没有影响。 |
+| [`$unset`](https://docs.mongodb.com/manual/reference/operator/update/unset/#up._S_unset) | 从文档中删除指定字段                                         |
 
 ```js
-db.inventory.updateOne(
-    { item: "paper" },
+// 最常用的更新操作
+db.collection.update(query, update, options)
+//或
+db.collection.update(
+    // 更新的选择条件。使用与find()查询方法中相同的查询选择器，类似sql update查询内where后面的。
+    <query>,
+    // 要应用的修改。该值可以是：更新运算符表达式的文、对的替换文档、在MongoDB 4.2中启动聚合管道。
+    <update>,
     {
-        $set: { "size.uom": "cm", status: "P" },
-        $currentDate: { lastModified: true }
-    }
-)
-
-db.inventory.updateMany(
-    { qty: { $lt: 50 } },
-    {
-        $set: { "size.uom": "in", status: "P" },
-        $currentDate: { lastModified: true }
-    }
+    	// 可选。如果设置为true，则在没有与查询条件匹配的文档时创建新文档。默认值为false。
+        upsert: <boolean>,
+    	// 可选。如果设置为true，则更新符合查询条件的多个文档。默认值为false。
+        multi: <boolean>,
+    	// 可选。表示写问题的文档。抛出异常的级别。
+        writeConcern: <document>,
+    	// 可选。指定要用于操作的校对规则。
+        collation: <document>,
+    	// 可选。一个筛选文档数组，用于确定要为数组字段上的更新操作修改哪些数组元素。
+        arrayFilters: [ <filterdocument1>, ... ],
+    	// 可选。指定用于支持查询谓词的索引的文档或字符串。
+        hint: <document|string> // Available starting in MongoDB 4.2
+	}
 )
 ```
 
-> - uses the [`$set`](https://docs.mongodb.com/manual/reference/operator/update/set/#up._S_set) operator to update the value of the `size.uom` field to `"cm"` and the value of the `status` field to `"P"`,
-> - uses the [`$currentDate`](https://docs.mongodb.com/manual/reference/operator/update/currentDate/#up._S_currentDate) operator to update the value of the `lastModified` field to the current date. If `lastModified` field does not exist, [`$currentDate`](https://docs.mongodb.com/manual/reference/operator/update/currentDate/#up._S_currentDate) will create the field. See [`$currentDate`](https://docs.mongodb.com/manual/reference/operator/update/currentDate/#up._S_currentDate) for details.
+**覆盖修改**
 
-`db.<collection_name>.replaceOne()` 方法替换除 `_id` 属性外的**所有属性**, 其`<update>`参数应为一个**全新的文档**.
+使用`db.<collection_name>.update(查询对象, 新对象)`修改文档对象的时候，默认是进行覆盖修改，也就是会使用新对象替换掉旧对象。在6.0已经强制要求用户使用局部修改了：
 
 ```js
-db.inventory.replaceOne(
-    { item: "paper" },
-    { item: "paper", instock: [ { warehouse: "A", qty: 60 }, { warehouse: "B", qty: 40 } ] }
-)
+// 查询_id为1的文档
+test> db.comment.find({_id: "1"})
+[
+  {
+    _id: '1',
+    articleid: '100001',
+    content: '我们不应该把清晨浪费在手机上, 健康很重要, 一杯温水幸福你我 他.',
+    userid: '1002',
+    nickname: '相忘于江湖',
+    createdatetime: ISODate("1970-01-01T00:00:00.000Z"),
+    likenum: 1000,
+    state: '1'
+  }
+]
+// 默认修改为覆盖修改，6.0已经强制要求用户改为局部修改，所以这样会出错
+test> db.comment.update({_id: "1"}, {likenum: NumberInt(1001)})
+MongoInvalidArgumentError: Update document requires atomic operators
+```
+
+**局部修改**
+
+使用修改器/修改操作符`$set`来实现局部修改，`$set`用于修改文档中的制定属性，`$unset`为取消赋值。
+
+```js
+// 使用修改器局部修改
+test> db.comment.update({_id: "1"}, {$set: {likenum: NumberInt(1001)}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
 ```
 
 **批量修改**
 
-```js
-// 默认会修改第一条
-db.document.update({ userid: "30", { $set {username: "guest"} } })
+修改文档的时候默认只会修改第一条符合条件的文档，如果需要批量修改，那么需要添加`multi: true`条件。
 
-// 修改所有符合条件的数据
-db.document.update( { userid: "30", { $set {username: "guest"} } }, {multi: true} )
+```js
+// comment集合中有一个文档，userid都是1003，修改它们的nickname为张三
+test> db.comment.find()
+[
+    {
+        _id: '4',
+        articleid: '100001',
+        content: '专家说不能空腹吃饭, 影响健康.',
+        userid: '1003',
+        nickname: '凯 撒',
+        createdatetime: ISODate("2019-08-06T08:18:35.288Z"),
+        likenum: 2000,
+        state: '1'
+    },
+    {
+        _id: '5',
+        articleid: '100001',
+        content: '研究表明, 刚烧开的水千万不能喝, 因为烫 嘴.',
+        userid: '1003',
+        nickname: '凯撒',
+        createdatetime: ISODate("1970-01-01T00:00:00.000Z"),
+        likenum: 3000,
+        state: '1'
+    }
+]
+// 修改userid为1003的文档，将nickname修改为张三。但是可以看到只有一条数据被修改，默认只会修改第一条
+test> db.comment.update({userid: "1003"}, {$set: {nickname: "张三"}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+```
+
+```js
+// 这时候就会修改两条
+test> db.comment.update({userid: "1003"}, {$set: {nickname: "李四"}}, {multi: true})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 2,
+  modifiedCount: 2,
+  upsertedCount: 0
+}
 ```
 
 **列值增长的修改**
 
-如果我们想实现对某列值在原有值的基础上进行增加或减少, 可以使用 `$inc` 运算符来实现
+如果我们想实现对某列值在原有值的基础上进行增加或减少，可以使用 `$inc` 运算符来实现
 
 ```js
-db.document.update({ _id: "3", {$inc: {likeNum: NumberInt(1)}} })
+// 初始的likenum为1001
+test> db.comment.find()
+[
+  {
+    _id: '1',
+    articleid: '100001',
+    content: '我们不应该把清晨浪费在手机上, 健康很重要, 一杯温水幸福你我 他.',
+    userid: '1002',
+    nickname: '相忘于江湖',
+    createdatetime: ISODate("1970-01-01T00:00:00.000Z"),
+    likenum: 1001,
+    state: '1'
+  },
+]
+// 设置增加一
+test> db.comment.update({_id: "1"}, {$inc: {likenum: NumberInt(1)}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+// 现在查询出来的likenum为1002
+test> db.comment.find({_id: "1"})
+[
+  {
+    _id: '1',
+    articleid: '100001',
+    content: '我们不应该把清晨浪费在手机上, 健康很重要, 一杯温水幸福你我 他.',
+    userid: '1002',
+    nickname: '相忘于江湖',
+    createdatetime: ISODate("1970-01-01T00:00:00.000Z"),
+    likenum: 1002,
+    state: '1'
+  }
+]
 ```
 
-### 修改操作符
-
-| Name                                                         | Description                                                  |
-| :----------------------------------------------------------- | :----------------------------------------------------------- |
-| [`$currentDate`](https://docs.mongodb.com/manual/reference/operator/update/currentDate/#up._S_currentDate) | Sets the value of a field to current date, either as a Date or a Timestamp. |
-| [`$inc`](https://docs.mongodb.com/manual/reference/operator/update/inc/#up._S_inc) | Increments the value of the field by the specified amount.   |
-| [`$min`](https://docs.mongodb.com/manual/reference/operator/update/min/#up._S_min) | Only updates the field if the specified value is less than the existing field value. |
-| [`$max`](https://docs.mongodb.com/manual/reference/operator/update/max/#up._S_max) | Only updates the field if the specified value is greater than the existing field value. |
-| [`$mul`](https://docs.mongodb.com/manual/reference/operator/update/mul/#up._S_mul) | Multiplies the value of the field by the specified amount.   |
-| [`$rename`](https://docs.mongodb.com/manual/reference/operator/update/rename/#up._S_rename) | Renames a field.                                             |
-| [`$set`](https://docs.mongodb.com/manual/reference/operator/update/set/#up._S_set) | Sets the value of a field in a document.                     |
-| [`$setOnInsert`](https://docs.mongodb.com/manual/reference/operator/update/setOnInsert/#up._S_setOnInsert) | Sets the value of a field if an update results in an insert of a document. Has no effect on update operations that modify existing documents. |
-| [`$unset`](https://docs.mongodb.com/manual/reference/operator/update/unset/#up._S_unset) | Removes the specified field from a document.                 |
-
-### 2.3.4 删除 Delete
-
-- 使用 `db.collection.deleteMany()` 方法删除所有匹配的文档.
-- 使用 `db.collection.deleteOne()` 方法删除单个匹配的文档.
-- `db.collection.drop()`
-- `db.dropDatabase()`
+### 2.3.4 文档的删除
 
 ```js
-db.inventory.deleteMany( { qty : { $lt : 50 } } )
+// 使用remove方法已经过时了，所以改为deleteOne、deleteMany、findOneAndDelete
+test> db.comment.remove({_id: "5"})
+DeprecationWarning: Collection.remove() is deprecated. Use deleteOne, deleteMany, findOneAndDelete, or bulkWrite.
+{ acknowledged: true, deletedCount: 1 }
 ```
 
-> Delete operations **do not drop indexes**, even if deleting all documents from a collection.
->
-> 一般数据库中的数据都不会真正意义上的删除, 会添加一个字段, 用来表示这个数据是否被删除
+文档删除常用的方法如下：
 
-## 2.4 文档排序和投影 (sort & projection)
+- 使用 `db.<collection_name>.deleteMany()`方法删除所有匹配的文档。
+- 使用 `db.<collection_name>.deleteOne({})`方法删除单个匹配的文档。
+- 使用`db.<collection_name>.drop()`方法删除集合。
+- 使用`db.dropDatabase()`方法删除当前正在使用的数据库。
 
-#### 2.3.1 排序 Sort
-
-在查询文档内容的时候, 默认是按照 `_id` 进行排序
-
-我们可以用 `$sort` 更改文档排序规则
-
-```
-{ $sort: { <field1>: <sort order>, <field2>: <sort order> ... } }
+```js
+// 删除id为4的文档
+test> db.comment.deleteOne({_id: "4"})
+{ acknowledged: true, deletedCount: 1 }
 ```
 
-For the field or fields to sort by, set the sort order to `1` or `-1` to specify an *ascending* or *descending* sort respectively, as in the following example:
+> 一般数据库中的数据都不会真正意义上的删除，会添加一个字段，用来表示这个数据是否被删除。
 
-```
-db.users.aggregate(
-   [
-     { $sort : { age : -1, posts: 1 } }
-     // ascending on posts and descending on age
-   ]
-)
-```
+## 2.4 常用方法查询
 
-##### `$sort` Operator and Memory
+| 常用方法查询 |  方法   |
+| :----------: | :-----: |
+|   统计查询   | count() |
+|   分页查询   | limit() |
+|   跳过查询   | skip()  |
+|   排序查询   | sort()  |
 
-##### `$sort` + `$limit` Memory Optimization
+**统计查询**
 
-When a [`$sort`](https://docs.mongodb.com/manual/reference/operator/aggregation/sort/index.html#pipe._S_sort) precedes a [`$limit`](https://docs.mongodb.com/manual/reference/operator/aggregation/limit/#pipe._S_limit) and there are no intervening stages that modify the number of documents, the optimizer can coalesce the [`$limit`](https://docs.mongodb.com/manual/reference/operator/aggregation/limit/#pipe._S_limit) into the [`$sort`](https://docs.mongodb.com/manual/reference/operator/aggregation/sort/index.html#pipe._S_sort). This allows the [`$sort`](https://docs.mongodb.com/manual/reference/operator/aggregation/sort/index.html#pipe._S_sort) operation to **only maintain the top `n` results as it progresses**, where `n` is the specified limit, and ensures that MongoDB only needs to store `n` items in memory. This optimization still applies when `allowDiskUse` is `true` and the `n` items exceed the [aggregation memory limit](https://docs.mongodb.com/manual/core/aggregation-pipeline-limits/#agg-memory-restrictions).
+统计查询使用`count()`方法，但是在6.0中该方法已经过时，因此修改为使用`countDocuments()`方法
 
-Optimizations are subject to change between releases.
-
-> 有点类似于用 heap 做 topK 这种问题, 只维护 k 个大小的 heap, 会加速 process
-
-举个栗子:
-
-```
-db.posts.find().sort({ title : -1 }).limit(2).pretty()
-```
-
-#### 2.3.2 投影 Projection
-
-有些情况, 我们对文档进行查询并不是需要所有的字段, 比如只需要 id 或者 用户名, 我们可以对文档进行“投影”
-
-- `1` - display
-- `0` - dont display
-
-```
-> db.users.find( {}, {username: 1} )
-
-> db.users.find( {}, {age: 1, _id: 0} )
+```sql
+-- 使用count()会警告该方法已经过时，建议使用countDocuments方法
+test> db.comment.count()
+DeprecationWarning: Collection.count() is deprecated. Use countDocuments or estimatedDocumentCount.
+5
+-- 使用countDocuments()方法查询该集合中所有的文档数量
+test> db.comment.countDocuments()
+5
+-- 使用countDocuments()方法查询该集合中userid为1004的文档的数量
+test> db.comment.count({userid: "1004"})
+1
 ```
 
-### 2.4 forEach()
+**分页查询**
 
-```
-> db.posts.find().forEach(fucntion(doc) { print('Blog Post: ' + doc.title) })
-```
+可以使用`limit()`方法来读取指定数量的数据，使用`skip()`方法来跳过指定数量的数据。
 
-### 2.5 其他查询方式
+```sql
+-- 分页查询前三条数据，默认值为20
+db.comment.find().limit(3)
+-- 跳过前三条数据查询之后的数据
+db.comment.find().skip(3)
 
-#### 2.5.1 正则表达式
-
-```
-$ db.collection.find({field:/正则表达式/})
-
-$ db.collection.find({字段:/正则表达式/})
-```
-
-#### 2.5.2 比较查询
-
-`<`, `<=`, `>`, `>=` 这些操作符也是很常用的, 格式如下:
-
-```
-db.collection.find({ "field" : { $gt: value }}) // 大于: field > value
-db.collection.find({ "field" : { $lt: value }}) // 小于: field < value
-db.collection.find({ "field" : { $gte: value }}) // 大于等于: field >= value
-db.collection.find({ "field" : { $lte: value }}) // 小于等于: field <= value
-db.collection.find({ "field" : { $ne: value }}) // 不等于: field != value
+-- 分页查询，每页查询两条数据。跳过（当前页 - 1）* 每页查询的数量，读取每页需要查询的数量
+-- 第一页
+db.comment.find().skip(0).limit(2)
+-- 第二页
+db.comment.find().skip(2).limit(2)
+-- 第三页
+db.comment.find().skip(4).limit(2)
 ```
 
-#### 2.5.3 包含查询
+**排序查询**
 
-包含使用 `$in` 操作符. 示例：查询评论的集合中 `userid` 字段包含 `1003` 或 `1004`的文档
+`sort()` 方法对数据进行排序，`sort()` 方法可以通过参数指定排序的字段，并使用 1 和 -1 来指定排序的方式，其中 1 为升序排列，而 -1 是用于降序排列。
 
-```
-db.comment.find({userid:{$in:["1003","1004"]}})
-```
-
-不包含使用 `$nin` 操作符. 示例：查询评论集合中 `userid` 字段不包含 `1003` 和 `1004` 的文档
-
-```
-db.comment.find({userid:{$nin:["1003","1004"]}})
+```sql
+-- 使用语法
+db.<collection_name>.find().sort({KEY:1})
+-- 对userid降序排列，并对访问量进行升序排列
+db.comment.find().sort({userid:-1,likenum:1})
 ```
 
-## 2.6 常用命令小结
+> `skip()`、`limilt()`、`sort()`执行的顺序是`sort()` --> `skip()` --> `limit()`，和命令编写顺序无关。
 
-```
-选择切换数据库：use articledb
-插入数据：db.comment.insert({bson数据})
-查询所有数据：db.comment.find();
-条件查询数据：db.comment.find({条件})
-查询符合条件的第一条记录：db.comment.findOne({条件})
-查询符合条件的前几条记录：db.comment.find({条件}).limit(条数)
-查询符合条件的跳过的记录：db.comment.find({条件}).skip(条数)
+## 2.5 操作符查询
 
-修改数据：db.comment.update({条件},{修改后的数据})
-        或
-        db.comment.update({条件},{$set:{要修改部分的字段:数据})
+|        查询方式         |     操作符     |
+| :---------------------: | :------------: |
+| 模糊查询/正则表达式查询 | `/正则表达式/` |
+|          大于           |     `$gt`      |
+|        大于等于         |     `$gte`     |
+|          小于           |     `$lt`      |
+|        小于等于         |     `$lte`     |
+|         不等于          |     `$ne`      |
+|          包含           |     `$in`      |
+|         不包含          |     `$nin`     |
+|        连接查询         | `$and`、`$or`  |
 
-修改数据并自增某字段值：db.comment.update({条件},{$inc:{自增的字段:步进值}})
+**正则查询**
 
-删除数据：db.comment.remove({条件})
-统计查询：db.comment.count({条件})
-模糊查询：db.comment.find({字段名:/正则表达式/})
-条件比较运算：db.comment.find({字段名:{$gt:值}})
-包含查询：db.comment.find({字段名:{$in:[值1, 值2]}})
-        或
-        db.comment.find({字段名:{$nin:[值1, 值2]}})
+MongoDB的模糊查询是通过正则表达式的方式实现的。正则表达式是js的语法，直接量的写法。
 
-条件连接查询：db.comment.find({$and:[{条件1},{条件2}]})
-           或
-           db.comment.find({$or:[{条件1},{条件2}]})
-```
-
-## 3. 文档间的对应关系
-
-- 一对一 (One To One)
-- 一对多 (One To Many)
-- 多对多 (Many To Many)
-
-举个例子, 比如“用户-订单”这个一对多的关系中, 我们想查询某一个用户的所有或者某个订单, 我们可以
-
-```
-var user_id = db.users.findOne( {username: "username_here"} )._id
-db.orders.find( {user_id: user_id} )
+```sql
+-- 正则表达式查询
+db.<collection_name>.find({field:/正则表达式/})
+-- 查询comment集合中content内容包含“开水”的所有文档
+db.comment.find({content: /开水/})
+-- 查询comment集合中评论的内容中以“专家”开头的
+db.comment.find({content:/^专家/})
 ```
 
-## 4. MongoDB 的索引
+**比较查询**
 
-### 4.1 概述
+<!-- gt:greater than、lt:less than、gte:greater than or equal、ne:not equal-->
 
-索引支持在 MongoDB 中高效地执行查询.如果没有索引, MongoDB 必须执行全集合扫描, 即扫描集合中的每个文档, 以选择与查询语句 匹配的文档.这种扫描全集合的查询效率是非常低的, 特别在处理大量的数据时, 查询可以要花费几十秒甚至几分钟, 这对网站的性能是非常致命的.
+`<, <=, >, >=` 这些操作符是很常用的
 
-如果查询存在适当的索引, MongoDB 可以使用该索引限制必须检查的文档数.
-
-索引是特殊的数据结构, 它以易于遍历的形式存储集合数据集的一小部分.索引存储特定字段或一组字段的值, 按字段值排序.索引项的排 序支持有效的相等匹配和基于范围的查询操作.此外, MongoDB 还可以使用索引中的排序返回排序结果.
-
-MongoDB 使用的是 B Tree, MySQL 使用的是 B+ Tree
-
+```sql
+-- 展示所有大于value的字段的文档
+db.<collection_name>.find({ "field" : { $gt: value }})
+db.<collection_name>.find({ "field" : { $lt: value }})
+db.<collection_name>.find({ "field" : { $gte: value }})
+db.<collection_name>.find({ "field" : { $lte: value }})
+db.<collection_name>.find({ "field" : { $ne: value }})
+-- 查询comment集合中评论点赞数量likenum大于700的记录
+db.comment.find({likenum: {$gt: NumberInt(700)}})
 ```
+
+**包含查询**
+
+包含使用`$in`操作符，不包含使用`$nin`操作符。 
+
+```sql
+-- 查询comment集合中userid字段包含1003或1004的文档
+db.comment.find({userid: {$in: ["1003","1004"]}})
+-- 查询comment集合中userid字段不包含1003和1004的文档
+db.comment.find({userid: {$nin: ["1003","1004"]}})
+```
+
+**条件连接查询**
+
+如果需要查询同时满足两个以上条件，需要使用`$and`操作符将条件进行关联，格式为：`$and:[ { },{ },{ } ]`。如果两个以上条件之间是或者的关系，我们使用`$or`操作符进行关联。
+
+```sql
+-- 查询评论集合中likenum大于等于700 并且小于2000的文档
+db.comment.find({$and: [{likenum: {$gte: NumberInt(700)}}, {likenum: {$lt: NumberInt(2000)}}]})
+-- 查询评论集合中userid为1003，或者点赞数小于1000的文档记录
+db.comment.find({$or:[ {userid:"1003"} ,{likenum:{$lt:1000} }]})
+```
+
+## 2.6 JS 查询
+
+```js
+test> db.comment.find().forEach(function(doc) { print('content:' + doc.content)})
+content:我们不应该把清晨浪费在手机上, 健康很重要, 一杯温水幸福你我 他.
+content:我夏天空腹喝凉开水, 冬天喝温开水
+content:我一直喝凉开水, 冬天夏天都喝.
+content:专家说不能空腹吃饭, 影响健康.
+content:研究表明, 刚烧开的水千万不能喝, 因为烫 嘴.
+```
+
+# 第三章 索引
+
+[索引](https://docs.mongodb.com/manual/indexes/
+)支持在 MongoDB 中高效地执行查询。如果没有索引，MongoDB 必须执行全集合扫描，即扫描集合中的每个文档，以选择与查询语句匹配的文档。这种扫描全集合的查询效率是非常低的，特别在处理大量的数据时，查询可能要花费几十秒甚至几分钟，这对网站的性能是非常致命的。
+
+如果查询存在适当的索引，MongoDB 可以使用该索引限制必须检查的文档数。
+
+索引是特殊的数据结构，它以易于遍历的形式存储集合数据集的一小部分。索引存储特定字段或一组字段的值，按字段值排序。索引项的排序支持有效的相等匹配和基于范围的查询操作。此外，MongoDB 还可以使用索引中的排序返回排序结果。
+
+MongoDB 使用索引数据结构为的是 B Tree，MySQL 使用的是 B + Tree。
+
+
+
+```sql
 // create index
 db.<collection_name>.createIndex({ userid : 1, username : -1 })
 
@@ -775,322 +960,622 @@ db.<collection_name>.dropIndex({ userid : 1, username : -1 })
 db.<collection_name>.dropIndexes()
 ```
 
-### 4.2 索引的类型
+## 3.1 索引的类型
 
-#### 4.2.1 单字段索引
+MongoDB中索引分为：单字段索引、复合索引、地理空间索引、文本索引、哈希索引。
 
-MongoDB 支持在文档的单个字段上创建用户定义的**升序/降序索引**, 称为**单字段索引** Single Field Index
+**单字段索引**
 
-对于单个字段索引和排序操作, 索引键的排序顺序（即升序或降序）并不重要, 因为 MongoDB 可以在任何方向上遍历索引.
+MongoDB 支持在文档的单个字段上创建用户定义的升序/降序索引，称为单字段索引（Single Field Index）。对于单个字段索引和排序操作，索引键的排序顺序并不重要，因为 MongoDB 可以在任何方向上遍历索引。
 
-![img](https://raw.githubusercontent.com/Zhenye-Na/img-hosting-picgo/master/img/image-20200505231043779.png)
+![](D:\Java\笔记\图片\2-11【MongoDB单机】\3-1.png)
 
-#### 4.2.2 复合索引
+**复合索引**
 
-MongoDB 还支持多个字段的用户定义索引, 即复合索引 Compound Index
+MongoDB 还支持多个字段的用户定义索引，即复合索引（Compound Index）。复合索引中列出的字段顺序具有重要意义，如果复合索引由 `{ userid: 1, score: -1 }` 组成，则索引首先按 `userid` 正序排序，然后再按 `score` 倒序排序。
 
-复合索引中列出的字段顺序具有重要意义.例如, 如果复合索引由 `{ userid: 1, score: -1 }` 组成, 则索引首先按 `userid` 正序排序, 然后 在每个 `userid` 的值内, 再在按 `score` 倒序排序.
+![](D:\Java\笔记\图片\2-11【MongoDB单机】\3-2.png)
 
-![img](https://raw.githubusercontent.com/Zhenye-Na/img-hosting-picgo/master/img/image-20200505231305941.png)
+**地理空间索引**
 
-#### 4.2.3 其他索引
+为了支持对地理空间坐标数据的有效查询，MongoDB 提供了两种特殊的索引：返回结果时使用平面几何的二维索引和返回结果时使用球面几何的二维球面索引。
 
-- 地理空间索引 Geospatial Index
-- 文本索引 Text Indexes
-- 哈希索引 Hashed Indexes
+**文本索引**
 
-##### 地理空间索引（Geospatial Index）
+MongoDB 提供了一种文本索引类型，支持在集合中搜索字符串内容。这些文本索引不存储特定于语言的停止词（例如 “the”、“a”、“or”），而将集合中的词作为词干，只存储根词。
 
-为了支持对地理空间坐标数据的有效查询, MongoDB 提供了两种特殊的索引: 返回结果时使用平面几何的二维索引和返回结果时使用球面几何的二维球面索引.
+**哈希索引**
 
-##### 文本索引（Text Indexes）
+为了支持基于散列的分片，MongoDB 提供了散列索引类型，它对字段值的散列进行索引。这些索引在其范围内的值分布更加随机，但只支持相等匹配，不支持基于范围的查询。
 
-MongoDB 提供了一种文本索引类型, 支持在集合中搜索字符串内容.这些文本索引不存储特定于语言的停止词（例如 “the”, “a”, “or”）, 而将集合中的词作为词干, 只存储根词.
+## 3.2 索引的操作
 
-##### 哈希索引（Hashed Indexes）
+**查看索引**
 
-为了支持基于散列的分片, MongoDB 提供了散列索引类型, 它对字段值的散列进行索引.这些索引在其范围内的值分布更加随机, 但只支持相等匹配, 不支持基于范围的查询.
-
-### 4.3 索引的管理操作
-
-#### 4.3.1 索引的查看
-
-语法
-
-```
-db.collection.getIndexes()
+```sql
+-- 查看索引语法
+db.<collection_name>.getIndexes()
+-- 查看comment集合中的索引，这里面的索引为_id索引，唯一索引。
+db.comment.getIndexes()
+[ { v: 2, key: { _id: 1 }, name: '_id_' } ]
 ```
 
-默认 `_id` 索引： MongoDB 在创建集合的过程中, 在 `_id` 字段上创建一个唯一的索引, 默认名字为 `_id` , 该索引可防止客户端插入两个具有相同值的文 档, 不能在 `_id` 字段上删除此索引.
+默认为`_id`索引，MongoDB 在创建集合的过程中会在 `_id` 字段上创建一个唯一的索引，默认名字为 `_id`。该索引可防止客户端插入两个具有相同值的文 档，不能在 `_id` 字段上删除此索引。在分片集群中，通常使用 `_id` 作为片键。
 
-注意：该索引是**唯一索引**, 因此值不能重复, 即 `_id` 值不能重复的.
+**创建索引**
 
-在分片集群中, 通常使用 `_id` 作为**片键**.
-
-#### 4.3.2 索引的创建
-
-语法
-
-```
-db.collection.createIndex(keys, options)
+```sql
+-- 创建索引语法
+db.<collection_name>.createIndex(keys, options)
 ```
 
-参数
+| 参数    | 类型     | 介绍                                                         |
+| ------- | -------- | ------------------------------------------------------------ |
+| keys    | document | 包含字段和值对的文档，其中字段是索引键，值描述该字段的索引类型（升序或者降序） |
+| options | document | 可选。包含一组控制索引创建的选项的文档。有关详细信息，请参见下面的表格 |
 
-![image-20200506203419523](https://raw.githubusercontent.com/Zhenye-Na/img-hosting-picgo/master/img/image-20200506203419523.png)
+| 参数               | 类型          | 介绍                                                         |
+| ------------------ | ------------- | ------------------------------------------------------------ |
+| background         | Boolean       | 默认创建索引会阻塞其它数据库操作，可指定以后台方式创建索引   |
+| unique             | Boolean       | 建立的索引是否唯一，指定为true创建唯一索引。默认值为false。  |
+| name               | string        | 索引的名称。默认根据连接索引的字段名和排序顺序生成名称。     |
+| dropDups           | Boolean       | 已废弃。                                                     |
+| sparse             | Boolean       | 对文档中不存在的字段数据不启用索引，默认值为 false。         |
+| expireAfterSeconds | integer       | 指定一个以秒为单位的数值，完成 TTL设定，设定集合的生存时间。 |
+| v                  | index version | 索引的版本号。默认的索引版本取决于mongod创建索引时运行的版本。 |
+| weights            | document      | 索引权重值，数值在 1 到 99,999 之间。                        |
+| language_override  | string        | 该参数指定了包含在文档中的字段名，语言覆盖默认的language     |
+| default_language   | string        | 该参数决定了停用词及词干和词器的规则的列表。默认为英语       |
 
-options（更多选项）列表
+在 3.0.0 版本前创建索引方法为 `db.collection.ensureIndex()` ，之后的版本使用 `db.collection.createIndex()` 方法， `ensureIndex()` 还能用，但只是 `createIndex()` 的别名。
 
-![image-20200506203453430](https://raw.githubusercontent.com/Zhenye-Na/img-hosting-picgo/master/img/image-20200506203453430.png)
-
-注意在 3.0.0 版本前创建索引方法为 `db.collection.ensureIndex()` , 之后的版本使用了 `db.collection.createIndex()` 方法, `ensureIndex()` 还能用, 但只是 `createIndex()` 的别名.
-
-举个🌰
-
-```
-$  db.comment.createIndex({userid:1})
-{
-  "createdCollectionAutomatically" : false,
-  "numIndexesBefore" : 1,
-  "numIndexesAfter" : 2,
-  "ok" : 1
-}
-
-$ db.comment.createIndex({userid:1,nickname:-1})
-...
-```
-
-#### 4.3.3 索引的删除
-
-语法
-
-```
-# 删除某一个索引
-$ db.collection.dropIndex(index)
-
-# 删除全部索引
-$ db.collection.dropIndexes()
-```
-
-提示:
-
-`_id` 的字段的索引是无法删除的, 只能删除非 `_id` 字段的索引
-
-示例
-
-```
-# 删除 comment 集合中 userid 字段上的升序索引
-$ db.comment.dropIndex({userid:1})
-```
-
-### 4.4 索引使用
-
-#### 4.4.1 执行计划
-
-分析查询性能 (Analyze Query Performance) 通常使用执行计划 (解释计划 - Explain Plan) 来查看查询的情况
-
-```
-$ db.<collection_name>.find( query, options ).explain(options)
-```
-
-比如: 查看根据 `user_id` 查询数据的情况
-
-**未添加索引之前**
-
-`"stage" : "COLLSCAN"`, 表示全集合扫描
-
-![img](https://raw.githubusercontent.com/Zhenye-Na/img-hosting-picgo/master/img/image-20200506205714154.png)
-
-**添加索引之后**
-
-`"stage" : "IXSCAN"`, 基于索引的扫描
-
-#### 4.4.2 涵盖的查询
-
-当查询条件和查询的投影仅包含索引字段是, MongoDB 直接从索引返回结果, 而不扫描任何文档或将文档带入内存, 这些覆盖的查询十分有效
-
-> https://docs.mongodb.com/manual/core/query-optimization/#covered-query
-
-## 5. 在 Nodejs 中使用 MongoDB - mongoose
-
-mongoose 是一个对象文档模型（ODM）库
-
-> https://mongoosejs.com/
-
-- 可以为文档创建一个模式结构（Schema）
-- 可以对模型中的对象/文档进行验证
-- 数据可以通过类型转换转换为对象模型
-- 可以使用中间件应用业务逻辑
-
-### 5.1 mongoose 提供的新对象类型
-
-- Schema
-  - 定义约束了数据库中的文档结构
-  - 个人感觉类似于 SQL 中建表时事先规定表结构
-- Model
-  - 集合中的所有文档的表示, 相当于 MongoDB 数据库中的 collection
-- Document
-  - 表示集合中的具体文档, 相当于集合中的一个具体的文档
-
-### 5.2 简单使用 Mongoose
-
-> https://mongoosejs.com/docs/guide.html
-
-使用 mongoose 返回的是一个 `mogoose Query object`, mongoose 执行 query 语句后的结果会被传进 callback 函数 `callback(error, result)`
-
-> A mongoose query can be executed in one of two ways. First, if you pass in a `callback` function, Mongoose will execute the query asynchronously and pass the results to the `callback`.
->
-> A query also has a `.then()` function, and thus can be used as a promise.
-
-```
-const q = MyModel.updateMany({}, { isDeleted: true }, function() {
-  console.log("Update 1");
-}));
-
-q.then(() => console.log("Update 2"));
-q.then(() => console.log("Update 3"));
-```
-
-上面这一段代码会执行三次 `updateMany()` 操作, 第一次是因为 callback, 之后的两次是因为 `.then()` (因为 `.then()` 也会调用 `updatemany()`)
-
-**连接数据库并且创建 Model 类**
-
-```
-const mongoose = require('mongoose');
-// test is the name of database, will be created automatically
-mongoose.connect('mongodb://localhost:27017/test', {useNewUrlParser: true});
-
-const Cat = mongoose.model('Cat', { name: String });
-
-const kitty = new Cat({ name: 'Zildjian' });
-kitty.save().then(() => console.log('meow'));
-```
-
-**监听 MongoDB 数据库的连接状态**
-
-在 mongoose 对象中, 有一个属性叫做 `connection`, 该对象就表示数据库连接.通过监视该对象的状态, 可以来监听数据库的连接和端口
-
-```
-mongoose.connection.once("open", function() {
-  console.log("connection opened.")
-});
-
-mongoose.connection.once("close", function() {
-  console.log("connection closed.")
-});
-```
-
-### 5.3 Mongoose 的 CRUD
-
-首先定义一个 `Schema`
-
-```
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-
-const blogSchema = new Schema({
-    title:  String, // String is shorthand for {type: String}
-    author: String,
-    body:   String,
-    comments: [{ body: String, date: Date }],
-    date: { type: Date, default: Date.now },
-    hidden: Boolean,
-    meta: {
-        votes: Number,
-        favs:  Number
-    }
-});
-```
-
-然后在 `blogSchema` 基础上创建 `Model`
-
-```
-const Blog = mongoose.model('Blog', blogSchema);
-// ready to go!
-
-module.exports = Blog;
-```
-
-当调用上面这一行代码时, MongoDB 会做如下操作
-
-1. 是否存在一个数据库叫做 `Blog` 啊? 没的话那就创建一个
-2. 每次用到 Blog 库的时候都要注意内部数据要按照 `blogSchema` 来规定
-
-向数据库中插入文档数据
-
-```
-Blog.create({
-  title: "title"
-  ...
-}, function (err){
-  if (!err) {
-    console.log("successful")
+```sql
+-- 对 userid 字段建立索引
+test> db.comment.createIndex({userid: 1})
+userid_1
+test> db.comment.getIndexes()
+[
+  { v: 2, key: { _id: 1 }, name: '_id_' },
+  { v: 2, key: { userid: 1 }, name: 'userid_1' }
+]
+-- 对 userid 和 nickname 同时建立复合（Compound）索引
+test> db.comment.createIndex({userid:1,nickname:-1})
+userid_1_nickname_-1
+test> db.comment.getIndexes()
+[
+  { v: 2, key: { _id: 1 }, name: '_id_' },
+  { v: 2, key: { userid: 1 }, name: 'userid_1' },
+  {
+    v: 2,
+    key: { userid: 1, nickname: -1 },
+    name: 'userid_1_nickname_-1'
   }
-});
+]
 ```
 
-简单的查询一下下
+**索引的删除**
 
-```
-// named john and at least 18 yo
-MyModel.find({ name: 'john', age: { $gte: 18 }});
-```
-
-mongoose 支持的用法有:
-
-- [`Model.deleteMany()`](https://mongoosejs.com/docs/api.html#model_Model.deleteMany)
-- [`Model.deleteOne()`](https://mongoosejs.com/docs/api.html#model_Model.deleteOne)
-- [`Model.find()`](https://mongoosejs.com/docs/api.html#model_Model.find)
-- [`Model.findById()`](https://mongoosejs.com/docs/api.html#model_Model.findById)
-- [`Model.findByIdAndDelete()`](https://mongoosejs.com/docs/api.html#model_Model.findByIdAndDelete)
-- [`Model.findByIdAndRemove()`](https://mongoosejs.com/docs/api.html#model_Model.findByIdAndRemove)
-- [`Model.findByIdAndUpdate()`](https://mongoosejs.com/docs/api.html#model_Model.findByIdAndUpdate)
-- [`Model.findOne()`](https://mongoosejs.com/docs/api.html#model_Model.findOne)
-- [`Model.findOneAndDelete()`](https://mongoosejs.com/docs/api.html#model_Model.findOneAndDelete)
-- [`Model.findOneAndRemove()`](https://mongoosejs.com/docs/api.html#model_Model.findOneAndRemove)
-- [`Model.findOneAndReplace()`](https://mongoosejs.com/docs/api.html#model_Model.findOneAndReplace)
-- [`Model.findOneAndUpdate()`](https://mongoosejs.com/docs/api.html#model_Model.findOneAndUpdate)
-- [`Model.replaceOne()`](https://mongoosejs.com/docs/api.html#model_Model.replaceOne)
-- [`Model.updateMany()`](https://mongoosejs.com/docs/api.html#model_Model.updateMany)
-- [`Model.updateOne()`](https://mongoosejs.com/docs/api.html#model_Model.updateOne)
-
-## 6. 使用 Mocha 编写测试 “Test Driven Development”
-
-Mocha 是一个 js 测试的包, 编写测试有两个关键字 `describe` 和 `it`
-
-- `describe` 是一个”统领块”, 所有的 test functions 都会在它”名下”
-- `it` 表示每一个 test function
-
-```
-create_test.js
-const assert = require('assert')
-// assume we have a User model defined in src/user.js
-const User = require('../src/user')
-
-// after installing Mocha, we have global access
-// to describe and it keywords
-describe('Creating records', () => {
-  it('saves a user', () => {
-    const joe = new User({ name: "Joe" });
-    joe.save();
-    assert()
-  });
-});
+```sql
+-- 指定索引的移除，可以通过索引名称或索引规范文档指定索引。若要删除文本索引，请指定索引名称。
+db.<collection_name>.dropIndex(index)
+-- 移除全部索引。_id 的字段的索引是无法删除的，只能删除非_id 字段的索引。
+db.<collection_name>.dropIndexes()
 ```
 
-## 7. NoSQL Databases
+```sql
+-- 查看所有索引
+test> db.comment.getIndexes()
+[
+    { v: 2, key: { _id: 1 }, name: '_id_' },
+    { v: 2, key: { userid: 1 }, name: 'userid_1' },
+    {
+        v: 2,
+        key: { userid: 1, nickname: -1 },
+        name: 'userid_1_nickname_-1'
+    }
+]
+-- 删除索引
+test> db.comment.dropIndex({userid: 1})
+{ nIndexesWas: 3, ok: 1 }
+-- 再次查看索引，发现userid:1的索引已经删除
+test> db.comment.getIndexes()
+[
+    { v: 2, key: { _id: 1 }, name: '_id_' },
+    {
+        v: 2,
+        key: { userid: 1, nickname: -1 },
+        name: 'userid_1_nickname_-1'
+    }
+]
+```
 
-**Benefits of NoSQL**
+## 3.3 执行计划
 
-- Easy for inserting and retrieving data, since they are contained in one block, in one json object
-- Flexible schema, if a new attribute added, it is easy to just add / append to the object
-- Scalability, horizontally partition the data (availability > consistency)
-- Aggregation, find metrics and etc
+分析查询性能（Analyze Query Performance）通常使用执行计划（解释计划、Explain Plan）来查看查询的情况，如查询耗费的时间、是否基于索引查询等。 
 
-**Drawbacks of NoSQL**
+```sql
+-- 执行计划/解释计划语法
+db.<collection_name>.find( query, options ).explain(options)
+```
 
-- Update = Delete + Insert, not built for update
-- Not consistent, ACID is not guaranteed, do not support transactions
-- Not read optimized. Read entire block find the attribute. But SQL, just need one column (read time compartively slow)
-- Relations are not implicit
-- JOINS are hard to accomplish, all manually
+接下来通过执行`explain()`来看一下加索引和不加索引之后的效率：
+
+```sql
+-- 查寻comment集合中所有的索引，发现只有_id索引
+test> db.comment.getIndexes()
+[ { v: 2, key: { _id: 1 }, name: '_id_' } ]
+-- 通过执行计划查看该条语句详情信息
+test> db.comment.find({userid: "1003"}).explain()
+{
+  explainVersion: '1',
+  queryPlanner: {
+    namespace: 'test.comment',
+    indexFilterSet: false,
+    parsedQuery: { userid: { '$eq': '1003' } },
+    queryHash: '82257C83',
+    planCacheKey: '82257C83',
+    maxIndexedOrSolutionsReached: false,
+    maxIndexedAndSolutionsReached: false,
+    maxScansToExplodeReached: false,
+    winningPlan: {
+      -- 代表全集合扫描
+      stage: 'COLLSCAN',
+      filter: { userid: { '$eq': '1003' } },
+      direction: 'forward'
+    },
+    rejectedPlans: []
+  },
+  command: { find: 'comment', filter: { userid: '1003' }, '$db': 'test' },
+  serverInfo: {
+    host: 'DESKTOP-PA8B4PG',
+    port: 27017,
+    version: '6.0.5',
+    gitVersion: 'c9a99c120371d4d4c52cbb15dac34a36ce8d3b1d'
+  },
+  serverParameters: {
+    internalQueryFacetBufferSizeBytes: 104857600,
+    internalQueryFacetMaxOutputDocSizeBytes: 104857600,
+    internalLookupStageIntermediateDocumentMaxSizeBytes: 104857600,
+    internalDocumentSourceGroupMaxMemoryBytes: 104857600,
+    internalQueryMaxBlockingSortMemoryUsageBytes: 104857600,
+    internalQueryProhibitBlockingMergeOnMongoS: 0,
+    internalQueryMaxAddToSetBytes: 104857600,
+    internalDocumentSourceSetWindowFieldsMaxMemoryBytes: 104857600
+  },
+  ok: 1
+}
+-- 创建索引
+test>  db.comment.createIndex({userid:1})
+userid_1
+-- 再次查看该SQL语句执行效率
+test> db.comment.find({userid: "1003"}).explain()
+{
+  explainVersion: '1',
+  queryPlanner: {
+    namespace: 'test.comment',
+    indexFilterSet: false,
+    parsedQuery: { userid: { '$eq': '1003' } },
+    queryHash: '82257C83',
+    planCacheKey: '75A2858A',
+    maxIndexedOrSolutionsReached: false,
+    maxIndexedAndSolutionsReached: false,
+    maxScansToExplodeReached: false,
+    winningPlan: {
+      stage: 'FETCH',
+      inputStage: {
+        -- 基于索引的扫描
+        stage: 'IXSCAN',
+        keyPattern: { userid: 1 },
+        indexName: 'userid_1',
+        isMultiKey: false,
+        multiKeyPaths: { userid: [] },
+        isUnique: false,
+        isSparse: false,
+        isPartial: false,
+        indexVersion: 2,
+        direction: 'forward',
+        indexBounds: { userid: [ '["1003", "1003"]' ] }
+      }
+    },
+    rejectedPlans: []
+  },
+  command: { find: 'comment', filter: { userid: '1003' }, '$db': 'test' },
+  serverInfo: {
+    host: 'DESKTOP-PA8B4PG',
+    port: 27017,
+    version: '6.0.5',
+    gitVersion: 'c9a99c120371d4d4c52cbb15dac34a36ce8d3b1d'
+  },
+  serverParameters: {
+    internalQueryFacetBufferSizeBytes: 104857600,
+    internalQueryFacetMaxOutputDocSizeBytes: 104857600,
+    internalLookupStageIntermediateDocumentMaxSizeBytes: 104857600,
+    internalDocumentSourceGroupMaxMemoryBytes: 104857600,
+    internalQueryMaxBlockingSortMemoryUsageBytes: 104857600,
+    internalQueryProhibitBlockingMergeOnMongoS: 0,
+    internalQueryMaxAddToSetBytes: 104857600,
+    internalDocumentSourceSetWindowFieldsMaxMemoryBytes: 104857600
+  },
+  ok: 1
+}
+```
+
+## 3.4 覆盖索引
+
+当查询条件和查询的投影仅包含索引字段时，MongoDB直接从索引返回结果，而不扫描任何文档或将文档带入内存。这些覆盖的查询可以非常有效。
+
+# 第四章 文章评论案例
+
+需要实现以下功能：
+
+1. 基本增删改查API
+2. 根据文章id查询评论
+3. 评论点赞
+
+这里仅需要做一下后端的CRUD开发即可，无需搭建前端静态页面！
+
+| 字段名称       | 字段含义       | 字段类型           | 备注                      |
+| -------------- | -------------- | ------------------ | ------------------------- |
+| _id            | ID             | ObjectId 或 String | Mongo的主键的字段         |
+| articleid      | 文章ID         | String             |                           |
+| content        | 评论内容       | String             |                           |
+| userid         | 评论人ID       | String             |                           |
+| nickname       | 评论人昵称     | String             |                           |
+| createdatetime | 评论的日期时间 | Date               |                           |
+| likenum        | 点赞数         | Int32              |                           |
+| replynum       | 回复数         | Int32              |                           |
+| state          | 状态           | String             | 0：不可见；1：可见；      |
+| parentid       | 上级ID         | String             | 如果为0表示文章的顶级评论 |
+
+## 4.1 技术选型
+
+可以选择偏底层的 mongodb-driver，也可以选择封装大部分功能的 SpringDataMongoDB，这里我们选择SpringDataMongoDB。
+
+* [mongodb-driver](http://mongodb.github.io/mongo-java-driver/) 是 mongo 官方推出的 java 连接 mongoDB 的驱动包，相当于JDBC驱动。我们通过一个入门的案例来了解mongodb-driver 的基本使用。
+* [SpringDataMongoDB](https://projects.spring.io/spring-data-mongodb/) 是 SpringData 家族成员之一，用于操作 MongoDB 的持久层框架，封装了底层的mongodb-driver。
+
+## 4.2 项目搭建
+
+本项目采用SpringBoot + MongoDB技术栈，创建项目的时候先创建一个空的Maven项目，然后再导入需要的依赖。
+
+```xml
+<!--配置当前工程继承自parent工程-->
+<parent>
+    <!-- SpringBoot起步依赖 -->
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.1.6.RELEASE</version>
+    <!-- 设置父项目pom.xml位置路径，如果是<relativePath/>那么代表从仓库里面找 -->
+    <relativePath/>
+</parent>
+
+<dependencies>
+    <!-- test测试依赖 -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-test</artifactId>
+        <scope>test</scope>
+    </dependency>
+    <!-- mongodb依赖 -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-mongodb</artifactId>
+    </dependency>
+    <!-- Lombok简化实体类开发 -->
+    <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+    </dependency>
+</dependencies>
+```
+
+```yaml
+spring:
+  #数据源配置
+  data:
+    mongodb:
+      # 主机地址
+      host: localhost
+      # 数据库
+      database: test
+      # 默认端口是27017
+      port: 27017
+      # 也可以使用uri连接
+      # uri: mongodb://localhost:27017/test
+```
+
+```java
+package com.linxuan;
+
+@SpringBootApplication
+public class Demo01Application {
+
+    public static void main(String[] args) {
+        SpringApplication.run(Demo01Application.class, args);
+    }
+}
+```
+
+## 4.3 实体类编写
+
+```java
+package com.linxuan.pojo;
+
+/**
+ * 文章评论实体类
+ *  1.Document注解把类声明为mongodb集合，可以通过collection指定该类对应的集合。默认使用类名小写映射集合。
+ *  2.CompoundIndex注解创建复合索引：@CompoundIndex( def = "{'userid': 1, 'nickname': -1}")
+ *  3.索引可以通过Mongo的命令来添加，也可以在Java的实体类中通过注解添加。
+ */
+@Data
+@ToString
+@Document(collection = "comment")
+public class Comment implements Serializable {
+    // 主键标识，该属性的值会自动对应mongodb的主键字段"_id"。如果该属性名就叫“id”，则该注解可以省略。
+    @Id
+    private String id;
+    // 吐槽内容。该属性对应mongodb的字段的名字，如果一致，则无需该注解
+    @Field("content")
+    private String content;
+    // 发布人ID。添加一个单字段的索引，如果comment集合中已经有该索引，那么会报错。
+    @Indexed
+    private String userid;
+    
+    // 发布日期
+    private Date publishtime;
+    // 昵称
+    private String nickname;
+    // 评论的日期时间
+    private LocalDateTime createdatetime;
+    // 点赞数
+    private Integer likenum;
+    // 回复数
+    private Integer replynum;
+    // 状态
+    private String state;
+    // 上级ID
+    private String parentid;
+    // 文章ID
+    private String articleid;
+}
+```
+
+## 4.4 评论的增删改查
+
+```java
+package com.linxuan.dao;
+
+public interface CommentDao extends MongoRepository<Comment, String> {
+}
+```
+
+```java
+package com.linxuan.service;
+
+public interface CommentService {
+
+    /**
+     * 新增评论
+     * @param comment 需要新增的评论
+     */
+    void saveComment(Comment comment);
+
+    /**
+     * 更新评论
+     * @param comment 更新后的评论，根据comment里面的主键进行更新
+     */
+    void updateComment(Comment comment);
+
+    /**
+     * 根据ID删除评论
+     * @param id id
+     */
+    void deleteCommentById(String id);
+
+    /**
+     * 查询所有的评论列表
+     * @return 返回所有的评论集合
+     */
+    List<Comment> findCommentList();
+
+    /**
+     * 根据id查询评论
+     * @param id 需要查询的id
+     * @return 返回评论
+     */
+    Comment findCommentById(String id);
+}
+```
+
+```java
+package com.linxuan.service.impl;
+
+@Service
+public class CommentServiceImpl implements CommentService {
+
+    @Autowired
+    private CommentDao commentDao;
+
+    @Override
+    public void saveComment(Comment comment) {
+        commentDao.save(comment);
+    }
+
+    @Override
+    public void updateComment(Comment comment) {
+        commentDao.save(comment);
+    }
+
+    @Override
+    public void deleteCommentById(String id) {
+        commentDao.deleteById(id);
+    }
+
+    @Override
+    public List<Comment> findCommentList() {
+        return commentDao.findAll();
+    }
+
+    @Override
+    public Comment findCommentById(String id) {
+        return commentDao.findById(id).get();
+    }
+}
+```
+
+新建Junit测试类，测试保存和查询所有
+
+```java
+package com.linxuan;
+
+// SpringBoot的Junit集成测试
+@RunWith(SpringRunner.class)
+// SpringBoot的测试环境初始化，参数：启动类
+@SpringBootTest(classes = Demo01Application.class)
+public class CommentServiceTest {
+
+    // 注入Service
+    @Autowired
+    private CommentService commentService;
+
+    /**
+     * 新增一个评论
+     */
+    @Test
+    public void testSaveComment() {
+        Comment comment = new Comment();
+        comment.setArticleid("100000");
+        comment.setContent("测试添加的数据");
+        comment.setCreatedatetime(LocalDateTime.now());
+        comment.setUserid("1003");
+        comment.setNickname("凯撒大帝");
+        comment.setState("1");
+        comment.setLikenum(0);
+        comment.setReplynum(0);
+        commentService.saveComment(comment);
+    }
+
+    /**
+     * 查询所有数据
+     */
+    @Test
+    public void testFindAll() {
+        List<Comment> list = commentService.findCommentList();
+        list.forEach(System.out::println);
+    }
+
+    /**
+     * 测试根据id查询
+     */
+    @Test
+    public void testFindCommentById() {
+        Comment comment = commentService.findCommentById("1");
+        System.out.println(comment);
+    }
+}
+```
+
+## 4.5 根据上级ID分页查询
+
+```java
+public interface CommentDao extends MongoRepository<Comment, String> {
+
+    /**
+     * 根据父id，查询子评论的分页列表
+     *
+     * @param parentid 父评论id
+     * @param pageable 所有分页相关信息的一个抽象
+     * @return 返回分页查询结果
+     */
+    Page<Comment> findByParentid(String parentid, Pageable pageable);
+}
+```
+
+```java
+public interface CommentService {
+    
+    /**
+     * 根据父id查询分页列表
+     *
+     * @param parentid 父id
+     * @param page 页数
+     * @param size 每页数量
+     * @return 查询结果
+     */
+    Page<Comment> findCommentListPageByParentid(String parentid, int page, int size);
+}
+```
+
+```java
+@Service
+public class CommentServiceImpl implements CommentService {
+
+    @Override
+    public Page<Comment> findCommentListPageByParentid(String parentid, int page, int size) {
+        return commentDao.findByParentid(parentid, PageRequest.of(page, size));
+    }
+}
+```
+
+```java
+// SpringBoot的Junit集成测试
+@RunWith(SpringRunner.class)
+// SpringBoot的测试环境初始化，参数：启动类
+@SpringBootTest(classes = Demo01Application.class)
+public class CommentServiceTest {
+
+    @Test
+    public void testFindCommentListPageByParentid() {
+        Page<Comment> pageResponse = commentService.findCommentListPageByParentid("3", 1, 2);
+        System.out.println("----总记录数：" + pageResponse.getTotalElements());
+        System.out.println("----当前页数据：" + pageResponse.getContent());
+    }
+}
+```
+
+## 4.6 评论点赞
+
+我们看一下以下点赞的临时示例代码： CommentService 新增updateThumbup方法
+
+```java
+/**
+* 点赞-效率低
+* @param id
+*/
+public void updateCommentThumbupToIncrementingOld(String id){
+    Comment comment = CommentRepository.findById(id).get();
+    comment.setLikenum(comment.getLikenum()+1);
+    CommentRepository.save(comment);
+}
+```
+
+以上方法虽然实现起来比较简单，但是执行效率并不高，因为我们只需要将点赞数加1就可以了，没必要查询出所有字段修改后再更新所有字段。
+
+我们可以使用MongoTemplate类来实现对某列的操作。
+
+```java
+@Service
+public class CommentServiceImpl implements CommentService {
+    // 注入MongoTemplate
+    @Autowired
+    private MongoTemplate mongoTemplate;
+
+    /**
+     * 点赞数+1
+     *
+     * @param id 需要更新的id
+     */
+    public void updateCommentLikenum(String id) {
+        // 查询对象
+        Query query = Query.query(Criteria.where("_id").is(id));
+        // 更新对象
+        Update update = new Update();
+        // update.set(key,value); 局部更新，相当于$set
+        // update.inc("likenum",1); 递增$inc
+        update.inc("likenum");
+        // 参数1为查询对象、参数2为更新对象、参数3为集合的名字或实体类的类型Comment.class
+        mongoTemplate.updateFirst(query, update, "comment");
+    }
+}
+```
+

@@ -326,6 +326,129 @@ public static void main(String[] args) {
 }
 ```
 
+## 2.4 JSON处理常用工具类
+
+Gson、FastJson、Jackson 都是第三方序列化/反序列化 JSON 格式的 Java 库。
+
+### 2.4.1 谷歌开源的Gson
+
+Gson是Google提供的用来在Java对象和JSON数据之间进行映射的Java类库。Gson 最初是为在 Google 内部使用而创建的，后面进行了开源，Gson可以将一个Json字符转成一个Java对象，或者将一个Java转化为Json字符串。
+
+```xml
+<dependency>
+    <groupId>com.google.code.gson</groupId>
+    <artifactId>gson</artifactId>
+    <version>2.8.2</version>
+</dependency>
+```
+
+```java
+// 创建方式一
+Gson gson = new gson();
+User obj= new User();
+String json = gson.toJson(obj); // 序列化user对象
+User obj2 = gson.fromJson(json, User.class);  // 反序列化对象
+```
+
+```java
+// 创建方式二
+Gson gson = new GsonBuilder()
+        // 序列化null
+        .serializeNulls()
+        // 设置日期时间格式，另有2个重载方法
+        // 在序列化和反序化时均生效
+        .setDateFormat("yyyy-MM-dd")
+        // 禁此序列化内部类
+        .disableInnerClassSerialization()
+        // 生成不可执行的Json（多了 )]}' 这4个字符）
+        .generateNonExecutableJson()
+        // 禁止转义html标签
+        .disableHtmlEscaping()
+        // 格式化输出
+        .setPrettyPrinting()
+        .create();
+User obj= new User();
+String json = gson.toJson(obj); // 序列化user对象
+User obj2 = gson.fromJson(json, User.class);  // 反序列化对象
+```
+
+### 2.4.2 阿里开源的Fasjson
+
+`Fastjson` 是阿里巴巴提供的一个Java语言编写的高性能功能完善的 `JSON` 库，是目前Java语言中最快的 `JSON` 库，可以实现 `Java` 对象和 `JSON` 字符串的相互转换。
+
+不过不太稳定，有些BUG
+
+```xml
+<dependency>
+    <groupId>com.alibaba</groupId>
+    <artifactId>fastjson</artifactId>
+    <version>1.2.62</version>
+</dependency>
+```
+
+```java
+User obj= new User();
+// 序列化对象
+String json =JSON.toJSONString(obj);
+// 反序列化对象
+User user=JSON.parseObject(json,User.class);
+
+// 反序列化集合方式一
+List<User> res= JSON.parseArray(json,User.class);
+// 反序列化集合方式二
+List<User> res6= JSON.parseObject(json,new TypeReference<List<User>>(){});
+```
+
+### 2.4.3 SpringBoot使用Jackson
+
+Jackson是一个简单的基于Java的库，用于将Java对象序列化为JSON，也可以把JSON转换为Java对象，是SpringBoot默认序列化Json库。
+
+`Spring版本兼容问题`：jackson-databind 2.11.0及以上版本与spring-boot版本兼容，推荐使用2.11.0及以上版本
+
+```xml
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+    <version>2.11.2</version>
+</dependency>
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-core</artifactId>
+    <version>2.11.2</version>
+</dependency>
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-annotations</artifactId>
+    <version>2.11.2</version>
+</dependency>
+```
+
+ObjectMapper 作为 Jackson 中最常用的类，提供了 Java 对象和 JSON 字符串相互转换的方法
+
+| 类           | 常用方法           | 方法作用         |
+| ------------ | ------------------ | ---------------- |
+| ObjectMapper | writeValueAsString | JSON序列化操作   |
+| ObjectMapper | readValue          | JSON反序列化操作 |
+
+```java
+writeValue(File arg0, Object arg1) // 把arg1转成json序列，并保存到arg0文件中。
+writeValue(OutputStream arg0, Object arg1) // 把arg1转成json序列，并保存到arg0输出流中。
+writeValueAsBytes(Object arg0) // 把arg0转成json序列，并把结果输出成字节数组。
+```
+
+```java
+// POJO 转Json
+User user=new User();
+ObjectMapper mapper = new ObjectMapper();
+String json = mapper.writeValueAsString(user);
+user = mapper.readValue(json, User.class);
+
+//Java集合转JSON		
+List<User> users = new ArrayList<User>();
+users.add(user);
+String jsonlist = mapper.writeValueAsString(users);
+List<User> readValue = mapper.readValue(jsonList,new TypeReference<List<User>>(){});
+```
 
 # 第三章 案例
 

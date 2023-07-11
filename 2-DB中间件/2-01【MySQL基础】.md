@@ -729,6 +729,11 @@ ALTER TAABLE 表名 ADD CONSTRAINT 外键名称 FOREIGN KEY (外键字段) REFER
 alter table employee add constraint emp_dept_fk foreign key (dep_id) references department(id) ON UPDATE CASCADE ON DELETE CASCADE;
 ```
 
+```sql
+-- 关闭外键约束
+SET FOREIGN_KEY_CHECKS=0
+```
+
 # 第三章 多表查询
 
 多表关系有：一对一、一对多（多对一）、多对多。

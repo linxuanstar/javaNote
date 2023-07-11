@@ -712,7 +712,7 @@ public interface UserMapper {
 
 这种方式仅适合简单SQL的编写，复杂SQL根本不行，所以还是建议使用映射文件编写。
 
-后面会学习Spring整合MyBatis，到时候可以不适用配置文件，直接全部使用配置类来编写
+后面会学习Spring整合MyBatis，到时候可以不用配置文件，直接全部使用配置类来编写
 
 ```properties
 # resources目录下面创建一个jdbc.properties文件，添加对应键值对

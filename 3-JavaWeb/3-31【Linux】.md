@@ -23,8 +23,8 @@ Linux与其他操作系统相比 ，具有开放源码、没有版权、技术�
 **Linux历史**
 
 * 20世纪80年代，当时可用操作系统有Unix、DOS和MacOS几种。Unix价格昂贵，不能运行于PC；DOS显得简陋，且源代码被软件厂商严格保密； MacOS是一种专门用于苹果计算机的操作系统。
-* 1984年AndrewS.Tanenbaum编写了一个操作系统MINIX用于向学生讲述操作系统内部工作原理。
-* 1989年，Andrew S.Tanenbaum将Minix系统运行于x86的PC平台。
+* 1984年 AndrewS.Tanenbaum 编写了一个操作系统MINIX用于向学生讲述操作系统内部工作原理。
+* 1989年 Andrew S.Tanenbaum 将Minix系统运行于x86的PC平台。
 * 1991年Linus Torvalds在吸收了MINIX精华的基础上，写出了Linux操作系统。Linux是一种外观和性能与UNIX相同或更好的操作系统，但Linux不源于任何版本的UNIX的源代码，并不是UNIX，而是一个类似于UNIX的产品。 
 
 ## 1.2 发行体系
@@ -71,7 +71,7 @@ Suse/Slackware系有：SUSE（服务器）、openSUSE（工作站、桌面）、
 1. Gentoo：基于linux的自由操作系统，基于Linux的自由操作系统，它能为几乎任何应用程序或需求自动地作出优化和定制。追求极限的配置、性能，以及顶尖的用户和开发者社区，都是Gentoo体验的标志特点， Gentoo的哲学是自由和选择。得益于一种称为Portage的技术，Gentoo能成为理想的安全服务器、开发工作站、专业桌面、游戏系统、嵌入式解决方案或者别的东西--你想让它成为什么，它就可以成为什么。由于它近乎无限的适应性，可把Gentoo称作元发行版。
 2. Aech Linux(或称Arch)：以轻量简洁为设计理念的Linux发行版。其开发团队秉承简洁、优雅和代码最小化的设计宗旨。
 
-## 1.4 Linux文件系统
+## 1.3 文件系统
 
 操作系统中负责管理和存储文件信息的软件机构称为文件管理系统，简称文件系统；文件系统的结构通常叫做目录树结构，从斜杠`/`根目录开始；
 
@@ -132,35 +132,132 @@ Linux中三种文件类型：
 | `?`      | 任意字符                                                     |
 | `*`      | 任意字符串                                                   |
 
+**文件类型**
+
+文件信息中的第一个位置表示文件类型，例如`lrwxrwxrwx`中第一个`l`就代表该文件的文件类型，表示链接文件。
+
+| 符号 | 全拼      | 文件类型                                                     |
+| ---- | --------- | ------------------------------------------------------------ |
+| d    | directory | 表示文件夹                                                   |
+| -    |           | 表示普通文件                                                 |
+| l    | linkfile  | 表示链接文件                                                 |
+| b    | block     | 表示块文件。块设备文件一般指硬盘、软盘等存储设备。           |
+| c    | character | 表示字符设备。一般置于/dev目录下，一次传输一个字节的设备被称为字符设备。 |
+| p    | pipe      | 表示管道文件。管道文件主要用于进程间通信。                   |
+| s    | socket    | 表示socket套接字文件。主要用于通信。                         |
+
+```sh
+[root@node1 /]# ll
+total 24
+lrwxrwxrwx.   1 root root    7 Sep 11  2020 bin -> usr/bin
+dr-xr-xr-x.   5 root root 4096 Sep 11  2020 boot
+```
+
 **文件权限**
 
 Linux系统上对文件的权限有着严格的控制，如果想对某个文件执行某种操作，必须具有对应的权限方可执行成功。
 
-Linux下文件的权限类型一般包括读`r`，写`w`，执行`x`。Linux下权限的粒度有拥有者 、群组 、其它组。每个文件都可以针对三个粒度，设置不同的`rwx`权限。通常情况下，一个文件只能归属于一个用户和组，如果其它的用户想有这个文件的权限，则可以将该用户加入具备权限的群组，一个用户可以同时归属于多个组。
+Linux下文件的权限类型有四种：可读`r`、可写`w`、可执行`x`和无权限`-`。按照数字可读`r`表示4、可写`w`表示2、可执行`x`表示1和无权限`-`表示0。
 
+- `r(read)`：读权限。对文件是指可读取内容，对目录是可以执行`ls`命令。
+- `w(write)`：写权限。对文件是指可修改文件内容，对目录是指可创建或删除子文件。
+- `x(exute)`：执行权限。对文件是指是否可以运行这个文件，对目录是指是否可以`cd`进入这个目录。
 
+文件权限可分为三个不同角色：所有者、组成员、其他成员。每个文件都可以针对三个角色，设置不同的`rwx`权限。通常情况下，一个文件只能归属于一个用户和组，如果其它的用户想有这个文件的权限，则可以将该用户加入具备权限的群组，一个用户可以同时归属于多个组。
 
-Linux上通常使用chmod命令对文件的权限进行设置和更改。
-
-
-
-在权限里面一共是有四个部分的，第一个部分是1个字符，第二个第三个第四个部分是3个字符，一共由十个字符代替。
-
-1位表示文件类型；2-4位表示文件所有者的权限，`u`权限；5-7位表示文件所有者所属组成员的权限，`g`权限；8-10位表示所有者所属组之外的用户的权限，`o`权限 ；2-10位的权限总和有时称为`a`权限；
+- `u(user)`：所有者，第2-4位表示所有者的权限。
+- `g(group)`：组成员，第5-7位表示所有者所属组成员的权限。
+- `o(other)`：其他成员，第8-10位表示所有者所属组之外的用户的权限。
+- `a(all)`：所有人， 2-10位的权限总和有时称为a权限。
 
 <img src="..\图片\3-31【Linux】\1-0.png" />
 
-第一位显示的是文件类型，linux下文件一共分为7类：`-`表示普通文件、`d`表示目录文件、`b`表示块设备文件、`c`表示字符设备、`l`表示符号链接、`p`表示管道文件、`s`表示套件字文件。
+Linux上通常使用`chmod`（change mode）命令对文件的权限进行设置和更改。
 
-第二个部分、第三个部分和第四个部分：
+```sh
+# 通过type命令查看chomod命令是内部命令还是外部命令
+[root@linxuanVM ~]# type chmod  
+chmod is hashed (/usr/bin/chmod)
+# 外部命令查看帮助手册
+[root@linxuanVM ~]# chmod --help
+Usage: chmod [OPTION]... MODE[,MODE]... FILE...
+  or:  chmod [OPTION]... OCTAL-MODE FILE...
+  or:  chmod [OPTION]... --reference=RFILE FILE...
+Change the mode of each FILE to MODE.
+With --reference, change the mode of each FILE to that of RFILE.
+...
+```
 
-- `r(read)`：读权限。对文件是指可读取内容，对目录是可以执行`ls`命令，代表数字是4。
-- `w(write)`：写权限。对文件是指可修改文件内容，对目录是指可以在其中创建或删除子节点(目录或文件)。代表数字是2。
-- `x(excute)`：执行权限。对文件是指是否可以运行这个文件，对目录是指是否可以`cd`进入这个目录。代表数字是1。
+```sh
+# 查看文件，a.txt文件是一个文件，所有者权限为rw、组内用户权限为r、其他用户权限为r
+[root@linxuanVM ~]# ll
+-rw-r--r-- 1 root root    4 Jun 30 19:59 a.txt
+# 修改a.txt文件的权限，所有者u权限修改为rwx、组用户g权限修改为rw、其他用户o权限修改为rw。逗号后面不要有空格
+[root@linxuanVM ~]# chmod u=rwx,g=rw,o=rw a.txt  
+# 修改权限成功
+[root@linxuanVM ~]# ll
+-rwxrw-rw- 1 root root    4 Jun 30 19:59 a.txt
+# 可以通过数字来进行修改权限，r=4、w=2、x=0，它们相加为一组权限。644代表u有rw权限、g有r权限、o有r权限
+[root@linxuanVM ~]# chmod 644 a.txt
+# 再次查看发现权限修改成功
+[root@linxuanVM ~]# ll
+-rw-r--r-- 1 root root    4 Jun 30 19:59 a.txt
+```
 
-修改权限的命令：`chmod` 。
+**文件信息**
 
-`chmod u=rwx,g=rx,o=rx a.txt`：对a.txt的权限进行修改。u是当前的用户，g是当前组内其他用户，o是其他组内用户。也可以使用数字相加来帮忙。`u = 4`、`g = 2`、`o = 1`；相加起来为一组的权限。`chmod 755 a.txt` 
+<!-- recursively:递归地；verbose:冗长的；symbolic:象征的；-->
+
+```sh
+[root@linxuanVM ~]# ll
+-rw-r--r-- 1 root root    4 Jun 30 19:59 a.txt
+```
+
+敲打`ll`命令后一共可以看到有完整的文件属性信息，可以大致分为七部分：
+
+* `-rw-r--r--`：文件或者目录的属性 + 文件/目录的所有者的权限 + 文件/目录所在群组其他用户的权限 + 剩下的其他用户的权限。
+* `1`：节点数，表示在系统中可以有几个地方看到这个文件，1表示1个地方，2是两个地方。
+* `root`：文件/目录的所有者
+* `root`：文件/目录的所在群组
+* `4`：文件/目录的大小，一般默认就是字节
+* `Jun 30 19:59`：文件/目录的最后的修改时间
+* `a.txt`：文件/目录名字
+
+使用 `chown`（Change owner）命令可以将指定的文件的拥有者改为指定的用户和组。管理员可以改变一切文件的所属信息，而普通用户只能改变自己文件的所属信息。
+
+```sh
+[root@linxuanVM linxuan]# type chown
+chown is /usr/bin/chown
+[root@linxuanVM linxuan]# chown --help
+Usage: chown [OPTION]... [OWNER][:[GROUP]] FILE...
+  -c, --changes          like verbose but report only when a change is made # 更改时显示详细的报告
+  -f, --silent, --quiet  suppress most error messages # 无法被修改也不显示错误信息
+  -h, --no-dereference   affect symbolic links instead of any referenced file # 对链接文件变更
+  -R, --recursive        operate on files and directories recursively # 递归修改目录下面的文件及文件夹
+Examples:
+  chown root /u        Change the owner of /u to "root". # 将 /u 的属主也就是用户更改为"root"
+  chown root:staff /u  Likewise, but also change its group to "staff". # 属主修改为root，组修改为staff
+  chown -hR root /u    Change the owner of /u and subfiles to "root". # 
+```
+
+```sh
+# 当前目录下面有一个密码.txt文件，所属用户和所属组都是linxuan
+[root@linxuanVM linxuan]# ll
+-rw-rw-r-- 1 linxuan linxuan 11 Mar  8 08:23 密码.txt
+# 修改该文件所属用户和所属组为root
+[root@linxuanVM linxuan]# chown root:root 密码.txt 
+# 再次查看文件信息，发现已经被修改了
+[root@linxuanVM linxuan]# ll
+-rw-rw-r-- 1 root root 11 Mar  8 08:23 密码.txt
+# 将文件所属组修改为linxuan，并且通过-c参数查看修改报告
+[root@linxuanVM linxuan]# chown -c :linxuan 密码.txt 
+changed ownership of ‘密码.txt’ from root:root to :linxuan
+# 也可以使用.linxuan来修改所属组
+[root@linxuanVM linxuan]# chown -c .linxuan 密码.txt  
+# 修改所属用户
+[root@linxuanVM linxuan]# chown -c linxuan 密码.txt
+changed ownership of ‘密码.txt’ from root to linxuan
+```
 
 # 第二章 命令行常用命令
 
@@ -194,54 +291,152 @@ Linux上通常使用chmod命令对文件的权限进行设置和更改。
 
 ## 2.1 获取命令帮助
 
+<!-- indicate:指示,表明；interpreted:诠释,说明; executable:可执行的；synopsis:概要；-->
+
+<!-- aliases:别名,化名；builtin:内嵌；suppress:抑制；lookup:查找；pseudo:伪； -->
+
+<!-- either...or:或者；output:输出；reserved:矜持的,内向的,保留；respectively:分别； -->
+
 | 命令              | 解释                                                   |
 | ----------------- | ------------------------------------------------------ |
 | type [ 命令 ]     | 判断是内部命令 or 外部命令                             |
 | help [内部命令]   | 只针对系统内部命令                                     |
-| [外部命令] --help | 外部命令                                               |
+| [外部命令] --help | 针对外部命令查看帮助文档                               |
 | man [命令]        | 内容清晰、详细、在线文档、支持搜索                     |
 | info [命令]       | 详细的帮助信息                                         |
 | /usr/share/doc    | 存放帮助文档，在与软件同名的目录下有所有软件的使用文档 |
 
-内部命令默认开机加载进内存中，当执行内部命令的时候就直接从内存中放到CPU里面直接运行了，外部命令对应的程序在硬盘上，就需要把硬盘中的文件加载到内存中再到CPU才可以运行。执行速度肯定是内部命令>外部命令。
+**type命令查看类型**
 
-help命令只能显示shell内部命令的帮助信息，而linux系统中绝大多数命令是外部命令，所以help命令的作用非常有限。而对于外部命令的帮助信息可以使man命令或者info命令查看。
+`type`命令用来显示指定命令的类型，判断给出的指令是内部指令还是外部指令。内部命令默认开机加载进内存中，当执行内部命令的时候就直接从内存中放到CPU里面直接运行了，外部命令对应的程序在硬盘上，就需要把硬盘中的文件加载到内存中再到CPU才可以运行。
 
-| help命令参数 | 描述                                          |
-| ------------ | --------------------------------------------- |
-| -d           | 输出每个主题的简短描述                        |
-| -m           | 以伪 man 手册的格式显示使用方法               |
-| -s           | 为每一个匹配 PATTERN 模式的主题仅显示一个用法 |
-
---help命令将会显示可执行程序自带的信息，这些信息是嵌入到程序本身的，所以–help信息较简短。
+`type`命令的结果如下：lias代表别名、keyword代表Shell保留关键字、function代表Shell函数、builtin代表Shell内建命令、file是磁盘文件代表外部命令、unfound没有找到。
 
 ```sh
-# 查看类型
-[root@linxuanVM ~]# type ls
-ls is aliased to `ls --color=auto'
-[root@linxuanVM ~]# type cd
-cd is a shell builtin
-
-# cd是内部命令，所以无法使用--help查询帮助文档
-[root@linxuanVM ~]# cd --help
--bash: cd: --: invalid option
-cd: usage: cd [-L|[-P [-e]]] [dir]
-
-# 可以使用help [内部命令]来查询
-[root@linxuanVM ~]# help cd
-cd: cd [-L|[-P [-e]]] [dir]
-    Change the shell working directory.
-    
-    Change the current directory to DIR.  The default DIR is the value of the
-    HOME shell variable.
-
-# 查询ls帮助文档
-[root@linxuanVM ~]# ls --help
-Usage: ls [OPTION]... [FILE]...
-List information about the FILEs (the current directory by default).
-Sort entries alphabetically if none of -cftuvSUX nor --sort is specified.
-...
+# ll是ls -l --color=auto的别名
+[root@linxuanVM ~]# type ll
+ll is aliased to `ls -l --color=auto'
+# shell中默认保留的字段
+[root@linxuanVM ~]# type if
+if is a shell keyword
+# 通过type命令看一下type是什么样的命令，内部指令还是外部指令。type是Shell内嵌命令
+[root@linxuanVM ~]# type type
+type is a shell builtin
+# 外部命令，直接显示其路径了
+[root@linxuanVM ~]# type lscpu
+lscpu is /usr/bin/lscpu
 ```
+
+**help命令和--help参数**
+
+通过`type`命令查询出来命令是内部命令或者是外部命令之后就可以通过通过`help`命令或者`--help`参数查看帮助文档，格式为`help [内部命令]`和`[外部命令] --help`
+
+```sh
+# 查看help命令是内嵌命令
+[root@linxuanVM systemd]# type help
+help is a shell builtin
+# 看一下help的帮助文档
+[root@linxuanVM systemd]# help help
+help: help [-dms] [pattern ...]
+    Display information about builtin commands.
+    
+    Displays brief summaries of builtin commands.  If PATTERN is
+    specified, gives detailed help on all commands matching PATTERN,
+    otherwise the list of help topics is printed.
+    
+    Options:
+      -d        output short description for each topic # 输出每个主题的简短描述
+      -m        display usage in pseudo-manpage format # 以伪 man 手册的格式显示使用方法
+      -s        output only a short usage synopsis for each topic matching
+        PATTERN # 为每一个匹配 PATTERN 模式的主题仅显示一个用法
+    
+    Arguments:
+      PATTERN   Pattern specifiying a help topic
+    
+    Exit Status:
+    Returns success unless PATTERN is not found or an invalid option is given.
+```
+
+```sh
+# 查看mv命令发现是别名
+[root@linxuanVM ~]# type mv
+mv is aliased to `mv -i'
+# 通过内部命令方式查看无法查看命令帮助文档
+[root@linxuanVM ~]# help mv
+-bash: help: no help topics match `mv'.  Try `help help' or `man -k mv' or `info mv'.
+# 通过--help可以查看帮助文档
+[root@linxuanVM ~]# mv --help
+Usage: mv [OPTION]... [-T] SOURCE DEST
+  or:  mv [OPTION]... SOURCE... DIRECTORY
+  or:  mv [OPTION]... -t DIRECTORY SOURCE...
+Rename SOURCE to DEST, or move SOURCE(s) to DIRECTORY.
+```
+
+**man 命令查询帮助手册**
+
+man 是 manual 的简写，使用 man 命令查询帮助手册时会进入 man page 界面，而非直接打印在控制台上。man 命令的信息更全，help 则显示的信息简洁。
+
+```sh
+[root@linxuanVM systemd]# man mv
+# MV(1)代表对所查询信息的一个分类，1代表用户在shell环境中可操作的标准命令或可执行文件
+MV(1)                      User Commands                MV(1)
+# NAME：命令名称及简要说明
+NAME
+       mv - move (rename) files
+# SYNOPSIS：命令执行语法概要
+SYNOPSIS
+       mv [OPTION]... [-T] SOURCE DEST
+       mv [OPTION]... SOURCE... DIRECTORY
+       mv [OPTION]... -t DIRECTORY SOURCE...
+# DESCRIPTION：完整的语法说明
+DESCRIPTION
+       Rename SOURCE to DEST, or move SOURCE(s) to DIRECTORY.
+       Mandatory arguments to long options are mandatory for short options too.
+       --backup[=CONTROL]
+              make a backup of each existing destination file
+# 作者
+AUTHOR
+       Written by Mike Parker, David MacKenzie, and Jim Meyering.
+# 版权、著作权
+COPYRIGHT
+       Copyright   ©   2013   Free   Software   Foundation,   Inc.    License   GPLv3+:  GNU  GPL  version  3  or  later <http://gnu.org/licenses/gpl.html>. This is free software: you are free to change and redistribute it.  There is NO WARRANTY, to the extent permitted by law.
+# 有关这个命令的其他说明
+SEE ALSO
+       rename(2)
+       The  full  documentation  for  mv  is  maintained  as a Texinfo manual.  If the info and mv programs are properly
+       installed at your site, the command
+              info coreutils 'mv invocation'
+       should give you access to the complete manual.
+GNU coreutils 8.22              October 2018                               MV(1)
+```
+
+| 数字 |                   代表含义                    |
+| :--: | :-------------------------------------------: |
+|  1   | 用户在shell环境中可操作的标准命令或可执行文件 |
+|  2   |           系统内核调用的函数及工具            |
+|  3   |                 常用的库函数                  |
+|  4   |             设备文件与设备说明等              |
+|  5   |              配置文件或文件格式               |
+|  6   |                  游戏等娱乐                   |
+|  7   |                  协议信息等                   |
+|  8   |           系统管理员可用的管理命令            |
+|  9   |          与 Linux 内核相关的文件文档          |
+
+man 命令相比于 help 命令最大的优势在于用户可以在 man page 中，通过按键交互进行翻页、查找等操作。常见的按键操作如下所示。
+
+|  按键  |                        功能                        |
+| :----: | :------------------------------------------------: |
+| 空格键 |                        翻页                        |
+|  /str  |                 向后查找str字符串                  |
+|  ?str  |                 向前查找str字符串                  |
+|  n, N  | n 为搜索到的下一个字符串，N 为搜索到的上一个字符串 |
+|   q    |                   退出 man page                    |
+
+**info 提供的帮助信息**
+
+info 命令的功能基本与 man 命令相似，能够显示出命令的相关资料和信息。
+
+而与 man 命令稍有区别的是，一方面，info 命令可以获取所查询命令相关的更丰富的帮助信息；另一方面，info page 将文件数据进行段落拆分，并以 “节点” 的形式支撑整个页面框架，并将拆分的段落与节点对应，使得用户可以在节点间跳转而方便阅读每一个段落的内容。
 
 ## 2.1 关机、重启和注销
 
@@ -296,7 +491,7 @@ Shut down the system.
 | ----------- | ---------------------------------------- |
 | cd <目录名> | 进⼊某个目录 cd（change directory）      |
 | cd ..       | 回上级目录                               |
-| cd          | 进个⼈主目录                             |
+| cd          | 进个人主目录                             |
 | cd -        | 回上⼀步所在目录                         |
 | cd /        | 切换到系统根目录                         |
 | cd ~        | 切换到用户主目录                         |
@@ -306,7 +501,7 @@ Shut down the system.
 
 `ls`是list files的缩写，通过ls 命令不仅可以查看目录和文件信息，还可以目录和文件权限、大小、主人和组等信息。`ls(list)`是一个非常有用的命令，用来显示当前目录下的内容。配合参数的使用，能以不同的方式显示目录内容。 
 
- 格式：`ls[参数] [路径或文件名]`
+格式：`ls[参数] [路径或文件名]`
 
 | 命令    | 作用                                           |
 | ------- | ---------------------------------------------- |

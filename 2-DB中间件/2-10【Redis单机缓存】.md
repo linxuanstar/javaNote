@@ -1377,6 +1377,131 @@ public interface RedisSerializer<T> {
 | StringRedisSerializer           | 字符串序列化机制                  |
 | Jackson2JsonRedisSerializer     | 将对象转为JSON存储                |
 
+## 4.4 Redis使用FastJson序列化
+
+```xml
+<parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.5.0</version>
+</parent>    
+<!-- redis依赖 -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-redis</artifactId>
+</dependency>
+<!-- fastjson依赖 -->
+<dependency>
+    <groupId>com.alibaba</groupId>
+    <artifactId>fastjson</artifactId>
+    <!-- SpringBoot并没有收录，因此需要自己设定版本 -->
+    <version>1.2.33</version>
+</dependency>
+```
+
+```java
+package com.linxuan.utils;
+
+/**
+ * 自定义一个Redis序列化器，实现RedisSerializer接口，内部使用FastJson序列化
+ * @param <T> 参数泛型化
+ */
+public class FastJsonRedisSerializer<T> implements RedisSerializer<T> {
+
+    public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
+
+    private Class<T> clazz;
+
+    static {
+        ParserConfig.getGlobalInstance().setAutoTypeSupport(true);
+    }
+
+    public FastJsonRedisSerializer(Class<T> clazz) {
+        super();
+        this.clazz = clazz;
+    }
+
+    /**
+     * 序列化方法
+     * @param t 序列化对象类型
+     * @return 返回字节数组
+     * @throws SerializationException 有可能抛出异常
+     */
+    @Override
+    public byte[] serialize(T t) throws SerializationException {
+        if (t == null) {
+            return new byte[0];
+        }
+        // 使用fastjson进行序列化
+        return JSON.toJSONString(t, SerializerFeature.WriteClassName).getBytes(DEFAULT_CHARSET);
+    }
+
+    /**
+     * 反序列化方法
+     * @param bytes 字节数组
+     * @return 返回发序列化后的对象
+     * @throws SerializationException 反序列化途中抛出的异常
+     */
+    @Override
+    public T deserialize(byte[] bytes) throws SerializationException {
+        if (bytes == null || bytes.length == 0) {
+            return null;
+        }
+        // 使用fastjson反序列化
+        String str = new String(bytes, DEFAULT_CHARSET);
+        return JSON.parseObject(str, clazz);
+    }
+
+    /**
+     * 获取字节码类型
+     * @param clazz 传入的字节码class对象
+     * @return 返回Java中的类型
+     */
+    protected JavaType getJavaType(Class<?> clazz) {
+        return TypeFactory.defaultInstance().constructType(clazz);
+    }
+}
+```
+
+```java
+package com.linxuan.config;
+
+/**
+ * 创建Redis配置类，设置一下序列化器
+ */
+@Configuration
+public class RedisConfig {
+
+    /**
+     * 设置RedisTemplate中序列化与反序列化操作的序列化器
+     * 1.注解之@Bean：将该方法的返回值制作为SpringIOC容器管理的一个Bean对象
+     * 2.注解之@SuppressWarnings：告诉编译器忽略指定的警告，不用在编译完成后出现警告信息
+     *
+     * @param connectionFactory 参数
+     * @return 返回RedisTemplate的bean对象并注入到SpringIOC容器中
+     */
+    @Bean
+    @SuppressWarnings(value = {"unchecked", "rawtypes"})
+    public RedisTemplate<Object, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
+        RedisTemplate<Object, Object> template = new RedisTemplate<>();
+        template.setConnectionFactory(connectionFactory);
+
+        FastJsonRedisSerializer serializer = new FastJsonRedisSerializer(Object.class);
+
+        // 默认的Key序列化器为：JdkSerializationRedisSerializer
+        // 因为默认都是JDK序列化器，但是这样向redis里面存储会添加一些前缀，所以需要设置为String序列化器
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setHashKeySerializer(new StringRedisSerializer());
+        // 设置值的序列化与反序列化器为我们自定义的FastJsonRedisSerializer
+        template.setValueSerializer(serializer);
+        template.setHashValueSerializer(serializer);
+
+        template.afterPropertiesSet();
+        return template;
+    }
+}
+```
+
 # 第五章 Redis内存管理
 
 ## 5.1 Redis 内存回收

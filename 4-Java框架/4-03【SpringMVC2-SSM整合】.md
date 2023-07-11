@@ -856,7 +856,7 @@ SpringMVC已经为我们提供了一套解决方案，那就是异常处理器�
 创建异常处理器类
 
 ```java
-// @RestControllerAdvice标识该类为REST风格对应的异常处理器，包含了@RestController=@Response+@Controller
+// @RestControllerAdvice标识该类为REST风格对应的异常处理器，包含了@ControllerAdvice + @ResponseBody
 @RestControllerAdvice
 public class ProjectExceptionAdvice {
     // 除了自定义的异常处理器，保留对Exception类型的异常处理，用于处理非预期的异常
@@ -895,7 +895,7 @@ public Result getById(@PathVariable Integer id) {
 | 名称 | @RestControllerAdvice                                        |
 | ---- | ------------------------------------------------------------ |
 | 类型 | 类注解，在Rest风格开发的控制器增强类上方定义                 |
-| 包含 | 包含了`@RestController` = `@Response` + `@Controller`        |
+| 包含 | 包含了`@ControllerAdvice` + `@ResponseBody`                  |
 | 作用 | 为Rest风格开发的控制器类做增强，标识该类为REST风格对应的异常处理器类。 |
 
 | 名称 | @ExceptionHandler                                            |

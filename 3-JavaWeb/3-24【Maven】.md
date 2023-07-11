@@ -103,14 +103,22 @@ maven 的工作需要从仓库下载一些 jar 包，本地的项目都会通过
     <modelVersion>4.0.0</modelVersion>
     <!--打包方式 web工程打包为war java工程打包为jar-->
     <packaging>war</packaging>
-    
+
     <!--组织id-->
     <groupId>com.linxuan</groupId>
     <!--项目id-->
     <artifactId>javaweb</artifactId>
     <!--版本号  release代表完成版，SNAPSHOT代表开发版-->
     <version>1.0-SNAPSHOT</version>
-    
+
+    <!-- 配置属性 -->
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+
     <!--设置当前工程的所有依赖-->
     <dependencies>
         <!--具体的依赖-->
@@ -437,8 +445,6 @@ maven 对项目构建过程分为三套相互独立的生命周期，请注意�
 # 第二章 依赖管理
 
 依赖指当前项目运行所需的jar，一个项目可以设置多个依赖。
-
-格式为:
 
 ```xml
 <!--设置当前项目所依赖的所有jar-->
