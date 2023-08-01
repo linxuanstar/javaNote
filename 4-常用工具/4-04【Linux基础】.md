@@ -215,9 +215,9 @@ With --reference, change the mode of each FILE to that of RFILE.
 
 敲打`ll`命令后一共可以看到有完整的文件属性信息，可以大致分为七部分：
 
-* `-rw-r--r--`：文件或者目录的属性 + 文件/目录的所有者的权限 + 文件/目录所在群组其他用户的权限 + 剩下的其他用户的权限。
+* `-rw-r--r--`：文件或者目录的属性 + 文件 / 目录的所有者的权限 + 文件 / 目录所在群组其他用户的权限 + 剩下的其他用户的权限。
 * `1`：节点数，表示在系统中可以有几个地方看到这个文件，1表示1个地方，2是两个地方。
-* `root`：文件/目录的所有者
+* `root`：文件 / 目录的所有者
 * `root`：文件/目录的所在群组
 * `4`：文件/目录的大小，一般默认就是字节
 * `Jun 30 19:59`：文件/目录的最后的修改时间
@@ -764,3 +764,531 @@ Centos7的防火墙操作
 
 # 第四章 Shell编程
 
+<!-- batch:一批、一组、批量； -->
+
+Shell 是一个命令行解释器，它接收应用程序 / 用户命令，然后调用操作系统内核。Shell 还是一个功能强大的编程语言，易编写、易调试、灵活性强。
+
+![](D:\Java\笔记\图片\4-04【Linux基础】\4-1Shell.png)
+
+```sh
+# 查看Linux提供的Shell解析器
+[root@linxuanVM ~]# cat /etc/shells 
+/bin/sh
+/bin/bash
+/usr/bin/sh
+/usr/bin/bash
+# 进入到bin目录，bin目录存放二进制可执行文件(ls,cat,mkdir等)，常用命令一般都在这里。
+[root@linxuanVM ~]# cd /bin/
+# 查看默认的解析器
+[root@linxuanVM bin]# echo $SHELL
+/bin/bash
+# 可以看到sh软连接到了bash，所以sh底层就是bash
+[root@linxuanVM bin]# ll | grep bash
+-rwxr-xr-x    1 root root     964536 Nov 25  2021 bash
+lrwxrwxrwx    1 root root         10 May  6 00:41 bashbug -> bashbug-64
+-rwxr-xr-x    1 root root       6964 Nov 25  2021 bashbug-64
+lrwxrwxrwx    1 root root          4 May  6 00:41 sh -> bash
+```
+
+Shell 脚本以`#!/bin/bash`开头（指定解析器）。执行脚本有两种方式：采用bash或sh+脚本的相对路径或绝对路径（不用赋予脚本+x权限）、采用输入脚本的绝对路径或相对路径执行脚本（必须具有可执行权限+x）。
+
+**HelloWorld 案例**
+
+```sh
+[root@linxuanVM linxuan]# pwd
+/usr/local/linxuan
+[root@linxuanVM linxuan]# touch helloworld.sh
+[root@linxuanVM linxuan]# vim helloworld.sh
+#!/bin/bash
+echo "helloworld"
+
+# bash解析器帮我们执行脚本，所以脚本本身不需要执行权限。
+[root@linxuanVM linxuan]# sh HelloWorld.sh 
+Hello World
+# 脚本需要自己执行，所以需要执行权限
+[root@linxuanVM linxuan]# chmod 744 HelloWorld.sh 
+[root@linxuanVM linxuan]# ll
+total 4
+-rwxr--r-- 1 root root 32 Jul 26 10:36 HelloWorld.sh
+[root@linxuanVM linxuan]# ./HelloWorld.sh 
+Hello World
+```
+
+**多命令处理模式**
+
+在 `/usr/local/linxuan` 目录下创建一个`test.txt`，在`test.txt`文件中增加`I am linxuan`。
+
+```sh
+# 创建并编写脚本
+[root@linxuanVM linxuan]# vim batch.sh
+#!/bin/bash
+
+cd /usr/local/linxuan
+touch test.txt
+echo "I am linxuan" >> test.txt
+
+# 修改权限并执行
+[root@linxuanVM linxuan]# chmod 744 batch.sh 
+[root@linxuanVM linxuan]# ./batch.sh 
+# 可以看到已经有文件了
+[root@linxuanVM linxuan]# cat test.txt 
+I am linxuan
+```
+
+## 4.1 Shell 变量
+
+Shell 中变量有很多：系统变量、自定义变量、特殊变量。
+
+**系统变量**
+
+| 常用系统变量及命令 | 含义                      |
+| ------------------ | ------------------------- |
+| echo $HOME         | 打印当前用户家目录        |
+| echo $PWD          | 打印当前目录路径          |
+| echo $SHELL        | 打印 Shell 解析器         |
+| echo $USER         | 打印当前登录用户          |
+| set                | 获取当前 Shell 中所有变量 |
+
+**自定义变量**
+
+Shell 中定义变量格式为`变量=值`（不要有空格），撤销变量使用`unset 变量`，声明静态变量格式为`readonly 变量=值`（静态变量不能使用`unset`）。默认创建的变量都是局部变量，可以使用`export 变量名`将变量提升至全局环境变量，供其他Shell程序使用。
+
+变量定义规则：
+
+1. 变量名称可以由字母、数字和下划线组成，但是不能以数字开头，环境变量名建议大写。
+2. 等号两侧不能有空格
+3. 在 bash 中，变量默认类型都是字符串类型，无法直接进行数值运算。
+4. 变量的值如果有空格，需要使用双引号或单引号括起来。
+
+```sh
+# 创建一个自定义变量A，赋值并打印。注意，等号两侧不能有空格
+[root@linxuanVM linxuan]# A=1
+[root@linxuanVM linxuan]# echo $A
+1
+# 重复对变量A赋值
+[root@linxuanVM linxuan]# A=2
+[root@linxuanVM linxuan]# echo $A
+2
+# 撤销变量A
+[root@linxuanVM linxuan]# unset A
+[root@linxuanVM linxuan]# echo $A
+
+# 创建静态变量B并打印，发现不能对其进行撤销。只能重启之后消失
+[root@linxuanVM linxuan]# readonly B=3
+[root@linxuanVM linxuan]# echo $B
+3
+[root@linxuanVM linxuan]# unset B
+-bash: unset: B: cannot unset: readonly variable
+```
+
+```sh
+# 变量默认类型都是字符串类型，无法直接进行数值运算
+[root@linxuanVM linxuan]# C=1+2
+[root@linxuanVM linxuan]# echo $C
+1+2
+# 如果需要创建有空格的变量，那么需要加上双引号或者单引号
+[root@linxuanVM linxuan]# D=I am linxuan
+-bash: am: command not found
+[root@linxuanVM linxuan]# D="I am linxuan"
+[root@linxuanVM linxuan]# echo $D
+I am linxuan
+```
+
+```sh
+# 使用 《export 变量名》 将变量提升至全局环境变量，供其他Shell程序使用
+[root@linxuanVM linxuan]# D="I am linxuan"
+[root@linxuanVM linxuan]# vim HelloWorld.sh 
+#!/bin/bash
+echo $D
+[root@linxuanVM linxuan]# ./HelloWorld.sh 
+[root@linxuanVM linxuan]# export D
+[root@linxuanVM linxuan]# ./HelloWorld.sh 
+I am linxuan
+```
+
+**特殊变量**
+
+| 特殊变量 | 含义                                                         |
+| -------- | ------------------------------------------------------------ |
+| $n       | n 为数字，$0 代表脚本名称，$1-$9 代表第一到第九个参数。十位及以上的参数用大括号包含 ${10} |
+| $#       | 获取所有输入参数个数，常用于循环                             |
+| $*       | 这个变量代表命令行中所有的参数，如果被双引号包裹，那么$*把所有的参数看成一个整体 |
+| $@       | 这个变量也代表命令行中所有的参数，不过$@把每个参数区分对待   |
+| $?       | 最后一次执行的命令的返回状态。值为 0 证明上一个命令正确执行，否则上一个命令执行不正确 |
+
+## 4.2 运算符与条件判断
+
+**运算符**
+
+运算符的基本语法有多种：`$((运算式))`”或`$[运算式]`、`expr + , - , \*, /, %`。expr运算符间要有空格
+
+```sh
+# 简单运算
+[root@linxuanVM linxuan]# expr 2 + 3
+5
+# 一步计算(2+3)*4的值
+[root@linxuanVM linxuan]# expr `expr 2 + 3` \* 4
+20
+# 采用$[运算式]方式计算
+[root@linxuanVM linxuan]# S=$[(2+3)*4]
+[root@linxuanVM linxuan]# echo $S
+20
+```
+
+**条件判断**
+
+条件判断的基本语法为`[ condition ]`（condition前后要有空格）。条件非空即为 true，`[ linxuan ]`返回true，`[]` 返回false。
+
+| 常用判断条件 | 含义                                 |
+| ------------ | ------------------------------------ |
+| =            | 字符串比较                           |
+| -lt          | 小于（less than）                    |
+| -le          | 小于等于（less equal）               |
+| -eq          | 等于（equal）                        |
+| -gt          | 大于（greater than）                 |
+| -ge          | 大于等于（greater equal）            |
+| -ne          | 不等于（Not equal）                  |
+| -r           | 有读的权限（read）                   |
+| -w           | 有写的权限（write）                  |
+| -x           | 有执行的权限（execute）              |
+| -f           | 文件存在并且是一个常规的文件（file） |
+| -e           | 文件存在（existence）                |
+| -d           | 文件存在并是一个目录（directory）    |
+
+```sh
+# 22是否小于23？小于，因此执行成功
+[root@linxuanVM linxuan]# [ 22 -lt 23 ]
+[root@linxuanVM linxuan]# echo $?
+0
+# 判断HelloWorld.sh文件是否有写的权限
+[root@linxuanVM linxuan]# [ -w HelloWorld.sh ]
+[root@linxuanVM linxuan]# echo $?             
+0
+# &&表示前一条命令执行成功时，才执行后一条命令。||表示上一条命令执行失败后，才执行下一条命令。
+[root@linxuanVM linxuan]# [ condition ] && echo OK || echo notok
+OK
+[root@linxuanVM linxuan]# [ condition ] && [ ] || echo notok
+notok
+```
+
+## 4.3 流程控制语句
+
+流程控制语句有着：if 判断、case 语句、for 循环、while 循环。
+
+**if 判断**
+
+```sh
+# if后要有空格，[ 条件判断式 ] 中括号和条件判断式之间必须有空格
+if [ 条件判断式 ];then 
+  程序 
+fi 
+或者 
+if [ 条件判断式 ] 
+  then 
+    程序 
+fi
+```
+
+**case 语句**
+
+```sh
+# case行尾必须为单词“in”，每一个模式匹配必须以右括号“）”结束
+case $变量名 in 
+  "值1"） 
+    如果变量的值等于值1，则执行程序1 
+    # 双分号“;;”表示命令序列结束，相当于java中的break。
+    ;; 
+  "值2"） 
+    如果变量的值等于值2，则执行程序2 
+    ;; 
+  …省略其他分支… 
+  # 最后的“*）”表示默认模式，相当于java中的default。
+  *） 
+    如果变量的值都不是以上的值，则执行此程序 
+    ;; 
+esac
+```
+
+**for 循环**
+
+```sh
+for (( 初始值;循环控制条件;变量变化 )) 
+do 
+    程序 
+done
+```
+
+```sh
+for 变量 in 值1 值2 值3… 
+do 
+    程序 
+done
+```
+
+**while 循环**
+
+```sh
+while [ 条件判断式 ] 
+  do 
+    程序
+  done
+```
+
+## 4.4 read 读取控制台输入
+
+read 的语法如下：`read [选项] [参数]`。
+
+| read选项及参数 | 含义                         |
+| -------------- | ---------------------------- |
+| -p             | 指定读取值时的提示符         |
+| -t             | 指定读取值时等待的时间（秒） |
+| 变量           | 指定读取值的变量名           |
+
+```sh
+[root@linxuanVM linxuan]# clear
+[root@linxuanVM linxuan]# touch read.sh
+[root@linxuanVM linxuan]# vim read.sh 
+#!/bin/bash
+# 如果字符串(必须是单引号包裹的字符串)前面加上$，那么会转义\n为换行符，否则不会转义
+read -t 5 -p $'在5秒内输入名字\n' NAME
+echo $NAME
+
+[root@linxuanVM linxuan]# chmod 744 read.sh
+[root@linxuanVM linxuan]# ./read.sh   
+在5秒内输入名字
+linxuan
+linxuan
+```
+
+## 4.5 函数
+
+**系统函数**
+
+| 函数名称及格式                        | 作用                                                         |
+| ------------------------------------- | ------------------------------------------------------------ |
+| basename [string / pathname] [suffix] | 删掉所有的前缀以及 suffix 后缀，然后将文件名称字符串显示出来 |
+| dirname [pathname]                    | 从包含绝对路径的文件名中去除文件名，返回剩下的路径           |
+
+```sh
+# 删除所有前缀，只留下文件名称
+[root@linxuanVM linxuan]# basename /usr/local/linxuan/test.sh 
+test.sh
+# 删除前缀以及后缀
+[root@linxuanVM linxuan]# basename /usr/local/linxuan/test.sh .sh
+test
+# 删除文件名，返回路径
+[root@linxuanVM linxuan]# dirname /usr/local/linxuan/test.sh 
+/usr/local/linxuan
+```
+
+**自定义函数**
+
+```sh
+# 自定义函数格式如下，中括号代表可选
+[ function ] funname[()]
+{
+	Action;
+	[return int;]
+}
+funname
+```
+
+必须在调用函数地方之前先声明函数，shell脚本是逐行运行。不会像其它语言一样先编译。只能通过`$?`系统变量获得函数返回值，如果加上 `return 数值n(0-255)`，那么以该值返回，否则以最后一条命令运行结果作为返回值。
+
+```sh
+[root@linxuanVM linxuan]# vim fun.sh 
+#!/bin/bash
+function sum()
+{
+        s=0
+        s=$[$1 + $2]
+        echo "$s"
+}
+
+read -p $'Please input the number1\n' n1;
+read -p $'Please input the number2\n' n2;
+sum $n1 $n2;
+
+[root@linxuanVM linxuan]# chmod 744 fun.sh 
+[root@linxuanVM linxuan]# ./fun.sh 
+```
+
+## 4.6 Shell 工具
+
+### 4.6.1 cut
+
+cut 的工作就是“剪”，具体的说就是在文件中负责剪切数据用的。cut 命令从文件的每一行剪切字节、字符和字段并将这些字节、字符和字段输出。
+
+基本格式如下：`cut [选项参数]  filename`
+
+| 选项参数 | 功能                                             |
+| -------- | ------------------------------------------------ |
+| -f       | 列号，提取第几列                                 |
+| -d       | 分隔符，按照指定分隔符分割列。默认分隔符是制表符 |
+
+```sh
+# 注意：dong和shen之间是一个空格、wo和wo之间是两个空格
+[root@linxuanVM linxuan]# vim cut.txt 
+dong shen
+guan zhen
+wo  wo
+lai  lai
+le  le
+[root@linxuanVM linxuan]# cut -d " " -f 1 cut.txt
+dong
+guan
+wo
+lai
+le
+[root@linxuanVM linxuan]# cut -d " " -f 2,3 cut.txt
+shen
+zhen
+ wo
+ lai
+ le
+[root@linxuanVM linxuan]# cat cut.txt | grep "guan" | cut -d " " -f 1
+guan
+
+# 查看系统配置的环境变量
+[root@linxuanVM linxuan]# echo $PATH
+/opt/server/redis-6.2.4/src:/opt/rh/devtoolset-9/root/usr/bin:/opt/server/apache-maven-3.5.4/bin:/opt/server/jdk/jdk1.8.0_144/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/opt/server/redis-6.2.4/src:/root/bin
+# 选取系统PATH变量值，第1个“:”开始后的所有路径
+[root@linxuanVM linxuan]# echo $PATH | cut -d: -f 2-
+/opt/rh/devtoolset-9/root/usr/bin:/opt/server/apache-maven-3.5.4/bin:/opt/server/jdk/jdk1.8.0_144/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/opt/server/redis-6.2.4/src:/root/bin
+```
+
+### 4.6.2 sed
+
+sed 是一种流编辑器，它一次处理一行内容。处理时，把当前处理的行数据存储在临时缓冲区中，称为“模式空间”，接着用 sed 命令处理缓冲区中的内容，处理完成后，把缓冲区的内容送往屏幕。接着处理下一行，这样不断重复，直到文件末尾。文件内容并没有改变，除非你使用重定向存储输出。
+
+基本格式如下：`sed [选项参数]  ‘command’ filename`
+
+| 选项参数 | 功能                                    |
+| -------- | --------------------------------------- |
+| -e       | 直接在指令列模式上进行 sed 的动作编辑。 |
+
+| 命令 | 功能描述                              |
+| ---- | ------------------------------------- |
+| a    | 新增，a的后面可以接字串，在下一行出现 |
+| d    | 删除                                  |
+| s    | 查找并替换                            |
+
+```sh
+[root@linxuanVM linxuan]# vim sed.txt
+dong shen
+guan zhen
+wo  wo
+lai  lai
+
+le  le
+# 将“mei nv”这个单词插入到sed.txt第二行下并打印。需要注意的是文件并没有被改变
+[root@linxuanVM linxuan]# sed '2a mei nv' sed.txt
+# 删除sed.txt文件所有包含wo的行
+[root@linxuanVM linxuan]# sed '/wo/d' sed.txt
+# 将sed.txt文件中wo替换为ni。‘g’表示global，全部替换
+[root@linxuanVM linxuan]# sed 's/wo/ni/g' sed.txt
+# 将sed.txt文件中的第二行删除并将wo替换为ni
+[root@linxuanVM linxuan]# sed -e '2d' -e 's/wo/ni/g' sed.txt
+```
+
+### 4.6.3 awk
+
+awk 是一个强大的文本分析工具，把文件逐行的读入，以空格为默认分隔符将每行切片，切开的部分再进行分析处理。
+
+基本格式：`awk [选项参数] ‘pattern1{action1} pattern2{action2}...’ filename`
+
+* pattern：表示 AWK 在数据中查找的内容，就是匹配模式
+* action：在找到匹配内容时所执行的一系列命令
+
+| 选项参数 | 功能                 |
+| -------- | -------------------- |
+| -F       | 指定输入文件拆分隔符 |
+| -v       | 赋值一个用户定义变量 |
+
+```sh
+[root@linxuanVM linxuan]# cp /etc/passwd ./
+[root@linxuanVM linxuan]# cat passwd 
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+adm:x:3:4:adm:/var/adm:/sbin/nologin
+lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+sync:x:5:0:sync:/sbin:/bin/sync
+shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
+halt:x:7:0:halt:/sbin:/sbin/halt
+mail:x:8:12:mail:/var/spool/mail:/sbin/nologin
+operator:x:11:0:operator:/root:/sbin/nologin
+games:x:12:100:games:/usr/games:/sbin/nologin
+ftp:x:14:50:FTP User:/var/ftp:/sbin/nologin
+nobody:x:99:99:Nobody:/:/sbin/nologin
+systemd-network:x:192:192:systemd Network Management:/:/sbin/nologin
+dbus:x:81:81:System message bus:/:/sbin/nologin
+polkitd:x:999:998:User for polkitd:/:/sbin/nologin
+sshd:x:74:74:Privilege-separated SSH:/var/empty/sshd:/sbin/nologin
+postfix:x:89:89::/var/spool/postfix:/sbin/nologin
+chrony:x:998:996::/var/lib/chrony:/sbin/nologin
+ntp:x:38:38::/etc/ntp:/sbin/nologin
+tcpdump:x:72:72::/:/sbin/nologin
+nscd:x:28:28:NSCD Daemon:/:/sbin/nologin
+linxuan:x:1000:1000::/home/linxuan:/bin/bash
+mysql:x:27:27:MySQL Server:/var/lib/mysql:/bin/false
+redis:x:997:994:Redis Database Server:/var/lib/redis:/sbin/nologin
+
+# 搜索passwd文件以root关键字开头的所有行，并输出该行的第7列
+[root@linxuanVM linxuan]# awk -F: '/^root/{print $7}' passwd
+/bin/bash
+# 搜索passwd文件以root关键字开头的所有行，并输出该行的第1列和第7列，输出的第一列和第7列中间以“,”号分割
+[root@linxuanVM linxuan]# awk -F: '/^root/{print $1","$7}' passwd 
+root,/bin/bash
+# 以逗号分割显示第一列和第七列，且在所有行前面添加列名《user,shell》在最后一行添加《linxuan，/bin/nihao》
+# BEGIN 在所有数据读取行之前执行；END 在所有数据执行之后执行
+[root@linxuanVM linxuan]# awk -F : 'BEGIN{print "user, shell"} {print $1","$7} END{print "linxuan,/bin/nihao"}' passwd
+user, shell
+root,/bin/bash
+....
+redis,/sbin/nologin
+linxuan,/bin/nihao
+# 将passwd文件中第三列代表的用户id增加数值1并输出
+[root@linxuanVM linxuan]# awk -v i=1 -F: '{print $3+i}' passwd
+```
+
+| 内置变量 | 说明                                   |
+| -------- | -------------------------------------- |
+| FILENAME | 文件名                                 |
+| NR       | 已读的记录数                           |
+| NF       | 浏览记录的域的个数（切割后，列的个数） |
+
+```sh
+# 统计passwd文件名，每行的行号，每行的列数
+[root@linxuanVM linxuan]# awk -F: '{print "filename:"  FILENAME ", linenumber:" NR  ",columns:" NF}' passwd
+filename:passwd, linenumber:1,columns:7
+filename:passwd, linenumber:2,columns:7
+filename:passwd, linenumber:3,columns:7
+```
+
+### 4.6.4 sort
+
+sort 命令将文件进行排序，并将排序结果标准输出。基本格式：`sort [选项] (待排序文件)`
+
+| 选项 | 说明                     |
+| ---- | ------------------------ |
+| -n   | 依照数值的大小排序       |
+| -r   | 以相反的顺序来排序       |
+| -t   | 设置排序时所用的分隔字符 |
+| -k   | 指定需要排序的列         |
+
+```sh
+[root@linxuanVM linxuan]# vim sort.sh
+bb:40:5.4
+bd:20:4.2
+xz:50:2.3
+cls:10:3.5
+ss:30:1.6
+# 按照“：”分割后的第三列倒序排序
+[root@linxuanVM linxuan]# sort -t : -nrk 3  sort.sh
+bb:40:5.4
+bd:20:4.2
+cls:10:3.5
+xz:50:2.3
+ss:30:1.6
+```
