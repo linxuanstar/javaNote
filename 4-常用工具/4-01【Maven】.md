@@ -6,7 +6,7 @@
 
 一个对 `Maven` 比较正式的定义是这么说的：`Maven` 是一个项目管理工具，它包含了一个项目对象模型 `(POM：Project Object Model)`，一组标准集合，一个项目生命周期`(Project Lifecycle)`，一个依赖管理系统`(Dependency Management System)`和用来运行定义在生命周期阶段`(phase)`中插件`(plugin)`目标 `(goal)`的逻辑。
 
-Maven的本质是一个项目管理工具，将项目开发和管理过程抽象成一个项目对象模型（POM）。Maven是用Java语言编写的。他管理的东西统统以面向对象的形式进行设计，最终它把一个项目看成一个对象，而这个对象叫做**POM**(project object model)，即项目对象模型。
+[Maven](https://maven.apache.org/)的本质是一个项目管理工具，将项目开发和管理过程抽象成一个项目对象模型（POM）。Maven是用Java语言编写的。他管理的东西统统以面向对象的形式进行设计，最终它把一个项目看成一个对象，而这个对象叫做 POM（project object model），即项目对象模型。
 
 Maven作用如下：
 
@@ -14,9 +14,7 @@ Maven作用如下：
 * 依赖管理：方便快捷的管理项目依赖的资源（jar包），避免资源间的版本冲突等问题。
 * 统一开发结构：提供标准的，统一的项目开发结构。
 
-## 1.1 下载安装
-
-官网目录：https://maven.apache.org/。
+**下载安装**
 
 maven是一个绿色软件，解压即安装。我将下载的`apache-maven-3.6.0-bin.zip`直接解压到`E:\Maven`目录下面。解压完成后可以查看一下maven自己的一个目录结构如下：
 
@@ -39,7 +37,7 @@ Default locale: zh_CN, platform encoding: GBK
 OS name: "windows 10", version: "10.0", arch: "amd64", family: "windows"
 ```
 
-接下来配置一下jar包下载的镜像网站：
+接下来配置一下 jar 包下载的镜像网站：
 
 ```xml
 <!-- 在settings.xml里面的mirrors标签里面导入 -->
@@ -65,7 +63,7 @@ OS name: "windows 10", version: "10.0", arch: "amd64", family: "windows"
 <localRepository>E:\Maven\apache-maven-3.6.0\mvn_repository</localRepository>
 ```
 
-## 1.2 基本概念
+## 1.1 基本概念
 
 **仓库**
 
@@ -154,7 +152,7 @@ maven 的工作需要从仓库下载一些 jar 包，本地的项目都会通过
       |-- pom.xml # 项目的核心配置文件
 ```
 
-## 1.3 基本命令
+## 1.2 基本命令
 
 Maven命令使用mvn开头，后面添加功能参数，可以执行多个命令，使用空格分隔。
 
@@ -168,6 +166,45 @@ Maven命令使用mvn开头，后面添加功能参数，可以执行多个命令
 | mvn install  | 安装到本地仓库，不会安装测试代码                 |
 
 `mvn dependency:get -DgroupId=XXX -DartifactId=XXX -Dversion=XXX`：读取maven配置，下载jar包到本地仓库。需要在下载的位置打开CMD窗口。
+
+## 1.3 pom.xml
+
+```xml
+<build>
+    <!-- 默认Maven不会读取java目录下面的xml配置文件并编译，所以这里设置Maven控制文件范围 -->
+    <!-- 这里标签是resources代表是主文件代码里面的配置文件，如果改为testResources是test里面的配置文件-->
+    <resources>
+        <!-- 设置控制的资源目录，如果只设置该标签，会直接导致Maven不读取resources目录下面的配置文件 -->
+        <resource>
+            <!-- 资源目录 -->
+            <directory>src/main/java</directory>
+            <!-- 需要控制的文件 -->
+            <includes>
+                <include>**/*.xml</include>
+            </includes>
+            <!-- 设置能够解析${}，默认是false，不写也可以 -->
+            <filtering>false</filtering>
+        </resource>
+        <!-- 如果只设置扫描java目录，那么会取消扫描resources目录，所以这里重新设置一下 -->
+        <resource>
+            <directory>src/main/resources</directory>
+            <includes>
+                <include>**/*.properties</include>
+                <include>**/*.xml</include>
+            </includes>
+            <filtering>false</filtering>
+        </resource>
+    </resources>
+</build>
+
+<properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
+    <java.version>17</java.version>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+</properties>
+```
 
 ## 1.4 手动创建项目
 
@@ -583,28 +620,28 @@ maven 对项目构建过程分为三套相互独立的生命周期，请注意�
 
 ## 3.1 抽取POJO实体层
 
-步骤很简单，直接新建一个模块（目录直接放到根目录下面，不要放到原始项目目录下面），然后创建对应的包，最后将domain包下面的所有类复制过去就行了。
+步骤很简单，直接新建一个模块（目录直接放到根目录下面，不要放到原始项目目录下面），然后创建对应的包，最后将 domain 包下面的所有类复制过去就行了。
 
 <img src="..\图片\4-01【Maven】\3-2pojo实体类拆分.png"/>
 
 ## 3.2 抽取Dao数据层
 
-新建模块，然后拷贝原始项目中相应的相关内容到ssm_dao模块中即可。这个里面需要拷贝的内容有：数据层接口、配置文件、pom.xml文件依赖的坐标。
+新建模块，然后拷贝原始项目中相应的相关内容到 ssm_dao 模块中即可。这个里面需要拷贝的内容有：数据层接口、配置文件、pom.xml 文件依赖的坐标。
 
 <img src="..\图片\4-01【Maven】\3-3dao拆分.png"/>
 
-复制完数据层接口接口之后发现导入的依赖并没有，所以会报错。因此我们修改一下原始项目的pom.xml文件，粘贴到ssm-dao模块中。
+复制完数据层接口接口之后发现导入的依赖并没有，所以会报错。因此我们修改一下原始项目的 pom.xml 文件，粘贴到 ssm-dao 模块中。
 
 原始项目pom.xml依赖及插件如下：
 
-* mybatis环境：mybatis环境、mysql环境、spring整合jdbc、spring整合mybatis、druid连接池、分页插件坐标、
-* springmvc环境：springmvc环境、jackson相关坐标、servlet环境、
+* mybatis环境：mybatis环境、mysql环境、spring整合jdbc、spring整合mybatis、druid连接池、分页插件坐标
+* springmvc环境：springmvc环境、jackson相关坐标、servlet环境
 * 其他组件：junit单元测试、spring整合junit
 * 插件：tomcat7-maven-plugin
 
-因为实在数据层dao里面，所以会用到mybatis环境。springmvc环境和tomcat7插件删掉即可，而junit单元测试可留可不留（数据层做完可以来单元测试）。最后在加上spring的环境，之前因为有springmvc环境，它依赖于spring的环境，这下将springmvc环境删掉了，所以这里添加上spring的环境。
+因为是在数据层dao里面，所以会用到 mybatis 环境。springmvc 环境和 tomcat7 插件删掉即可，而 junit 单元测试可留可不留（数据层做完可以来单元测试）。最后在加上 spring 的环境，之前因为有 springmvc 环境，它依赖于spring 的环境，这下将 springmvc 环境删掉了，所以这里添加上 spring 的环境。
 
-最后pom.xml文件如下：
+最后 pom.xml 文件如下：
 
 ```xml
 <dependencies>
@@ -658,13 +695,13 @@ maven 对项目构建过程分为三套相互独立的生命周期，请注意�
 </dependencies>
 ```
 
-接下来来修改一下配置文件，resources目录下面有：数据层操控数据库文件userDao.xml、Spring配置文件applicationContext.xml、数据库连接配置文件jdbc.properties、SpringMVC配置文件spring-mvc.xml。
+接下来来修改一下配置文件，resources 目录下面有：数据层操控数据库文件 userDao.xml、Spring配置文件applicationContext.xml、数据库连接配置文件 jdbc.properties、SpringMVC 配置文件 spring-mvc.xml。
 
-这些配置文件中userDao.xml不用动，jdbc.properties修改为自己数据库信息，spring-mvc.xml直接删除，所以我们只需要动一下applicationContext.xml即可。
+这些配置文件中 userDao.xml不用动，jdbc.properties 修改为自己数据库信息，spring-mvc.xml 直接删除，所以我们只需要动一下 applicationContext.xml 即可。
 
 ```xml
-<!-- applicationContext.xml更名为applicationContext-dao.xml 防止和service模块重名现象-->
 <?xml version="1.0" encoding="UTF-8"?>
+
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:tx="http://www.springframework.org/schema/tx"
@@ -681,7 +718,8 @@ maven 对项目构建过程分为三套相互独立的生命周期，请注意�
 
     <!--开启bean注解扫描 排除Controller包-->
     <context:component-scan base-package="com.linxuan">
-        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+        <context:exclude-filter type="annotation" 
+                                expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
 
     <!--开启注解式事务-->
@@ -738,8 +776,10 @@ maven 对项目构建过程分为三套相互独立的生命周期，请注意�
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context 
+                           http://www.springframework.org/schema/context/spring-context.xsd">
     <!--主程序对应的配置文件-->
     <!--主程序对应的配置文件-->
 
@@ -787,7 +827,7 @@ maven 对项目构建过程分为三套相互独立的生命周期，请注意�
 </beans>
 ```
 
-最后就是在pom.xml中导入一下实体层，并且将ssm_pojo使用install命令将其安装到仓库中供ssm_dao模块调用。
+最后在 pom.xml 中导入一下实体层，并且将 ssm_pojo 使用 install 命令将其安装到仓库中供 ssm_dao 模块调用。
 
 ```xml
 <!--实体层-->
@@ -798,11 +838,11 @@ maven 对项目构建过程分为三套相互独立的生命周期，请注意�
 </dependency>
 ```
 
-最后测试一下整个环节是否打通只需要在ssm_dao模块执行compile编译命令看看是否报错。
+最后测试一下整个环节是否打通只需要在 ssm_dao 模块执行 compile 编译命令看看是否报错。
 
 ## 3.3 抽取service业务层
 
-新建模块，然后拷贝原始项目中相应的相关内容到ssm_service模块中即可。这个里面需要拷贝的内容有：业务层接口及实现类、配置文件、pom.xml文件依赖的坐标、测试代码、测试代码配置文件。
+新建模块，然后拷贝原始项目中相应的相关内容到 ssm_service 模块中即可。这个里面需要拷贝的内容有：业务层接口及实现类、配置文件、pom.xml 文件依赖的坐标、测试代码、测试代码配置文件。
 
 <img src="..\图片\4-01【Maven】\3-4service拆分.png"/>
 
@@ -813,7 +853,7 @@ maven 对项目构建过程分为三套相互独立的生命周期，请注意�
 * 其他组件：junit单元测试、spring整合junit
 * 插件：tomcat7-maven-plugin
 
-因为是在业务侧层service里面，所以将mybatis环境、springmvc环境和tomcat7插件删掉即可，而junit单元测试留下，这里我们会做一下单元测试。最后在加上spring的环境和数据层的依赖即可（不要忘记让dao层install一下）。
+因为是在业务侧层service里面，所以将 mybatis 环境、springmvc 环境和 tomcat7 插件删掉即可，而 junit 单元测试留下，这里我们会做一下单元测试。最后再加上 spring 的环境和数据层的依赖即可（记得让dao层 install 一下）。
 
 ```xml
 <dependencies>
@@ -848,7 +888,7 @@ maven 对项目构建过程分为三套相互独立的生命周期，请注意�
 </dependencies>
 ```
 
-接下来修改配置文件applicationContext-service.xml，里面配置有：bean注解扫描、事务配置、mybatis配置。只需要保留bean注解扫描和事务配置即可，bean注解扫描也需要动一下。
+接下来修改配置文件 applicationContext-service.xml，里面配置有：bean注解扫描、事务配置、mybatis配置。只需要保留 bean 注解扫描和事务配置即可，bean 注解扫描也需要动一下。
 
 ```xml
 <!--主程序对应的配置文件-->
@@ -876,11 +916,11 @@ maven 对项目构建过程分为三套相互独立的生命周期，请注意�
 @ContextConfiguration(locations = {"classpath:applicationContext-service.xml", "classpath:applicationContext-dao.xml"})
 ```
 
-之后test一下，执行所有的测试代码，发现成功。然后将service模块安装到本地仓库就可以了。
+之后 test 一下，执行所有的测试代码，发现成功。然后将 service 模块安装到本地仓库就可以了。
 
 ## 3.4 抽取Controller表现层
 
-根据web模板创建模块。
+根据 web 模板创建模块。
 
 <img src="..\图片\4-01【Maven】\3-5controller拆分.png"/>
 
@@ -938,7 +978,7 @@ pom.xml添加依赖及插件
 </build>
 ```
 
-web.xml里面有一个配置信息需要修改：
+web.xml 里面有一个配置信息需要修改：
 
 ```xml
 <context-param>
@@ -972,11 +1012,11 @@ springmvc配置文件spring-mvc.xml不需要动
 聚合和继承的工程构建，需要在聚合项目中手动添加`modules`标签，需要在所有的子项目中添加`parent`标签。
 
 * 聚合用于快速构建项目，对项目进行管理
-* 继承用于快速配置和管理子项目中所使用jar包的版本
+* 继承用于快速配置和管理子项目中所使用 jar 包的版本
 
 聚合和继承的相同点:
 
-* 聚合与继承的pom.xml文件打包方式均为pom，可以将两种关系制作到同一个pom文件中
+* 聚合与继承的 pom.xml 文件打包方式均为 pom，可以将两种关系制作到同一个 pom 文件中
 * 聚合与继承均属于设计型模块，并无实际的模块内容
 
 聚合和继承的不同点:
@@ -1009,11 +1049,11 @@ springmvc配置文件spring-mvc.xml不需要动
 </modules>
 ```
 
-聚合工程管理的项目在进行运行的时候，会按照项目与项目之间的依赖关系来自动决定执行的顺序和配置的顺序无关。
+聚合工程管理的项目在运行的时候，会按照项目与项目之间的依赖关系来自动决定执行的顺序，与 pom.xml 文件中配置的顺序无关。
 
 **继承**
 
-继承用于快速配置和管理子项目中所使用jar包的版本。子工程可以继承父工程中的配置信息，常见于依赖关系的继承。这样可以简化配置、减少版本冲突。
+继承用于快速配置和管理子项目中所使用 jar 包的版本。子工程可以继承父工程中的配置信息，常见于依赖关系的继承。这样可以简化配置、减少版本冲突。
 
 实现步骤为：不用任何模板创建一个空的父工程maven项目、将项目的打包方式改为pom、在子项目中设置父项目pom.xml位置、将子项目共同使用的jar包抽取出来维护在父项目的pom.xml中。这样就实现了继承。
 
@@ -1110,7 +1150,7 @@ java.vm.vendor=Oracle Corporation...
 
 **自定义属性**
 
-前面我们已经在父工程中的dependencyManagement标签中对项目中所使用的jar包版本进行了统一的管理，但是如果在父工程的标签中有如下的内容：
+前面我们已经在父工程中的 dependencyManagement 标签中对项目中所使用的 jar 包版本进行了统一的管理，但是如果在父工程的标签中有如下的内容：
 
 ```xml
 <dependency>
@@ -1126,7 +1166,7 @@ java.vm.vendor=Oracle Corporation...
 </dependency>
 ```
 
-这时想更新Spring的版本，依然需要更新多个jar包的版本。这时候就用到了自定义属性，用properties标签定义属性设置版本，其他的地方应用这个版本值。这样更改的时候只需要更改properties标签内容即可。
+这时想更新 Spring 的版本，依然需要更新多个 jar 包的版本。这时候就用到了自定义属性，用 properties 标签定义属性设置版本，其他的地方应用这个版本值。这样更改的时候只需要更改 properties 标签内容即可。
 
 ```xml
 <!-- 定义属性 设置版本-->
@@ -1158,7 +1198,7 @@ java.vm.vendor=Oracle Corporation...
 
 **配置文件加载属性**
 
-让Maven对于属性的管理范围能更大些，比如我们之前项目中的`jdbc.properties`这个配置文件中的属性，也让Maven进行管理。具体的实现步骤如下：
+让 Maven 对于属性的管理范围能更大些，比如我们之前项目中的`jdbc.properties`这个配置文件中的属性，也让Maven进行管理。具体的实现步骤如下：
 
 1. 父工程定义属性。在父工程ssm的properties标签中添加属性，属性标签自定义，这里我们定义为jdbc.url。
 

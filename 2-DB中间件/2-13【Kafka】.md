@@ -191,8 +191,6 @@ export PATH=:$PATH:${KAFKA_HOME}
 [root@node3 config]# /export/server/apache-zookeeper-3.5.6-bin/bin/zkServer.sh start
 ```
 
-想要看懂shell脚本，先去学shell
-
 ## 2.2 Windows 单机部署
 
 Windows 上面使用的是2.8.0，这里我下载到了`E:\Kafka`目录下面

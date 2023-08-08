@@ -17,7 +17,7 @@ ZooKeeper 是一个树形目录服务，其数据模型和Unix的文件系统目
 
 ## 1.1 安装配置
 
-前提：ZooKeeper服务器是用Java创建的，它运行在JVM之上。需要安装JDK 7或更高版本。
+前提：ZooKeeper 服务器是用 Java 创建的，它运行在 JVM 之上。需要安装 JDK 7 或更高版本。
 
 ```sh
 # /export/目录下面创建这三个文件夹 用于存放 数据 软件 安装包
@@ -1028,6 +1028,8 @@ Mode: follower
 
 ## 3.2 搭建真集群
 
+**搭建集群**
+
 ```sh
 # 查看配置的主机别名
 [root@node1 server]# cat /etc/hosts
@@ -1075,7 +1077,7 @@ server.2=192.168.88.152:2881:3881
 server.3=192.168.88.153:2881:3881
 ```
 
-### 3.2.1 启动关闭
+**启动与关闭**
 
 ```sh
 [root@node1 apache-zookeeper-3.5.6-bin]# ./bin/zkServer.sh start
