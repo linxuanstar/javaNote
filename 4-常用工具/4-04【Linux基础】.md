@@ -583,7 +583,7 @@ Shut down the system.
 | less file1       | `less`用法和`more`类似，不同的是`less`可以通过`PgUp`、`PgDn`键来控制。 |
 | head file1       | 查看文件前十行信息                                           |
 | head -2 file1    | `PgUp` 和 `PgDn` 进行上下翻页。查看⽂件前两⾏。              |
-| tail -2 file1    | 查看⽂件后两⾏。用于显示文件后几行的内容。                   |
+| tail -2 file1    | 查看文件后两⾏。用于显示文件后几行的内容。                   |
 | tail -f /log/msg | 实时查看添加到⽂件中的内容，动态查看日志。`ctrl+c` 结束查看  |
 | wc -l file1      | 查看文件行数                                                 |
 
@@ -1003,7 +1003,7 @@ case $变量名 in
     ;; 
   …省略其他分支… 
   # 最后的“*）”表示默认模式，相当于java中的default。
-  *） 
+  *) 
     如果变量的值都不是以上的值，则执行此程序 
     ;; 
 esac

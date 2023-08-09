@@ -105,9 +105,9 @@ kafka 的诞生，是为了解决 linkedin 的数据管道问题，起初 linked
 
 ## 2.1 Linux 集群部署
 
-Linux 上面使用的 Kafka 版本为 2.4.1，是2020年3月12日发布的版本。可以注意到 Kafka 的版本号为 kafka_2.12-2.4.1，这是因为kafka主要是使用 scala 语言开发的，2.12 为 scala的版本号。
+Linux 上面使用的 Kafka 版本为 2.4.1，是2020年3月12日发布的版本。可以注意到 Kafka 的版本号为 kafka_2.12-2.4.1，这是因为 Kafka 主要是使用 scala 语言开发的，2.12 为 scala 的版本号。
 
-将Kafka的安装包上传到虚拟机，并解压
+将 Kafka 的安装包上传到虚拟机，并解压
 
 ```sh
 [root@node1 ~]# cd /export/software/
@@ -126,7 +126,7 @@ drwxr-xr-x 6 root root 89 Mar  3  2020 kafka_2.12-2.4.1
 修改 server.properties
 
 ```sh
-# 查看配置的主机别名
+# 查看配置的主机别名，这里需要注意三台主机都要配置主机别名
 [root@node1 data]# cat /etc/hosts
 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
 ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
@@ -134,13 +134,30 @@ drwxr-xr-x 6 root root 89 Mar  3  2020 kafka_2.12-2.4.1
 192.168.88.151 node1 node1.linxuan.com
 192.168.88.152 node2 node2.linxuan.com
 192.168.88.153 node3 node3.linxuan.com
+# node2配置好了
+[root@node2 server]# cat /etc/hosts
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+
+192.168.88.151 node1 node1.linxuan.com
+192.168.88.152 node2 node2.linxuan.com
+192.168.88.153 node3 node3.linxuan.com
+# node3配置好了
+[root@node3 server]# cat /etc/hosts
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+
+192.168.88.151 node1 node1.linxuan.com
+192.168.88.152 node2 node2.linxuan.com
+192.168.88.153 node3 node3.linxuan.com
+# 重新进入node1操作
 [root@node1 data]# cd /export/server/kafka_2.12-2.4.1/config
 [root@node1 data]# vim server.properties
 # 指定broker的id，每一个集群中的Kafa都要有不同的broker，因此一会要更换node2和node3的broker.id
-broker.id=0
+broker.id=1
 # 指定Kafka数据的位置，直接添加即可，最后会在/export/server/kafka_2.12-2.4.1下创建data目录
 log.dirs=/export/server/kafka_2.12-2.4.1/data
-# 配置zk的三个节点，这个老师并没有添加，但是课件里面有
+# 配置zk的三个节点，这个老师并没有添加，但是课件里面有。因此，这里我就添加了
 zookeeper.connect=node1.linxuan.com:2181,node2.linxuan.com:2181,node3.linxuan.com:2181
 ```
 
@@ -151,16 +168,16 @@ zookeeper.connect=node1.linxuan.com:2181,node2.linxuan.com:2181,node3.linxuan.co
 [root@node1 server]# scp -r kafka_2.12-2.4.1/ node2.linxuan.com:$PWD
 [root@node1 server]# scp -r kafka_2.12-2.4.1/ node3.linxuan.com:$PWD
 
-# 修改另外两个节点的broker.id分别为1和2
+# 修改另外两个节点的broker.id分别为2和3
 # ---------node2.linxuan.com--------------
 [root@node2 server]# cd /export/server/kafka_2.12-2.4.1/config
 [root@node2 config]# vim server.properties 
-broker.id=1
+broker.id=2
 
 # --------node3.linxuan.com--------------
 [root@node2 server]# cd /export/server/kafka_2.12-2.4.1/config
 [root@node2 config]# vim server.properties
-broker.id=2
+broker.id=3
 ```
 
 配置 KAFKA_HOME 环境变量
@@ -182,14 +199,126 @@ export PATH=:$PATH:${KAFKA_HOME}
 [root@node3 server]# source /etc/profile
 ```
 
-启动服务器
+启动 zookeeper
 
 ```sh
-# 现在应该启动服务器了，但是启动之前需要启动Zookeeper，启动ZK集群
-[root@node1 config]# /export/server/apache-zookeeper-3.5.6-bin/bin/zkServer.sh start
-[root@node2 config]# /export/server/apache-zookeeper-3.5.6-bin/bin/zkServer.sh start
-[root@node3 config]# /export/server/apache-zookeeper-3.5.6-bin/bin/zkServer.sh start
+[root@node1 server]# pwd
+/export/server
+# 制作一键启动脚本叫目录
+[root@node1 server]# mkdir onekey
+# ZK集群一键启动脚本
+[root@node1 onekey]# vim onekey/zkStart.sh 
+#!/bin/sh
+for host in node1 node2 node3
+do
+    ssh $host "source /etc/profile; /export/server/apache-zookeeper-3.5.6-bin/bin/zkServer.sh start"
+    echo "$host zookeeper 启动~"
+    echo "------------------------------"
+done
+# 添加执行权限
+[root@node1 server]# chomod 744 onekey/zkStart.sh
+# 创建关闭脚本
+[root@node1 server]# vim onekey/zkStop.sh
+#!/bin/sh
+for host in node1 node2 node3
+do
+    ssh $host "source /etc/profile; /export/server/apache-zookeeper-3.5.6-bin/bin/zkServer.sh stop"
+    echo "$host zookeeper 关闭"
+    echo "------------------------------"
+done
+# 添加执行权限
+[root@node1 server]# chmod 744 onekey/zkStop.sh
+# 执行ZK启动脚本
+[root@node1 server]# ./onekey/zkStart.sh 
+
+# 查看三个节点的ZK是否启动
+[root@node1 server]# ./apache-zookeeper-3.5.6-bin/bin/zkServer.sh status
+/export/server/jdk1.8.0_144/bin/java
+ZooKeeper JMX enabled by default
+Using config: /export/server/apache-zookeeper-3.5.6-bin/bin/../conf/zoo.cfg
+Client port found: 2181. Client address: localhost.
+Mode: follower
+[root@node2 server]# ./apache-zookeeper-3.5.6-bin/bin/zkServer.sh status
+/export/server/jdk1.8.0_144/bin/java
+ZooKeeper JMX enabled by default
+Using config: /export/server/apache-zookeeper-3.5.6-bin/bin/../conf/zoo.cfg
+Client port found: 2181. Client address: localhost.
+Mode: follower
+[root@node3 server]# ./apache-zookeeper-3.5.6-bin/bin/zkServer.sh status
+/export/server/jdk1.8.0_144/bin/java
+ZooKeeper JMX enabled by default
+Using config: /export/server/apache-zookeeper-3.5.6-bin/bin/../conf/zoo.cfg
+Client port found: 2181. Client address: localhost.
+Mode: leader
 ```
+
+启动 Kafka 与测试
+
+```sh
+# node1启动
+[root@node1 server]# cd /export/server/kafka_2.12-2.4.1
+[root@node1 kafka_2.12-2.4.1]# nohup bin/kafka-server-start.sh config/server.properties &
+# node2启动
+[root@node2 server]# cd /export/server/kafka_2.12-2.4.1
+[root@node2 kafka_2.12-2.4.1]# nohup bin/kafka-server-start.sh config/server.properties &
+# node3启动
+[root@node3 server]# cd /export/server/kafka_2.12-2.4.1
+[root@node4 kafka_2.12-2.4.1]# nohup bin/kafka-server-start.sh config/server.properties &
+# 测试Kafka集群是否启动成功，只要不报错就代表启动成功
+[root@node1 kafka_2.12-2.4.1]# bin/kafka-topics.sh --bootstrap-server node1.linxuan.com:9092 --list
+```
+
+编写 Kafka 一键启动与关闭脚本
+
+```sh
+[root@node1 server]# pwd
+/export/server
+# 准备slave配置文件，用于保存要启动哪几个节点上的kafka
+[root@node1 server]# vim onekey/slave
+node1.linxuan.com
+node2.linxuan.com
+node3.linxuan.com
+# 编写start-kafka.sh脚本
+[root@node1 server]# vim onekey/start-kafka.sh
+cat /export/server/onekey/slave | while read line
+do
+{
+    # export JMX_PORT=9988;：做监控的时候会用到，监控调试。把端口打开
+    # >/dev/nul*：标准输出重定向到空设备文件，也就是不输出任何信息到终端，说白了就是不显示任何信息
+    # 2>&1：2表示stderr标准错误、&表示等同于、1表示stdout标准输出。标准错误输出重定向（等同于）标准输出
+    echo $line
+    ssh $line "source /etc/profile;export JMX_PORT=9988;nohup ${KAFKA_HOME}/bin/kafka-server-start.sh  ${KAFKA_HOME}/config/server.properties >/dev/nul* 2>&1 & " &
+}&
+# wait是在等待上一批或上一个脚本执行完（即上一个的进程终止），再执行wait之后的命令。上一个脚本结尾需要加上&
+wait
+done
+# 编写stop-kafka.sh脚本
+[root@node1 server]# vim onekey/stop-kafka.sh
+cat /export/server/onekey/slave | while read line
+do
+{
+    echo $line
+    # xargs是给命令传递参数的一个过滤器，也是组合多个命令的一个工具
+    ssh $line "source /etc/profile; jps | grep Kafka | cut -d ' ' -f 1 | xargs kill -s 9"
+}&
+wait
+done
+# 给start-kafka.sh、stop-kafka.sh配置执行权限
+[root@node1 server]# chmod u+x onekey/start-kafka.sh
+[root@node1 server]# chmod u+x onekey/stop-kafka.sh
+# 执行一键启动和一键关闭
+[root@node1 server]# ./onekey/start-kafka.sh
+[root@node1 server]# ./onekey/stop-kafka.sh
+```
+
+| 启动与关闭过程                | 命令                                                         |
+| ----------------------------- | ------------------------------------------------------------ |
+| 一键脚本启动 ZK 集群          | /export/server/onekey/zkStart.sh                             |
+| 查询本节点 ZK 是否启动成功    | /export/server/apache-zookeeper-3.5.6-bin/bin/zkServer.sh status |
+| 一键启动 Kafka 集群           | /export/server/onekey/start-kafka.sh                         |
+| 验证本节点 Kafka 是否启动成功 | jps 命令查看 Java 进程是否有 Kafka                           |
+| 一键关闭 Kafka 集群           | /export/server/onekey/stop-kafka.sh                          |
+| 一键关闭 ZK 集群              | /export/server/onekey/zkStop.sh                              |
 
 ## 2.2 Windows 单机部署
 
@@ -212,3 +341,12 @@ bin\windows\zookeeper-server-start.bat config\zookeeper.properties
 bin\windows\kafka-server-start.bat .\config\server.properties
 ```
 
+## 2.3 目录结构分析
+
+| 目录名称  | 说明                                                         |
+| --------- | ------------------------------------------------------------ |
+| bin       | Kafka的所有执行脚本都在这里。例如：启动Kafka服务器、创建Topic、生产者、消费者程序等等 |
+| config    | Kafka的所有配置文件                                          |
+| libs      | 运行Kafka所需要的所有JAR包                                   |
+| logs      | Kafka的所有日志文件，如果Kafka出现一些问题，需要到该目录中去查看异常信息 |
+| site-docs | Kafka的网站帮助文件                                          |

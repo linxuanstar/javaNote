@@ -148,7 +148,7 @@ Stopping zookeeper ... STOPPED
 ./zkServer.sh status
 ```
 
-zookeeper启动成功。standalone代表zk没有搭建集群，现在是单节点
+zookeeper 启动成功。standalone 代表 zk 没有搭建集群，现在是单节点
 
 ```shell
 # 启动成功
