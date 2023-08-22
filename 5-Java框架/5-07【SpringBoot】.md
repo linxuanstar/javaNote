@@ -12,19 +12,19 @@
 
 SpringBoot官网https://spring.io/projects/spring-boot，构建SpringBoot工程页面https://start.spring.io/
 
-![](..\图片\5-04【SpringBoot】\1-0.png)
+![](..\图片\5-07【SpringBoot】\1-0.png)
 
 ## 1.1 创建项目
 
 创建步骤如下：
 
-<img src="..\图片\5-04【SpringBoot】/1-1.png" />
+<img src="..\图片\5-07【SpringBoot】/1-1.png" />
 
-![](D:\Java\笔记\图片\5-04【SpringBoot】\2-4.png)
+![](..\图片\5-07【SpringBoot】\2-4.png)
 
-<img src="..\图片\5-04【SpringBoot】/1-2.png" />
+<img src="..\图片\5-07【SpringBoot】/1-2.png" />
 
-![](D:\Java\笔记\图片\5-04【SpringBoot】\1-3.png)
+![](..\图片\5-07【SpringBoot】\1-3.png)
 
 经过以上步骤后就创建了如下结构的模块，它会帮我们自动生成一个 `项目名 + Application` 类，运行该类就是运行整个程序了。上面就创建好一个SpringBoot项目了，需要注意的是：并不需要创建配置类。
 
@@ -295,7 +295,7 @@ SpringBoot默认时使用Tomcat服务器的，可以在pom.xml中设置更换服
 
 三种配置文件的优先级：application.properties  >  application.yml   >  application.yaml。
 
-![](D:\Java\笔记\图片\5-04【SpringBoot】\2-1.png)
+![](..\图片\5-07【SpringBoot】\2-1.png)
 
 **application.properties**
 
@@ -481,7 +481,7 @@ public class BookController {
 
 使用第三种方式，在实体类上有如下警告提示
 
-![](D:\Java\笔记\图片\5-04【SpringBoot】\2-2.png)
+![](..\图片\5-07【SpringBoot】\2-2.png)
 
 这个警告提示解决添加如下依赖即可
 
@@ -642,7 +642,7 @@ java –jar springboot.jar –-server.port=88 –-spring.profiles.active=test
 
 命令行设置的端口号优先级高（也就是使用的是命令行设置的端口号），配置的优先级其实 `SpringBoot` 官网已经进行了说明，参见：https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config
 
-![](D:\Java\笔记\图片\5-04【SpringBoot】\2-3.png)
+![](..\图片\5-07【SpringBoot】\2-3.png)
 
 ## 2.4 多环境开发兼容问题
 

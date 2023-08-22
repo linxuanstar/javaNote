@@ -91,7 +91,7 @@ public class People {
 ```xml
 <?xml version="1.0"?>
 <!-- <!DOCTYPE 根标签名称 PUBLIC "dtd文件名称" "dtd文件的位置URL"> -->
-<!-- 文件名称为People.hbm.xml，项目编译后放在和People.java同一个目录下 -->
+<!-- 文件名称为People.hbm.xml，要求该文件在项目编译后和People.java放在同一个目录下 -->
 <!-- 如果该文件放在java目录下面，那么需要在pom.xml配置Maven控制文件范围。 -->
 <!-- 如果该文件放在resources目录下面，那么需要创建一个同级目录来存放 com/linxuan/entity -->
 <!DOCTYPE hibernate-mapping PUBLIC
@@ -1367,6 +1367,14 @@ generator 标签值如下：
 5. uuid.hex 算法
 6. select 算法
 
+```xml
+<!-- 采用数据库提供的sequence机制生成主键，用于Oracle、PG、DB数据库，MySQL没有序列机制 -->
+<generator class="sequence">
+    <!-- Hibernate生成主键时，查找sequence并赋给主键值，主键值由数据库生成，Hibernate不负责维护 -->
+    <param name="sequence">SEQ_TS_KPI_REPORT_DAP_ID</param>
+</generator>
+```
+
 ### 2.2.4 property 属性
 
 ```xml
@@ -1548,7 +1556,7 @@ public void testCustomerAndOrders() {
 
 可以使用如下两种方式来解决：
 
-1. 在 Java 代码中去掉⼀⽅维护关系代码。
+1. 在 Java 代码中去掉一方维护关系代码。
 2. 通过配置来解决。
 
 这里使用第二种方式解决

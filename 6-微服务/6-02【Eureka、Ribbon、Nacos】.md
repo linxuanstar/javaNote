@@ -10,7 +10,7 @@
 - 微服务数据独立，不要访问其它微服务的数据库
 - 微服务可以将自己的业务暴露为接口，供其它微服务调用
 
-![](D:\Java\笔记\图片\6-02【Eureka、Ribbon、Nacos】\1-1.png)
+![](..\图片\6-02【Eureka、Ribbon、Nacos】\1-1.png)
 
 ## 1.2 服务拆分示例
 
@@ -76,7 +76,7 @@ public class UserController {
 
 我们的需求就是修改order-service中的根据id查询订单业务，要求在查询订单的同时，根据订单中包含的userId查询出用户信息，一起返回。
 
-![](D:\Java\笔记\图片\6-02【Eureka、Ribbon、Nacos】\1-2.png)
+![](..\图片\6-02【Eureka、Ribbon、Nacos】\1-2.png)
 
 因此，我们需要在order-service中 向user-service发起一个http的请求，调用`http://localhost:8081/user/{userId}`这个接口。
 
@@ -146,7 +146,7 @@ public class UserController {
 
 - 服务消费者：一次业务中，调用其它微服务的服务。（调用其它微服务提供的接口）
 
-![](D:\Java\笔记\图片\6-02【Eureka、Ribbon、Nacos】\1-3.png)
+![](..\图片\6-02【Eureka、Ribbon、Nacos】\1-3.png)
 
 但是，服务提供者与服务消费者的角色并不是绝对的，而是相对于业务而言。
 
@@ -160,7 +160,7 @@ public class UserController {
 
 假如我们的服务提供者user-service部署了多个实例，如图：
 
-![](D:\Java\笔记\图片\6-02【Eureka、Ribbon、Nacos】\2-1.png)
+![](..\图片\6-02【Eureka、Ribbon、Nacos】\2-1.png)
 
 那么就有几个问题需要思考了：
 
@@ -172,7 +172,7 @@ public class UserController {
 
 这些问题都需要利用SpringCloud中的注册中心来解决，其中最广为人知的注册中心就是Eureka，我们可以利用Eureka来回答之前的各个问题，其结构如下：
 
-![](D:\Java\笔记\图片\6-02【Eureka、Ribbon、Nacos】\2-2.png)
+![](..\图片\6-02【Eureka、Ribbon、Nacos】\2-2.png)
 
 order-service得知user-service实例地址信息的流程如下：
 
@@ -249,7 +249,7 @@ order-service得知某个user-service实例是否依然健康方式：user-servi
    
    启动微服务，然后在浏览器访问：http://127.0.0.1:10086。看到下面结果就是成功了，我这里不会注册eureka-server自己，上面yml文件已经对此进行设置了，当然下面的图片里面注册了。
    
-   ![](D:\Java\笔记\图片\6-02【Eureka、Ribbon、Nacos】\2-3.png)
+   ![](..\图片\6-02【Eureka、Ribbon、Nacos】\2-3.png)
 
 ## 2.3 服务注册
 
@@ -286,7 +286,7 @@ order-service得知某个user-service实例是否依然健康方式：user-servi
    
    首先，复制原来的user-service启动配置：
    
-   ![](D:\Java\笔记\图片\6-02【Eureka、Ribbon、Nacos】\2-4.png)
+   ![](..\图片\6-02【Eureka、Ribbon、Nacos】\2-4.png)
    
    然后，在弹出的窗口中，填写信息：Name方框填写 `UserApplication2`，Enviroment下面的VM options（虚拟机启动参数） 方框中填写`-Dserver.port=8082`。
    
@@ -294,11 +294,11 @@ order-service得知某个user-service实例是否依然健康方式：user-servi
    
    启动两个user-service实例：
    
-   ![](D:\Java\笔记\图片\6-02【Eureka、Ribbon、Nacos】\2-5.png)
+   ![](..\图片\6-02【Eureka、Ribbon、Nacos】\2-5.png)
    
    查看eureka-server管理页面：
    
-   ![](D:\Java\笔记\图片\6-02【Eureka、Ribbon、Nacos】\2-6.png)
+   ![](..\图片\6-02【Eureka、Ribbon、Nacos】\2-6.png)
 
 ## 2.4 服务发现
 
@@ -392,7 +392,7 @@ spring会自动帮助我们从eureka-server端，根据userservice这个服务�
 
 负载均衡建立在现有网络结构之上，它提供了一种廉价有效透明的方法扩展网络设备和服务器的带宽、增加吞吐量、加强网络数据处理能力、提高网络的灵活性和可用性。
 
-![](D:\Java\笔记\图片\6-02【Eureka、Ribbon、Nacos】\2-7.png)
+![](..\图片\6-02【Eureka、Ribbon、Nacos】\2-7.png)
 
 # 第三章 Ribbon负载均衡
 
@@ -400,7 +400,7 @@ spring会自动帮助我们从eureka-server端，根据userservice这个服务�
 
 SpringCloud底层其实是利用了一个名为Ribbon的组件，来实现负载均衡功能的。
 
-![](D:\Java\笔记\图片\6-02【Eureka、Ribbon、Nacos】\3-1.png)
+![](..\图片\6-02【Eureka、Ribbon、Nacos】\3-1.png)
 
 那么我们发出的请求明明是http://userservice/user/1，怎么变成了http://localhost:8081的呢？
 
@@ -414,7 +414,7 @@ SpringCloud底层其实是利用了一个名为Ribbon的组件，来实现负载
 
 1. `LoadBalancerIntercepor`
 
-   ![](D:\Java\笔记\图片\6-02【Eureka、Ribbon、Nacos】\3-2.png)
+   ![](..\图片\6-02【Eureka、Ribbon、Nacos】\3-2.png)
 
    可以看到这里的`intercept`方法，拦截了用户的`HttpRequest`请求，然后做了几件事：
 
@@ -428,7 +428,7 @@ SpringCloud底层其实是利用了一个名为Ribbon的组件，来实现负载
 
 2. `LoadBalancerClient`，继续跟入execute方法。
 
-   ![](D:\Java\笔记\图片\6-02【Eureka、Ribbon、Nacos】\3-3.png)
+   ![](..\图片\6-02【Eureka、Ribbon、Nacos】\3-3.png)
 
    `getLoadBalancer(serviceId)`：根据服务id获取`ILoadBalancer`，而`ILoadBalancer`会拿着服务id去eureka中获取服务列表并保存起来。
 
@@ -446,7 +446,7 @@ SpringCloud底层其实是利用了一个名为Ribbon的组件，来实现负载
 
    我们继续跟入：
 
-   ![](D:\Java\笔记\图片\6-02【Eureka、Ribbon、Nacos】\3-5.png)
+   ![](..\图片\6-02【Eureka、Ribbon、Nacos】\3-5.png)
 
    继续跟踪源码chooseServer方法，发现这么一段代码：
 
@@ -454,11 +454,11 @@ SpringCloud底层其实是利用了一个名为Ribbon的组件，来实现负载
 
    我们看看这个rule是谁：
 
-   <img src="D:\Java\笔记\图片\6-02【Eureka、Ribbon、Nacos】\3-7.png" style="zoom:150%;"  >
+   <img src="..\图片\6-02【Eureka、Ribbon、Nacos】\3-7.png" style="zoom:150%;"  >
 
    这里的rule默认值是一个`RoundRobinRule`，看类的介绍：
 
-   <img src="D:\Java\笔记\图片\6-02【Eureka、Ribbon、Nacos】\3-8.png" style="zoom:150%;" />
+   <img src="..\图片\6-02【Eureka、Ribbon、Nacos】\3-8.png" style="zoom:150%;" />
 
    这不就是轮询的意思嘛。
 
@@ -466,7 +466,7 @@ SpringCloud底层其实是利用了一个名为Ribbon的组件，来实现负载
 
 `SpringCloudRibbon`的底层采用了一个拦截器，拦截了`RestTemplate`发出的请求，对地址做了修改。用一幅图来总结一下：
 
-![](D:\Java\笔记\图片\6-02【Eureka、Ribbon、Nacos】\3-9.png)
+![](..\图片\6-02【Eureka、Ribbon、Nacos】\3-9.png)
 
 基本流程如下：
 
@@ -481,7 +481,7 @@ SpringCloud底层其实是利用了一个名为Ribbon的组件，来实现负载
 
 负载均衡的规则都定义在`IRule`接口中，而`IRule`有很多不同的实现类：
 
-![](D:\Java\笔记\图片\6-02【Eureka、Ribbon、Nacos】\3-10.png)
+![](..\图片\6-02【Eureka、Ribbon、Nacos】\3-10.png)
 
 不同规则的含义如下：
 
@@ -593,7 +593,7 @@ Nacos是SpringCloudAlibaba的组件，而SpringCloudAlibaba也遵循SpringCloud�
 
    重启微服务后，登录nacos管理页面，可以看到微服务信息：
 
-   ![](D:\Java\笔记\图片\6-02【Eureka、Ribbon、Nacos】\4-1.png)
+   ![](..\图片\6-02【Eureka、Ribbon、Nacos】\4-1.png)
 
 ## 4.2 服务分级存储模型
 
@@ -613,7 +613,7 @@ Nacos就将同一机房内的实例 划分为一个**集群**。
 
 也就是说，user-service是服务，一个服务可以包含多个集群，如杭州、上海，每个集群下可以有多个实例，形成分级模型，如图：
 
-![](D:\Java\笔记\图片\6-02【Eureka、Ribbon、Nacos】\4-2.png)
+![](..\图片\6-02【Eureka、Ribbon、Nacos】\4-2.png)
 
 微服务互相访问时，应该尽可能访问同集群实例，因为本地访问速度更快。当本集群内不可用时，才访问其它集群。杭州机房内的order-service应该优先访问同机房的user-service。
 
@@ -632,7 +632,7 @@ spring:
 
 重启两个user-service实例后，我们可以在nacos控制台看到下面结果：
 
-![](D:\Java\笔记\图片\6-02【Eureka、Ribbon、Nacos】\4-3.png)
+![](..\图片\6-02【Eureka、Ribbon、Nacos】\4-3.png)
 
 我们再次复制一个user-service启动配置，命名为`UserApplication3`，在VM options中添加属性：
 
@@ -643,7 +643,7 @@ spring:
 
 启动`UserApplication3`后再次查看nacos控制台：
 
-![](D:\Java\笔记\图片\6-02【Eureka、Ribbon、Nacos】\4-4.png)
+![](..\图片\6-02【Eureka、Ribbon、Nacos】\4-4.png)
 
 **同集群优先的负载均衡**
 
@@ -680,7 +680,7 @@ spring:
 
 因此，Nacos提供了权重配置来控制访问频率，权重越大则访问频率越高。在nacos控制台，找到user-service的实例列表，点击编辑，即可修改权重：
 
-![](D:\Java\笔记\图片\6-02【Eureka、Ribbon、Nacos】\4-3.png)
+![](..\图片\6-02【Eureka、Ribbon、Nacos】\4-3.png)
 
 在弹出的编辑窗口，修改权重。
 
@@ -694,25 +694,25 @@ Nacos提供了namespace来实现环境隔离功能。
 - namespace下可以有group、service等
 - 不同namespace之间相互隔离，例如不同namespace的服务互相不可见
 
-![](D:\Java\笔记\图片\6-02【Eureka、Ribbon、Nacos】\4-5.png)
+![](..\图片\6-02【Eureka、Ribbon、Nacos】\4-5.png)
 
 **创建namespace**
 
 默认情况下，所有service、data、group都在同一个namespace，名为public：
 
-![](D:\Java\笔记\图片\6-02【Eureka、Ribbon、Nacos】\4-6.png)
+![](..\图片\6-02【Eureka、Ribbon、Nacos】\4-6.png)
 
 我们可以点击页面新增按钮，添加一个namespace：
 
-![](D:\Java\笔记\图片\6-02【Eureka、Ribbon、Nacos】\4-7.png)
+![](..\图片\6-02【Eureka、Ribbon、Nacos】\4-7.png)
 
 然后，填写表单：
 
-![](D:\Java\笔记\图片\6-02【Eureka、Ribbon、Nacos】\4-8.png)
+![](..\图片\6-02【Eureka、Ribbon、Nacos】\4-8.png)
 
 就能在页面看到一个新的namespace：
 
-![](D:\Java\笔记\图片\6-02【Eureka、Ribbon、Nacos】\4-9.png)
+![](..\图片\6-02【Eureka、Ribbon、Nacos】\4-9.png)
 
 **配置namespace**
 
@@ -732,7 +732,7 @@ spring:
 
 我们修改了order-service的application.yml文件，将这个微服务的命名空间设置为了dev。而user-service的命名空间我们没有修改，此时访问order-service，因为namespace不同，会导致找不到userservice，控制台会报错：
 
-![](D:\Java\笔记\图片\6-02【Eureka、Ribbon、Nacos】\4-10.png)
+![](..\图片\6-02【Eureka、Ribbon、Nacos】\4-10.png)
 
 ## 4.5 Nacos与Eureka的区别
 
@@ -754,7 +754,7 @@ spring:
 
 Nacos和Eureka整体结构类似，服务注册、服务拉取、心跳等待，但是也存在一些差异：
 
-![](D:\Java\笔记\图片\6-02【Eureka、Ribbon、Nacos】\4-11.png)
+![](..\图片\6-02【Eureka、Ribbon、Nacos】\4-11.png)
 
 Nacos与eureka的共同点：
 
@@ -815,7 +815,7 @@ Nacos一方面可以将配置集中管理，另一方可以在配置变更时，
 4. 创建Spring容器。
 5. 加载Bean。
 
-![](D:\Java\笔记\图片\6-02【Eureka、Ribbon、Nacos】\5-1.png)
+![](..\图片\6-02【Eureka、Ribbon、Nacos】\5-1.png)
 
 接下来我们来实际操作一下，从Nacos中拉取配置，上面我们已经在Nacos中配置时间的打印格式了：
 
@@ -1005,7 +1005,7 @@ Nacos一方面可以将配置集中管理，另一方可以在配置变更时，
 
    当nacos、服务本地同时出现相同属性时，优先级有高低之分：
 
-![](D:\Java\笔记\图片\6-02【Eureka、Ribbon、Nacos】\5-2.png)
+![](..\图片\6-02【Eureka、Ribbon、Nacos】\5-2.png)
 
 ## 5.4 搭建Nacos集群
 
@@ -1013,13 +1013,13 @@ Nacos生产环境下一定要部署为集群状态。
 
 官方给出的Nacos集群图：
 
-![](D:\Java\笔记\图片\6-02【Eureka、Ribbon、Nacos】\5-3.png)
+![](..\图片\6-02【Eureka、Ribbon、Nacos】\5-3.png)
 
 其中包含3个nacos节点，然后一个负载均衡器代理3个Nacos。这里负载均衡器可以使用nginx。
 
 我们计划的集群结构：
 
-![](D:\Java\笔记\图片\6-02【Eureka、Ribbon、Nacos】\5-4.png)
+![](..\图片\6-02【Eureka、Ribbon、Nacos】\5-4.png)
 
 搭建集群的基本步骤：
 

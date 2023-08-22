@@ -641,7 +641,7 @@ public class Demo02Filter implements Filter {
 </html>
 ```
 
-浏览器访问index.jsp页面，控制台输出语句信息如下：
+浏览器访问 index.jsp 页面，控制台输出语句信息如下：
 
 ```apl
 Demo02Filter执行了
@@ -653,7 +653,7 @@ Demo02Filter回来了
 
 ### 3.3.1 拦截路径配置
 
-1. 具体资源路径：`/index.jsp`。只有访问index.jsp资源时，过滤器才会被执行
+1. 具体资源路径：`/index.jsp`。只有访问 index.jsp 资源时，过滤器才会被执行
 
 2. 拦截目录：`/user/*`。访问/user下的所有资源时，过滤器都会被执行
 

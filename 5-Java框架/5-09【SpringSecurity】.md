@@ -67,7 +67,7 @@ public class HelloController {
 
 ## 1.2 登陆校验流程
 
-![](D:\Java\笔记\图片\5-07【SpringSecurity】\1-1Login check process.png)
+![](..\图片\5-09【SpringSecurity】\1-1Login check process.png)
 
 ## 1.3 Security原理
 
@@ -77,7 +77,7 @@ SpringSecurity 的原理其实就是一个过滤器链，内部包含了提供�
 - `ExceptionTranslationFilter`：处理过滤器链中抛出的 AccessDeniedException 和 AuthenticationException 
 - `FilterSecurityInterceptor`：负责权限校验的过滤器。
 
-![](D:\Java\笔记\图片\5-07【SpringSecurity】\1-2Filter Chain.png)
+![](..\图片\5-09【SpringSecurity】\1-2Filter Chain.png)
 
 我们可以通过 Debug 查看当前系统中 SpringSecurity 过滤器链中有哪些过滤器及它们的顺序。在 SpringBoot 项目执行 main 方法中的代码会返回 `ConfigurableApplicationContext`对象，该对象就是一个 Spring 容器，该容器里面注入了许多的 bean 对象。
 
@@ -94,7 +94,7 @@ public class SecurityQuickStartApplication {
 }
 ```
 
-![](D:\Java\笔记\图片\5-07【SpringSecurity】\1-3SpringSecurity Filter Chain.png)
+![](..\图片\5-09【SpringSecurity】\1-3SpringSecurity Filter Chain.png)
 
 ## 1.4 认证流程详解
 
@@ -110,7 +110,7 @@ public class SecurityQuickStartApplication {
 
 `UsernamePasswordAuthenticationFilter`这个过滤器来实现认证过程逻辑的。实际上不是它这一个类就实现了，它还通过其他类来帮助他实现的，下图就是该过滤器内部实现大致流程。
 
-![](D:\Java\笔记\图片\5-07【SpringSecurity】\1-4Certification process.png)
+![](..\图片\5-09【SpringSecurity】\1-4Certification process.png)
 
 大致流程如下：
 

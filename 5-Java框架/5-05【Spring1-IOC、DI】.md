@@ -1,12 +1,10 @@
-![](..\图片\5-02【Spring】\0-1.png)
+![](..\图片\5-05【Spring】\0-1.png)
 
 # 第一章 Spring基础
 
 <!--full-stack 全栈--> <!--Integration n.结合; 整合; 一体化;--> <!--Transaction 事务-->
 
-Spring官网：https://spring.io。
-
-Spring是分层的 Java SE/EE应用 full-stack 轻量级开源框架，以 `IoC(Inverse Of Control：控制反转)`和`AOP(Aspect Oriented Programming：面向切面编程)`为内核。提供了展现层 `SpringMVC` 和持久层 `Spring JDBCTemplate` 以及业务层事务管理等众多的企业级应用技术，还能整合开源世界众多著名的第三方框架和类库，逐渐成为使用最多的Java EE 企业应用开源框架。
+[Spring](https://spring.io)是分层的 Java SE/EE应用 full-stack 轻量级开源框架，以 `IoC(Inverse Of Control：控制反转)`和`AOP(Aspect Oriented Programming：面向切面编程)`为内核。提供了展现层 `SpringMVC` 和持久层 `Spring JDBCTemplate` 以及业务层事务管理等众多的企业级应用技术，还能整合开源世界众多著名的第三方框架和类库，逐渐成为使用最多的Java EE 企业应用开源框架。
 
 Spring的优势如下：
 
@@ -20,7 +18,7 @@ Spring的优势如下：
 
 Spring发展到今天已经形成了一种开发的生态圈，我们可以完全使用Spring技术完成整个项目的构建、设计与开发。Spring有若干个项目，可以根据需要自行选择，把这些个项目组合起来，起了一个名称叫全家桶，如下图所示
 
-![](..\图片\5-02【Spring】\1-0.png)
+![](..\图片\5-05【Spring】\1-0.png)
 
 这些技术并不是所有的都需要学习，只需要重点关注Spring Framework、SpringBoot和SpringCloud：
 
@@ -34,7 +32,7 @@ Spring Framework是Spring生态圈中最基础的项目，是其他项目的根�
 
 Spring Framework5.x版本目前没有架构图，所以接下来研究的是Spring Framework4.x的架构图：
 
-![](..\图片\5-02【Spring】\1-3.png)
+![](..\图片\5-05【Spring】\1-3.png)
 
 分别介绍一下这些架构：
 
@@ -169,7 +167,8 @@ Spring提出了一个解决方案：使用对象时，在程序中不要主动�
    <?xml version="1.0" encoding="UTF-8"?>
    <beans xmlns="http://www.springframework.org/schema/beans"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+          xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                              http://www.springframework.org/schema/beans/spring-beans.xsd">
    
        <!-- bean标签表示配置bean，id属性表示给bean起名字(ID唯一)，class属性表示给bean定义类型	-->
        <bean id="bookDao" class="com.linxuan.dao.impl.BookDaoImpl"/>
@@ -237,7 +236,8 @@ Spring提出了一个解决方案：使用对象时，在程序中不要主动�
    <?xml version="1.0" encoding="UTF-8"?>
    <beans xmlns="http://www.springframework.org/schema/beans"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+          xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                              http://www.springframework.org/schema/beans/spring-beans.xsd">
    
        <!-- bean标签表示配置bean，id属性表示给bean起名字(ID唯一)，class属性表示给bean定义类型	-->
        <bean id="bookDao" class="com.linxuan.dao.impl.BookDaoImpl"/>
@@ -259,7 +259,7 @@ Spring提出了一个解决方案：使用对象时，在程序中不要主动�
 
 这里所说的核心容器，可以把它简单的理解为`ApplicationContext`，接下来来学习下容器的相关知识。
 
-![](D:\Java\笔记\图片\5-02【Spring】\1-4.png)
+![](..\图片\5-05【Spring】\1-4.png)
 
 ```apl
 BeanFactory(接口) # 这是容器类的顶层接口，初始化BeanFactory对象时，加载的bean延迟加载。
@@ -296,8 +296,8 @@ BeanFactory(接口) # 这是容器类的顶层接口，初始化BeanFactory对�
 * Spring还提供了一种创建方式`new FileSystemXmlApplicationContext()`，翻译为文件系统下的XML配置文件：
 
   ```java
-  // 参数是具体路径，这种方式虽能实现，但是当项目的位置发生变化后，代码也需要跟着改，耦合度较高，不推荐使用。
-  ApplicationContext ctx = new FileSystemXmlApplicationContext("D：\\spring\\src\\main\\resources\\applicationContext.xml");
+  // 参数是具体路径，这种方式虽能实现，但是项目的位置发生变化后，代码也需要跟着改，耦合度较高，不推荐使用
+  ApplicationContext ctx = new FileSystemXmlApplicationContext("D:\\applicationContext.xml");
   ```
 
 **ConfigurableApplicationContext接口**
@@ -410,7 +410,8 @@ public static void main(String[] args) {
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                           http://www.springframework.org/schema/beans/spring-beans.xsd">
     <bean id="bookDao" class="com.linxuan.dao.impl.BookDaoImpl"  lazy-init="true"/>
 </beans>
 ```

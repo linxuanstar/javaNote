@@ -1,4 +1,4 @@
-![](D:\Java\笔记\图片\5-03【SpringMVC】\0-1.png)
+![](..\图片\5-06【SpringMVC】\0-1.png)
 
 # 第一章 SSM整合
 
@@ -536,13 +536,13 @@ public class BookServiceImpl implements BookService {
 }
 ```
 
-![](D:\Java\笔记\图片\5-03【SpringMVC】\1-6.png)
+![](..\图片\5-06【SpringMVC】\1-6.png)
 
 BookDao是一个接口，没有实现类，接口是不能创建对象的，所以最终注入的应该是代理对象。代理对象是由Spring的IOC容器来创建管理的，IOC容器又是在Web服务器启动的时候才会创建。IDEA在检测依赖关系的时候，没有找到适合的类注入，所以会提示错误提示。但是程序运行的时候，代理对象就会被创建，框架会使用DI进行注入，所以程序运行无影响。
 
 解决方案：1.因为运行时正常的，所以不管他。2.设置错误级别
 
-![](D:\Java\笔记\图片\5-03【SpringMVC】\1-7.png)
+![](..\图片\5-06【SpringMVC】\1-7.png)
 
 ```java
 // 等于@Controller + ResponseBody。设置当前控制器类为RESTful风格。该类交由Spring管理，所有方法返回值作为响应体，无需解析。
@@ -1116,13 +1116,13 @@ public Result getById(@PathVariable Integer id) {
 
 以后项目中的异常处理方式为:
 
-![1630658821746](../图片/5-03【SpringMVC】/2-5.png)
+![1630658821746](../图片/5-06【SpringMVC】/2-5.png)
 
 # 第五章 拦截器Interceptor
 
 讲解拦截器的概念之前，我们先看一张图:
 
-![1630676280170](../图片/5-03【SpringMVC】/2-6.png)
+![1630676280170](../图片/5-06【SpringMVC】/2-6.png)
 
 1. 浏览器发送一个请求会先到Tomcat的web服务器
 
@@ -1150,7 +1150,7 @@ public Result getById(@PathVariable Integer id) {
 - 归属不同：Filter属于Servlet技术，Interceptor属于SpringMVC技术
 - 拦截内容不同：Filter对所有访问进行增强，Interceptor仅针对SpringMVC的访问进行增强
 
-![1630676903190](../图片/5-03【SpringMVC】/2-7.png)
+![1630676903190](../图片/5-06【SpringMVC】/2-7.png)
 
 ## 5.1 拦截器入门案例
 
@@ -1426,7 +1426,7 @@ public Result getById(@PathVariable Integer id) {
 
   最后我们来看下拦截器的执行流程：
 
-  ![1630679464294](../图片/5-03【SpringMVC】/2-8.png)
+  ![1630679464294](../图片/5-06【SpringMVC】/2-8.png)
 
   当有拦截器后，请求会先进入`preHandle`方法：
 
@@ -1605,7 +1605,7 @@ public void afterCompletion(HttpServletRequest request,
 
    * 当拦截器运行中断，仅运行配置在前面的拦截器的afterCompletion操作
 
-   ![1630680579735](../图片/5-03【SpringMVC】/2-9.png)
+   ![1630680579735](../图片/5-06【SpringMVC】/2-9.png)
 
    `preHandle`：与配置顺序相同，必定运行。
 

@@ -13,7 +13,7 @@ ZooKeeper 是一个树形目录服务，其数据模型和Unix的文件系统目
 - PERSISTENT_SEQUENTIAL 持久化顺序节点 ：-s
 - EPHEMERAL_SEQUENTIAL 临时顺序节点  ：-es
 
-![](D:\Java\笔记\图片\6-01【Zookeeper】\1-1ZNode.png)
+![](..\图片\6-01【Zookeeper】\1-1ZNode.png)
 
 ## 1.1 安装配置
 
@@ -647,7 +647,7 @@ ZooKeeper 允许用户在指定节点上注册一些 Watcher，并且在一些�
 
 ZooKeeper 中引入了 Watcher 机制来实现了发布 / 订阅功能，能够让多个订阅者同时监听某一个对象，当一个对象自身状态变化时，会通知所有订阅者。
 
-![](D:\Java\笔记\图片\6-01【Zookeeper】\1-1ZNode.png)
+![](..\图片\6-01【Zookeeper】\1-1ZNode.png)
 
 ZooKeeper 原生支持通过注册 Watcher 来进行事件监听，但是其使用并不是特别方便，需要开发人员自己反复注册Watcher，比较繁琐。因此 Curator 引入了 Cache 来实现对 ZooKeeper 服务端事件的监听。
 
@@ -777,7 +777,7 @@ TreeCache：可以监控整个树上的所有节点，类似于 PathChildrenCach
 * Zookeeper 实现分布式锁，Curator 封装了很多方法简化我们开发
 * 数据库层面实现分布式锁，使用乐观锁或者悲观锁
 
-![](D:\Java\笔记\图片\6-01【Zookeeper】\2-1Distributed Lock.png)
+![](..\图片\6-01【Zookeeper】\2-1Distributed Lock.png)
 
 •核心思想：当客户端要获取锁，则创建节点，使用完锁，则删除该节点。
 
@@ -863,7 +863,7 @@ public class LockTest {
 
 # 第三章 Zookeeper集群
 
-![](D:\Java\笔记\图片\6-01【Zookeeper】\3-1Zookeeper colony .png)
+![](..\图片\6-01【Zookeeper】\3-1Zookeeper colony .png)
 
 Leader 选举的因素有三个：
 
@@ -873,7 +873,7 @@ Leader 选举的因素有三个：
 
 ## 3.1 集群角色详解
 
-![](D:\Java\笔记\图片\6-01【Zookeeper】\3-1Colony character .png)
+![](..\图片\6-01【Zookeeper】\3-1Colony character .png)
 
 在 ZooKeeper 集群服务中有三个角色：
 

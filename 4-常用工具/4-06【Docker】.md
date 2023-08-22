@@ -2,15 +2,15 @@
 
 微服务虽然具备各种各样的优势，但服务的拆分通用给部署带来了很大的麻烦：分布式系统中，依赖的组件非常多，不同组件之间部署时往往会产生一些冲突。在数百上千台服务中重复部署，环境不一定一致，会遇到各种问题。
 
-大型项目组件较多，运行环境也较为复杂，部署时会碰到一些问题：依赖关系复杂，容易出现兼容性问题。开发、测试、生产环境有差异。例如一个项目中，部署时需要依赖于node.js、Redis、RabbitMQ、MySQL等，这些服务部署时所需要的函数库、依赖项各不相同，甚至会有冲突。给部署带来了极大的困难。
+大型项目组件较多，运行环境也较为复杂，部署时会碰到一些问题：依赖关系复杂，容易出现兼容性问题。开发、测试、生产环境有差异。例如一个项目中，部署时需要依赖于 node.js、Redis、RabbitMQ、MySQL 等，这些服务部署时所需要的函数库、依赖项各不相同，甚至会有冲突。给部署带来了极大的困难。
 
-而Docker确巧妙的解决了这些问题，Docker为了解决依赖的兼容问题的，采用了两个手段：将应用的Libs（函数库）、Deps（依赖）、配置与应用一起打包。将每个应用放到一个隔离容器去运行，避免互相干扰。这样打包好的应用包中，既包含应用本身，也保护应用所需要的Libs、Deps，无需再操作系统上安装这些，自然就不存在不同应用之间的兼容问题了。
+Docker 巧妙的解决了这些问题，Docker 为了解决依赖的兼容问题的，采用了两个手段：将应用的Libs（函数库）、Deps（依赖）、配置与应用一起打包。将每个应用放到一个隔离容器去运行，避免互相干扰。这样打包好的应用包中，既包含应用本身，也保护应用所需要的 Libs、Deps，无需再操作系统上安装这些，自然就不存在不同应用之间的兼容问题了。
 
 虽然解决了不同应用的兼容问题，但是开发、测试等环境会存在差异，操作系统版本也会有差异，怎么解决这些问题呢？
 
 ## 1.1 Docker解决环境差异
 
-要解决不同操作系统环境差异问题，必须先了解操作系统结构。以一个Ubuntu操作系统为例，结构如下：
+要解决不同操作系统环境差异问题，必须先了解操作系统结构。以一个 Ubuntu 操作系统为例，结构如下：
 
 <img src="..\图片\4-06【Docker】/image-20210731143401460.png"/>
 
@@ -104,49 +104,37 @@ Docker 分为 CE 和 EE 两大版本。CE 即社区版（免费，支持周期 7
 
 Docker CE 支持 64 位版本 CentOS 7，并且要求内核版本不低于 3.10， CentOS 7 满足最低内核的要求，所以我们在CentOS 7安装Docker。这里我们在Centos7_clone安装。
 
-如果之前安装过旧版本的Docker，可以使用下面命令卸载：
-
 ```sh
-yum remove docker \
-                  docker-client \
-                  docker-client-latest \
-                  docker-common \
-                  docker-latest \
-                  docker-latest-logrotate \
-                  docker-logrotate \
-                  docker-selinux \
-                  docker-engine-selinux \
-                  docker-engine \
-                  docker-ce
-```
-
-首先需要虚拟机联网，安装yum工具
-
-```sh
-yum install -y yum-utils \
-           device-mapper-persistent-data \
-           lvm2 --skip-broken
-```
-
-然后更新本地镜像源：
-
-```shell
+# 卸载Docker
+[root@node1 ~]# yum remove docker \
+                    docker-client \
+                    docker-client-latest \
+                    docker-common \
+                    docker-latest \
+                    docker-latest-logrotate \
+                    docker-logrotate \
+                    docker-selinux \
+                    docker-engine-selinux \
+                    docker-engine \
+                    docker-ce
+# 虚拟机联网，安装yum工具
+[root@node1 ~]# yum install -y yum-utils \
+                    device-mapper-persistent-data \
+                    lvm2 --skip-broken
 # 设置docker镜像源
-yum-config-manager \
-    --add-repo \
-    https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
-
+[root@node1 ~]# yum-config-manager \
+                    --add-repo \
+                    https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+                    
 # sed以流的方式编辑文本 -i直接修改读取的文件内容 s取代，搭配正则表达式进行取代 g全部替换
 # 替换/etc/yum.repos.d/docker-ce.repo文件中download.docker.com为mirrors.aliyun.com/docker-ce
-sed -i 's/download.docker.com/mirrors.aliyun.com\/docker-ce/g' /etc/yum.repos.d/docker-ce.repo
+[root@node1 ~]# sed -i 's/download.docker.com/mirrors.aliyun.com\/docker-ce/g' /etc/yum.repos.d/docker-ce.repo
 
-yum makecache fast
-```
+# 加速yum的更新速度
+[root@node1 ~]# yum makecache fast
 
-然后输入命令：
-
-```shell
-yum install -y docker-ce
+# yum方式安装docker-ce
+[root@node1 ~]# yum install -y docker-ce
 ```
 
 docker-ce为社区免费版本。稍等片刻，docker即可安装成功。安装成功之后关闭防火墙，Docker应用需要用到各种端口，逐一去修改防火墙设置非常麻烦。我们的Centos7的防火墙一直是关闭的。基本命令如下：
@@ -160,7 +148,12 @@ docker-ce为社区免费版本。稍等片刻，docker即可安装成功。安�
 | systemctl restart docker    | 重启docker服务     |
 | docker -v                   | 查看docker版本     |
 
-> 执行 `systemctl stop docker` 后提示`“Warning: Stopping docker.service, but it can still be activated by: docker.socket”`。这是docker在关闭状态下被访问自动唤醒机制，很人性化，即这时再执行任意docker命令会直接启动。
+```sh
+# docker在关闭状态下被访问自动唤醒机制，很人性化，即这时再执行任意docker命令会直接启动。
+[root@node1 ~]# systemctl stop docker
+Warning: Stopping docker.service, but it can still be activated by:
+  docker.socket
+```
 
 docker官方镜像仓库网速较差，我们需要设置国内镜像服务。参考阿里云的镜像加速文档：https://cr.console.aliyun.com/cn-hangzhou/instances/mirrors，内容如下，将其复制到shell窗口即可：
 

@@ -27,7 +27,7 @@ shiro 不仅仅可以使用在 web 中，它可以工作在任何应用环境中
 
 <!-- authentication:身份验证； authorization:授权；-->
 
-![](D:\Java\笔记\图片\5-10【Shiro】\1-1.png)
+![](..\图片\5-10【Shiro】\1-1.png)
 
 Primary Concerns（主要关注点）
 
@@ -58,7 +58,7 @@ Supporting Features（支持特征）
 
 从外部来看 Shiro ，即从应用程序角度的来观察如何使用 Shiro 完成工作
 
-![](D:\Java\笔记\图片\5-10【Shiro】\1-2.png)
+![](..\图片\5-10【Shiro】\1-2.png)
 
 Subject：应用代码直接交互的对象是 Subject，也就是说 Shiro 的对外 API 核心 就是 Subject。Subject 代表了当前用户，这个用户不一定是一个具体的人，与当前应用交互的任何东西都是 Subject，如网络爬虫、机器人等。与 Subject 的所有交互都会委托给 SecurityManager，Subject 其实是一个门面，SecurityManager 才是实际的执行者；
 
@@ -68,7 +68,7 @@ Realm：Shiro 从 Realm 获取安全数据，如用户、角色、权限。Secur
 
 ### 1.3.2 内部观察
 
-![](D:\Java\笔记\图片\5-10【Shiro】\1-3.png)
+![](..\图片\5-10【Shiro】\1-3.png)
 
 Shiro 架构如下：
 

@@ -261,6 +261,8 @@ Java HotSpot(TM) 64-Bit Server VM (build 25.144-b01, mixed mode)
 
    ```sh
    warning: mysql-community-client-5.7.28-1.el7.x86_64.rpm: Header V3 DSA/SHA1 Signature, key ID 5072e1f5: NOKEY
+   error: Failed dependencies:
+           mariadb-libs is obsoleted by mysql-community-libs-5.7.29-1.el7.x86_64
    # 原因：这是由于yum安装了旧版本的GPG keys造成的
    # 解决办法：后面加上 --force --nodeps
    ```
@@ -282,7 +284,7 @@ Java HotSpot(TM) 64-Bit Server VM (build 25.144-b01, mixed mode)
    systemctl start mysqld.service
    
    #查看生成的临时root密码
-   cat  /var/log/mysqld.log
+   cat  /var/log/mysqld.log | grep root@localhost:
    xWoHJtz-<3gS
    2022-11-12T09:10:39.165263Z 1 [Note] A temporary password is generated for root@localhost: wrljqkrty2%Y
    ```
@@ -320,7 +322,7 @@ Java HotSpot(TM) 64-Bit Server VM (build 25.144-b01, mixed mode)
    
    
    #更新root密码  设置为root123
-   mysql> alter user user() identified by "root";
+   mysql> alter user user() identified by "root123";
    Query OK, 0 rows affected (0.00 sec)
    
    
@@ -835,7 +837,7 @@ server {
 
 正向代理一般是在客户端设置代理服务器，通过代理服务器转发请求，最终访问到目标服务器。正向代理的典型用途是为在防火墙内的局域网客户端提供访问Internet的途径。
 
-![](D:\Java\笔记\图片\4-04【Linux软件】\1-2.png)
+![](..\图片\4-04【Linux软件】\1-2.png)
 
 ------
 
@@ -843,7 +845,7 @@ server {
 
 用户不需要知道目标服务器的地址，也无须在用户端作任何设定。
 
-![](D:\Java\笔记\图片\4-04【Linux软件】\1-3.png)
+![](..\图片\4-04【Linux软件】\1-3.png)
 
 ```apl
 # 配置反向代理

@@ -374,7 +374,7 @@ AOP一共提供了5种通知类型：前置通知、后置通知、环绕通知(
 - 抛出异常后通知：追加功能到方法抛出异常后，只有方法执行出异常才进行，类似于在代码4添加内容，只有方法抛出异常后才会被添加
 - 环绕通知：环绕通知功能比较强大，它可以追加功能到方法执行的前后，这也是比较常用的方式，它可以实现其他四种通知类型的功能。
 
-<img src="..\图片\5-02【Spring】\3-1.png" />
+<img src="..\图片\5-05【Spring】\3-1.png" />
 
 环境介绍：
 
@@ -696,7 +696,7 @@ public static void main(String[] args) {
 
 ### 2.2.3 返回后和异常后
 
-<img src="..\图片\5-02【Spring】\3-1.png" />
+<img src="..\图片\5-05【Spring】\3-1.png" />
 
 返回后通知、抛出异常后通知、后置通知差别：
 
@@ -1408,7 +1408,7 @@ public class MyAdvice {
 
 **返回后通知获取返回值**
 
-<img src="..\图片\5-02【Spring】\3-1.png" />
+<img src="..\图片\5-05【Spring】\3-1.png" />
 
 ```java
 @Component
@@ -2062,7 +2062,7 @@ public class AccountServiceImpl implements AccountService {
 
 Spring的事务只会对`Error异常`和`RuntimeException异常`及其子类进行事务回滚，其他的异常类型是不会回滚的，对应`IOException`不符合上述条件所以不回滚。IOException是编译器异常/受检查异常。
 
-<img src="..\图片\5-02【Spring】\3-2异常分类.png" />
+<img src="..\图片\5-05【Spring】\3-2异常分类.png" />
 
 可以使用`rollbackFor`属性来设置出现`IOException`异常回滚。
 
@@ -2202,7 +2202,7 @@ public void testTransfer() throws IOException {
 
 2. 事务传播行为的可选值
 
-   <img src="..\图片\5-02【Spring】\3-7.png" />
+   <img src="..\图片\5-05【Spring】\3-7.png" />
 
 对于我们开发实际中使用的话，因为默认值需要事务是常态的。根据开发过程选择其他的就可以了，例如案例中需要新事务就需要手工配置。其实入账和出账操作上也有事务，采用的就是默认值。
 
