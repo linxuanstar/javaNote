@@ -1,6 +1,6 @@
 # 第一章 Hibernate基础
 
-Hibernate 是一款主流 ORM 框架 Object Relation Mapping 对象关系映射，将⾯向对象映射成⾯向关系。
+Hibernate 是一款主流 ORM（Object Relation Mapping 对象关系映射）框架，将⾯向对象映射成面向关系。
 
 ## 1.1 快速入门
 

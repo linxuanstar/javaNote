@@ -31,7 +31,7 @@ Gradle官方用户手册：https://docs.gradle.org/current/userguide/userguide.h
 
 ## 1.1 安装与配置
 
-SpringBoot 官方文档明确指出，目前SpringBoot 的 Gradle 插件需要gradle6.8 版本及以上，所以我们这里选择 7.x 版本。
+SpringBoot 官方文档明确指出，目前SpringBoot 的 Gradle 插件需要 gradle6.8 版本及以上，所以我们这里选择 7.x 版本。
 
 SpringBoot 与Gradle 存在版本兼容问题，Gradle 与Idea 也存在兼容问题，所以考虑到 java 程序员会使用SpringBoot，所以要选择 6.8 版本及高于 6.8 版本的Gradle，那么相应的idea 版本也要升级，不能太老。我们可以进入一下Idea的目录查看一下需要安装Gradle的版本：`E:\Idea\IntelliJ IDEA 2022.3.1\plugins\gradle\lib`，`gradle-api-7.5.1`，这代表了我们需要安装7.5.1版本的。
 
@@ -52,9 +52,9 @@ SpringBoot 与Gradle 存在版本兼容问题，Gradle 与Idea 也存在兼容�
    ```
 3. 配置环境变量。`GRADLE_HOME:E:\Gradle\gradle-7.5.1`、`path:%GRADLE_HOME%\bin`
 4. 进入cmd，键入`gradle -v`。检测是否安装成功 
-5. 这里我们接着再配置一个 `GRADLE_USER_HOME` 环境变量:`E:\Maven\apache-maven-3.6.0\mvn_repository`。`GRALE_USER_HOME` 相当于配置 Gradle 本地仓库位置和 Gradle Wrapper缓存目录。Gradle本地仓库可以和Maven本地仓库目录一致，所以这里我们将其设置为一个位置。
+5. 这里我们接着再配置一个 `GRADLE_USER_HOME` 环境变量:`E:\Maven\apache-maven-3.6.0\mvn_repository`。`GRALE_USER_HOME` 相当于配置 Gradle 本地仓库位置和 Gradle Wrapper 缓存目录。Gradle本地仓库可以和Maven本地仓库目录一致，所以这里我们将其设置为一个位置。
 
-安装完毕！接下来来更改一下jar包下载的源。
+安装完毕！接下来来更改一下 jar 包下载的源。
 
 Gradle 自带的Maven源地址是国外的，该Maven源在国内的访问速度是很慢的，除非使用了特别的手段。一般情况下，我们建议使用国内的第三方开放的Maven源或企业内部自建Maven源。
 

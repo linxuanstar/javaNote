@@ -334,7 +334,7 @@ mvn archetype:generate -DgroupId=com.linxuan -DartifactId=web-project -Darchetyp
 
 与普通的项目步骤一样，只是在模板上更换为了`org.apache.maven.archetypes:maven-archetype-webapp`。创建好项目之后就是集成Tomcat，这里我们使用插件。
 
-打开Maven网路仓库，搜索`tomcat maven`，找到包路径为`org.apache.tomcat.maven`的tomcat插件，挑选版本。
+打开Maven网络仓库，搜索`tomcat maven`，找到包路径为`org.apache.tomcat.maven`的tomcat插件，挑选版本。
 
 ```xml
 <!-- 添加到pom.xml的build标签下面的plugins标签下面的plugin标签下面-->

@@ -1,12 +1,12 @@
-# 第一章 MongoDB基础
+# 第一章  MongoDB 基础
 
-传统的关系型数据库在数据操作的“三高”需求以及对应的 Web 2.0 网站需求面前，会有”力不从心”的感觉。三高需求：高并发、高性能、高可用。
+传统的关系型数据库在数据操作的”三高“需求以及对应的 Web 2.0 网站需求面前，会有”力不从心”的感觉。三高需求：高并发、高性能、高可用。
 
 - High Performance：对数据库的高并发读写的要求
 - High Storage：对海量数据的高效率存储和访问的需求
 - High Scalability && High Available：对数据的高扩展性和高可用性的需求
 
-而 [MongoDB](https://www.mongodb.com/) 可以应对这些三高需求，具体的应用场景如下：
+而[ MongoDB ](https://www. MongoDB .com/)可以应对这些三高需求，具体的应用场景如下：
 
 - 社交场景。使用 MongoDB 存储存储用户信息，以及用户发表的朋友圈信息，通过地理位置索引实现附近的人，地点等功能。
 - 游戏场景。使用 MongoDB 存储游戏用户信息，用户的装备，积分等直接以内嵌文档的形式存储，方便查询，高效率存储和访问。
@@ -14,24 +14,24 @@
 - 物联网场景。使用 MongoDB 存储所有接入的智能设备信息，以及设备汇报的日志信息，并对这些信息进行多维度的分析。
 - 视频直播。使用 MongoDB 存储用户信息，点赞互动信息等。
 
-上述的应用场景中，数据操作方面的共同特点为数据量大、读写操作频繁、价值密度低因此对事务要求不高。对于这样的场景，我们可以使用MongoDB来实现数据的存储。
+上述的应用场景中，数据操作方面的共同特点为数据量大、读写操作频繁、价值密度低因此对事务要求不高。对于这样的场景，我们可以使用 MongoDB 来实现数据的存储。
 
 ## 1.1 MongoDB 简介
 
-MongoDB是一个开源、高性能、无模式的文档型数据库，当初的设计就是用于简化开发和方便扩展，是NoSQL数据库产品中的一种。是最像关系型数据库（MySQL）的非关系型数据库。 
+ MongoDB 是一个开源、高性能、无模式的文档型数据库，当初的设计就是用于简化开发和方便扩展，是NoSQL数据库产品中的一种。是最像关系型数据库（MySQL）的非关系型数据库。 
 
-| SQL术语/概念 | MongoDB术语/概念 |                  解释/说明                  |
-| :----------: | :--------------: | :-----------------------------------------: |
-|   database   |     database     |                   数据库                    |
-|    table     |    collection    | 数据库表/集合，类似于数组, 在集合中存放文档 |
-|     row      |     document     |   数据记录行/文档，文档型数据库的最小单位   |
-|    column    |      field       |                 数据字段/域                 |
-|    index     |      index       |                    索引                     |
-| table joins  |                  |            表连接，MongoDB不支持            |
-|              |     嵌入文档     |     MongoDB通过嵌入式文档来代替多表连接     |
-| primary key  |   primary key    |    主键，MongoDB自动将_id字段设置为主键     |
+| SQL术语/概念 | MongoDB 术语/概念 |                  解释/说明                  |
+| :----------: | :---------------: | :-----------------------------------------: |
+|   database   |     database      |                   数据库                    |
+|    table     |    collection     | 数据库表/集合，类似于数组, 在集合中存放文档 |
+|     row      |     document      |   数据记录行/文档，文档型数据库的最小单位   |
+|    column    |       field       |                 数据字段/域                 |
+|    index     |       index       |                    索引                     |
+| table joins  |                   |           表连接， MongoDB 不支持           |
+|              |     嵌入文档      |    MongoDB 通过嵌入式文档来代替多表连接     |
+| primary key  |    primary key    |   主键， MongoDB 自动将_id字段设置为主键    |
 
-MongoDB 的最小存储单位是 document 文档对象，它对应于关系型数据库的行。数据在MongoDB中以 BSON 文档的格式存储在磁盘上面。BSON 支持的数据结构非常松散，既可以存储比较复杂的数据类型，又相当的灵活。它具有轻量型、可遍历性、高效性三个特点，可以有效描述非结构化数据和结构化数据。这种格式的优点是灵活性高，但是它的缺点是空间利用率不是很理性。
+ MongoDB 的最小存储单位是 document 文档对象，它对应于关系型数据库的行。数据在 MongoDB 中以 BSON 文档的格式存储在磁盘上面。BSON 支持的数据结构非常松散，既可以存储比较复杂的数据类型，又相当的灵活。它具有轻量型、可遍历性、高效性三个特点，可以有效描述非结构化数据和结构化数据。这种格式的优点是灵活性高，但是它的缺点是空间利用率不是很理性。
 
 BSON（Binary Serialized Document Format）是一种类 JSON 的一种二进制形式的存储格式，简称Binary JSON。BSON 和 JSON 一样，支持内嵌的文档对象和数组对象，但是 BSON 有 JSON 没有的一些数据类型，如 Date 和BinData类型。
 
@@ -56,15 +56,15 @@ BSON（Binary Serialized Document Format）是一种类 JSON 的一种二进制�
 
 ## 1.2 单机环境部署
 
-MongoDB的版本命名规范为：x.y.z； 
+ MongoDB 的版本命名规范为：x.y.z； 
 
-* y为奇数时表示当前版本为开发版，如：1.5.2、4.1.13； 
-* y为偶数时表示当前版本为稳定版，如：1.6.3、4.0.10；
-*  z是修正版本号，数字越大越好。
+* y 为奇数时表示当前版本为开发版，如：1.5.2、4.1.13； 
+* y 为偶数时表示当前版本为稳定版，如：1.6.3、4.0.10；
+*  z 是修正版本号，数字越大越好。
 
 **Windows 部署**
 
-1. 从[官网](https://www.mongodb.com/download-center#community)下载预编译的二进制包，这里下载4.0.12版本的ZIP包。
+1. 从[官网](https://www. MongoDB .com/download-center#community)下载预编译的二进制包，这里下载 4.0.12 版本的 ZIP 包。
 2. 将压缩包解压到一个目录中。 在解压目录中，手动建立一个目录用于存放数据文件。4.0.12之后的某些版本已经不需要手动创建目录来存放数据文件了，下载之后就会自动创建 data 目录。
 
 ```sh
@@ -85,50 +85,50 @@ Build Info: {
 
 **Linux 部署（未测试，老师教程上面就是这样的）**
 
-在Linux中部署一个单机的MongoDB，作为生产环境下使用。 步骤如下：
+在Linux中部署一个单机的 MongoDB ，作为生产环境下使用。 步骤如下：
 
 1. 先到官网下载压缩包 mongod-linux-x86_64-4.0.10.tgz 。
 
 2. 上传压缩包到Linux中，解压到当前目录
 
    ```sh
-   tar -xvf mongodb-linux-x86_64-4.0.10.tgz
+   tar -xvf  MongoDB-linux-x86_64-4.0.10.tgz
    ```
 
 3. 移动解压后的文件夹到指定的目录中
 
    ```sh
-   mv mongodb-linux-x86_64-4.0.10 /usr/local/mongodb
+   mv  MongoDB-linux-x86_64-4.0.10 /usr/local/ MongoDB 
    ```
 
 4. 新建几个目录，分别用来存储数据和日志
 
    ```sh
    # 数据存储目录
-   mkdir -p /mongodb/single/data/db
+   mkdir -p / MongoDB/single/data/db
    # 日志存储目录
-   mkdir -p /mongodb/single/log
+   mkdir -p / MongoDB/single/log
    ```
 
 5. 新建并修改配置文件 配置文件的内容如下：
 
    ```sh
-   vi /mongodb/single/mongod.conf
+   vi /MongoDB/single/mongod.conf
    ```
 
    ```yml
    systemLog:
-       #MongoDB发送所有日志输出的目标指定为文件
+       # MongoDB 发送所有日志输出的目标指定为文件
        # #The path of the log file to which mongod or mongos should send all diagnostic logging information
        destination: file
        #mongod或mongos应向其发送所有诊断日志记录信息的日志文件的路径
-       path: "/mongodb/single/log/mongod.log"
+       path: "/MongoDB/single/log/mongod.log"
        #当mongos或mongod实例重新启动时，mongos或mongod会将新条目附加到现有日志文件的末尾。
        logAppend: true
    storage:
        #mongod实例存储其数据的目录。storage.dbPath设置仅适用于mongod。
        ##The directory where the mongod instance stores its data.Default Value is "/data/db".
-       dbPath: "/mongodb/single/data/db"
+       dbPath: "/MongoDB/single/data/db"
        journal:
            #启用或禁用持久性日志以确保数据文件保持有效和可恢复。
            enabled: true
@@ -143,10 +143,10 @@ Build Info: {
        port: 27017
    ```
 
-6. 启动MongoDB服务 
+6. 启动 MongoDB 服务 
 
    ```sh
-   [root@bobohost single]# /usr/local/mongodb/bin/mongod -f /mongodb/single/mongod.conf
+   [root@bobohost single]# /usr/local/MongoDB/bin/mongod -f /MongoDB/single/mongod.conf
    about to fork child process, waiting until server is ready for connections.
    forked process: 90384
    child process started successfully, parent exiting
@@ -156,7 +156,7 @@ Build Info: {
 
    ```sh
    [root@bobohost single]# ps -ef |grep mongod
-   root 90384 1 0 8月26 ? 00:02:13 /usr/local/mongdb/bin/mongod -f /mongodb/single/mongod.conf
+   root 90384 1 0 8月26 ? 00:02:13 /usr/local/mongdb/bin/mongod -f /MongoDB/single/mongod.conf
    ```
 
 7. 分别使用mongo命令和compass工具来连接测试。 提示：如果远程连接不上，需要配置防火墙放行，或直接关闭linux防火墙 
@@ -187,9 +187,9 @@ Build Info: {
 
 ```sh
 # 删除lock文件
-rm -f /mongodb/single/data/db/*.lock
+rm -f /MongoDB/single/data/db/*.lock
 # 修复数据
-/usr/local/mongdb/bin/mongod --repair --dbpath=/mongodb/single/data/db
+/usr/local/mongdb/bin/mongod --repair --dbpath=/MongoDB/single/data/db
 ```
 
 ## 1.3 启动与卸载
@@ -199,22 +199,22 @@ rm -f /mongodb/single/data/db/*.lock
 在data目录下面创建db文件夹，然后在 bin 目录中打开命令行提示符，输入如下命令：
 
 ```sh
-# 启动MongoDB服务，并且数据存储在E:\MongoDB\data\db目录下面
+# 启动 MongoDB 服务，并且数据存储在E:\MongoDB\data\db目录下面
 mongod --dbpath E:\MongoDB\data\db
 ```
 
-我们在启动信息中可以看到，mongoDB的默认端口是27017，如果我们想改变默认的启动端口，可以通过`--port`来指定端口。
+我们在启动信息中可以看到， MongoDB 的默认端口是27017，如果我们想改变默认的启动端口，可以通过`--port`来指定端口。
 
 ### 1.3.2 连接服务
 
 这里我用的是 6.0.5 版本，在 6.0 版本已经将其进行了较大的更新。删除了MongDB-Shell，所以需要我们自己进行下载，我下载的是1.8.2版本的，它更名为了`mongosh.exe`，所以运行的命令也从`mongo`更改为了`mongosh`。
 
 ```sh
-# 启动mongosh连接MongoDB
+# 启动mongosh连接 MongoDB 
 E:\MongoDB\bin>mongosh
 Current Mongosh Log ID: 6494099b52870cbac6495efe
-Connecting to:          mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.8.2
-Using MongoDB:          6.0.5
+Connecting to:           MongoDB ://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.8.2
+Using  MongoDB :          6.0.5
 Using Mongosh:          1.8.2
 # 查看所有数据库
 test> show databases
@@ -228,7 +228,7 @@ test> exit
 # 查看mongosh帮助手册
 E:\MongoDB\bin>mongosh --help
 
-  $ mongosh [options] [db address] [file names (ending in .js or .mongodb)]
+  $ mongosh [options] [db address] [file names (ending in .js or . MongoDB )]
 
   Options:
 
@@ -236,7 +236,7 @@ E:\MongoDB\bin>mongosh --help
     -f, --file [arg]                           Load the specified mongosh script
 ```
 
-> MongoDB javascript shell是一个基于 javascript 的解释器，故是支持 JS 程序的。
+>  MongoDB javascript shell是一个基于 javascript 的解释器，故是支持 JS 程序的。
 
 ### 1.3.3 关闭服务
 
@@ -345,7 +345,7 @@ true
 
 ## 2.3 文档操作
 
-文档（document）的数据结构和 JSON 基本一样，所有存储在集合中的数据都是 BSON 格式。文档基础操作[CRUD](https://docs.mongodb.com/manual/crud/)：Create、Retrieve、Update、Delete。
+文档（document）的数据结构和 JSON 基本一样，所有存储在集合中的数据都是 BSON 格式。文档基础操作[CRUD](https://docs. MongoDB .com/manual/crud/)：Create、Retrieve、Update、Delete。
 
 ### 2.3.1 文档的添加
 
@@ -358,8 +358,8 @@ true
 
 1. 文档中的键值对是有序的。
 2. 文档中的值不仅可以是在双引号里面的字符串，还可以是其他几种数据类型（甚至可以是整个嵌入的文档)。
-3. MongoDB区分类型和大小写。
-4. MongoDB的文档不能有重复的键。
+3.  MongoDB 区分类型和大小写。
+4.  MongoDB 的文档不能有重复的键。
 5. 文档的键是字符串。除了少数例外情况，键可以使用任意UTF-8字符。
 
 文档键命名规范：键不能含有`\0` (空字符)，该字符用来表示键的结尾。`.`和`$`有特别的意义，只有在特定环境下才能使用。 以下划线`_`开头的键是保留的，并非严格要求。
@@ -383,7 +383,7 @@ db.<collection_name>.insert({
 | ------------ | ----------------- | ------------------------------------------------------------ |
 | document     | document or array | 要插入到集合中的文档或文档数组。（json格式）                 |
 | writeConcern | document          | Optional. A document expressing the write concern. Omit to use the default write concern. See Write Concern.Do not explicitly set the write concern for the operation if run in a transaction. To use write concern with transactions, see Transactions and Write Concern. |
-| ordered      | boolean           | 可选。如果为真，则按顺序插入数组中的文档，如果其中一个文档出现错误，MongoDB将返回而不处理数组中的其余文档。如果为假，则执行无序插入，如果其中一个文档出现错误，则继续处理数组中的主文档。在版本2.6+中默认为true |
+| ordered      | boolean           | 可选。如果为真，则按顺序插入数组中的文档，如果其中一个文档出现错误， MongoDB 将返回而不处理数组中的其余文档。如果为假，则执行无序插入，如果其中一个文档出现错误，则继续处理数组中的主文档。在版本2.6+中默认为true |
 
 ```js
 // 向comment集合中添加数据，如果没有该集合，那么隐士创建集合
@@ -595,15 +595,15 @@ db.posts.find({
 
 | 操作符                                                       | 介绍                                                         |
 | :----------------------------------------------------------- | :----------------------------------------------------------- |
-| [`$currentDate`](https://docs.mongodb.com/manual/reference/operator/update/currentDate/#up._S_currentDate) | 将字段的值设置为当前日期，可以是date或Timestamp              |
-| [`$inc`](https://docs.mongodb.com/manual/reference/operator/update/inc/#up._S_inc) | 将字段的值按指定的量递增                                     |
-| [`$min`](https://docs.mongodb.com/manual/reference/operator/update/min/#up._S_min) | 仅在指定值小于现有字段值时更新字段                           |
-| [`$max`](https://docs.mongodb.com/manual/reference/operator/update/max/#up._S_max) | 仅在指定值大于现有字段值时更新字段.                          |
-| [`$mul`](https://docs.mongodb.com/manual/reference/operator/update/mul/#up._S_mul) | 将字段的值乘以指定的量                                       |
-| [`$rename`](https://docs.mongodb.com/manual/reference/operator/update/rename/#up._S_rename) | 重命名字段                                                   |
-| [`$set`](https://docs.mongodb.com/manual/reference/operator/update/set/#up._S_set) | 设置文档中字段的值                                           |
-| [`$setOnInsert`](https://docs.mongodb.com/manual/reference/operator/update/setOnInsert/#up._S_setOnInsert) | 如果更新导致插入文档，则设置字段的值。对修改现有文档的更新操作没有影响。 |
-| [`$unset`](https://docs.mongodb.com/manual/reference/operator/update/unset/#up._S_unset) | 从文档中删除指定字段                                         |
+| [`$currentDate`](https://docs. MongoDB .com/manual/reference/operator/update/currentDate/#up._S_currentDate) | 将字段的值设置为当前日期，可以是date或Timestamp              |
+| [`$inc`](https://docs. MongoDB .com/manual/reference/operator/update/inc/#up._S_inc) | 将字段的值按指定的量递增                                     |
+| [`$min`](https://docs. MongoDB .com/manual/reference/operator/update/min/#up._S_min) | 仅在指定值小于现有字段值时更新字段                           |
+| [`$max`](https://docs. MongoDB .com/manual/reference/operator/update/max/#up._S_max) | 仅在指定值大于现有字段值时更新字段.                          |
+| [`$mul`](https://docs. MongoDB .com/manual/reference/operator/update/mul/#up._S_mul) | 将字段的值乘以指定的量                                       |
+| [`$rename`](https://docs. MongoDB .com/manual/reference/operator/update/rename/#up._S_rename) | 重命名字段                                                   |
+| [`$set`](https://docs. MongoDB .com/manual/reference/operator/update/set/#up._S_set) | 设置文档中字段的值                                           |
+| [`$setOnInsert`](https://docs. MongoDB .com/manual/reference/operator/update/setOnInsert/#up._S_setOnInsert) | 如果更新导致插入文档，则设置字段的值。对修改现有文档的更新操作没有影响。 |
+| [`$unset`](https://docs. MongoDB .com/manual/reference/operator/update/unset/#up._S_unset) | 从文档中删除指定字段                                         |
 
 ```js
 // 最常用的更新操作
@@ -612,7 +612,7 @@ db.collection.update(query, update, options)
 db.collection.update(
     // 更新的选择条件。使用与find()查询方法中相同的查询选择器，类似sql update查询内where后面的。
     <query>,
-    // 要应用的修改。该值可以是：更新运算符表达式的文、对的替换文档、在MongoDB 4.2中启动聚合管道。
+    // 要应用的修改。该值可以是：更新运算符表达式的文、对的替换文档、在 MongoDB 4.2中启动聚合管道。
     <update>,
     {
     	// 可选。如果设置为true，则在没有与查询条件匹配的文档时创建新文档。默认值为false。
@@ -865,7 +865,7 @@ db.comment.find().sort({userid:-1,likenum:1})
 
 **正则查询**
 
-MongoDB的模糊查询是通过正则表达式的方式实现的。正则表达式是js的语法，直接量的写法。
+ MongoDB 的模糊查询是通过正则表达式的方式实现的。正则表达式是js的语法，直接量的写法。
 
 ```sql
 -- 正则表达式查询
@@ -928,14 +928,14 @@ content:研究表明, 刚烧开的水千万不能喝, 因为烫 嘴.
 
 # 第三章 索引
 
-[索引](https://docs.mongodb.com/manual/indexes/
-)支持在 MongoDB 中高效地执行查询。如果没有索引，MongoDB 必须执行全集合扫描，即扫描集合中的每个文档，以选择与查询语句匹配的文档。这种扫描全集合的查询效率是非常低的，特别在处理大量的数据时，查询可能要花费几十秒甚至几分钟，这对网站的性能是非常致命的。
+[索引](https://docs. MongoDB .com/manual/indexes/
+)支持在 MongoDB 中高效地执行查询。如果没有索引， MongoDB 必须执行全集合扫描，即扫描集合中的每个文档，以选择与查询语句匹配的文档。这种扫描全集合的查询效率是非常低的，特别在处理大量的数据时，查询可能要花费几十秒甚至几分钟，这对网站的性能是非常致命的。
 
-如果查询存在适当的索引，MongoDB 可以使用该索引限制必须检查的文档数。
+如果查询存在适当的索引， MongoDB 可以使用该索引限制必须检查的文档数。
 
-索引是特殊的数据结构，它以易于遍历的形式存储集合数据集的一小部分。索引存储特定字段或一组字段的值，按字段值排序。索引项的排序支持有效的相等匹配和基于范围的查询操作。此外，MongoDB 还可以使用索引中的排序返回排序结果。
+索引是特殊的数据结构，它以易于遍历的形式存储集合数据集的一小部分。索引存储特定字段或一组字段的值，按字段值排序。索引项的排序支持有效的相等匹配和基于范围的查询操作。此外， MongoDB 还可以使用索引中的排序返回排序结果。
 
-MongoDB 使用索引数据结构为的是 B Tree，MySQL 使用的是 B + Tree。
+ MongoDB 使用索引数据结构为的是 B Tree，MySQL 使用的是 B + Tree。
 
 
 
@@ -962,31 +962,31 @@ db.<collection_name>.dropIndexes()
 
 ## 3.1 索引的类型
 
-MongoDB中索引分为：单字段索引、复合索引、地理空间索引、文本索引、哈希索引。
+ MongoDB 中索引分为：单字段索引、复合索引、地理空间索引、文本索引、哈希索引。
 
 **单字段索引**
 
-MongoDB 支持在文档的单个字段上创建用户定义的升序/降序索引，称为单字段索引（Single Field Index）。对于单个字段索引和排序操作，索引键的排序顺序并不重要，因为 MongoDB 可以在任何方向上遍历索引。
+ MongoDB 支持在文档的单个字段上创建用户定义的升序/降序索引，称为单字段索引（Single Field Index）。对于单个字段索引和排序操作，索引键的排序顺序并不重要，因为 MongoDB 可以在任何方向上遍历索引。
 
-![](..\图片\2-11【MongoDB单机】\3-1.png)
+![](..\图片\2-11【 MongoDB 单机】\3-1.png)
 
 **复合索引**
 
-MongoDB 还支持多个字段的用户定义索引，即复合索引（Compound Index）。复合索引中列出的字段顺序具有重要意义，如果复合索引由 `{ userid: 1, score: -1 }` 组成，则索引首先按 `userid` 正序排序，然后再按 `score` 倒序排序。
+ MongoDB 还支持多个字段的用户定义索引，即复合索引（Compound Index）。复合索引中列出的字段顺序具有重要意义，如果复合索引由 `{ userid: 1, score: -1 }` 组成，则索引首先按 `userid` 正序排序，然后再按 `score` 倒序排序。
 
-![](..\图片\2-11【MongoDB单机】\3-2.png)
+![](..\图片\2-11【 MongoDB 单机】\3-2.png)
 
 **地理空间索引**
 
-为了支持对地理空间坐标数据的有效查询，MongoDB 提供了两种特殊的索引：返回结果时使用平面几何的二维索引和返回结果时使用球面几何的二维球面索引。
+为了支持对地理空间坐标数据的有效查询， MongoDB 提供了两种特殊的索引：返回结果时使用平面几何的二维索引和返回结果时使用球面几何的二维球面索引。
 
 **文本索引**
 
-MongoDB 提供了一种文本索引类型，支持在集合中搜索字符串内容。这些文本索引不存储特定于语言的停止词（例如 “the”、“a”、“or”），而将集合中的词作为词干，只存储根词。
+ MongoDB 提供了一种文本索引类型，支持在集合中搜索字符串内容。这些文本索引不存储特定于语言的停止词（例如 “the”、“a”、“or”），而将集合中的词作为词干，只存储根词。
 
 **哈希索引**
 
-为了支持基于散列的分片，MongoDB 提供了散列索引类型，它对字段值的散列进行索引。这些索引在其范围内的值分布更加随机，但只支持相等匹配，不支持基于范围的查询。
+为了支持基于散列的分片， MongoDB 提供了散列索引类型，它对字段值的散列进行索引。这些索引在其范围内的值分布更加随机，但只支持相等匹配，不支持基于范围的查询。
 
 ## 3.2 索引的操作
 
@@ -1000,7 +1000,7 @@ db.comment.getIndexes()
 [ { v: 2, key: { _id: 1 }, name: '_id_' } ]
 ```
 
-默认为`_id`索引，MongoDB 在创建集合的过程中会在 `_id` 字段上创建一个唯一的索引，默认名字为 `_id`。该索引可防止客户端插入两个具有相同值的文 档，不能在 `_id` 字段上删除此索引。在分片集群中，通常使用 `_id` 作为片键。
+默认为`_id`索引， MongoDB 在创建集合的过程中会在 `_id` 字段上创建一个唯一的索引，默认名字为 `_id`。该索引可防止客户端插入两个具有相同值的文 档，不能在 `_id` 字段上删除此索引。在分片集群中，通常使用 `_id` 作为片键。
 
 **创建索引**
 
@@ -1202,7 +1202,7 @@ test> db.comment.find({userid: "1003"}).explain()
 
 ## 3.4 覆盖索引
 
-当查询条件和查询的投影仅包含索引字段时，MongoDB直接从索引返回结果，而不扫描任何文档或将文档带入内存。这些覆盖的查询可以非常有效。
+当查询条件和查询的投影仅包含索引字段时， MongoDB 直接从索引返回结果，而不扫描任何文档或将文档带入内存。这些覆盖的查询可以非常有效。
 
 # 第四章 文章评论案例
 
@@ -1229,14 +1229,14 @@ test> db.comment.find({userid: "1003"}).explain()
 
 ## 4.1 技术选型
 
-可以选择偏底层的 mongodb-driver，也可以选择封装大部分功能的 SpringDataMongoDB，这里我们选择SpringDataMongoDB。
+可以选择偏底层的  MongoDB -driver，也可以选择封装大部分功能的 SpringData MongoDB ，这里我们选择SpringData MongoDB 。
 
-* [mongodb-driver](http://mongodb.github.io/mongo-java-driver/) 是 mongo 官方推出的 java 连接 mongoDB 的驱动包，相当于JDBC驱动。我们通过一个入门的案例来了解mongodb-driver 的基本使用。
-* [SpringDataMongoDB](https://projects.spring.io/spring-data-mongodb/) 是 SpringData 家族成员之一，用于操作 MongoDB 的持久层框架，封装了底层的mongodb-driver。
+* [ MongoDB -driver](http:// MongoDB .github.io/mongo-java-driver/) 是 mongo 官方推出的 java 连接 MongoDB 的驱动包，相当于JDBC驱动。我们通过一个入门的案例来了解 MongoDB -driver 的基本使用。
+* [SpringData MongoDB ](https://projects.spring.io/spring-data- MongoDB /) 是 SpringData 家族成员之一，用于操作 MongoDB 的持久层框架，封装了底层的 MongoDB -driver。
 
 ## 4.2 项目搭建
 
-本项目采用SpringBoot + MongoDB技术栈，创建项目的时候先创建一个空的Maven项目，然后再导入需要的依赖。
+本项目采用SpringBoot +  MongoDB 技术栈，创建项目的时候先创建一个空的Maven项目，然后再导入需要的依赖。
 
 ```xml
 <!--配置当前工程继承自parent工程-->
@@ -1256,10 +1256,10 @@ test> db.comment.find({userid: "1003"}).explain()
         <artifactId>spring-boot-starter-test</artifactId>
         <scope>test</scope>
     </dependency>
-    <!-- mongodb依赖 -->
+    <!--  MongoDB 依赖 -->
     <dependency>
         <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-data-mongodb</artifactId>
+        <artifactId>spring-boot-starter-data- MongoDB </artifactId>
     </dependency>
     <!-- Lombok简化实体类开发 -->
     <dependency>
@@ -1273,7 +1273,7 @@ test> db.comment.find({userid: "1003"}).explain()
 spring:
   #数据源配置
   data:
-    mongodb:
+     MongoDB :
       # 主机地址
       host: localhost
       # 数据库
@@ -1281,7 +1281,7 @@ spring:
       # 默认端口是27017
       port: 27017
       # 也可以使用uri连接
-      # uri: mongodb://localhost:27017/test
+      # uri:  MongoDB ://localhost:27017/test
 ```
 
 ```java
@@ -1303,7 +1303,7 @@ package com.linxuan.pojo;
 
 /**
  * 文章评论实体类
- *  1.Document注解把类声明为mongodb集合，可以通过collection指定该类对应的集合。默认使用类名小写映射集合。
+ *  1.Document注解把类声明为 MongoDB 集合，可以通过collection指定该类对应的集合。默认使用类名小写映射集合。
  *  2.CompoundIndex注解创建复合索引：@CompoundIndex( def = "{'userid': 1, 'nickname': -1}")
  *  3.索引可以通过Mongo的命令来添加，也可以在Java的实体类中通过注解添加。
  */
@@ -1311,10 +1311,10 @@ package com.linxuan.pojo;
 @ToString
 @Document(collection = "comment")
 public class Comment implements Serializable {
-    // 主键标识，该属性的值会自动对应mongodb的主键字段"_id"。如果该属性名就叫“id”，则该注解可以省略。
+    // 主键标识，该属性的值会自动对应 MongoDB 的主键字段"_id"。如果该属性名就叫“id”，则该注解可以省略。
     @Id
     private String id;
-    // 吐槽内容。该属性对应mongodb的字段的名字，如果一致，则无需该注解
+    // 吐槽内容。该属性对应 MongoDB 的字段的名字，如果一致，则无需该注解
     @Field("content")
     private String content;
     // 发布人ID。添加一个单字段的索引，如果comment集合中已经有该索引，那么会报错。
